@@ -8,6 +8,7 @@
 
 .headerWrapper {
   font-family: 'Pretendard', sans-serif;
+  max-width: 100vw;
 }
 
 /* Promo Banner */

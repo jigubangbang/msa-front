@@ -48,22 +48,6 @@ body {
     box-sizing: border-box;
   }
 
-  
-  header {
-    display: flex;           /* flexbox 사용 */
-    align-items: center;     /* 세로 중앙 정렬 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    padding: 10px;
-    height: 70px;           /* 필요 시 높이를 설정 */
-  }
-  
-  footer {
-    display: flex;           /* flexbox 사용 */
-    align-items: center;     /* 세로 중앙 정렬 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    padding: 10px;
-    height: 100px;           /* 필요 시 높이를 설정 */
-  }
 
   .title{
     margin: 16px 0 35px;
