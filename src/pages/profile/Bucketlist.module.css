@@ -1,0 +1,252 @@
+/* BucketlistItem.jsx */
+#checklist {
+  max-width: 100%;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+  background-color: white;
+}
+/* Checkbox */
+.customCheckbox {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+  gap: 12px;
+}
+
+.customCheckbox input[type="checkbox"] {
+  display: none;
+}
+
+.customCheckbox .checkmark {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+  transform-style: preserve-3d;
+}
+
+.customCheckbox .checkmark::before {
+  content: "\2713";
+  font-size: 16px;
+  color: transparent;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.customCheckbox input[type="checkbox"]:checked + .checkmark {
+  background-color: #333;
+  border-color: #333;
+  transform: scale(1.1) rotateZ(360deg) rotateY(360deg);
+}
+
+.customCheckbox input[type="checkbox"]:checked + .checkmark::before {
+  color: #fff;
+}
+
+.customCheckbox:hover {
+  color: #666;
+}
+
+.customCheckbox:hover .checkmark {
+  border-color: #666;
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.customCheckbox input[type="checkbox"]:focus + .checkmark {
+  box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.customCheckbox .checkmark,
+.customCheckbox input[type="checkbox"]:checked + .checkmark {
+  transition: background-color 1.3s, border-color 1.3s, color 1.3s, transform 0.3s;
+}
+
+/* Text */
+.customCheckbox .checkmark {
+  flex-shrink: 0;
+}
+
+#customCheckboxText {
+  display: flex;
+  flex-direction: column;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+  margin-bottom: 2px;
+  transition: color 0.3s;
+}
+
+.description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+  max-width: 530px; /* limits width */
+  transition: color 0.3s;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #BEBEBE;
+}
+
+.deleteIcon {
+  cursor: pointer;
+  display: flex;
+}
+/* Draggable */
+.dragHandle {
+  cursor: grab;
+  width: 20px;
+  display: flex;
+  user-select: none;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+}
+
+/* BucketlistPage.jsx */
+.row {
+  display: flex;
+}
+
+.columnLeft {
+  flex: 65%;
+}
+
+.columnRight {
+  flex: 35%;
+}
+
+
+/* === Buttons === */
+.btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  min-height: 30px;
+  min-width: 40px;
+  padding: 5px 10px;
+  margin-right: 5px;
+}
+
+.btnPrimary {
+  background-color: var(--color-accent-green);
+  color: white;
+}
+
+.btnPrimary:hover {
+    opacity: 80%;
+}
+.btnSecondary {
+  background-color: black;
+  color: white;
+  padding: 5px 10px;
+}
+
+.btnSecondary:hover {
+    opacity: 80%;
+}
+
+.btnOutline {
+  border: 0.5px solid black;
+  background: white;
+  color: var(--color-text-primary);
+  padding: 5px 10px;
+}
+
+.btnOutline:hover {
+    background-color: black;
+    color: white;
+}
+
+.topControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 10px;
+}
+
+.sortIcon {
+  height: 13px;
+}
+
+.statsContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 0.5rem;;
+  background-color: #fafafa;
+  border-radius: 8px;
+  color: #333;
+  margin: 10px 15px;
+  margin-left: 20px;
+  padding: 20px 30px;
+}
+
+.statsContainer div {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  width: 100px;
+}
+
+.statsContainer span:first-child {
+  font-weight: bold;
+  color: #111;
+}
+
+.statsContainer span:last-child {
+  color: #777;
+  font-weight: 500;
+}
+
+
+/* modal */
+.modal {
+  display: inline-block;
+  width: 95%;
+}
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 3px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.btnContainer {
+  margin: 0 20%;
+  display: inline-block;
+  text-align: center;
+  width: 60%;
+}

@@ -1,0 +1,92 @@
+/* Header.css */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.headerWrapper {
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* Promo Banner */
+.scrollText {
+    overflow: hidden;
+    background-color: black;
+}
+
+.promoBanner {
+  background-color: black;
+  color: white;
+  padding: 8px 20px;
+  font-size: 14px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 2800px;
+  animation: scroll-banner 20s linear infinite;
+}
+
+@keyframes scroll-banner {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-24.2%);
+  }
+}
+
+
+/* Main Header */
+.mainHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 30px;
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+
+.logoText {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo {
+    width: 100px;
+    cursor: pointer;
+}
+
+.menu span {
+  margin: 0 12px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.badge {
+  background: black;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.proBtn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}

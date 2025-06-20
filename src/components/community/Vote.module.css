@@ -1,0 +1,199 @@
+/* Vote Component Styles */
+.voteContainer {
+  max-width: 32rem;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.contentPadding {
+  padding: 1.5rem;
+}
+
+.voteTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+/* Form Elements */
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+/* Vote Display */
+.badgeContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badgeOfficial {
+  background-color: black;
+  color: white;
+}
+
+.badgeAnonymous {
+  background-color: #6b7280;
+  color: white;
+}
+
+.badgeMultiple {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.voteInfo {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.infoItemExpired {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Vote Options Display */
+.voteOption {
+  margin-bottom: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.voteOption:hover:not(.voteOptionDisabled) {
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.voteOptionSelected {
+  border-color: black;
+  background-color: #f9fafb;
+}
+
+.voteOptionDisabled {
+  cursor: default;
+}
+
+.voteOptionContent {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.voteOptionLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.voteOptionRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.voteCount {
+  color: #374151;
+  font-weight: 600;
+}
+
+.votePercentage {
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.progressBar {
+  height: 0.25rem;
+  background-color: #f3f4f6;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(to right, black, #374151);
+  transition: all 0.7s ease-out;
+}
+
+/* Buttons */
+.primaryButton {
+  width: 100%;
+  padding: 1rem;
+  background-color: black;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background-color: #374151;
+  transform: translateY(-2px);
+}
+
+.primaryButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Status Messages */
+.statusMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.statusSuccess {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.statusExpired {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
