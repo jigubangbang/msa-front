@@ -1,69 +1,73 @@
 // src/utils/constants.js
 
+const LOCAL = 'http://localhost:8080'
+
 // API 엔드포인트
-export const API_ENDPOINTS = {
+const API_ENDPOINTS = {
   // user-service
-  AUTH: '/api/auth',
-  USER: '/api/user',
+  AUTH: `${LOCAL}/api/auth`,
+  USER: `${LOCAL}/api/user`,
 
   // admin-service (Admin 권한 필요)
-  ADMIN: '/api/admin',
+  ADMIN: `${LOCAL}/api/admin`,
 
   // feed-service
   FEED: {
     // Public 경로 (인증 불필요)
-    PUBLIC: '/api/feed/public',
+    PUBLIC: `${LOCAL}/api/feed/public`,
     // (User 권한 필요)
-    PRIVATE: '/api/feed'
+    PRIVATE: `${LOCAL}/api/feed`
   },
   
   STYLE: {
     // Public 경로 (인증 불필요)
-    PUBLIC: '/api/style/public',
+    PUBLIC: `${LOCAL}/api/style/public`,
     // (User 권한 필요)
-    PRIVATE: '/api/style'
+    PRIVATE: `${LOCAL}/api/style`
   },
 
   // mypage-service
   MYPAGE: {
     // Public 경로 (인증 불필요)
-    PUBLIC: '/api/public',
+    PUBLIC: `${LOCAL}/api/public`,
     // (User 권한 필요)
-    PROFILE: '/api/profile',
-    USERS: '/api/users',
-    COUNTRIES: '/api/countries'
+    PROFILE: `${LOCAL}/api/profile`,
+    USERS: `${LOCAL}/api/users`,
+    COUNTRIES: `${LOCAL}/api/countries`
   },
   
   // quest-service
   QUEST: {
     // Public 경로 (인증 불필요)
-    PUBLIC: '/api/quests',
+    PUBLIC: `${LOCAL}/api/quests`,
     // User 권한 필요
-    USER: '/api/user-quests',
+    USER: `${LOCAL}/api/user-quest`,
     // Admin 권한 필요
-    ADMIN: '/api/admin-quests'
+    ADMIN: `${LOCAL}/api/admin-quests`
   },
   
   // 홈 서비스 (인증 불필요)
-  HOME: '/api/home',
+  HOME: `${LOCAL}/api/home`,
   
   // 커뮤니티 서비스
   COMMUNITY: {
     // Public 경로 (인증 불필요)
-    PUBLIC: '/api/com',
+    PUBLIC: `${LOCAL}/api/com`,
     // User 권한 필요
-    USER: '/api/user-com'
+    USER: `${LOCAL}/api/user-com`
   },
   
   // 채팅 서비스 (User 권한 필요)
-  CHAT: '/api/chat',
+  CHAT: `${LOCAL}/api/chat`,
   
   // 결제 서비스 (User 권한 필요)
-  PAYMENT: '/api/payment',
+  PAYMENT: `${LOCAL}/api/payment`,
   
   // Actuator
   ACTUATOR: {
-    GATEWAY: '/gateway/actuator',
-    USER_SERVICE: '/user/actuator'
+    GATEWAY: `${LOCAL}/gateway/actuator`,
+    USER_SERVICE: `${LOCAL}/user/actuator`
   }
 };
+
+export default API_ENDPOINTS;

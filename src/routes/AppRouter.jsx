@@ -13,6 +13,9 @@ import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
+
 const AppRouter = () => {
     return (
         <Routes>
@@ -26,6 +29,9 @@ const AppRouter = () => {
           <Route path="/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/:userId/diary" element={<Diary/>}/>
           <Route path="/map" element={<MapPage/>}/>
+
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Register/>} />
         </Routes>
     );
 }
