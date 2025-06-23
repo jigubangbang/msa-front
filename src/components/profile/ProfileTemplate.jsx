@@ -6,7 +6,6 @@ import ProfileSidebar from "./ProfileSidebar";
 export default function ProfileTemplate({children, heading="@username"}) {
     return (
         <div className={styles.pageWrapper}>
-            <Header/>
             <div className={styles.profile}>
                 <ProfileSidebar/>
                 <div className={styles.mainContent}>

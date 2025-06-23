@@ -20,11 +20,11 @@ const AppRouter = () => {
           <Route path="/style-guide" element={<StyleGuidePage/>}/>
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/countries" element={<Countries/>}/>
-          <Route path="/badges" element={<Badges/>}/>
-          <Route path="/bucketlist" element={<Bucketlist/>}/>
-          <Route path="/diary" element={<Diary/>}/>
+          <Route path="/:userId/profile" element={<Profile/>}/>
+          <Route path="/:userId/countries" element={<Countries/>}/>
+          <Route path="/:userId/badges" element={<Badges/>}/>
+          <Route path="/:userId/bucketlist" element={<Bucketlist/>}/>
+          <Route path="/:userId/diary" element={<Diary/>}/>
           <Route path="/map" element={<MapPage/>}/>
         </Routes>
     );

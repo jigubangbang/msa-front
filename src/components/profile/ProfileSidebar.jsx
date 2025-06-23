@@ -1,20 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 import { findFlagUrlByIso3Code } from 'country-flags-svg';
 import styles from "./ProfileSidebar.module.css";
 import locationIcon from "../../assets/profile/location_grey.svg";
 import cakeIcon from "../../assets/profile/cake_grey.svg";
 import planeIcon from "../../assets/profile/plane_grey.svg";
+//import API_ENDPOINTS from ''
 
 // TODO: add backend update travel status on modal click
 // TODO: add backend for follow button
 // TODO: redirect travel style to details page
 
 export default function ProfileSidebar() {
+    const {userId} = useParams();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [travelStatus, setTravelStatus] = useState('TRAVELING');
     const [showModal, setShowModal] = useState(false);
+
 
     const statusClasses = {
         TRAVELING: styles.statusTraveling,
@@ -31,10 +35,14 @@ export default function ProfileSidebar() {
 
     useEffect(() => {
         axios
-            .get(`https://d4f21666-0966-4b15-b291-99b17adce946.mock.pstmn.io/users/aaa`)
+            //.get(`https://d4f21666-0966-4b15-b291-99b17adce946.mock.pstmn.io/users/aaa`)
+            .get(`http://localhost:8080/api/profile/${userId}`)
             .then((response) => {
                 setData(response.data);
+                console.log(response)
                 setTravelStatus(response.data.travelStatus);
+                console.log("testing:")
+                console.log(response.data.travelStatus)
                 setLoading(false);
             })
             .catch((err) => {
@@ -91,7 +99,7 @@ export default function ProfileSidebar() {
 
                 <div className={styles.location}>
                     <img src={locationIcon}/>
-                    {data.nationalityLabel}
+                    {data.nationalityName}
                 </div>
                 <div className={styles.stats}>
                     <div className={styles.statItem}>

@@ -6,9 +6,6 @@ import Vote from '../../components/community/Vote';
 export default function Main() {
     return (
         <div className={styles.outerContainer}>
-            <Header></Header>
-
-            
             <div className={styles.mainPoster}>
                 <div className={styles.posterTitle}>JIGU PROJECT</div>
                 <div className={styles.posterSubtitle}>여행, 그 이상의 여정을 기록하다</div>
