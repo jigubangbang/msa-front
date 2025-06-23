@@ -14,7 +14,7 @@ import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 
 import Login from "../pages/auth/Login";
-import Login from "../pages/auth/Register";
+import Register from "../pages/auth/Register";
 
 const AppRouter = () => {
     return (
@@ -30,7 +30,7 @@ const AppRouter = () => {
           <Route path="/diary" element={<Diary/>}/>
           <Route path="/map" element={<MapPage/>}/>
 
-          <Route path="/login" element={<Login/>} />
+          <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>} />
         </Routes>
     );
