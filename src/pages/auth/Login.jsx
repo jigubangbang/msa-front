@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import API_ENDPOINTS from "../../utils/constants";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
@@ -9,7 +10,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8081/auth/login", {
+      const response = await axios.post(`${API_ENDPOINTS.AUTH}/login`, {
         userId,
         password,
       });
