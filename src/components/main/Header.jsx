@@ -47,8 +47,8 @@ export default function Header() {
 
             {/* Auth buttons */}
             <div className={styles.authButtons}>
-                <span>로그인</span>
-                <span>회원 가입</span>
+                <Link to="/login"><span>로그인</span></Link>
+                <Link to="/register"><span>회원가입</span></Link>
                 <button className={styles.proBtn}>Premium</button>
             </div>
         </header>
