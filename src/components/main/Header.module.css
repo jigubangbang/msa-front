@@ -7,6 +7,8 @@
 }
 
 .headerWrapper {
+  position: relative;
+  z-index: 1000; /* 사이드바보다 높게 */
   font-family: 'Pretendard', sans-serif;
   max-width: 100vw;
 }
@@ -90,4 +92,14 @@
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* 링크 색상 통일 */
+.menu a,
+.menu span a,
+.authButtons a,
+.authButtons span {
+  color: #242424;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
