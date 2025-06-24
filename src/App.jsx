@@ -1,13 +1,17 @@
-import { useState } from 'react'
-import './App.css'
-import ChatPanel from './components/Chat/ChatPanel'
+import React from "react";
+import AppRouter from "./routes/AppRouter";
+import Header from "./components/main/Header";
+
 
 function App() {
   return (
-    <>
-    <ChatPanel/>
-    </>
-  )
+    <div className="app-container">
+      <Header></Header>
+      <main className="main-container">
+      <AppRouter/>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
