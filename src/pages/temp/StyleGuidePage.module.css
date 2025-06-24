@@ -1,262 +1,471 @@
-/* 공통 */
-.container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 24px;
-  font-family: 'Noto Sans KR', sans-serif;
+/* StyleGuidePage.module.css */
+
+/* 메인 컨테이너 */
+.styleGuideContainer {
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* sidebar 때문에 필수 */
+}
+
+.content {
+  flex: 1;
+  margin-left: 60px; /* sidebar 때문에 필수 */
+  padding: 20px 40px;
+  transition: margin-left 0.3s ease;
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+/* 기본 타이포그래피 */
+.content h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #212529;
+  font-weight: 700;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem 0;
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.content p {
+  margin-bottom: 1rem;
+  color: #6c757d;
   line-height: 1.6;
 }
 
-.pageTitle {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 32px;
+/* 섹션 스타일 */
+.content section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  background: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* 헤더 */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 32px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-}
-
-.logo {
-  font-size: 20px;
-  font-weight: bold;
-  color: #0077cc;
-}
-
-.nav {
-  display: flex;
-  gap: 16px;
-}
-
-.nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
-.nav a:hover {
-  color: #0077cc;
-}
-
-.loginButton {
-  padding: 8px 16px;
-  background-color: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* 푸터 */
-.footer {
-  padding: 20px;
-  text-align: center;
-  background-color: #f5f5f5;
-  border-top: 1px solid #ddd;
-  margin-top: 40px;
-  font-size: 14px;
-  color: #666;
-}
-
-/* Typography */
+/* 📌 타이포그래피 */
 .textLarge {
   font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-weight: bold;
+  margin: 0.5rem 0;
+  color: #212529;
+  line-height: 1.4;
 }
 
 .textMedium {
   font-size: 18px;
-  font-weight: 400;
-  margin-bottom: 8px;
+  font-weight: normal;
+  margin: 0.5rem 0;
+  color: #495057;
+  line-height: 1.5;
 }
 
 .textSmall {
   font-size: 14px;
   font-weight: 300;
-  margin-bottom: 8px;
+  margin: 0.5rem 0;
+  color: #6c757d;
+  line-height: 1.5;
 }
 
 .link {
-  color: #0077cc;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 0;
+}
+
+.link:hover {
+  color: #0056b3;
   text-decoration: underline;
 }
 
-/* Buttons */
-.btnLarge,
-.btnMedium,
-.btnSmall {
-  border: none;
+/* 🔘 버튼 */
+.btnLarge {
+  background: #007bff;
   color: white;
-  background-color: #0077cc;
+  border: none;
+  padding: 16px 32px;
   border-radius: 8px;
-  margin-right: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 8px 8px 8px 0;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,123,255,0.3);
 }
 
-.btnLarge {
-  padding: 12px 24px;
-  font-size: 18px;
+.btnLarge:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,123,255,0.4);
 }
 
 .btnMedium {
-  padding: 10px 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
   font-size: 16px;
+  font-weight: 500;
+  margin: 8px 8px 8px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(40,167,69,0.3);
+}
+
+.btnMedium:hover {
+  background: #1e7e34;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40,167,69,0.4);
 }
 
 .btnSmall {
+  background: #ffc107;
+  color: #212529;
+  border: none;
   padding: 8px 16px;
+  border-radius: 4px;
   font-size: 14px;
+  font-weight: 500;
+  margin: 8px 8px 8px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(255,193,7,0.3);
+}
+
+.btnSmall:hover {
+  background: #e0a800;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255,193,7,0.4);
 }
 
 .btnDisabled {
-  background-color: #ccc;
-  color: #666;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: not-allowed;
-}
-
-/* Inputs */
-.input {
-  padding: 10px;
-  border: 1px solid #ccc;
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
   border-radius: 6px;
   font-size: 16px;
-  margin-right: 12px;
-  margin-bottom: 12px;
+  margin: 8px 8px 8px 0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ✍️ 입력 요소 */
+.input {
+  width: 100%;
+  max-width: 350px;
+  padding: 12px 16px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 16px;
+  margin: 8px 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  background-color: white;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input::placeholder {
+  color: #6c757d;
 }
 
 .select {
-  padding: 10px;
-  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 350px;
+  padding: 12px 16px;
+  border: 1px solid #ced4da;
   border-radius: 6px;
   font-size: 16px;
-  margin-bottom: 12px;
+  margin: 8px 0;
+  background-color: white;
+  cursor: pointer;
+  display: block;
+  transition: border-color 0.2s ease;
 }
 
-/* 이미지 */
+.select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* 체크박스와 라디오 */
+.content section div label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #495057;
+}
+
+.content section div label input {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* 📷 이미지 */
 .imageBanner {
   width: 100%;
-  max-width: 100%;
+  max-width: 600px;
+  height: 200px;
+  object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 16px;
+  margin: 16px 0;
+  border: 1px solid #dee2e6;
+  background-color: #e9ecef;
+  display: block;
 }
 
 .profileCard {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
   width: fit-content;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .profileImage {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e9ecef;
+  background-color: #e9ecef;
 }
 
-/* 탭 */
+.profileCard span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #495057;
+}
+
+/* 📑 탭 메뉴 */
 .tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 0;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
 }
 
 .activeTab {
-  background-color: #0077cc;
+  background: #007bff;
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 14px 28px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  border-bottom: 3px solid #007bff;
 }
 
 .inactiveTab {
-  background-color: #f0f0f0;
-  color: #333;
+  background: white;
+  color: #6c757d;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 14px 28px;
   cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.inactiveTab:hover {
+  background: #f8f9fa;
+  color: #495057;
+  border-bottom-color: #dee2e6;
 }
 
 .tabContent {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #495057;
 }
 
-/* 스켈레톤 박스 */
+/* ⏳ 스켈레톤 박스 */
 .skeletonBox {
   width: 100%;
-  height: 100px;
-  background-color: #e0e0e0;
+  height: 80px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
   border-radius: 8px;
-  animation: pulse 1.5s infinite ease-in-out;
+  margin: 20px 0;
 }
 
-@keyframes pulse {
+@keyframes shimmer {
   0% {
-    background-color: #e0e0e0;
-  }
-  50% {
-    background-color: #f0f0f0;
+    background-position: -200% 0;
   }
   100% {
-    background-color: #e0e0e0;
+    background-position: 200% 0;
   }
 }
 
-/* 모달 & 알림 */
+/* 🚨 모달 / 알림 */
 .modal {
-  padding: 20px;
-  border: 1px solid #222;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 12px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin: 20px 0;
+  max-width: 450px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  color: #495057;
 }
 
 .toast {
-  padding: 12px 20px;
-  background-color: #0077cc;
+  background: #28a745;
   color: white;
-  border-radius: 6px;
-  margin-top: 8px;
-  display: inline-block;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  max-width: 350px;
+  font-weight: 500;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  display: flex;
+  align-items: center;
 }
 
-/* 색상 */
-.colorBoxPrimary,
-.colorBoxSecondary,
-.colorBoxAccent {
-  width: 160px;
-  padding: 12px;
-  color: white;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  text-align: center;
-  font-weight: bold;
-}
-
+/* 🎨 색상 팔레트 */
 .colorBoxPrimary {
-  background-color: #0077cc;
+  background: #007bff;
+  color: white;
+  padding: 24px;
+  border-radius: 12px;
+  margin: 12px 0;
+  font-weight: 600;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.colorBoxPrimary:hover {
+  transform: translateY(-2px);
 }
 
 .colorBoxSecondary {
-  background-color: #6c757d;
+  background: #6c757d;
+  color: white;
+  padding: 24px;
+  border-radius: 12px;
+  margin: 12px 0;
+  font-weight: 600;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.colorBoxSecondary:hover {
+  transform: translateY(-2px);
 }
 
 .colorBoxAccent {
-  background-color: #e83e8c;
+  background: #ffc107;
+  color: #212529;
+  padding: 24px;
+  border-radius: 12px;
+  margin: 12px 0;
+  font-weight: 600;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.colorBoxAccent:hover {
+  transform: translateY(-2px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    padding: 16px 20px;
+  }
+  
+  .content section {
+    padding: 1.5rem;
+  }
+  
+  .input, .select {
+    max-width: 100%;
+  }
+  
+  .imageBanner {
+    max-width: 100%;
+  }
+  
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .activeTab, .inactiveTab {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .btnLarge, .btnMedium, .btnSmall {
+    margin: 6px 6px 6px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 12px 16px;
+  }
+  
+  .content h1 {
+    font-size: 1.5rem;
+  }
+  
+  .content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .content section {
+    padding: 1rem;
+  }
 }
