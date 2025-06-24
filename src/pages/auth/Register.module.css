@@ -80,6 +80,55 @@
   background-color: #fff;
 }
 
+/* 이메일 */
+.emailCodeWrapper {
+  display: flex;
+  align-items: stretch; 
+}
+
+.emailCodeInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  box-sizing: border-box; 
+}
+
+.emailCodeInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+.verifyButton {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  background-color: #f0f0f0;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.verifyButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.verifyButton:disabled {
+  background-color: #f9f9f9;
+  color: #bbb;
+  border: 1px solid #ddd;
+  cursor: not-allowed;
+}
+
 /* 아이콘 */
 .inputIcon {
   position: absolute;
