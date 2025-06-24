@@ -1,0 +1,48 @@
+.container {
+  padding: 1rem;
+}
+
+.questionBlock {
+  margin-bottom: 1.5rem;
+}
+
+.questionTitle {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.optionButton {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem 0;
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.optionButton:hover {
+  background-color: #f0f0f0;
+}
+
+.selected {
+  background-color: #e0f2ff;
+}
+
+.resultContainer {
+  padding: 1rem;
+  text-align: center;
+}
+
+.resultTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.resultType {
+  font-size: 2rem;
+  margin-top: 0.5rem;
+}

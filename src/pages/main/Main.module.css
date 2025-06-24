@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+
+/* === Color Palette === */
+:root {
+  --color-background: #ffffff;
+  --color-text-primary: #242424;
+  --color-text-secondary: #6b6b6b;
+  --color-accent-green: #1a8917;
+  --color-accent-blue: #83D9E0;
+  --color-border: #e5e5e5;
+  --color-tag-bg: #f2f2f2;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* === Typography === */
+body {
+  /*font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  font-family: 'Pretendard', sans-serif; 
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.outerContainer {
+  max-width: 100vw;
+}
+
+.mainPoster {
+  background-color: black;
+  color: white;
+  text-align: center;
+  height: 500px;
+  padding: 20px;
+}
+
+
+.posterTitle {
+  font-family: 'Pixelify Sans', sans-serif;
+  line-height: 400px;
+  font-size: 100px;
+}
+
+.posterSubtitle {
+  margin-top: -100px;
+  margin-bottom: 40px;
+  font-size: 25px;
+}
+
+.startButton {
+  font-family: 'Pixelify Sans', sans-serif;
+  padding: 0.5rem 1.25rem;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.container {
+  max-width: 970px;
+  margin: 20px auto;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+p.body-secondary {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+
+/* === Buttons === */
+.btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.btnPrimary {
+  background-color: var(--color-accent-green);
+  color: white;
+}
+
+.btnPrimary:hover {
+    opacity: 80%;
+}
+
+.btnSecondary {
+  background-color: black;
+  color: white;
+}
+
+.btnSecondary:hover {
+    opacity: 80%;
+}
+
+.btnOutline {
+  border: 0.5px solid black;
+  background: white;
+  color: var(--color-text-primary);
+}
+
+.btnOutline:hover {
+    background-color: black;
+    color: white;
+}
+
+/* === Tags / Pills === */
+.tag {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  background-color: var(--color-tag-bg);
+  color: var(--color-text-primary);
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tagSelected {
+  border: 1px solid black;
+  background-color: transparent;
+}
+
+/* === Color Swatch Boxes === */
+.colorBox {
+  width: 4rem;
+  height: 4rem;
+  display: inline-block;
+  border: 1px solid #ccc;
+  margin-right: 1rem;
+  vertical-align: middle;
+}
+
+/* === Utility Classes === */
+.section {
+  margin-bottom: 3rem;
+}
+
+.flexRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Toggle Button */
+.toggleContainer {
+   position: relative;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   width: fit-content;
+   border: 3px solid #343434;
+   border-radius: 20px;
+   background: #343434;
+   font-weight: bold;
+   color: #343434;
+   cursor: pointer;
+ }
+ .toggleContainer::before {
+   content: '';
+   position: absolute;
+   width: 50%;
+   height: 100%;
+   left: 0%;
+   border-radius:20px;
+   background: white;
+   transition: all 0.3s;
+ }
+ .toggleCheckbox:checked + .toggleContainer::before {
+    left: 50%;
+ }
+ .toggleContainer div {
+   padding: 6px;
+   text-align: center;
+   z-index: 1;
+ }
+ .toggleCheckbox {
+   display: none;
+ }
+ .toggleCheckbox:checked + .toggleContainer div:first-child{
+   color: white;
+   transition: color 0.3s;
+ }
+ .toggleCheckbox:checked + .toggleContainer div:last-child{
+   color: #343434;
+   transition: color 0.3s;
+ }
+ .toggleCheckbox + .toggleContainer div:first-child{
+   color: #343434;
+   transition: color 0.3s;
+ }
+ .toggleCheckbox + .toggleContainer div:last-child{
+   color: white;
+   transition: color 0.3s;
+ }

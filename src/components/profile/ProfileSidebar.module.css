@@ -1,0 +1,272 @@
+.sidebar {
+  width: 100%;
+  max-width: 260px;
+  min-height: 100vh;
+  color: #333;
+  padding: 3rem 2rem;
+  border: 1px solid #F3F3F3;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profileImageWrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.profileImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+/* travel status */
+.travelStatus {
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  color: white;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+}
+
+.statusTraveling {
+  background-color: #4ade80;
+}
+
+.statusPlanning {
+  background-color: #DC143C;
+}
+
+.statusResting {
+  background-color: #6b6b6b;
+}
+
+.statusContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.statusModal {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: #2f3136;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 8px 0;
+  width: 220px;
+  z-index: 100;
+}
+
+.statusOption {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+}
+
+.statusOption:hover {
+  background-color: #40444b;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.statusText {
+  font-weight: 500;
+}
+
+
+
+/* */
+.nickname {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.userId {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0px;
+  margin-bottom: 1rem;
+}
+
+.flagIcon {
+  height: 20px;
+}
+
+.buttons {
+  margin-bottom: 1rem;
+}
+
+.followButton {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.followButton:hover {
+  background-color: #333;
+}
+
+.team {
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  color: #444;
+  padding: 0 0.5rem;
+  line-height: 1.4;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #555;
+  gap: 0.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.stats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.label {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.value {
+  font-weight: 600;
+}
+
+/* Extra info */
+.extraInfoContainer {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bioSection {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.bioSection h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.bio {
+  white-space: pre-line;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.inlineRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.infoBlock {
+  flex: 1;
+  min-width: 45%;
+}
+
+.infoBlock h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.infoBlock img {
+  width: 16px;
+  height: 16px;
+}
+
+.infoBlock p {
+  font-size: 0.85rem;
+  color: #444;
+  margin: 0;
+}
+
+
+.travelBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(to right, #00f5a0, #00d9f5) border-box;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #00bcd4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+/* Nav Bar */
+/* Nav bar */
+.tabNav {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.5rem 0;
+  color: #555;
+  cursor: pointer;
+  position: relative;
+}
+
+.active {
+  color: black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
