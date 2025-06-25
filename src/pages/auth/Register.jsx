@@ -15,6 +15,8 @@ import TelIcon from "../../assets/auth/tel.svg";
 import EmailIcon from "../../assets/auth/email.svg";
 import { Circles } from "react-loader-spinner";
 import debounce from "lodash.debounce";
+import requiredTerms from "./terms-required.txt?raw";
+import optionalTerms from "./terms-optional.txt?raw";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -253,10 +255,7 @@ const Register = () => {
         setFieldStatus((prev) => ({ ...prev, email: "invalid" }));
         setErrors((prev) => ({ ...prev, email: "이미 사용 중인 이메일입니다" }));
       } else {
-        setFieldStatus((prev) => ({
-          ...prev,
-          email: prev.email === "verified" ? "valid" : "valid",
-        }));
+        setFieldStatus((prev) => ({ ...prev, email: "valid" }));
         setErrors((prev) => ({ ...prev, email: "" }));
       }
     } catch (err) {
@@ -326,9 +325,40 @@ const Register = () => {
           <div className={styles.formContent}>
             {/* 왼쪽 */}
             <div className={styles.leftColumn}>
-              {/* 약관 필수/선택 항목 이후 추가 */}
+              {/* 필수 약관 */}
+              <div className={styles.termsBox}>
+                <div className={styles.termsTitle}>이용약관 (필수)</div>
+                <div className={styles.termsContent}>{requiredTerms}</div>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    name="agreedRequired"
+                    checked={form.agreedRequired}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, agreedRequired: e.target.checked }))
+                    }
+                  />
+                  동의합니다
+                </label>
+              </div>
+              {/* 선택 약관 */}
+              <div className={styles.termsBox}>
+                <div className={styles.termsTitle}>이용약관 (선택)</div>
+                <div className={styles.termsContent}>{optionalTerms}</div>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    name="agreedOptional"
+                    checked={form.agreedOptional}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, agreedOptional: e.target.checked }))
+                    }
+                  />
+                  동의합니다
+                </label>
+              </div>
             </div>
-
+            
             {/* 오른쪽 */}
             <div className={styles.rightColumn}>
               {/* ID */}
@@ -596,15 +626,12 @@ const Register = () => {
             </div>
           </div>
 
-          <div className={styles.loginLink}>
-            이미 계정이 있으신가요?{" "}
-            <button
-              type="button"
-              className={styles.linkButton}
-              onClick={() => navigate("/login")}
-            >
-              로그인
-            </button>
+          <div className={styles.buttonRow}>
+            <div className={styles.loginLink}>
+              이미 계정이 있으신가요?{" "}
+              <a href="/login" className={styles.linkAnchor}>로그인</a>
+            </div>
+            <button type="submit" className={styles.submitButton}>회원가입</button>
           </div>
         </form>
       </div>
