@@ -12,3 +12,22 @@
   background-color: #ffffff;
   min-height: 100vh;
 }
+
+/* Rankings 컴포넌트용 스타일 */
+.container {
+  width: 100%;
+  padding: 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardGrid {
+  display: flex;
+  gap: 35px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1200px;
+  width: 100%;
+}
