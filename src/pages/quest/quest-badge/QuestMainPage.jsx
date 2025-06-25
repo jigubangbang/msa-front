@@ -9,67 +9,50 @@ export default function QuestMainPage() {
  /*** ***/
   const menuItems = [
     {
-      label: '퀘스트와 뱃지',
+      label: '퀘스트와 뱃지',            // 보이는 메뉴 이름
       icon: '/icons/sidebar/badge.svg', // 여기에 실제 SVG 경로 (asset으로 줘도 됨)
-      path: '/quest',
-      active: true
-    },
-    {
-      label: 'Notifications',
-      icon: '/icons/notifications.svg',
-      path: '/style-guide/notifications',
-      badge: '4'
-    },
-    {
-      label: 'Projects',
-      icon: '/icons/projects.svg',
-      path: '/style-guide/projects',
-      submenus: [
+      path: '/quest',                   // 이동 경로
+      active: true,                     // 지금 이 페이지에 있으면 true 주세요
+      submenus: [                       // 하위 메뉴 있으면 리스트로 기입
         {
-          label: 'All Projects',
-          path: '/style-guide/projects/all'
+          label: '퀘스트 목록',
+          path: '/quest/list'
         },
         {
-          label: 'My Projects',
-          path: '/style-guide/projects/my',
-          active: true
-        },
-        {
-          label: 'Archived',
-          path: '/style-guide/projects/archived'
+          label: '뱃지 목록',
+          path: '/badge/list',
         }
       ]
     },
     {
-      label: 'Tasks',
-      icon: '/icons/tasks.svg',
-      path: '/style-guide/tasks'
-    },
-    {
-      label: 'Analytics',
-      icon: '/icons/analytics.svg',
-      path: '/style-guide/analytics',
-      submenus: [
+      label: '내 퀘스트/뱃지',
+      icon: '/icons/sidebar/record.svg',
+      path: '/my-quest',
+      submenus: [                       // 하위 메뉴 있으면 리스트로 기입
         {
-          label: 'Overview',
-          path: '/style-guide/analytics/overview'
+          label: '내 뱃지',
+          path: '/my-quest/badge'
         },
         {
-          label: 'Reports',
-          path: '/style-guide/analytics/reports',
-          badge: '2'
+          label: '내 퀘스트 기록',
+          path: '/my-quest/record',
         }
       ]
     },
     {
-      label: 'Settings',
-      icon: '/icons/settings.svg',
-      path: '/style-guide/settings'
-    },
-    {
-      label: 'Support',
-      icon: '/icons/support.svg',
-      path: '/style-guide/support'
+      label: '유저들',
+      icon: '/icons/sidebar/user_search.svg',
+      path: '/quest/user',
+      submenus: [                       // 하위 메뉴 있으면 리스트로 기입
+        {
+          label: '유저 랭크',
+          path: '/quest/rank'
+        },
+        {
+          label: '유저 검색',
+          path: '/quest/user-search',
+        }
+      ]
     }
   ];
   /*** ***/

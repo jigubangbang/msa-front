@@ -18,6 +18,8 @@ import Register from "../pages/auth/Register";
 
 import ChatPanel from "../components/Chat/ChatPanel";
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
+import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
+import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
 
 const AppRouter = () => {
     return (
@@ -36,6 +38,8 @@ const AppRouter = () => {
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>
+          <Route path="/quest/list" element={<QuestListPage/>}/>
+          <Route path="/badge/list" element={<QuestListPage/>}/>
 
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>} />
