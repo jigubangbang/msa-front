@@ -101,6 +101,7 @@
   line-height: 1.4;
   max-width: 530px; /* limits width */
   transition: color 0.3s;
+  margin-bottom: 5px;
 }
 
 .completed {

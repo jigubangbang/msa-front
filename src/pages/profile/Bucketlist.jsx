@@ -6,6 +6,7 @@ import Modal from '../../components/profile/Modal';
 import Dropdown from '../../components/common/Dropdown';
 import styles from './Bucketlist.module.css';
 import sortIcon from '../../assets/profile/sort_white.svg';
+import API_ENDPOINTS from '../../utils/constants';
 
 import {
   DndContext, 
@@ -19,14 +20,15 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useParams } from 'react-router-dom';
 
 
-// TODO: get profile owner from link
-// TODO: handle dropdown toggle
+// TODO: get session user
 // TODO: "+" button onClickHandler
 // TODO: edit mode logic
 
 export default function Bucketlist() {
+    const {userId} = useParams();
     const [items, setItems] = useState([]);
     const [totalCount, setTotalCount] = useState();
     const [completeCount, setCompleteCount] = useState();
@@ -43,7 +45,7 @@ export default function Bucketlist() {
     const dropdownOptions = [
         {
             label: "전체", 
-            value: "all"
+            value: ""
         },
         {
             label: "달성",
@@ -56,8 +58,15 @@ export default function Bucketlist() {
     ];
 
     function handleOptionClick(option) {
-        setActiveDropdownOption(option.value);
-        // TODO: when click on dropdown menu item get new sorted data
+        setActiveDropdownOption(option.label);
+        axios
+            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist?status=${option.value}`)
+            .then((response) => {
+                setItems(response.data.items);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
     }
 
     function saveNewGoal() {
@@ -71,7 +80,7 @@ export default function Bucketlist() {
     
     useEffect(() => {
         axios
-            .get(`https://d4f21666-0966-4b15-b291-99b17adce946.mock.pstmn.io/users/aaa/bucketlist`)
+            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`)
             .then((response) => {
                 setItems(response.data.items);
                 setTotalCount(response.data.totalItems);
@@ -82,7 +91,7 @@ export default function Bucketlist() {
 
     return (
         <>
-        <ProfileTemplate heading="@username">
+        <ProfileTemplate heading={`@${userId}`}>
             <div className={styles.row}>
                 <div className={styles.columnLeft}>
                     <div className={styles.topControls}>
@@ -128,11 +137,10 @@ export default function Bucketlist() {
                                 <BucketlistItem 
                                     key={item.id}
                                     id={item.id}
-                                    index={item.index}
                                     title={item.title}
                                     description={item.description}
                                     completionStatus={item.completionStatus}
-                                    completedAt={item.completedAt}
+                                    completedAt={item.formattedDate}
                                 />
                             ))}
                         </SortableContext>

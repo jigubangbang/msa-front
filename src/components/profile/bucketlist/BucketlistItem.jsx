@@ -7,7 +7,7 @@ import dragIcon from "../../../assets/profile/drag_grey.svg";
 import editIcon from "../../../assets/profile/edit_grey.svg";
 import deleteIcon from "../../../assets/profile/close_grey.svg";
 
-export default function BucketlistItem({id, index, title, description, completionStatus, completedAt}) {
+export default function BucketlistItem({id, title, description, completionStatus, completedAt}) {
     const [isChecked, setIsChecked] = useState(completionStatus);
     
     const {
@@ -27,6 +27,8 @@ export default function BucketlistItem({id, index, title, description, completio
         // TODO: add backend ((un)check bucketlist)
         setIsChecked(!isChecked);
     }
+
+    // TODO: add remove item
     return(
         <div id={styles.checklist} ref={setNodeRef} style={style} {...attributes}>
             <div className={styles.contentWrapper}>
@@ -36,6 +38,11 @@ export default function BucketlistItem({id, index, title, description, completio
                     <div className={styles.customCheckboxText}>
                         <div className={`${styles.title} ${isChecked ? styles.completed : ""}`}>{title}</div>
                         <div className={`${styles.description} ${isChecked ? styles.completed : ""}`}>{description}</div>
+                        {
+                            completionStatus && (
+                                <div className={styles.description}>달성일 : {completedAt}</div>
+                            )
+                        }
                     </div>
                 </label>
                 <div className={styles.deleteIcon}>
