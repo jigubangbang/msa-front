@@ -20,6 +20,30 @@ export default function Main() {
                 </div>
 
                 <div className={styles.section}>
+                <h2>Sample Container</h2>
+                    <div className={styles.sampleContainer}>
+                        <p>공통 컨테이너 스타일 예시-로그인컨테이너 참고</p>
+                        <p>background: #fff, 컨테이너 padding은 조절가능, border-radius: 8px(버튼은 6px), shadow는 배경에 따라 자율(안보일까봐 넣어둠)</p>
+
+                        <div className={styles.formGroup}>
+                        <label>입력 필드</label>
+                        <div className={styles.inputWrapper}>
+                            <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="입력해 주세요"
+                            />
+                        </div>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "20px" }}>
+                        <button className={`${styles.button} ${styles.darkButton}`}>다크 버튼</button>
+                        <button className={`${styles.button} ${styles.outlineButton}`}>외곽선 버튼</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={styles.section}>
                 <h2>Buttons</h2>
                 <button className={`${styles.btn} ${styles.btnPrimary}`}>Sign up</button>
                 <button className={`${styles.btn} ${styles.btnSecondary}`}>기본</button>
