@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: msa-front # Service 리소스의 이름. 다른 서비스들이 이 DNS 이름으로 Config Server에 접근
+  labels:
+    app: msa-front # 이 Service를 식별하기 위한 라벨. Deployment의 라벨과 일치
+spec:
+  selector:
+    app: msa-front # 이 Service가 트래픽을 전달할 대상 Pod를 선택하는 라벨 셀렉터. # Config Server Deployment의 template.metadata.labels와 일치
+  ports:
+  - protocol: TCP # 사용할 프로토콜 (기본값 TCP)
+    port: 80 # 이 Service가 클러스터 내부에서 노출할 포트 번호
+    targetPort: 80 # Service로 들어온 요청을 전달할 대상 Pod(Config Server 컨테이너)가
+  type: ClusterIP # Service의 타입

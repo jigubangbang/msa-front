@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msa-front-deployment # Deployment 리소스의 이름
+  labels:
+   app: msa-front # 이 Deployment를 식별하기 위한 라벨
+spec:
+  replicas: 1 # 실행할 Pod의 복제본 수 (여기서는 1개)
+  selector:
+    matchLabels:
+      app: msa-front # 이 Deployment가 관리할 Pod를 선택하는 라벨 셀렉터
+  template: # 생성될 Pod의 명세 (템플릿)
+    metadata:
+      labels:
+        app: msa-front # 생성될 Pod에 적용될 라벨 (위 selector와 일치해야 함)
+    spec:
+      containers:
+      - name: msa-front-container # Pod 내에서 실행될 컨테이너의 이름
+        image: __ECR_IMAGE_FULL_PATH__ # 사용할 Docker 이미지 (로컬에서 빌드한 이미지 가정)
+        ports:
+        - containerPort: 80 # Config Server Application이 내부적으로 사용하는 포트 (기본 80)
+        resources:
+          limits:
+            cpu: "300m"
+            memory: "1024Mi"
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80  # msa-front Application
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
