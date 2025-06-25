@@ -7,6 +7,9 @@ import IdIcon from "../../assets/auth/id.svg";
 import PasswordIcon from "../../assets/auth/password.svg";
 import VisibleIcon from "../../assets/auth/visible.svg";
 import VisibleOffIcon from "../../assets/auth/visible_off.svg";
+import KakaoIcon from "../../assets/auth/kakao.svg";
+import NaverIcon from "../../assets/auth/naver.svg";
+import GoogleIcon from "../../assets/auth/google.svg";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
@@ -54,10 +57,15 @@ const Login = () => {
     }
   };
 
+  // TODO: 소셜 로그인
   const handleSocialLogin = (provider) => {
-    // TODO: 소셜 로그인
-    console.log(`${provider} 로그인 클릭`);
-  };
+  if (provider === 'kakao') {
+    const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = 'http://localhost:5173/oauth/kakao/callback'; // 카카오에 등록한 Redirect URI
+    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    window.location.href = kakaoAuthURL;
+  }
+};
 
   return (
     <div className={styles.loginPage}>
@@ -149,7 +157,7 @@ const Login = () => {
             className={`${styles.socialButton} ${styles.google}`}
             onClick={() => handleSocialLogin('google')}
           >
-            <div className={styles.socialIcon}>G</div>
+            <img src={GoogleIcon} alt="구글 로그인" className={styles.socialIcon}/>
             <span className={styles.socialText}>구글 로그인</span>
           </button>
           
@@ -158,7 +166,7 @@ const Login = () => {
             className={`${styles.socialButton} ${styles.naver}`}
             onClick={() => handleSocialLogin('naver')}
           >
-            <div className={styles.socialIcon}>N</div>
+            <img src={NaverIcon} alt="네이버 로그인" className={styles.socialIcon}/>
             <span className={styles.socialText}>네이버 로그인</span>
           </button>
           
@@ -167,7 +175,7 @@ const Login = () => {
             className={`${styles.socialButton} ${styles.kakao}`}
             onClick={() => handleSocialLogin('kakao')}
           >
-            <div className={styles.socialIcon}>K</div>
+            <img src={KakaoIcon} alt="카카오 로그인" className={styles.socialIcon}/>
             <span className={styles.socialText}>카카오 로그인</span>
           </button>
         </div>
