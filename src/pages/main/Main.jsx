@@ -2,8 +2,27 @@ import SearchBar from '../../components/common/Searchbar';
 import Header from '../../components/main/Header';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
+import Dropdown from '../../components/common/Dropdown';
+import ToggleBtn from '../../components/common/ToggleBtn';
 
 export default function Main() {
+    // dropdown menu 에 들어갈 옵션
+    const dropdownOptions = [
+        {
+            label: "전체", 
+            value: "all"
+        },
+        {
+            label: "옵션 1",
+            value: "firstOption"
+        },
+        {
+            label: "옵션 2",
+            value: "secondOption"
+        }
+    ];
+
+
     return (
         <div className={styles.outerContainer}>
             <div className={styles.mainPoster}>
@@ -17,6 +36,7 @@ export default function Main() {
                 <h1>Header 1</h1>
                 <h2>Header 2</h2>
                 <p className={styles.bodySecondary}>Topic · 10.6M followers · 1M stories</p>
+                <p className={styles.bodyPrimary}>기본 폰트 (p.bodyPrimary) 16px</p>
                 </div>
 
                 <div className={styles.section}>
@@ -76,9 +96,17 @@ export default function Main() {
                 <div className={styles.colorBox}  style={{backgroundColor: '#EDD470'}}></div>#EDD470
                 </div>
 
+                <h2>Dropdown</h2>
+                <Dropdown
+                    options={dropdownOptions}
+                    defaultOption="전체"
+                    onSelect={(option) => {}}
+                />
+
                 <h2>Search Bar</h2>
                 <SearchBar placeholder="검색어 입력..." title="검색 항목" recommended={["검색어", "검색어", "검색어"]}/>
 
+                <h2>Vote</h2>
                 <Vote/>
                 
             </div>
