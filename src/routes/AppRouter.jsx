@@ -16,6 +16,11 @@ import Bucketlist from "../pages/profile/Bucketlist";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
+import ChatPanel from "../components/Chat/ChatPanel";
+import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
+import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
+import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
+
 const AppRouter = () => {
     return (
         <Routes>
@@ -23,6 +28,7 @@ const AppRouter = () => {
           <Route path="/style-guide" element={<StyleGuidePage/>}/>
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
+
           <Route path="/:userId/profile" element={<Profile/>}/>
           <Route path="/:userId/countries" element={<Countries/>}/>
           <Route path="/:userId/badges" element={<Badges/>}/>
@@ -30,8 +36,15 @@ const AppRouter = () => {
           <Route path="/:userId/diary" element={<Diary/>}/>
           <Route path="/map" element={<MapPage/>}/>
 
+          {/* Quest */}
+          <Route path="/quest" element={<QuestMainPage/>}/>
+          <Route path="/quest/list" element={<QuestListPage/>}/>
+          <Route path="/badge/list" element={<QuestListPage/>}/>
+
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>} />
+
+          <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>
     );
 }

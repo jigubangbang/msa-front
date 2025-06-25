@@ -36,10 +36,9 @@ export default function Header() {
             <img src={logo} className={styles.logo}/>
             
             <nav className={styles.menu}>
-                <span><Link to="/travel-test">스타일테스트</Link></span>
+                <span><Link to="/map">지도</Link></span>
                 <span><Link to="/style-guide">스타일가이드</Link></span>
-                <span><Link to="/test-page">테스트페이지</Link></span>
-                <span>퀘스트</span>
+                <span><Link to="/quest">퀘스트</Link></span>
                 <span>커뮤니티 <span className={styles.badge}>New</span></span>
                 <span>여행기록 <span className={styles.badge}>New</span></span>
                 <ProfileDropdown/>

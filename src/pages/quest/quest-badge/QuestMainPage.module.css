@@ -1,0 +1,14 @@
+.Container {
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* sidebar 때문에 필수 */
+}
+
+.content {
+  flex: 1;
+  margin-left: 180px; /* sidebar 때문에 필수 */
+  padding: 20px 40px;
+  transition: margin-left 0.3s ease;
+  background-color: #ffffff;
+  min-height: 100vh;
+}

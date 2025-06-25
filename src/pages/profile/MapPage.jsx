@@ -6,7 +6,7 @@ import lockIcon from "../../assets/profile/lock_white.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
 import SearchBar from "../../components/common/Searchbar";
 import Map from "./Map";
-import geography from "../../../public/features.json";
+import geography from "../../../src/assets/features.json";
 import { geoCentroid } from "d3-geo";
 import { feature } from "topojson-client"; 
 import MutatingLoadingSpinner from "../../components/common/MutatingLoadingSpinner";

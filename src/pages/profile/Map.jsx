@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { ComposableMap, Geographies, Geography, Sphere, Graticule, ZoomableGroup, Annotation } from "react-simple-maps";
-import geography from "../../../public/features.json";
+import geography from "../../../src/assets/features.json";
 import styles from "./Map.module.css";
 
 // TODO: Tooltip show visit date
