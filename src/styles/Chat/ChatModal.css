@@ -1,0 +1,71 @@
+/* src/styles/Chat/ChatModal.css */
+
+.chat-modal-overlay {
+  position: fixed; /* 뷰포트에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* 어두운 반투명 배경 */
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  z-index: 1000; /* 다른 모든 콘텐츠 위에 표시되도록 */
+  animation: fadeIn 0.3s ease-out; /* 부드럽게 나타나는 애니메이션 */
+}
+
+.chat-modal-content {
+  background-color: white; /* 모달 배경색 */
+  border-radius: 15px; /* 모서리 둥글게 */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* 그림자 */
+  overflow: hidden; /* 자식 요소가 둥근 모서리 밖으로 나가지 않도록 */
+  position: relative; /* 닫기 버튼 위치 지정을 위해 */
+  width: 100%;
+  max-width: 550px; /* Adjust as needed */
+  height: 80vh;
+  animation: slideIn 0.3s ease-out; /* 부드럽게 위로 슬라이드하는 애니메이션 */
+}
+
+/* 모달 닫기 버튼 스타일 (ChatModal.jsx에서 주석 처리되어 있지만, 사용한다면) */
+/*
+.modal-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  z-index: 1001;
+}
+*/
+
+/* 애니메이션 키프레임 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ChatPanel 내부 스타일은 그대로 유지됩니다.
+   단, .chat-panel-container의 margin: 0 auto; 와 height: 80vh; 등은
+   이제 ChatModal.css에서 .chat-modal-content가 제어하므로
+   ChatPanel.css에서는 필요 없을 수 있습니다.
+   하지만 독립적으로도 작동하게 하려면 남겨두는 것이 좋습니다.
+   (이 경우 ChatPanel의 max-width, height는 ChatModal의 것보다 작거나 같아야 합니다)
+*/
+/*
+.chat-panel-container {
+  // width, max-width, height, margin 속성은 ChatModal.css에서 제어하므로
+  // ChatPanel.css에서는 이들을 제거하거나 조정할 수 있습니다.
+  // 예: width: 100%; height: 100%; 로 설정하여 부모(ChatModal)에 꽉 채우도록.
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  // ... 나머지 border, box-shadow 등 유지 ...
+}
+*/

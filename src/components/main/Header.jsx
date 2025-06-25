@@ -5,7 +5,7 @@ import ProfileDropdown from './ProfileDropdown';
 import { Link } from 'react-router-dom';
 
 
-export default function Header() {
+export default function Header({onOpenChat}) {
     return (
     <div className={styles.headerWrapper}>
         <div className={styles.scrollText}>
@@ -43,6 +43,7 @@ export default function Header() {
                 <span>커뮤니티 <span className={styles.badge}>New</span></span>
                 <span>여행기록 <span className={styles.badge}>New</span></span>
                 <ProfileDropdown/>
+                <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
             </nav>
 
             {/* Auth buttons */}
