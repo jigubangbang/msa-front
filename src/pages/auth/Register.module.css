@@ -136,11 +136,6 @@
   cursor: not-allowed;
 }
 
-.verifyButton:focus,
-.verifyButton:active {
-  border-color: #000;  
-}
-
 input:focus,
 button:focus,
 button:active {
@@ -192,6 +187,10 @@ button:active {
 .inputValid {
   border-color: #28a745 !important;
   background-color: #f8fff9 !important;
+}
+
+.buttonValid {
+  border-color: #28a745 !important;
 }
 
 /* 메시지 */
@@ -251,6 +250,12 @@ button:active {
   margin-top: 10px;
 }
 
+.rightSide {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .linkAnchor {
   color: #000;
   font-weight: bold;
@@ -288,3 +293,20 @@ button:active {
   outline: none !important;
 }
 
+/* 에러 메시지 */
+.registerErrorMessage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.errorIcon {
+  font-weight: bold;
+  font-size: 16px;
+}

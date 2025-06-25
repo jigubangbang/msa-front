@@ -34,7 +34,9 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [fieldStatus, setFieldStatus] = useState({userId: "idle", email: "idle"});
+  const [fieldStatus, setFieldStatus] = useState({userId: "idle"});
+  const [emailStatus, setEmailStatus] = useState("idle"); // 이메일 중복검사만
+  const [emailCodeStatus, setEmailCodeStatus] = useState("idle"); // 인증코드만
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
@@ -42,6 +44,8 @@ const Register = () => {
   const [emailTimer, setEmailTimer] = useState(0);
   const [emailInterval, setEmailInterval] = useState(null);
   const [emailVerifyError, setEmailVerifyError] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
 
   const handleChange = async (e) => {
@@ -164,12 +168,12 @@ const Register = () => {
 
     if (name === "email") {
       if (cleanedValue === "") {
-        setFieldStatus((prev) => ({ ...prev, email: "idle" }));
+        setEmailStatus("idle");
         setErrors((prev) => ({ ...prev, email: "" }));
         return;
       }
 
-      setFieldStatus((prev) => ({ ...prev, email: "checking" }));
+      setEmailStatus("checking");
       setErrors((prev) => ({ ...prev, email: "" }));
 
       debouncedCheckEmail(cleanedValue);
@@ -186,7 +190,8 @@ const Register = () => {
   useEffect(() => {
     // 이메일이 변경되면 무조건 초기화
     clearInterval(emailInterval);
-    setFieldStatus((prev) => ({ ...prev, email: "idle" }));
+    setEmailStatus("idle");
+    setEmailCodeStatus("idle");
     setEmailCode("");
     setEmailTimer(0);
   }, [form.email]);
@@ -235,16 +240,16 @@ const Register = () => {
 
     if (!isValidFormat) {
       if (email === "") {
-        setFieldStatus((prev) => ({ ...prev, email: "idle" }));
+        setEmailStatus("idle");
         setErrors((prev) => ({ ...prev, email: "" }));
       } else {
-        setFieldStatus((prev) => ({ ...prev, email: "invalid" }));
+        setEmailStatus("invalid");
         setErrors((prev) => ({ ...prev, email: "올바른 이메일 형식으로 입력해 주세요" }));
       }
       return;
     }
 
-    setFieldStatus((prev) => ({ ...prev, email: "checking" }));
+    setEmailStatus("checking");
     setErrors((prev) => ({ ...prev, email: "" }));
 
     try {
@@ -252,14 +257,14 @@ const Register = () => {
       const isDuplicate = res.data;
 
       if (isDuplicate) {
-        setFieldStatus((prev) => ({ ...prev, email: "invalid" }));
+        setEmailStatus("invalid");
         setErrors((prev) => ({ ...prev, email: "이미 사용 중인 이메일입니다" }));
       } else {
-        setFieldStatus((prev) => ({ ...prev, email: "valid" }));
+        setEmailStatus("valid");
         setErrors((prev) => ({ ...prev, email: "" }));
       }
     } catch (err) {
-      setFieldStatus((prev) => ({ ...prev, email: "invalid" }));
+      setEmailStatus("invalid");
       setErrors((prev) => ({ ...prev, email: "중복 검사 중 오류가 발생했습니다" }));
     }
   };
@@ -268,16 +273,16 @@ const Register = () => {
 
   const sendVerificationCode = async () => {
     setEmailVerifyError("");
-    setFieldStatus((prev) => ({ ...prev, email: "sending" }));
+    setEmailCodeStatus("sending");
     try {
       await axios.post(`${API_ENDPOINTS.AUTH}/email/send`, { email: form.email });
-      setFieldStatus((prev) => ({ ...prev, email: "sent" }));
+      setEmailCodeStatus("sent");
       setEmailTimer(180); // 3분 타이머
       const interval = setInterval(() => {
         setEmailTimer((prev) => {
           if (prev <= 1) {
             clearInterval(interval);
-            setFieldStatus((prev) => ({ ...prev, email: "expired" }));
+            setEmailCodeStatus("expired");
             return 0;
           }
           return prev - 1;
@@ -285,7 +290,7 @@ const Register = () => {
       }, 1000);
       setEmailInterval(interval);
     } catch {
-      setFieldStatus((prev) => ({ ...prev, email: "valid" }));
+      setEmailCodeStatus("idle");
       alert("인증코드 전송에 실패했습니다.");
     }
   };
@@ -298,21 +303,68 @@ const Register = () => {
       });
 
       if (res.status === 200) {
-        setFieldStatus((prev) => ({ ...prev, email: "verified" }));
+        setEmailCodeStatus("verified");
         setEmailVerifyError("");
         clearInterval(emailInterval);
       } else {
-        setFieldStatus((prev) => ({ ...prev, email: "expired" }));
+        setEmailCodeStatus("error");
         setEmailCode("");
         setEmailVerifyError("인증코드가 올바르지 않습니다");
       }
     } catch {
-      setFieldStatus((prev) => ({ ...prev, email: "expired" }));
+      setEmailCodeStatus("error");
       setEmailCode("");
       setEmailVerifyError("인증코드가 올바르지 않거나 만료되었습니다. 다시 시도해 주세요.");
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setMessageType("");
+
+    // 1. 필수 입력값 누락
+    const requiredFields = ["userId", "password", "confirmPassword", "name", "nickname", "tel", "email"];
+    const missing = requiredFields.filter((key) => !form[key].trim());
+    if (missing.length > 0) {
+      setMessage("모든 항목을 입력해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 2. 유효성 검사 실패 항목 존재
+    const hasError = Object.values(errors).some((err) => err);
+    if (hasError) {
+      setMessage("조건에 맞게 입력해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 3. 이메일 인증 확인
+    if (emailCodeStatus !== "verified") {
+      setMessage("이메일 인증을 완료해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 4. 필수 약관 동의 여부
+    if (!form.agreedRequired) {
+      setMessage("필수 약관에 동의해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 5. 회원가입 요청
+    try {
+      await axios.post(`${API_ENDPOINTS.AUTH}/register`, form);
+      alert("회원가입이 완료되었습니다!");
+      navigate("/login");
+    } catch (err) {
+      console.error("회원가입 실패:", err);
+      setMessage("회원가입에 실패했습니다. 다시 시도해주세요");
+      setMessageType("error");
+    }
+  };
 
   return (
     <div className={styles.registerPage}>
@@ -321,7 +373,7 @@ const Register = () => {
           <div className={styles.logo}>Join JIGUBB and Share your Journey!</div>
         </div>
 
-        <form className={styles.registerForm}>
+        <form className={styles.registerForm} onSubmit={handleSubmit}>
           <div className={styles.formContent}>
             {/* 왼쪽 */}
             <div className={styles.leftColumn}>
@@ -334,9 +386,10 @@ const Register = () => {
                     type="checkbox"
                     name="agreedRequired"
                     checked={form.agreedRequired}
-                    onChange={(e) =>
-                      setForm((prev) => ({ ...prev, agreedRequired: e.target.checked }))
-                    }
+                    onChange={(e) => {
+                      setForm((prev) => ({ ...prev, agreedRequired: e.target.checked }));
+                      setMessage("");
+                    }}
                   />
                   동의합니다
                 </label>
@@ -368,7 +421,10 @@ const Register = () => {
                   <input
                     type="text"
                     name="userId"
-                    onFocus={() => setFocusedField("userId")}
+                    onFocus={() => {
+                      setFocusedField("userId");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     placeholder="아이디를 입력해 주세요"
                     value={form.userId}
@@ -406,7 +462,10 @@ const Register = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    onFocus={() => setFocusedField("password")}
+                    onFocus={() => {
+                      setFocusedField("password");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}    
                     placeholder="비밀번호를 입력해 주세요"
                     value={form.password}
@@ -439,7 +498,10 @@ const Register = () => {
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
-                    onFocus={() => setFocusedField("confirmPassword")}
+                    onFocus={() => {
+                      setFocusedField("confirmPassword");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     placeholder="비밀번호를 확인해 주세요"
                     value={form.confirmPassword}
@@ -477,7 +539,10 @@ const Register = () => {
                     placeholder="이름을 입력해 주세요"
                     value={form.name}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("name")}
+                    onFocus={() => {
+                      setFocusedField("name");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     onKeyDown={(e) => e.key === " " && e.preventDefault()}
                     className={`${styles.formInput} ${
@@ -504,7 +569,10 @@ const Register = () => {
                     placeholder="닉네임을 입력해 주세요"
                     value={form.nickname}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("nickname")}
+                    onFocus={() => {
+                      setFocusedField("nickname");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     onKeyDown={(e) => e.key === " " && e.preventDefault()}
                     className={`${styles.formInput} ${
@@ -531,7 +599,10 @@ const Register = () => {
                     placeholder="전화번호를 입력해 주세요"
                     value={form.tel}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("tel")}
+                    onFocus={() => {
+                      setFocusedField("tel");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     onKeyDown={(e) => e.key === " " && e.preventDefault()}
                     className={`${styles.formInput} ${
@@ -558,21 +629,24 @@ const Register = () => {
                     placeholder="이메일을 입력해 주세요"
                     value={form.email}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("email")}
+                    onFocus={() => {
+                      setFocusedField("email");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     className={`${styles.formInput} ${
                       form.email === ""
                         ? ""
                         : errors.email
                         ? styles.inputError
-                        : (fieldStatus.email === "valid" || fieldStatus.email === "verified")
+                        : emailStatus === "valid"
                         ? styles.inputValid
                         : ""
                     }`}
                   />
-                  {fieldStatus.email === "valid" || fieldStatus.email === "verified" ? (
+                  {emailStatus === "valid" ? (
                     <img src={CheckIcon} alt="사용 가능" className={styles.statusIcon} />
-                  ) : fieldStatus.email === "invalid" ? (
+                  ) : emailStatus === "invalid" ? (
                     <img src={CancelIcon} alt="사용 불가" className={styles.statusIcon} />
                   ) : null}
                 </div>
@@ -590,34 +664,47 @@ const Register = () => {
                     placeholder="인증코드를 입력해 주세요"
                     value={emailCode}
                     onChange={(e) => setEmailCode(e.target.value.trim())}
-                    disabled={fieldStatus.email !== "sent"}
-                    className={styles.emailCodeInput}
+                    onFocus={() => setMessage("")}
+                    disabled={emailCodeStatus !== "sent"}
+                    className={`${styles.emailCodeInput} ${
+                      emailCode === ""
+                        ? ""
+                        : emailCodeStatus === "verified"
+                        ? styles.inputValid
+                        : (emailCodeStatus === "error" || emailCodeStatus === "expired")
+                        ? styles.inputError
+                        : ""
+                    }`}
                   />
                   <button
                     type="button"
-                    disabled={!(["valid", "sent", "expired"].includes(fieldStatus.email))}
-                    onClick={
-                      fieldStatus.email === "sent"
-                        ? verifyCode
-                        : sendVerificationCode // "valid" or "expired"일 때 여기로
-                    }
-
-                    className={styles.verifyButton}
+                    disabled={!(emailStatus === "valid" || ["sent", "expired", "error"].includes(emailCodeStatus))}
+                    onClick={() => {
+                      setMessage("");
+                      if (emailCodeStatus === "sent") {
+                        verifyCode();
+                      } else {
+                        sendVerificationCode();
+                      }
+                    }}
+                    className={`${styles.verifyButton} ${
+                      emailCodeStatus === "verified" ? styles.buttonValid : ""
+                    }`}
                   >
-                    {fieldStatus.email === "sending" ? (
+                    {emailCodeStatus === "sending" ? (
                       <Circles height="20" width="20" color="#888" />
-                    ) : fieldStatus.email === "verified" ? (
+                    ) : emailCodeStatus === "verified" ? (
                       "인증 완료"
-                    ) : fieldStatus.email === "sent" ? (
+                    ) : emailCodeStatus === "sent" ? (
                       emailCode ? `인증 (${emailTimer}s)` : `전송됨 (${emailTimer}s)`
-                    ) : fieldStatus.email === "expired" ? (
-                      "전송"
+                    ) : (emailCodeStatus === "expired" || emailCodeStatus === "error") ? (
+                      "재전송"
                     ) : (
                       "전송"
                     )}
                   </button>
                 </div>
-                {(emailVerifyError || fieldStatus.email === "expired") && (
+                {(emailVerifyError || emailCodeStatus === "expired" || emailCodeStatus === "error") && (
                   <div className={styles.errorText}>
                     {emailVerifyError || "인증코드가 올바르지 않거나 만료되었습니다. 다시 시도해주세요."}
                   </div>
@@ -631,7 +718,15 @@ const Register = () => {
               이미 계정이 있으신가요?{" "}
               <a href="/login" className={styles.linkAnchor}>로그인</a>
             </div>
-            <button type="submit" className={styles.submitButton}>회원가입</button>
+            <div className={styles.rightSide}>
+              {message && messageType === "error" && (
+                <div className={styles.registerErrorMessage}>
+                  <span className={styles.errorIcon}>!</span>
+                  {message}
+                </div>
+              )}
+              <button type="submit" className={styles.submitButton}>회원가입</button>
+            </div>
           </div>
         </form>
       </div>
