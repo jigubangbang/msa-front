@@ -5,7 +5,6 @@ import ProfileTemplate from '../../components/profile/ProfileTemplate';
 import Modal from '../../components/profile/Modal';
 import Dropdown from '../../components/common/Dropdown';
 import styles from './Bucketlist.module.css';
-import sortIcon from '../../assets/profile/sort_white.svg';
 import API_ENDPOINTS from '../../utils/constants';
 
 import {
@@ -24,17 +23,16 @@ import { useParams } from 'react-router-dom';
 
 
 // TODO: get session user
-// TODO: "+" button onClickHandler
-// TODO: edit mode logic
 
 export default function Bucketlist() {
     const {userId} = useParams();
     const [items, setItems] = useState([]);
     const [totalCount, setTotalCount] = useState();
     const [completeCount, setCompleteCount] = useState();
-    const [incompleteCount, setInompleteCount] = useState();
+    const [incompleteCount, setIncompleteCount] = useState();
+    
+    const [reloadData, setReloadData] = useState(false);
 
-    const [sortMode, setSortMode] = useState(false);
     const [showGoalModal, setShowGoalModal] = useState(false); // showing modal to create new bucket list item
 
     const sensors = useSensors(
@@ -69,13 +67,74 @@ export default function Bucketlist() {
             });
     }
 
-    function saveNewGoal() {
-        // TODO: save new goal
+    function saveNewGoal(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const title = form.title.value.trim();
+        const description = form.description.value.trim();
+
+        axios
+            .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`, {
+                title,
+                description
+            })
+            .then((response) => {
+                setReloadData(!reloadData); // to fetch data again
+                form.reset();
+                setShowGoalModal(false);
+            })
+            .catch((err) => {
+                console.error("Failed to save new goal", err);
+            })
     }
 
-    function saveSortedList() {
-        // TODO: save new order
-        setSortMode(false);
+    function handleDragEnd(event) {
+        const {active, over} = event;
+
+        if (active.id !== over.id) {
+            setItems((prevItems) => {
+                const oldIndex = prevItems.findIndex(item => item.id === active.id);
+                const newIndex = prevItems.findIndex(item => item.id === over.id);
+                const newItems = arrayMove(prevItems, oldIndex, newIndex);
+
+                saveNewOrder(newItems);
+                
+                return arrayMove(items, oldIndex, newIndex);
+            });
+        }
+    }
+
+    function saveNewOrder(items) {
+        const payload = items.map((item, index) => ({
+            id: item.id,
+            displayOrder: index + 1
+        }));
+        axios
+            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist/reorder`, payload)
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }
+
+    function handleDeleteItem(deletedId, completionStatus) {
+        setItems(prevItems => prevItems.filter(item => item.id !== deletedId));
+        setTotalCount(prev => prev - 1);
+        if (completionStatus) {
+            setCompleteCount(prev => prev - 1);
+        } else {
+            setIncompleteCount(prev => prev - 1);
+        }
+    }
+
+    function handleCheckItem(completionStatus) {
+        if (completionStatus) {
+            setCompleteCount(prev => prev + 1);
+            setIncompleteCount(prev => prev - 1);
+        } else {
+            setIncompleteCount(prev => prev + 1);
+            setCompleteCount(prev => prev - 1);
+        }
     }
     
     useEffect(() => {
@@ -85,9 +144,9 @@ export default function Bucketlist() {
                 setItems(response.data.items);
                 setTotalCount(response.data.totalItems);
                 setCompleteCount(response.data.completeItems);
-                setInompleteCount(response.data.incompleteItems);
+                setIncompleteCount(response.data.incompleteItems);
             })
-    }, []);
+    }, [reloadData]);
 
     return (
         <>
@@ -102,20 +161,6 @@ export default function Bucketlist() {
                             >
                                 +
                             </button>
-                            <button 
-                                className={`${styles.btn} ${styles.btnSecondary}`}
-                                onClick={() => setSortMode(true)}
-                            >
-                                <img className={styles.sortIcon} src={sortIcon} styles={{padding: 'none'}}/>
-                            </button>
-                            {sortMode && (
-                                <button
-                                    className={`${styles.btn} ${styles.btnOutline}`}
-                                    onClick={saveSortedList}
-                                >
-                                    저장
-                                </button>
-                            )}
                         </div>
                         <Dropdown 
                             options={dropdownOptions}
@@ -141,6 +186,11 @@ export default function Bucketlist() {
                                     description={item.description}
                                     completionStatus={item.completionStatus}
                                     completedAt={item.formattedDate}
+                                    displayOrder={item.displayOrder}
+                                    userId={userId}
+                                    activeDropdownOption={activeDropdownOption}
+                                    onDelete={handleDeleteItem}
+                                    onCheck={handleCheckItem}
                                 />
                             ))}
                         </SortableContext>
@@ -183,17 +233,4 @@ export default function Bucketlist() {
 
         </>
     );
-
-    function handleDragEnd(event) {
-        const {active, over} = event;
-
-        if (active.id !== over.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex(item => item.id === active.id);
-                const newIndex = items.findIndex(item => item.id === over.id);
-                
-                return arrayMove(items, oldIndex, newIndex);
-            });
-        }
-    }
 }
