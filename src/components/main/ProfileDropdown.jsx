@@ -11,6 +11,7 @@ import inkpenIcon from '../../assets/profile/profile-menu/inkpen.svg';
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const userId = "bbb"; // TODO: get session user id
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -31,27 +32,27 @@ export default function ProfileDropdown() {
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to="/profile">
+          <Link to={`/${userId}/profile`}>
             <div className={styles.dropdownItem}>
               <img src={profileIcon}/>프로필
             </div>
           </Link>
-          <Link to="/countries">
+          <Link to={`/${userId}/countries`}>
             <div className={styles.dropdownItem}>
               <img src={globeIcon}/>국가
             </div>
           </Link>
-          <Link to="/badges">
+          <Link to={`/${userId}/badges`}>
             <div className={styles.dropdownItem}>
               <img src={badgeIcon}/>뱃지함
             </div>
           </Link>
-          <Link to="/bucketlist">
+          <Link to={`/${userId}/bucketlist`}>
             <div className={styles.dropdownItem}>
               <img src={listIcon}/>버킷리스트
             </div>
           </Link>
-          <Link to="/diary">
+          <Link to={`/${userId}/diary`}>
             <div className={styles.dropdownItem}>
               <img src={inkpenIcon}/>여행일지
             </div>
