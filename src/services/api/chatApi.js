@@ -1,5 +1,5 @@
 // src/services/api/chatApi.js
-import API_ENDPOINTS from '../../utils/endpoints.js';
+import API_ENDPOINTS from '../../utils/constants.js';
 
 export async function fetchMessages(chatId) {
   const res = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/messages`);
