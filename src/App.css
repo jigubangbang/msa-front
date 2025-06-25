@@ -44,9 +44,11 @@ body {
     min-width: 320px;  /* 최소 너비 */
     min-height: 700px;
     margin: 0 auto;
+
+    align-items: center;       /* 자식(.book-slider) 가로 중앙 정렬 */
   }
 
-
+  
   .title{
     margin: 16px 0 35px;
     font-weight: bold;
