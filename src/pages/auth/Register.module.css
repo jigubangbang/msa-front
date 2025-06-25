@@ -66,7 +66,7 @@
 
 .formInput {
   width: 100%;
-  padding: 12px 44px 12px 44px; 
+  padding: 12px 44px; 
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
@@ -98,7 +98,6 @@
 }
 
 .emailCodeInput:focus {
-  outline: none;
   border-color: #000;
   background-color: #fff;
 }
@@ -120,6 +119,7 @@
 
 .verifyButton:hover:not(:disabled) {
   background-color: #e0e0e0;
+  border-color: #000;
 }
 
 .verifyButton:disabled {
@@ -127,6 +127,17 @@
   color: #bbb;
   border: 1px solid #ddd;
   cursor: not-allowed;
+}
+
+.verifyButton:focus,
+.verifyButton:active {
+  border-color: #000;  
+}
+
+input:focus,
+button:focus,
+button:active {
+  outline: none;
 }
 
 /* 아이콘 */
