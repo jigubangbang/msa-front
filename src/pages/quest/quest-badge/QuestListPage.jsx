@@ -16,7 +16,8 @@ export default function QuestListPage() {
       submenus: [                       // 하위 메뉴 있으면 리스트로 기입
         {
           label: '퀘스트 목록',
-          path: '/quest/list'
+          path: '/quest/list',
+          active: true,
         },
         {
           label: '뱃지 목록',
@@ -62,7 +63,7 @@ export default function QuestListPage() {
       <Sidebar menuItems={menuItems} />
       <div className={styles.content}>
         <h1>Quest Page</h1>
-        <p>사이드바가 있는 퀘스트 페이지입니다.</p>
+        <p>사이드바가 있는 퀘스트 목록 페이지입니다.</p>
 
 
       </div>

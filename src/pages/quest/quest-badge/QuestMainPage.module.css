@@ -6,7 +6,7 @@
 
 .content {
   flex: 1;
-  margin-left: 60px; /* sidebar 때문에 필수 */
+  margin-left: 180px; /* sidebar 때문에 필수 */
   padding: 20px 40px;
   transition: margin-left 0.3s ease;
   background-color: #ffffff;

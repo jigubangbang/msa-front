@@ -1,21 +1,16 @@
 /* Sidebar Container */
 .sidebar {
-  width: 60px;
+  width: 180px; /* 항상 펼쳐진 상태 */
   height: 100%;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
   border-right: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
-  transition: width 0.2s ease; /* 애니메이션 속도 줄임 */
-  position: absolute; /* absolute로 유지 */
+  position: absolute;
   left: 0;
   top: 0;
-  z-index: 10; /* 낮은 z-index */
+  z-index: 10;
   overflow: hidden;
-}
-
-.sidebar.expanded {
-  width: 240px;
 }
 
 /* Navigation */
@@ -25,58 +20,55 @@
   overflow-y: auto;
 }
 
-.menuItem {
-  margin-bottom: 2px;
+.menuGroup {
+  margin-bottom: 8px;
 }
 
 .menuButton {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 0;
   cursor: pointer;
-  border-radius: 6px;
-  margin: 0 8px;
-  transition: background-color 0.15s ease; /* 호버 애니메이션 속도 줄임 */
+  border-radius: 8px;
+  margin: 4px 8px;
+  transition: background-color 0.15s ease;
   position: relative;
+  min-height: 48px;
 }
 
 .menuButton:hover {
-  background-color: #e9ecef;
+  background-color: #f8f9fa;
 }
 
-/* 현재 위치를 회색으로 표시 */
+/* 현재 위치를 연한 회색으로 표시 */
 .menuButton.active {
-  background-color: #6c757d; /* 회색 배경 */
-  color: white; /* 흰색 텍스트 */
-}
-
-.menuButton.active .menuIcon img {
-  filter: brightness(0) invert(1); /* 아이콘을 흰색으로 */
+  background-color: #e9ecef;
+  color: #495057;
 }
 
 .menuIcon {
-  width: 20px;
-  height: 20px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  position: relative;
 }
 
 .menuIcon img {
   width: 20px;
   height: 20px;
-  transition: filter 0.15s ease; /* 아이콘 색상 변화 애니메이션 */
 }
 
 .menuContent {
-  margin-left: 12px;
+  margin-left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  opacity: 1; /* 페이드인 애니메이션 제거 */
-  transform: translateX(0); /* 슬라이드 애니메이션 제거 */
+  width: calc(100% - 44px);
+  padding-right: 12px;
+  opacity: 1; /* 항상 보이도록 */
 }
 
 .menuLabel {
@@ -87,17 +79,18 @@
 
 /* active 상태일 때 라벨 색상 */
 .menuButton.active .menuLabel {
-  color: white;
+  color: #495057;
 }
 
 .badge {
   background-color: #dc3545;
   color: white;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 12px;
-  min-width: 18px;
-  height: 18px;
+  font-size: 12px; /* 폰트 크기 증가 */
+  padding: 6px; /* 정사각형을 위해 동일한 패딩 */
+  border-radius: 4px; /* 정사각형에 가까운 모서리 */
+  min-width: 30px; /* 최소 너비 증가 */
+  width: 30px; /* 고정 너비 */
+  height: 30px; /* 고정 높이 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,10 +99,9 @@
 
 /* Submenus */
 .submenuContainer {
-  margin-left: 32px;
+  margin-left: 44px;
   margin-top: 4px;
-  opacity: 1; /* 페이드인 애니메이션 제거 */
-  transform: translateX(0); /* 슬라이드 애니메이션 제거 */
+  opacity: 1; /* 항상 보이도록 */
 }
 
 .submenuItem {
@@ -122,18 +114,18 @@
   margin: 1px 8px 1px 0;
   font-size: 13px;
   color: #6c757d;
-  transition: all 0.15s ease; /* 애니메이션 속도 줄임 */
+  transition: all 0.15s ease;
 }
 
 .submenuItem:hover {
-  background-color: #e9ecef;
+  background-color: #f8f9fa;
   color: #212529;
 }
 
-/* 서브메뉴 현재 위치도 회색으로 표시 */
+/* 서브메뉴 현재 위치도 연한 회색으로 표시 */
 .submenuItem.active {
-  background-color: #6c757d; /* 회색 배경 */
-  color: white; /* 흰색 텍스트 */
+  background-color: #e9ecef;
+  color: #495057;
 }
 
 /* Bottom Section */
@@ -141,8 +133,6 @@
   border-top: 1px solid #e9ecef;
   padding: 8px 0;
 }
-
-/* 애니메이션 키프레임 제거 - 더 이상 사용하지 않음 */
 
 /* Scrollbar */
 .navigation::-webkit-scrollbar {
