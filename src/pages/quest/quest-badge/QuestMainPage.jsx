@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import styles from "./QuestMainPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 import ProfileCard from "../../../components/quest/ProfileCard/ProfileCard";
+import QuestCarousel from "../../../components/quest/QuestCarousel/QuestCarousel";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -58,7 +60,6 @@ function Rankings() {
     fetchRankingData();
   }, []);
 
-  // 데이터를 ProfileCard에 맞는 형태로 변환
   const transformToCardData = (data, title, countKey) => {
     if (!data) return null;
     
@@ -139,7 +140,48 @@ function Rankings() {
   );
 }
 
+
 export default function QuestMainPage() {
+  const [loading, setLoading] = useState(false);
+  const [userinfo, setUserinfo] = useState(null);
+  const [userQuest, setUserQuest] = useState(null);
+  
+  const navigate = useNavigate();
+  
+  useEffect(()=>{
+    fetchUserinfo();
+    fetchUserQuest();
+  }, []);
+
+  const fetchUserinfo = async () => {
+    setLoading(true);
+    try{
+      const response = await axios.get(`http://localhost:8080/api/user-quests/journey`)
+      setUserinfo(response.data || {});
+    }catch(err){
+      console.error("Failed to fetch user info", err);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  //#NeedToChange 실제로는 params에 status: "IN_PROGRESS"
+  const fetchUserQuest = async () => {
+    setLoading(true);
+    try{
+      const response = await axios.get(`http://localhost:8080/api/user-quests/detail`, {
+      params: {
+      }
+    });
+      setUserQuest(response.data || {});
+    }catch(err){
+      console.error("Failed to fetch user info", err);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+
  /*** ***/
   const menuItems = [
     {
@@ -191,17 +233,27 @@ export default function QuestMainPage() {
   ];
   /*** ***/
 
-
-
   return (
     <div className={styles.Container}>
       <Sidebar menuItems={menuItems} />
       <div className={styles.content}>
         <h1>Quest Page</h1>
-        <p>사이드바가 있는 퀘스트 페이지입니다.</p>
-
         <Rankings/>
+        
+        <div className={styles.loginContent}>
+          {userQuest && 
+            (<QuestCarousel quests={userQuest} title="Ongoing Quests"/>)
+          }
 
+          <div className={styles.verticalDivider}></div>
+          
+          <div className={styles.loginRightContent}>
+          {userinfo && (
+            <ProfileCard id={userinfo.user_id} title={"Total Quests Completed"} count={userinfo.completed_quest_count} 
+                        profile_image={userinfo.profile_image} level={userinfo.level} nickname={userinfo.nickname}/>
+          )}
+          </div>
+        </div>
 
       </div>
     </div>

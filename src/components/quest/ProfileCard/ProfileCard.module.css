@@ -27,7 +27,7 @@
 
 .count {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 900 !important;
   color: #111827;
   margin: 0px;
   align-self: flex-start;
