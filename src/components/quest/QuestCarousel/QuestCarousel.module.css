@@ -2,27 +2,23 @@
 font-family:'DNFBitBitv2';
 font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
 
-@font-face {
-  font-family: 'Pretendard';
-  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-}
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
 .questCarousel {
   max-width: 1000px;
   margin: 0 auto;
-  font-family: 'Pretendard', sans-serif;
+  font-family: Pretendard, sans-serif;
   min-width: 700px;
 }
 
 .carouselTitle {
- font-size: 24px;
- font-weight: bold;
- margin-bottom: 8px;
+   margin-top: 0px;
+ font-family: Pretendard, sans-serif;
+  font-size: 26px;
+ font-weight: 700;
+  text-align: left;
+ margin-bottom: 5px;
  color: #000;
- text-align: left;
- letter-spacing: 1px;
 }
 
 .emptyState {
@@ -38,12 +34,6 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .questContainer {
   position: relative;
   overflow: hidden;
-  cursor: grab;
-  user-select: none;
-}
-
-.questContainer:active {
-  cursor: grabbing;
 }
 
 .questGrid {
@@ -182,7 +172,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .otherQuestsArea .questCard .questTitle {
-  font-family: 'Pretendard', sans-serif;
+  font-family: Pretendard, sans-serif;
   margin-top: 5px;
   color: #333;
   font-size: 15px;

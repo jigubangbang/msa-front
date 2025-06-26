@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
 .Container {
   display: flex;
   min-height: 100vh;
@@ -33,6 +35,39 @@
 
 .loginRightContent{
   padding: 20px;
+  width: 320px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.rightTitle{
+  font-size: 26px;
+  margin-top: 0px;
+  font-family: Pretendard, sans-serif;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 13px;
+  color: #000;
+  width: 100%;
+}
+
+.card {
+  width: 100%;
+  max-width: 320px;
+}
+
+.card .profileCard,
+.card .rankCard {
+  width: 100%;
+  min-height: 140px;
+  max-width: none;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
 }
 
 /* Rankings 컴포넌트용 스타일 */
