@@ -46,10 +46,6 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge }) => (
 const QuestCarousel = ({ quests = [], title= "" }) => {
   const [selectedQuestId, setSelectedQuestId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const containerRef = useRef(null);
 
   const questsPerPage = 4;
   const totalPages = Math.ceil((quests || []).length / questsPerPage);
@@ -73,53 +69,6 @@ const QuestCarousel = ({ quests = [], title= "" }) => {
 
   const handleQuestClick = (questId) => {
     setSelectedQuestId(questId);
-  };
-
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    containerRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleTouchStart = (e) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging) return;
-    const x = e.touches[0].pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    containerRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    const threshold = 100;
-    const distance = containerRef.current.scrollLeft - scrollLeft;
-    
-    if (distance > threshold && currentPage < totalPages - 1) {
-      setCurrentPage(prev => prev + 1);
-      setSelectedQuestId(null); 
-    } else if (distance < -threshold && currentPage > 0) {
-      setCurrentPage(prev => prev - 1);
-      setSelectedQuestId(null); 
-    }
-    
-    containerRef.current.scrollLeft = 0;
   };
 
   const nextPage = () => {
@@ -154,16 +103,7 @@ const QuestCarousel = ({ quests = [], title= "" }) => {
   return (
     <div className={styles.questCarousel}>
       <div 
-        className={styles.questContainer}
-        ref={containerRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+        className={styles.questContainer}>
         <div className={styles.questGrid}>
           <h2 className={styles.carouselTitle}>{title}</h2>
           

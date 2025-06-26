@@ -6,6 +6,7 @@ import styles from "./QuestMainPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 import ProfileCard from "../../../components/quest/ProfileCard/ProfileCard";
 import QuestCarousel from "../../../components/quest/QuestCarousel/QuestCarousel";
+import RankCard from "../../../components/quest/RankCard/RankCard";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -145,6 +146,9 @@ export default function QuestMainPage() {
   const [loading, setLoading] = useState(false);
   const [userinfo, setUserinfo] = useState(null);
   const [userQuest, setUserQuest] = useState(null);
+  const [userRank, setUserRank] = useState(
+    {count: 57, totalCount: 1203}
+  );
   
   const navigate = useNavigate();
   
@@ -248,9 +252,19 @@ export default function QuestMainPage() {
           <div className={styles.verticalDivider}></div>
           
           <div className={styles.loginRightContent}>
+            <h2 className={styles.rightTitle}>My Quest Journey</h2>
+            
           {userinfo && (
+            <div className={styles.card}>
             <ProfileCard id={userinfo.user_id} title={"Total Quests Completed"} count={userinfo.completed_quest_count} 
                         profile_image={userinfo.profile_image} level={userinfo.level} nickname={userinfo.nickname}/>
+            </div>
+          )}
+          
+          {userRank && (
+            <div className={styles.card}>
+              <RankCard title={"My Rank"} count={userRank.count} totalCount={userRank.totalCount}/>
+            </div>
           )}
           </div>
         </div>
