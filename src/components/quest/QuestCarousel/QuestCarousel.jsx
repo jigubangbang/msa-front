@@ -1,47 +1,70 @@
 import React, { useState, useRef } from 'react';
 import styles from './QuestCarousel.module.css';
 
-const QuestCard = ({ quest, isSelected, onClick, isLarge }) => (
-  <div
-    className={`${styles.questCard} ${isSelected ? styles.selected : ''} ${isLarge ? styles.large : ''}`}
-    onClick={onClick}
-  >
-    <div className={styles.questContent}>
-    <div className={styles.questHeader}>
-      <div className={styles.questLevel}>
-        Lv.{quest.level} ({quest.xp}XP)
-      </div>
-      <div className={styles.questTitle}>{quest.title}</div>
-    </div>
-    
-    <div className={styles.questBadge}>
-        <img src={quest.icon} alt="badge icon"/>
-      </div>
-    
-    </div>
-    
-    {isLarge && (
-      <>
-        <div className={styles.progressContainer}>
-          <div className={styles.progressBar}>
-            <div 
-              className={styles.progressFill} 
-              style={{ width: `${quest.progress}%` }}
-            ></div>
-          </div>
-          <div className={styles.progressText}>
-            {quest.badge} 뱃지 획득까지 {quest.progress}% 진행되었습니다.
-          </div>
+const QuestCard = ({ quest, isSelected, onClick, isLarge }) => {
+  //#NeedToChange
+  const handleCertify = (e) => {
+    e.stopPropagation();
+    console.log(`click certify ${quest.id}`)
+  }
+
+  const handleGiveUp = (e) => {
+    e.stopPropagation();
+    console.log(`click giveup ${quest.id}`);
+  }
+
+  const handleCardClick = () => {
+    if (isLarge){
+      //#NeedToChange
+      console.log(`click detail ${quest.id}`);
+    }
+    else{
+      onClick();
+    }
+  }
+
+  return(
+    <div
+      className={`${styles.questCard} ${isSelected ? styles.selected : ''} ${isLarge ? styles.large : ''}`}
+      onClick={handleCardClick}
+    >
+      <div className={styles.questContent}>
+      <div className={styles.questHeader}>
+        <div className={styles.questLevel}>
+          Lv.{quest.level} ({quest.xp}XP)
         </div>
-        
-        <div className={styles.questActions}>
-          <button className={styles.btnSecondary}>인증하기</button>
-          <button className={styles.btnSecondary}>포기하기</button>
+        <div className={styles.questTitle}>{quest.title}</div>
+      </div>
+      
+      <div className={styles.questBadge}>
+          <img src={quest.icon} alt="badge icon"/>
         </div>
-      </>
-    )}
-  </div>
-);
+      
+      </div>
+      
+      {isLarge && (
+        <>
+          <div className={styles.progressContainer}>
+            <div className={styles.progressBar}>
+              <div 
+                className={styles.progressFill} 
+                style={{ width: `${quest.progress}%` }}
+              ></div>
+            </div>
+            <div className={styles.progressText}>
+              {quest.badge} 뱃지 획득까지 {quest.progress}% 진행되었습니다.
+            </div>
+          </div>
+          
+          <div className={styles.questActions}>
+            <button className={styles.btnSecondary} onClick={handleCertify}>인증하기</button>
+            <button className={styles.btnSecondary} onClick={handleGiveUp}>포기하기</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const QuestCarousel = ({ quests = [], title= "" }) => {
   const [selectedQuestId, setSelectedQuestId] = useState(null);

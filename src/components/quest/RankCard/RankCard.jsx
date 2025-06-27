@@ -13,6 +13,22 @@ const RankCard = ({
     console.log(`Navigating to rank Page`);
   };
 
+  const getOrdinalSuffix = (num) => {
+    const j = num % 10;
+    const k = num % 100;
+    
+    if (j === 1 && k !== 11) {
+      return num + "st";
+    }
+    if (j === 2 && k !== 12) {
+      return num + "nd";
+    }
+    if (j === 3 && k !== 13) {
+      return num + "rd";
+    }
+    return num + "th";
+  };
+
   return (
     <div className={styles.rankCard}>
 
@@ -21,9 +37,9 @@ const RankCard = ({
           {title}
         </h2>
       </div>
-        <p className={styles.count}>
-          : {count}th Out of {totalCount}
-        </p>
+      <p className={styles.count}>
+      : {getOrdinalSuffix(count)} Out of {totalCount}
+      </p>
         <button className={`${styles.btn} ${styles.btnSecondary}`}
           onClick={handleButtonClick}>View Full Rankings →</button>
     </div>

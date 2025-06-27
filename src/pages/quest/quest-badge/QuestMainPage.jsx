@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_ENDPOINTS from "../../../utils/constants";
+
 
 import styles from "./QuestMainPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
@@ -8,6 +10,8 @@ import ProfileCard from "../../../components/quest/ProfileCard/ProfileCard";
 import QuestCarousel from "../../../components/quest/QuestCarousel/QuestCarousel";
 import RankCard from "../../../components/quest/RankCard/RankCard";
 import BadgeCard from "../../../components/quest/BadgeCard/BadgeCard";
+import QuestSlider from "../../../components/quest/QuestSlider/QuestSlider";
+import QuestList from "../../../components/quest/QuestList/QuestList";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -26,10 +30,10 @@ function Rankings() {
         
         // 4개 API 동시 호출
         const [weeklyQuestRes, weeklyLevelRes, topLevelRes, topQuestRes] = await Promise.all([
-          fetch('http://localhost:8080/api/quests/weekly-quest'),
-          fetch('http://localhost:8080/api/quests/weekly-level'),
-          fetch('http://localhost:8080/api/quests/top-level'),
-          fetch('http://localhost:8080/api/quests/top-quest')
+          fetch(`${API_ENDPOINTS.QUEST.PUBLIC}/weekly-quest`),
+          fetch(`${API_ENDPOINTS.QUEST.PUBLIC}/weekly-level`),
+          fetch(`${API_ENDPOINTS.QUEST.PUBLIC}/top-level`),
+          fetch(`${API_ENDPOINTS.QUEST.PUBLIC}/top-quest`)
         ]);
 
         // 응답 확인
@@ -147,10 +151,10 @@ export default function QuestMainPage() {
   const [loading, setLoading] = useState(false);
   const [userinfo, setUserinfo] = useState(null);
   const [userQuest, setUserQuest] = useState(null);
-  const [userRank, setUserRank] = useState(
-    {count: 57, totalCount: 1203}
-  );
+  const [userRank, setUserRank] = useState(null);
   const [userBadge, setUserBadge] = useState(null);
+
+  const [seasonalQuest, setSeasonalQuest] = useState(null);
   
   const navigate = useNavigate();
   
@@ -158,15 +162,29 @@ export default function QuestMainPage() {
     fetchUserinfo();
     fetchUserQuest();
     fetchUserBadge();
+    fetchUserRank();
+    fetchSeasonalQuest();
   }, []);
 
   const fetchUserinfo = async () => {
     setLoading(true);
     try{
-      const response = await axios.get(`http://localhost:8080/api/user-quests/journey`)
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`)
       setUserinfo(response.data || {});
     }catch(err){
       console.error("Failed to fetch user info", err);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  const fetchUserRank = async () => {
+    setLoading(true);
+    try{
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/ranking/my`)
+      setUserRank(response.data || {});
+    }catch(err){
+      console.error("Failed to fetch user rank", err);
     }finally{
       setLoading(false);
     }
@@ -176,7 +194,7 @@ export default function QuestMainPage() {
   const fetchUserQuest = async () => {
     setLoading(true);
     try{
-      const response = await axios.get(`http://localhost:8080/api/user-quests/detail`, {
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
       params: {
       }
     });
@@ -192,7 +210,7 @@ export default function QuestMainPage() {
   const fetchUserBadge = async () => {
     setLoading(true);
     try{
-      const response = await axios.get(`http://localhost:8080/api/user-quests/badges/my`);
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
       setUserBadge(response.data || {});
     }catch(err){
       console.error("Failed to fetch user badge", err);
@@ -201,6 +219,24 @@ export default function QuestMainPage() {
       setLoading(false);
     }
   }
+
+  const fetchSeasonalQuest = async () => {
+    setLoading(true);
+    try{
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, {
+        params: {
+          category: 10
+        }
+      });
+      setSeasonalQuest(response.data.quests || {});
+    }catch(err){
+      console.error("Failed to fetch seasonal quest", err);
+      setSeasonalQuest(null);
+    }finally{
+      setLoading(false);
+    }
+  }
+
 
 
  /*** ***/
@@ -292,6 +328,15 @@ export default function QuestMainPage() {
           </div>
         </div>
 
+        <div className={styles.questContent}>
+        {seasonalQuest && (
+            <div className={styles.seasonalQuestContainer}>
+                <QuestSlider quests={seasonalQuest} title="Seasonal Events"/>
+            </div>
+          )}
+            
+          </div>
+<QuestList/>
       </div>
     </div>
   );
