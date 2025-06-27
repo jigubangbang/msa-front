@@ -15,6 +15,7 @@ import Bucketlist from "../pages/profile/Bucketlist";
 
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
+import Logout from "../pages/auth/Logout";
 import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
 
 import ChatPanel from "../components/Chat/ChatPanel";
@@ -45,6 +46,7 @@ const AppRouter = () => {
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/logout" element={<Logout/>}/> 
           <Route path="/oauth/kakao/callback" element={<SocialLoginHandler/>}/>
 
           <Route path="/chat" element={<ChatPanel/>}/>

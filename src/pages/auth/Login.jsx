@@ -60,7 +60,7 @@ const Login = () => {
   // TODO: 소셜 로그인
   const handleSocialLogin = (provider) => {
   if (provider === 'kakao') {
-    const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
     const REDIRECT_URI = 'http://localhost:5173/oauth/kakao/callback'; // 카카오에 등록한 Redirect URI
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     window.location.href = kakaoAuthURL;
