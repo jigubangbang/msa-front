@@ -33,14 +33,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    // deployAWS 브랜치에 대한 푸시가 아니면 파이프라인 중단 (젠킨스 웹훅 필터링)
-                    if ("${env.BRANCH_NAME}" != "deployAWS") {
-                        echo "Skipping pipeline for branch: ${env.BRANCH_NAME}. Only 'deployAWS' branch triggers full pipeline."
-                        currentBuild.result = 'NOT_BUILT' // 빌드를 건너뛰고 'NOT_BUILT' 상태로 표시
-                        error "Push not on 'deployAWS' branch. Exiting." // 파이프라인 중단
-                    }
-                }
                 // deployAWS 브랜치 체크아웃
                 // credentialsId는 Jenkins에 등록된 GitHub PAT Credential ID여야 합니다.
                 // 이 레포지토리의 크리덴셜 ID를 사용하세요 (예: 'github-msa-front-pat')
@@ -85,6 +77,13 @@ pipeline {
                         dockerImage.push("latest") // latest 태그도 함께 푸시
                     }
 
+                    // --- 기존 배포 강제 삭제 (새로운 이미지의 클린한 롤아웃을 보장하기 위해) ---
+                    echo "--- 기존 배포 강제 삭제 (새로운 이미지 클린 롤아웃 보장) ---"
+                    sh "KUBECONFIG=${env.KUBECONFIG_PATH} kubectl delete deployment msa-front-deployment -n default --ignore-not-found || true"
+                    sh "KUBECONFIG=${env.KUBECONFIG_PATH} kubectl wait --for=delete deployment/msa-front-deployment -n default --timeout=300s --for=delete || true"
+                    echo "--- 기존 배포 삭제 완료 (존재했다면) ---"
+                    // --- 기존 배포 강제 삭제 끝 ---
+
                     // Kubernetes Deployment/Service/Ingress YAML 업데이트 및 적용
                     // k8s YAML 파일들은 msa-front/k8s/ 디렉토리에 있다고 가정
                     sh """
@@ -93,6 +92,28 @@ pipeline {
                         KUBECONFIG=${env.KUBECONFIG_PATH} kubectl apply -f k8s/service.yaml -n default
                         KUBECONFIG=${env.KUBECONFIG_PATH} sed -i "s|alb.ingress.kubernetes.io/subnets: .*|alb.ingress.kubernetes.io/subnets: \\"${ALB_SUBNET_IDS}\\"|g" k8s/ingress.yaml
                         KUBECONFIG=${env.KUBECONFIG_PATH} kubectl apply -f k8s/ingress.yaml -n default
+                    """
+
+                    // --- Kubernetes Deployment Debugging (MSA-Front 파드 관련) ---
+                    echo "--- Kubernetes Deployment Debugging (MSA-Front 파드 관련) ---"
+                    echo "배포 상태 확인 전 파드 목록:"
+                    // 'app' 레이블은 k8s/deployment.yaml의 spec.selector.matchLabels에 있는 값을 사용해야 합니다.
+                    // 예시: app=msa-front
+                    sh "KUBECONFIG=${env.KUBECONFIG_PATH} kubectl get pods -n default -l app=msa-front || true"
+                    echo "배포 이벤트 확인:"
+                    sh "KUBECONFIG=${env.KUBECONFIG_PATH} kubectl describe deployment/msa-front-deployment -n default || true"
+
+                    echo "파드 로그 확인 (메인 컨테이너):"
+                    // msa-front는 단일 컨테이너이므로, 컨테이너 이름을 명시합니다.
+                    sh "KUBECONFIG=${env.KUBECONFIG_PATH} kubectl get pods -n default -l app=msa-front -o custom-columns=NAME:.metadata.name --no-headers | xargs -r -I {} sh -c 'echo \"--- 메인 컨테이너 {} 로그: ---\"; KUBECONFIG=${env.KUBECONFIG_PATH} kubectl logs {} -n default -c msa-front-container || true; echo \"\";' || true"
+
+                    // MSA-Front Dockerfile에는 초기화 컨테이너가 없으므로 해당 디버깅 라인은 제거합니다.
+                    // 만약 나중에 추가된다면 다시 여기에 포함해야 합니다.
+
+                    echo "--- End Kubernetes Deployment Debugging (MSA-Front 파드 관련) ---"
+                    // --- 디버깅 끝 ---
+
+                    sh """
                         KUBECONFIG=${env.KUBECONFIG_PATH} kubectl rollout status deployment/msa-front-deployment -n default --timeout=600s || exit 1
                     """
                     echo "MSA-Front 배포 완료."
