@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: msa-front-deployment # Deployment 리소스의 이름
   labels:
-   app: msa-front # 이 Deployment를 식별하기 위한 라벨
+    app: msa-front # 이 Deployment를 식별하기 위한 라벨
 spec:
   replicas: 1 # 실행할 Pod의 복제본 수 (여기서는 1개)
   selector:
@@ -16,25 +16,29 @@ spec:
     spec:
       containers:
       - name: msa-front-container # Pod 내에서 실행될 컨테이너의 이름
-        image: __ECR_IMAGE_FULL_PATH__ # 사용할 Docker 이미지 (로컬에서 빌드한 이미지 가정)
+        image: __ECR_IMAGE_FULL_PATH__ # 사용할 Docker 이미지 (Jenkinsfile에서 주입됨)
         ports:
-        - containerPort: 80 # Config Server Application이 내부적으로 사용하는 포트 (기본 80)
+        - containerPort: 80 # Nginx Application이 내부적으로 사용하는 포트 (기본 80)
         resources:
           limits:
-            cpu: "300m"
-            memory: "1024Mi"
+            cpu: "50m"    # 프론트엔드 Nginx 앱에 맞게 CPU 제한을 줄였습니다.
+            memory: "128Mi" # 프론트엔드 Nginx 앱에 맞게 메모리 제한을 줄였습니다.
           requests:
-            cpu: "200m"
-            memory: "512Mi"
+            cpu: "25m"    # 프론트엔드 Nginx 앱에 맞게 CPU 요청을 줄였습니다.
+            memory: "64Mi"  # 프론트엔드 Nginx 앱에 맞게 메모리 요청을 줄였습니다.
         livenessProbe:
           httpGet:
-            path: /
-            port: 80  # msa-front Application
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            path: /       # Nginx의 기본 루트 경로를 헬스 체크합니다.
+            port: 80      # Nginx가 리슨하는 포트
+          initialDelaySeconds: 5 # 컨테이너 시작 후 첫 번째 프로브까지 대기 시간
+          periodSeconds: 10      # 프로브 실행 주기
+          timeoutSeconds: 1      # 프로브 타임아웃
+          failureThreshold: 3    # 실패로 간주하기 위한 연속 실패 횟수
         readinessProbe:
           httpGet:
-            path: /
+            path: /       # Nginx의 기본 루트 경로를 레디니스 체크합니다.
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 3
