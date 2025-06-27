@@ -7,6 +7,7 @@ import Sidebar from "../../../components/common/SideBar/SideBar";
 import ProfileCard from "../../../components/quest/ProfileCard/ProfileCard";
 import QuestCarousel from "../../../components/quest/QuestCarousel/QuestCarousel";
 import RankCard from "../../../components/quest/RankCard/RankCard";
+import BadgeCard from "../../../components/quest/BadgeCard/BadgeCard";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -149,12 +150,14 @@ export default function QuestMainPage() {
   const [userRank, setUserRank] = useState(
     {count: 57, totalCount: 1203}
   );
+  const [userBadge, setUserBadge] = useState(null);
   
   const navigate = useNavigate();
   
   useEffect(()=>{
     fetchUserinfo();
     fetchUserQuest();
+    fetchUserBadge();
   }, []);
 
   const fetchUserinfo = async () => {
@@ -180,6 +183,20 @@ export default function QuestMainPage() {
       setUserQuest(response.data || {});
     }catch(err){
       console.error("Failed to fetch user info", err);
+      setUserQuest(null);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  const fetchUserBadge = async () => {
+    setLoading(true);
+    try{
+      const response = await axios.get(`http://localhost:8080/api/user-quests/badges/my`);
+      setUserBadge(response.data || {});
+    }catch(err){
+      console.error("Failed to fetch user badge", err);
+      setUserBadge({ badges: [], totalCount: 0 });
     }finally{
       setLoading(false);
     }
@@ -264,6 +281,12 @@ export default function QuestMainPage() {
           {userRank && (
             <div className={styles.card}>
               <RankCard title={"My Rank"} count={userRank.count} totalCount={userRank.totalCount}/>
+            </div>
+          )}
+
+          {userBadge && (
+            <div className={styles.card}>
+              <BadgeCard userBadge={userBadge}/>
             </div>
           )}
           </div>
