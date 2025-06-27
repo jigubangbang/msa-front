@@ -7,7 +7,7 @@ import {
   blindVoteData,
   expiredVoteData,
   earlyVoteData,
-} from '../../components/community/voteExampleData.jsx';
+} from '../../components/community/VoteExampleData.jsx';
 
 function TestPage() {
   const [currentVoteData, setCurrentVoteData] = useState(basicVoteData);
