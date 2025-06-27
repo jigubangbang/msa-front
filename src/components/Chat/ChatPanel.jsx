@@ -1,11 +1,11 @@
 // /src/components/Chat/ChatPanel.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import useChat from '../../hooks/Chat/useChat';
+// import useChat from '../../hooks/Chat/useChat';
 import ChatSidebar from './ChatSideBar';
 import '../../styles/Chat/ChatPanel.css'
 
-export default function ChatPanel({ chatId = 1, senderId = 'ccc' }) {
-  const { messages, postMessage } = useChat(chatId);
+export default function ChatPanel({ chatId = 1, senderId = 'ccc', messages, onSendMessage }) {
+  // const { messages, postMessage } = useChat(chatId);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null); // Ref for auto-scrolling
   const chatMessagesDisplayRef = useRef(null);
@@ -23,11 +23,14 @@ export default function ChatPanel({ chatId = 1, senderId = 'ccc' }) {
   }, [messages, isScrolledToBottom]);
 
   const handleSidebar = () => {
+    /*
     if (!isSidebar) {
       setIsSidebar(true);
     } else {
       setIsSidebar(false);
     }
+    */
+    setIsSidebar(prev => !prev);  // 토글 방식으로 변경
   };
 
   const handleScroll = () => {
@@ -40,11 +43,23 @@ export default function ChatPanel({ chatId = 1, senderId = 'ccc' }) {
     }
   };
 
+  // 폴링 메세지 전송
+  /*
   const handleSend = () => {
     if (!input.trim()) return;
     postMessage(senderId, input);
     setInput('');
   };
+  */
+
+  // 웹소켓 메세지 전송
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(input.trim()) {
+      onSendMessage(input); // 부모로부터 받은 메세지 전송 함수 호출
+      setInput('');
+    }
+  }
 
   // 임시 데이터 (실제로는 서버에서 가져와야 함)
   const tempChatInfo = {
@@ -98,23 +113,24 @@ export default function ChatPanel({ chatId = 1, senderId = 'ccc' }) {
               className={`chat-message-bubble ${isMine ? 'my-message' : 'other-message'}`}
             >
               <p className="message-text">{msg.message}</p>
+              <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</span>
             </div>
           </div>
           );
         })}
         <div ref={messagesEndRef} />
       </div>
-      <div className="chat-input-area">
+      <form onSubmit={handleSubmit} className="chat-input-area">
         <input
           type="text"
           value={input}
           onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleSend()}
+          onKeyDown={e => e.key === 'Enter' && handleSubmit(e)}
           placeholder="Type a message..."
           className="chat-input"
         />
-      <button onClick={handleSend} className="chat-send-button">Send</button>
-      </div>
+      <button type="submit" className="chat-send-button">Send</button>
+      </form>
 
       <ChatSidebar
         isOpen={isSidebar}

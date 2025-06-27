@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { joinGroupChat } from '../../services/api/chatApi';
 
-export const joinChat = (chatId, isOpen) => {
+export const joinChat = (chatId, isOpen, senderId) => {
   const [isJoining, setIsJoining] = useState(false);
   const [joinError, setJoinError] = useState(null);
   const [chatGroup, setChatGroup] = useState(null);

@@ -2,15 +2,16 @@
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
 import ChatPanel from './ChatPanel'; // 기존 채팅 패널 컴포넌트
-import { joinChat } from '../../hooks/Chat/joinChat';
+import { joinChat } from '../../hooks/Chat/joinSocketChat';
 import '../../styles/Chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
-  const { isJoining, joinError, chatGroup, resetChatState } = joinChat(chatId, isOpen);
+  const { isJoining, joinError, chatGroup, messages, resetChatState, sendMessage } = joinChat(chatId, isOpen, senderId);
 
   // 모달이 닫힐 때 채팅 상태 초기화
   useEffect(() => {
     if (!isOpen) {
+      console.log("[ChatModal] Modal is closing, triggering resetChatState if needed.");
       resetChatState();
     }
   }, [isOpen, resetChatState]);
@@ -18,6 +19,7 @@ export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
   if (!isOpen) return null;
 
   const handleClose = () => {
+    console.log("[ChatModal] handleClose called.");
     resetChatState();
     onClose();
   };
@@ -44,7 +46,7 @@ export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
         
         {/* 채팅방 입장 성공 시 채팅 패널 표시 */}
         {chatGroup && !isJoining && !joinError && (
-          <ChatPanel chatId={chatId} senderId={senderId}chatGroup={chatGroup}/>
+          <ChatPanel chatId={chatId} senderId={senderId} chatGroup={chatGroup} messages={messages} onSendMessage={sendMessage}/>
         )}
         
         {/* 모달 닫기 버튼 */}

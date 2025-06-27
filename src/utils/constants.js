@@ -59,7 +59,10 @@ const API_ENDPOINTS = {
   
   // 채팅 서비스 (User 권한 필요)
   CHAT: `${LOCAL}/api/chat`,
-  
+
+  // WS: `${LOCAL}/api/ws-chat`,
+  WS: `http://localhost:8083/api/ws-chat`,
+
   // 결제 서비스 (User 권한 필요)
   PAYMENT: `${LOCAL}/api/payment`,
   
