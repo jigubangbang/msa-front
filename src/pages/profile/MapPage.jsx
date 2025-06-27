@@ -4,7 +4,7 @@ import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
 import lockIcon from "../../assets/profile/lock_white.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
-import SearchBar from "../../components/common/Searchbar";
+import SearchBar from "../../components/common/SearchBar";
 import Map from "./Map";
 import geography from "../../../public/features.json";
 import { geoCentroid } from "d3-geo";
