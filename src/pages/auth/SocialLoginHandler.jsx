@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import API_ENDPOINTS from "../../utils/constants";
 
 const SocialLoginHandler = () => {
   const navigate = useNavigate();
@@ -22,8 +23,13 @@ const SocialLoginHandler = () => {
       }
 
       try {
-        const response = await axios.post(`http://localhost:8081/auth/${provider}`, {
-          code,
+        console.log('요청할 코드:', code);
+        console.log('요청 URL:', `${API_ENDPOINTS.AUTH}/${provider}`);
+        
+        // provider 추가
+        const response = await axios.post(`${API_ENDPOINTS.AUTH}/${provider}`, { 
+          code: code,
+          provider: provider
         });
 
         const { accessToken, refreshToken } = response.data;
@@ -32,8 +38,11 @@ const SocialLoginHandler = () => {
 
         navigate("/", { replace: true });
       } catch (error) {
-        console.error(`${provider} 로그인 실패:`, error);
-        alert(`${provider} 로그인에 실패했습니다.`);
+        console.error('상세 에러 정보:', error.response?.data);
+        console.error('에러 상태:', error.response?.status);
+        console.error('에러 헤더:', error.response?.headers);
+        
+        alert(`${provider} 로그인에 실패했습니다: ${error.response?.data?.message || error.message}`);
         navigate("/login");
       }
     };

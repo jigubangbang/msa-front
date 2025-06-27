@@ -46,8 +46,6 @@ const AppRouter = () => {
           <Route path="/register" element={<Register/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/oauth/kakao/callback" element={<SocialLoginHandler/>}/>
-          <Route path="/oauth/naver/callback" element={<SocialLoginHandler/>}/>
-          <Route path="/oauth/google/callback" element={<SocialLoginHandler/>}/>
 
           <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>
