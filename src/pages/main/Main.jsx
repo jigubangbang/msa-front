@@ -1,4 +1,4 @@
-import SearchBar from '../../components/common/Searchbar';
+import SearchBar from '../../components/common/SearchBar';
 import Header from '../../components/main/Header';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
