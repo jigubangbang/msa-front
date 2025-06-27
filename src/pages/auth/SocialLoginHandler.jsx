@@ -42,15 +42,12 @@ const SocialLoginHandler = () => {
 
         navigate("/", { replace: true });
       } catch (error) {
-        const serverMessage = error.response?.data?.message || error.message;
-
-        if (serverMessage.includes("이미 가입된 이메일")) {
-          alert("이미 가입된 이메일입니다. 일반 로그인 또는 다른 방식으로 로그인해 주세요.");
-          navigate("/login");
-        } else {
-          alert(`${provider} 로그인에 실패했습니다: ${serverMessage}`);
-          navigate("/login");
-        }
+        console.error('상세 에러 정보:', error.response?.data);
+        console.error('에러 상태:', error.response?.status);
+        console.error('에러 헤더:', error.response?.headers);
+        
+        alert(`${provider} 로그인에 실패했습니다: ${error.response?.data?.message || error.message}`);
+        navigate("/login");
       }
     };
 

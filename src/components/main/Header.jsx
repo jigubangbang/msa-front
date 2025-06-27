@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
@@ -7,20 +7,16 @@ import ProfileDropdown from './ProfileDropdown';
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLoggedIn(!!localStorage.getItem('accessToken'));
-    };
+    setIsLoggedIn(!!localStorage.getItem('accessToken'));
+  }, [location]);
 
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('focus', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', handleStorageChange);
-    };
-  }, []);
+  const handleLogout = () => {
+    navigate('/logout'); 
+  };
 
   return (
     <div className={styles.headerWrapper}>
@@ -49,7 +45,7 @@ export default function Header() {
       </div>
 
       <header className={styles.mainHeader}>
-        <img src={logo} className={styles.logo} alt="logo" />
+        <Link to="/"><img src={logo} className={styles.logo} alt="logo" /></Link>
 
         <nav className={styles.menu}>
           <span><Link to="/map">지도</Link></span>
@@ -57,16 +53,13 @@ export default function Header() {
           <span><Link to="/quest">퀘스트</Link></span>
           <span>커뮤니티 <span className={styles.badge}>New</span></span>
           <span>여행기록 <span className={styles.badge}>New</span></span>
-          <ProfileDropdown />
+          {isLoggedIn && <ProfileDropdown onLogout={handleLogout} />}
         </nav>
 
         <div className={styles.authButtons}>
-          {isLoggedIn ? (
-            <Link to="/logout"><span>로그아웃</span></Link>
-          ) : (
+          {!isLoggedIn && (
             <>
               <Link to="/login"><span>로그인</span></Link>
-              <Link to="/register"><span>회원가입</span></Link>
             </>
           )}
           <button className={styles.proBtn}>Premium</button>

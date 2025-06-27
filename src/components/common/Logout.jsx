@@ -5,7 +5,7 @@ const Logout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 우리 서비스 토큰 삭제
+    // 우리 서비스 access/refresh 토큰 삭제
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
 

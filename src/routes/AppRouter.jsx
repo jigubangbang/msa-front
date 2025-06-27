@@ -15,7 +15,7 @@ import Bucketlist from "../pages/profile/Bucketlist";
 
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
-import Logout from "../pages/auth/Logout";
+import Logout from "../components/common/Logout";
 import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
 
 import ChatPanel from "../components/Chat/ChatPanel";
