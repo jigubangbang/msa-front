@@ -2,25 +2,23 @@
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
 import ChatPanel from './ChatPanel'; // 기존 채팅 패널 컴포넌트
-import { joinChat } from '../../hooks/Chat/joinSocketChat';
+import { joinSock } from '../../hooks/Chat/joinSock.js';
 import '../../styles/Chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
-  const { isJoining, joinError, chatGroup, messages, resetChatState, sendMessage } = joinChat(chatId, isOpen, senderId);
+  const { isJoining, isLoading, error, messages, sendMessage, stompClient, chatGroup } = joinSock(isOpen, onClose, chatId, senderId);
 
   // 모달이 닫힐 때 채팅 상태 초기화
   useEffect(() => {
     if (!isOpen) {
-      console.log("[ChatModal] Modal is closing, triggering resetChatState if needed.");
-      resetChatState();
+      console.log("[ChatModal] Modal is closing.");
     }
-  }, [isOpen, resetChatState]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleClose = () => {
-    console.log("[ChatModal] handleClose called.");
-    resetChatState();
+    console.log("[ChatModal] handleClose called. Closing modal");
     onClose();
   };
 
@@ -30,23 +28,29 @@ export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
       {/* 모달 내용 컨테이너: 오버레이 클릭 시 닫히는 것을 방지 */}
       <div className="chat-modal-content" onClick={e => e.stopPropagation()}>
          {/* 로딩 상태 표시 */}
-        {isJoining && (
+        {(isLoading || isJoining) && (
           <div className="chat-loading">
             <p>채팅방에 입장 중...</p>
           </div>
         )}
         
         {/* 에러 상태 표시 */}
-        {joinError && (
+        {error && (
           <div className="chat-error">
             <p>채팅방 입장에 실패했습니다.</p>
-            <p>{joinError.message}</p>
+            <p>{error.message}</p>
           </div>
         )}
         
         {/* 채팅방 입장 성공 시 채팅 패널 표시 */}
-        {chatGroup && !isJoining && !joinError && (
-          <ChatPanel chatId={chatId} senderId={senderId} chatGroup={chatGroup} messages={messages} onSendMessage={sendMessage}/>
+        {!(isLoading || isJoining) && !error && stompClient && stompClient.connected && (
+          <ChatPanel
+            chatId={chatId}
+            senderId={senderId}
+            // chatGroup={chatGroup} // chatGroup이 joinSock 훅에서 반환되지 않으므로 제거 또는 추가 필요
+            messages={messages}
+            onSendMessage={sendMessage}
+          />
         )}
         
         {/* 모달 닫기 버튼 */}

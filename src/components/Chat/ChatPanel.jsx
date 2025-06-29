@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ChatSidebar from './ChatSideBar';
 import '../../styles/Chat/ChatPanel.css'
 
-export default function ChatPanel({ chatId = 1, senderId = 'ccc', messages, onSendMessage }) {
+export default function ChatPanel({ chatId, senderId, messages, onSendMessage }) {
   // const { messages, postMessage } = useChat(chatId);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null); // Ref for auto-scrolling
