@@ -21,7 +21,7 @@ const SocialLoginHandler = () => {
       else if (path.includes("google")) provider = "google";
 
       if (!provider || !code) {
-        alert("잘못된 접근입니다.");
+        alert("잘못된 접근입니다. 다시 시도해 주세요.");
         navigate("/login");
         return;
       }
