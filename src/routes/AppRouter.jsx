@@ -49,6 +49,7 @@ const AppRouter = () => {
           <Route path="/logout" element={<Logout/>}/> 
           <Route path="/oauth/kakao/callback" element={<SocialLoginHandler/>}/>
           <Route path="/oauth/naver/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/oauth/google/callback" element={<SocialLoginHandler/>}/>
 
           <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>
