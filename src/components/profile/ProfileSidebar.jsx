@@ -9,7 +9,6 @@ import planeIcon from "../../assets/profile/plane_grey.svg";
 import defaultProfile from "../../assets/default_profile.png";
 import API_ENDPOINTS from "../../utils/constants";
 
-// TODO: add backend for follow button
 // TODO: redirect travel style to details page
 // TODO: show modal only if is logged in user's profile
 // TODO: redirect follower/following stats -> network list page
@@ -20,6 +19,7 @@ export default function ProfileSidebar() {
     const {userId} = useParams();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [profileImage, setProfileImage] = useState();
     const [travelStatus, setTravelStatus] = useState('TRAVELING');
     const [followStatus, setFollowStatus] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -48,9 +48,24 @@ export default function ProfileSidebar() {
             })
     }
 
-    function editProfileImage() {
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    }
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await axios.put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            setProfileImage(response.data.profileImage);
+        } catch (error) {
+            console.error("Upload failed", error);
+        }
+    };
 
     function followUser() {
         axios
@@ -82,6 +97,7 @@ export default function ProfileSidebar() {
                 setData(response.data);
                 setTravelStatus(response.data.travelStatus);
                 setFollowStatus(response.data.followStatus);
+                setProfileImage(response.data.profileImage);
                 setLoading(false);
             })
             .catch((err) => {
@@ -99,7 +115,7 @@ export default function ProfileSidebar() {
                         data.profileImage ? (
                             <img
                                 className={styles.profileImage}
-                                src={data.profileImage}
+                                src={profileImage}
                                 alt="Profile"
                             />
                         ) : (
@@ -150,7 +166,15 @@ export default function ProfileSidebar() {
                 
                 <div className={styles.buttons}>
                     {userId === sessionUserId && (
-                        <button className={styles.followButton}>프로필 수정</button>
+                        <label className={styles.followButton}>
+                            프로필 변경
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{display: "none"}}
+                            />
+                        </label>
                     )}
                     {followStatus && (
                         <button className={styles.followButton} onClick={unfollowUser}>팔로우 취소</button>
