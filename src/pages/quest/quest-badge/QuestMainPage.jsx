@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import API_ENDPOINTS from "../../../utils/constants";
+import {QUEST_SIDEBAR} from "../../../utils/sidebar";
 
 
 import styles from "./QuestMainPage.module.css";
@@ -155,9 +156,32 @@ export default function QuestMainPage() {
   const [userBadge, setUserBadge] = useState(null);
 
   const [seasonalQuest, setSeasonalQuest] = useState(null);
-  
+
   const navigate = useNavigate();
-  
+
+
+  //SideBar//
+  const location = useLocation();
+  const currentPath = location.pathname;
+    const getActiveMenuItems = () => {
+    return QUEST_SIDEBAR.map(item => {
+      let isActive = false;
+      
+      if (item.submenu) {
+        isActive = item.path === currentPath;
+      } else {
+        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+      }
+      return {
+        ...item,
+        active: isActive
+      };
+    });
+  };
+
+  const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
+  //SideBar//
+
   useEffect(()=>{
     fetchUserinfo();
     fetchUserQuest();
@@ -238,61 +262,9 @@ export default function QuestMainPage() {
   }
 
 
-
- /*** ***/
-  const menuItems = [
-    {
-      label: '퀘스트와 뱃지',
-      icon: '/icons/sidebar/badge.svg',
-      path: '/quest',
-      active: true
-    },
-    {
-      label: '퀘스트 목록',
-      path: '/quest/list',
-      submenu: true
-    },
-    {
-      label: '뱃지 목록',
-      path: '/badge/list',
-      submenu: true
-    },
-    {
-      label: '내 퀘스트/뱃지',
-      icon: '/icons/sidebar/record.svg',
-      path: '/my-quest'
-    },
-    {
-      label: '내 뱃지',
-      path: '/my-quest/badge',
-      submenu: true
-    },
-    {
-      label: '내 퀘스트 기록',
-      path: '/my-quest/record',
-      submenu: true
-    },
-    {
-      label: '유저들',
-      icon: '/icons/sidebar/user_search.svg',
-      path: '/quest/user'
-    },
-    {
-      label: '유저 랭크',
-      path: '/quest/rank',
-      submenu: true
-    },
-    {
-      label: '유저 검색',
-      path: '/quest/user-search',
-      submenu: true
-    }
-  ];
-  /*** ***/
-
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={menuItems} />
+      <Sidebar menuItems={finalMenuItems} />
       <div className={styles.content}>
         <Rankings/>
         
@@ -335,7 +307,7 @@ export default function QuestMainPage() {
           )}
             
           </div>
-<QuestList/>
+        <QuestList/>
       </div>
     </div>
   );

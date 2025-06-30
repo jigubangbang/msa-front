@@ -17,7 +17,8 @@
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.3s ease;
-  min-width: 36px;
+  width: 36px;     
+  height: 36px;    
   display: flex;
   align-items: center;
   justify-content: center;

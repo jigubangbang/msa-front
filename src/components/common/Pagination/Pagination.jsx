@@ -26,7 +26,7 @@ const Pagination = ({
           className={styles.paginationButton}
           onClick={() => handlePageChange(startPage - 1)}
         >
-          <i className={`bi bi-chevron-left ${styles.paginationChevron}`}></i>
+          <img src={"/icons/common/backward.svg"} className={styles.paginationChevron}></img>
         </button>
       )}
 
@@ -45,7 +45,7 @@ const Pagination = ({
           className={styles.paginationButton}
           onClick={() => handlePageChange(endPage + 1)}
         >
-          <i className={`bi bi-chevron-right ${styles.paginationChevron}`}></i>
+          <img src={"/icons/common/forward.svg"} className={styles.paginationChevron}></img>
         </button>
       )}
     </div>
