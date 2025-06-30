@@ -11,7 +11,7 @@ export const QUEST_SIDEBAR = [
     },
     {
       label: '뱃지 목록',
-      path: '/badge/list',
+      path: '/quest/badge',
       submenu: true
     },
     {

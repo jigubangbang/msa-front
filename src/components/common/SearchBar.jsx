@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import styles from './SearchBar.module.css';
 import search_icon from '../../assets/common/search_grey.svg';
 import search_clear_icon from '../../assets/common/close.svg';
@@ -10,7 +10,8 @@ export default function SearchBar ({
     onSearchChange = () => {},
     onFocus = () => {},
     recommended=[],
-    barWidth="100%"
+    barWidth="100%",
+    debounceMs = 300 //딜레이.. 이유: 한글 모음 치기 전에 자꾸 axios 불러버려서 ㅠㅠ
 }) {
     const [searchValue, setSearchValue] = useState('');
     
@@ -18,10 +19,26 @@ export default function SearchBar ({
         setSearchValue(value);
     }, [value])
 
+    const debounce = useCallback((func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func.apply(null, args), delay);
+        };
+    }, []);
+
+    const debouncedSearch = useCallback(
+        debounce((searchValue) => {
+            onSearchChange(searchValue);
+        }, debounceMs),
+        [onSearchChange, debounceMs]
+    );
+
     const handleInputChange = (e) => {
         const newValue = e.target.value;
         setSearchValue(newValue);
-        onSearchChange(newValue);
+
+        debouncedSearch(newValue);
     }
 
     const handleClear = () => {

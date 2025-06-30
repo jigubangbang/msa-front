@@ -37,7 +37,7 @@
 /* 테이블 헤더 */
 .tableHeader {
   display: grid;
-  grid-template-columns: 60px 70px 200px 80px 120px 100px 120px;
+  grid-template-columns: 30px 70px 200px 80px 150px 100px 120px;
   gap: 15px;
   padding: 12px 20px;
   background: #f8f9fa;
@@ -62,7 +62,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 60px 70px 200px 80px 120px 100px 120px;
+  grid-template-columns: 30px 70px 200px 80px 150px 100px 120px;
   gap: 15px;
   padding: 12px 20px;
   border-bottom: 1px solid #f0f0f0;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './QuestList.module.css';
-import SortDropdown from '../../common/SortDropdown/SortDropdown';
+import Dropdown from '../../common/Dropdown';
 
 const QuestListCard = ({ quest, onJoin, onDetail }) => {
   const getDifficultyText = (difficulty) => {
@@ -89,7 +89,7 @@ const QuestList = () => {
   const [filters, setFilters] = useState({
     category: 0,
     difficulty: '',
-    sortOption: 'latest'
+    sortOption: 'default'
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [questsPerPage] = useState(16); // 4x4 = 16개
@@ -117,6 +117,7 @@ const QuestList = () => {
   ];
 
   const sortOptions = [
+    { value: '', label: 'Default' },
     { value: 'latest', label: 'Newest first' },
     { value: 'oldest', label: 'Oldest first' },
     { value: 'xp_high', label: 'XP High to Low' },
@@ -134,7 +135,8 @@ const QuestList = () => {
         pageNum: 1, 
         category: filters.category,
         ...(filters.sortOption && { sortOption: filters.sortOption }),
-        ...(filters.difficulty && { difficulty: filters.difficulty })
+        ...(filters.difficulty && { difficulty: filters.difficulty }),
+        limit: 100
       };
 
       const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, { params });
@@ -202,10 +204,10 @@ const QuestList = () => {
       {/* 헤더와 필터 */}
       <div className={styles.header}>
         <h2 className={styles.title}>Available Quests</h2>
-        <SortDropdown 
-          value={filters.sortOption} 
-          onChange={(value) => handleFilterChange('sortOption', value)} 
-          sortOptions={sortOptions}
+        <Dropdown 
+          defaultOption="Sort by"
+          options={sortOptions}
+          onSelect={(option) => handleFilterChange('sortOption', option.value)}
         />
       </div>
 
