@@ -14,6 +14,7 @@ import MutatingLoadingSpinner from "../../components/common/MutatingLoadingSpinn
 import CountrySearchSection from "../../components/profile/CountrySearchSection/CountrySearchSection";
 import API_ENDPOINTS from "../../utils/constants";
 import { useParams } from "react-router-dom";
+import StatsModal from "../../components/profile/map/StatsModal";
 
 // TODO: Condition lock icon on premium membership
 
@@ -24,6 +25,10 @@ export default function MapPage() {
     const [mapType, setMapType] = useState("visited"); // "visited" / "wishlist"
     const [filledCountries, setFilledCountries] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [showStats, setShowStats] = useState(false);
+
+    const [mapColor, setMapColor] = useState("white");
+    const [isPremium, setIsPremium] = useState(false);
 
     const handleRandomCountry = () => {
         const countries = feature(geography, geography.objects.world).features;
@@ -38,6 +43,10 @@ export default function MapPage() {
         }, 3000);
     }; 
 
+    const handleStatsClick = () => {
+        setShowStats(!showStats);
+    }
+
     const fetchFilledCountries = async () => {
         try {
             const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`);
@@ -48,11 +57,34 @@ export default function MapPage() {
         }
     }
 
+    const fetchUserData = async () => {
+        try {
+            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`);
+            setIsPremium(response.data.premium); 
+            switch (response.data.mapColor) {
+                    case 'GREEN':
+                        setMapColor("#93AD28");
+                        break;
+                    case 'PINK':
+                        setMapColor("#FFB6C1");
+                        break;
+                    case 'YELLOW':
+                        setMapColor("#F1DC81");
+                        break;
+                    default:
+                        setMapColor("#83D9E0");
+                }
+        } catch (error) {
+            console.error("Failed to fetch user", error);
+        }
+    }
+
     function handleMapUpdate() {
         fetchFilledCountries();
     }
 
     useEffect(() => {
+        fetchUserData();
         fetchFilledCountries();
     }, [mapType])
 
@@ -79,7 +111,7 @@ export default function MapPage() {
                     />
                 </div>
                 <div className={styles.btnBottomContainer}>
-                    <button className={styles.btnOutline}>통계</button>
+                    <button className={styles.btnOutline} onClick={handleStatsClick}>통계</button>
                     <button className={styles.btnOutline}>
                         공유 <img src={shareIcon} className={styles.icon}/>
                     </button>
@@ -100,6 +132,9 @@ export default function MapPage() {
                     />
                     <p className={styles.loadingText}>Searching...</p>
                 </div>
+            )}
+            {showStats && (
+                <StatsModal userId={userId} onClose={() => setShowStats(false)} mapColor={mapColor}/>
             )}
         </>
     );
