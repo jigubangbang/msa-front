@@ -1,69 +1,118 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
-import styles from "./QuestMainPage.module.css";
+import styles from "./BadgeListPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
+
+import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel";
+import API_ENDPOINTS from "../../../utils/constants";
+import { QUEST_SIDEBAR } from "../../../utils/sidebar";
+import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
+
 
 
 export default function BadgeListPage() {
- /*** ***/  
- const menuItems = [
-    {
-      label: '퀘스트와 뱃지',
-      icon: '/icons/sidebar/badge.svg',
-      path: '/quest',
-      active: true
-    },
-    {
-      label: '퀘스트 목록',
-      path: '/quest/list',
-      submenu: true
-    },
-    {
-      label: '뱃지 목록',
-      path: '/badge/list',
-      submenu: true,
-      active: true
-    },
-    {
-      label: '내 퀘스트/뱃지',
-      icon: '/icons/sidebar/record.svg',
-      path: '/my-quest'
-    },
-    {
-      label: '내 뱃지',
-      path: '/my-quest/badge',
-      submenu: true
-    },
-    {
-      label: '내 퀘스트 기록',
-      path: '/my-quest/record',
-      submenu: true
-    },
-    {
-      label: '유저들',
-      icon: '/icons/sidebar/user_search.svg',
-      path: '/quest/user'
-    },
-    {
-      label: '유저 랭크',
-      path: '/quest/rank',
-      submenu: true
-    },
-    {
-      label: '유저 검색',
-      path: '/quest/user-search',
-      submenu: true
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userQuests, setUserQuests] = useState([]);
+
+  //SideBar//
+    const location = useLocation();
+    const currentPath = location.pathname;
+      const getActiveMenuItems = () => {
+      return QUEST_SIDEBAR.map(item => {
+        let isActive = false;
+        
+        if (item.submenu) {
+          isActive = item.path === currentPath;
+        } else {
+          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+        }
+        return {
+          ...item,
+          active: isActive
+        };
+      });
+    };
+  
+    const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
+    //SideBar//
+
+
+  useEffect(()=>{
+    fetchUser();
+    fetchUserQuests();
+  }, []);
+
+  const fetchUser = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+      setUser(response.data);
+      console.log("User data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
-  ];
-  /*** ***/
+  };
+
+  const fetchUserQuests = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
+        params: {
+          status: "IN_PROGRESS"
+        }
+      });
+      setUserQuests(response.data || []);
+      console.log("User quests fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch user quests:", error);
+      setUserQuests([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculatePerformance = (completed, inProgress) => {
+    const completedCount = completed || 0;
+    const inProgressCount = inProgress || 0;
+    const total = completedCount + inProgressCount;
+    
+    if (total === 0) return "0%";
+    return Math.round((completedCount / total) * 100) + "%";
+  };
+
+
+ if (loading) {
+    return (
+      <div className={styles.Container}>
+        <Sidebar menuItems={finalMenuItems} />
+        <div className={styles.content}>
+          <div className={styles.loading}>로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={menuItems} />
-      <div className={styles.content}>
-        <h1>Quest Page</h1>
+      <Sidebar menuItems={finalMenuItems} />
 
+      <div className={styles.content}>
+        <div className={styles.contentWrapper}>
+          <RankQuestList myUserId={user?.user_id || ""}/>
+
+          <UserInfoPanel 
+            user={user}
+            userQuests={userQuests}
+            calculatePerformance={calculatePerformance}
+          />
+
+        </div>
       </div>
     </div>
   );

@@ -3,10 +3,9 @@ import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankQuestList.module.css';
 import SearchBar from '../../common/SearchBar';
-import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 
-const RankQuestList = ({ myUserId }) => {
+const RankBadgeList = ({ myUserId }) => {
   const [quests, setQuests] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -256,17 +255,9 @@ const RankQuestList = ({ myUserId }) => {
         })}
       </div>
 
-      {/* pagination */}
-      {totalPages > 1 && (
-        <Pagination
-            currentPage={currentPage}
-            pageBlock={5}
-            pageCount={totalPages}
-            onPageChange={handlePageChange}
-        />
-        )}
+
     </div>
   );
 };
 
-export default RankQuestList;
+export default RankBadgeList;

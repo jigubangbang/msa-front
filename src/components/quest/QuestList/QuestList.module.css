@@ -86,7 +86,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   padding: 5px;
   width: 100%;
   box-sizing: border-box;
-  min-height: 600px;
+  min-height: 200px;
 }
 
 /* 퀘스트 카드 */

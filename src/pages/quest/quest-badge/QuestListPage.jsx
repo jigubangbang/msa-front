@@ -16,7 +16,6 @@ export default function QuestListPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
-  const [quest, setQuest] = useState(null);
 
   //SideBar//
     const location = useLocation();
@@ -44,23 +43,7 @@ export default function QuestListPage() {
   useEffect(()=>{
     fetchUser();
     fetchUserQuests();
-    fetchQuest();
   }, []);
-
-  const fetchQuest = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`);
-      setQuest(response.data);
-      console.log("Quest data fetched:", response.data);
-    } catch (error) {
-      console.error("Failed to fetch quest data:", error);
-      setQuest(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
 
   const fetchUser = async () => {
     setLoading(true);
