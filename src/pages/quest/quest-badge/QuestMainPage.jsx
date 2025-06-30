@@ -294,7 +294,6 @@ export default function QuestMainPage() {
     <div className={styles.Container}>
       <Sidebar menuItems={menuItems} />
       <div className={styles.content}>
-        <h1>Quest Page</h1>
         <Rankings/>
         
         <div className={styles.loginContent}>
