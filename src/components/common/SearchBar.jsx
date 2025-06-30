@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from './SearchBar.module.css';
 import search_icon from '../../assets/common/search_grey.svg';
 import search_clear_icon from '../../assets/common/close.svg';
@@ -6,6 +6,7 @@ import search_clear_icon from '../../assets/common/close.svg';
 export default function SearchBar ({
     placeholder="",
     title,
+    value="",
     onSearchChange = () => {},
     onFocus = () => {},
     recommended=[],
@@ -13,10 +14,14 @@ export default function SearchBar ({
 }) {
     const [searchValue, setSearchValue] = useState('');
     
-    const handleInputChange = (e) => {
-        const value = e.target.value;
+    useEffect(()=>{
         setSearchValue(value);
-        onSearchChange(value);
+    }, [value])
+
+    const handleInputChange = (e) => {
+        const newValue = e.target.value;
+        setSearchValue(newValue);
+        onSearchChange(newValue);
     }
 
     const handleClear = () => {
@@ -32,6 +37,7 @@ export default function SearchBar ({
                 <input
                     type="text"
                     placeholder={placeholder}
+                    value={searchValue}
                     className={styles.searchInput}
                     onChange={handleInputChange}
                     onFocus={onFocus}

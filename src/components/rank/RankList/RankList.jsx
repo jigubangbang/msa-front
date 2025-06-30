@@ -83,6 +83,7 @@ const RankingList = ({ myUserId }) => {
 
   return (
     <div className={styles.rankingList}>
+        <h2 className={styles.rankingListTitle}>Rank(Level)</h2>
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
@@ -90,15 +91,16 @@ const RankingList = ({ myUserId }) => {
         </p>
         <SearchBar
           placeholder="USER ID"
+          value={searchTerm}
           onSearchChange={handleSearchChange}
           barWidth="200px"
         />
       </div>
 
-      {/* 테이블 헤더 */}
+      {/* header */}
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Image</div>
+        <div className={styles.headerCell}>Profile</div>
         <div className={styles.headerCell}>ID / Nickname</div>
         <div className={styles.headerCell}>Level</div>
         <div className={styles.headerCell}>Quests Completed</div>
@@ -106,11 +108,11 @@ const RankingList = ({ myUserId }) => {
         <div className={styles.headerCell}>Performance</div>
       </div>
 
-      {/* 랭킹 테이블 */}
+      {/* table */}
       <div className={styles.tableBody}>
         {rankings.map((user, index) => {
           const rank = (currentPage - 1) * itemsPerPage + index + 1;
-          const isMyUser = user.user_id === myUserId; // 내 ID 체크
+          const isMyUser = user.user_id === myUserId;
           
           return (
             <div 
@@ -143,7 +145,7 @@ const RankingList = ({ myUserId }) => {
         })}
       </div>
 
-      {/* 페이지네이션 */}
+      {/* pagination */}
       {totalPages > 1 && (
         <div className={styles.pagination}>
           <button 
