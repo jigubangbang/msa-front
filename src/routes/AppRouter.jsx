@@ -34,7 +34,7 @@ const AppRouter = () => {
           <Route path="/:userId/badges" element={<Badges/>}/>
           <Route path="/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/:userId/diary" element={<Diary/>}/>
-          <Route path="/map" element={<MapPage/>}/>
+          <Route path="/:userId/map" element={<MapPage/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>

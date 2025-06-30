@@ -1,23 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
 import lockIcon from "../../assets/profile/lock_white.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
-import SearchBar from "../../components/common/Searchbar";
+
 import Map from "./Map";
 import geography from "../../../src/assets/features.json";
 import { geoCentroid } from "d3-geo";
 import { feature } from "topojson-client"; 
 import MutatingLoadingSpinner from "../../components/common/MutatingLoadingSpinner";
+import CountrySearchSection from "../../components/profile/CountrySearchSection/CountrySearchSection";
+import API_ENDPOINTS from "../../utils/constants";
+import { useParams } from "react-router-dom";
 
 // TODO: Condition lock icon on premium membership
 // TODO: Condition country color on visited countries data
 // TODO: Search bar: Add onChange function
 
 export default function MapPage() {
+    const {userId} = useParams();
     const mapRef = useRef();
     const [selectedCountry, setSelectedCountry] = useState({id:null, name:null});
+    const [mapType, setMapType] = useState("visited"); // "visited" / "wishlist"
+    const [filledCountries, setFilledCountries] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRandomCountry = () => {
@@ -33,14 +39,25 @@ export default function MapPage() {
         }, 3000);
     }; 
 
+    const fetchVisitedCountries = async () => {
+        try {
+            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`);
+            const countriesList = response.data.countries.map(c => c.countryId);
+        } catch (error) {
+
+        }
+    }
+
+    // TODO: get list of visited / wishlist countries
+    useEffect(() => {
+        
+    }, [mapType])
+
     return (
         <>
             <div className={styles.mapContainer}>
                 <div className={styles.btnTopLeftContainer}>
-                    <SearchBar
-                        placeholder="나라 이름"
-                        barWidth="300px"
-                    />
+                    <CountrySearchSection mapType={mapType}/>
                 </div>
                 
                 <div className={styles.btnTopContainer}>
@@ -51,6 +68,11 @@ export default function MapPage() {
                                 <img src={lockIcon} className={styles.icon}/>희망 국가
                             </span>
                         }
+                        firstValue = "visited"
+                        secondValue = "wishlist"
+                        onToggle={(selectedOption) => {
+                            setMapType(selectedOption);
+                        }}
                     />
                 </div>
                 <div className={styles.btnBottomContainer}>
@@ -62,7 +84,7 @@ export default function MapPage() {
                 <div className={styles.btnBottomRightContainer}>
                     <button className={styles.btnOutline} onClick={handleRandomCountry}>랜덤 추천</button>
                 </div>
-                <Map ref={mapRef} selectedCountry={selectedCountry}/>
+                <Map ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries}/>
             </div>
             {isLoading && (
                 <div className={styles.loadingOverlay}>

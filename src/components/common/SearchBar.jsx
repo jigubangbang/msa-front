@@ -2,7 +2,14 @@ import React from 'react';
 import styles from './SearchBar.module.css';
 import search_icon from '../../assets/common/search_grey.svg';
 
-export default function SearchBar({placeholder="", title, onSearchChange=() => {}, recommended=[], barWidth="100%"}) {
+export default function SearchBar({
+    placeholder="",
+    title,
+    onSearchChange = () => {},
+    onFocus = () => {},
+    recommended=[],
+    barWidth="100%"
+}) {
     return (
         <div className={styles.searchContainer}>
             <h1 className={styles.searchTitle}>{title}</h1>
@@ -13,6 +20,7 @@ export default function SearchBar({placeholder="", title, onSearchChange=() => {
                     placeholder={placeholder}
                     className={styles.searchInput}
                     onChange={(e) => onSearchChange(e.target.value)}
+                    onFocus={onFocus}
                 />
             </div>
             {recommended.length > 0 && (

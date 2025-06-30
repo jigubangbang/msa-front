@@ -15,7 +15,8 @@ const Map = forwardRef((props, ref) => {
         geographyFill="#F3F3F3",
         geogrphyStrokeColor="#6b6b6b",
         geographyStrokeWidth=0.5,
-        selectedCountry=""
+        selectedCountry="",
+        filledCountries=[]
     } = props;
 
     const [tooltipContent, setTooltipContent] = useState("");
@@ -50,7 +51,7 @@ const Map = forwardRef((props, ref) => {
                                 <Geography 
                                     key={geo.rsmKey}
                                     geography={geo}
-                                    fill={geo.id === selectedCountry.id ? "#999" : geographyFill}
+                                    fill={filledCountries.includes(geo.id) ? "red" : geographyFill}
                                     stroke={geogrphyStrokeColor}
                                     strokeWidth={geographyStrokeWidth}
                                     onMouseEnter={() => {
