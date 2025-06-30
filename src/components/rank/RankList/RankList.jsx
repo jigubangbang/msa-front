@@ -42,7 +42,7 @@ const RankingList = ({ myUserId }) => {
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
-    setCurrentPage(1); // 검색 시 첫 페이지로
+    setCurrentPage(1); 
   };
 
   const getPageNumbers = () => {
@@ -83,7 +83,7 @@ const RankingList = ({ myUserId }) => {
 
   return (
     <div className={styles.rankingList}>
-      {/* 검색 섹션 */}
+      {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
           현재 {totalCount}명의 방방이들의 퀘스트 챌린지가 진행 중 입니다.
