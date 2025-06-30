@@ -3,7 +3,14 @@ import styles from './SearchBar.module.css';
 import search_icon from '../../assets/common/search_grey.svg';
 import search_clear_icon from '../../assets/common/close.svg';
 
-export default function SearchBar({placeholder="", title, onSearchChange=() => {}, recommended=[], barWidth="100%"}) {
+export default function SearchBar ({
+    placeholder="",
+    title,
+    onSearchChange = () => {},
+    onFocus = () => {},
+    recommended=[],
+    barWidth="100%"
+}) {
     const [searchValue, setSearchValue] = useState('');
     
     const handleInputChange = (e) => {
@@ -16,7 +23,7 @@ export default function SearchBar({placeholder="", title, onSearchChange=() => {
         setSearchValue('');
         onSearchChange('');
     }
-
+    
     return (
         <div className={styles.searchContainer}>
             <h1 className={styles.searchTitle}>{title}</h1>
@@ -27,6 +34,7 @@ export default function SearchBar({placeholder="", title, onSearchChange=() => {
                     placeholder={placeholder}
                     className={styles.searchInput}
                     onChange={handleInputChange}
+                    onFocus={onFocus}
                 />
                 <img src={search_clear_icon} onClick={handleClear} alt={"cancel button"} className={styles.searchClearIcon}/>
             </div>
