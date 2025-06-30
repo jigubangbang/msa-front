@@ -1,5 +1,5 @@
 import React from 'react';
-import './Pagination.css';
+import styles from './Pagination.module.css';
 
 const Pagination = ({
   currentPage = 1,
@@ -20,20 +20,20 @@ const Pagination = ({
   };
 
   return (
-    <div className="pagination-container">
+    <div className={styles.paginationContainer}>
       {startPage > 1 && (
         <button
-          className="pagination-button"
+          className={styles.paginationButton}
           onClick={() => handlePageChange(startPage - 1)}
         >
-          <i className="bi bi-chevron-left pagination-chevron"></i>
+          <i className={`bi bi-chevron-left ${styles.paginationChevron}`}></i>
         </button>
       )}
 
       {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((pageNum) => (
         <button
           key={pageNum}
-          className={`pagination-button ${pageNum === currentPage ? 'active' : ''}`}
+          className={`${styles.paginationButton} ${pageNum === currentPage ? styles.active : ''}`}
           onClick={() => handlePageChange(pageNum)}
         >
           {pageNum}
@@ -42,10 +42,10 @@ const Pagination = ({
 
       {endPage < pageCount && (
         <button
-          className="pagination-button"
+          className={styles.paginationButton}
           onClick={() => handlePageChange(endPage + 1)}
         >
-          <i className="bi bi-chevron-right pagination-chevron"></i>
+          <i className={`bi bi-chevron-right ${styles.paginationChevron}`}></i>
         </button>
       )}
     </div>

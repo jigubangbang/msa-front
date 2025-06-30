@@ -79,8 +79,8 @@
 }
 
 .tableRow.highlighted {
-  background: #e3f2fd;
-  border-left: 4px solid #2196f3;
+  background: #e8e8e8;
+  border-left: 4px solid #8d8d8d;
 }
 
 .cell {
@@ -130,54 +130,6 @@
 .nickname {
   font-size: 12px;
   color: #666;
-}
-
-/* 페이지네이션 */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 30px;
-}
-
-.pageButton {
-  padding: 8px 12px;
-  border: 1px solid #e0e0e0;
-  background: #fff;
-  color: #666;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  min-width: 36px;
-}
-
-.pageButton:hover:not(:disabled) {
-  border-color: #ccc;
-  background: #f8f9fa;
-}
-
-.pageButton.active {
-  background: #000;
-  color: #fff;
-  border-color: #000;
-}
-
-.pageButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pageButton.ellipsis {
-  border: none;
-  background: none;
-  cursor: default;
-}
-
-.pageButton.ellipsis:hover {
-  background: none;
-  border: none;
 }
 
 /* 로딩 */

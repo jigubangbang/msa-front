@@ -3,6 +3,7 @@ import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankList.module.css';
 import SearchBar from '../../common/SearchBar';
+import Pagination from '../../common/Pagination/Pagination';
 
 const RankingList = ({ myUserId }) => {
   const [rankings, setRankings] = useState([]);
@@ -45,33 +46,37 @@ const RankingList = ({ myUserId }) => {
     setCurrentPage(1); 
   };
 
-  const getPageNumbers = () => {
-    const pages = [];
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, currentPage + 2);
+//   const getPageNumbers = () => {
+//     const pages = [];
+//     const startPage = Math.max(1, currentPage - 2);
+//     const endPage = Math.min(totalPages, currentPage + 2);
 
-    if (startPage > 1) {
-      pages.push(1);
-      if (startPage > 2) pages.push('...');
-    }
+//     if (startPage > 1) {
+//       pages.push(1);
+//       if (startPage > 2) pages.push('...');
+//     }
 
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
+//     for (let i = startPage; i <= endPage; i++) {
+//       pages.push(i);
+//     }
 
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push('...');
-      pages.push(totalPages);
-    }
+//     if (endPage < totalPages) {
+//       if (endPage < totalPages - 1) pages.push('...');
+//       pages.push(totalPages);
+//     }
 
-    return pages;
-  };
+//     return pages;
+//   };
 
-  const goToPage = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+//   const goToPage = (page) => {
+//     if (page >= 1 && page <= totalPages) {
+//       setCurrentPage(page);
+//     }
+//   };
+
+    const handlePageChange = (pageNum) => {
+  setCurrentPage(pageNum);
+};
 
   if (loading) {
     return (
@@ -147,37 +152,13 @@ const RankingList = ({ myUserId }) => {
 
       {/* pagination */}
       {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button 
-            className={styles.pageButton}
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-
-          {getPageNumbers().map((page, index) => (
-            <button
-              key={index}
-              className={`${styles.pageButton} ${
-                page === currentPage ? styles.active : ''
-              } ${page === '...' ? styles.ellipsis : ''}`}
-              onClick={() => typeof page === 'number' && goToPage(page)}
-              disabled={page === '...'}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button 
-            className={styles.pageButton}
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-      )}
+        <Pagination
+            currentPage={currentPage}
+            pageBlock={5}
+            pageCount={totalPages}
+            onPageChange={handlePageChange}
+        />
+        )}
     </div>
   );
 };
