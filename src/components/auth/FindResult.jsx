@@ -4,8 +4,9 @@ import styles from "./FindResult.module.css";
 
 const FindResult = ({ 
   message, // 메시지 
-  subMessage, // 서브 메시지 (선택적)
-  onReset
+  subMessage, // 서브 메시지
+  onResetId,    
+  onResetPassword 
 }) => {
   const navigate = useNavigate();
 
@@ -41,12 +42,12 @@ const FindResult = ({
 
       {/* 링크 영역 */}
       <div className={styles.linkContainer}>
-        <button onClick={onReset} className={styles.findLink}>
+        <button onClick={onResetId} className={styles.findLink}>
           아이디 찾기
         </button>
-        <Link to="/find-password" className={styles.findLink}>
+        <button onClick={onResetPassword} className={styles.findLink}>
           비밀번호 찾기
-        </Link>
+        </button>
       </div>
     </div>
   );

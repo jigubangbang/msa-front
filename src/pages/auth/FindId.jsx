@@ -7,8 +7,10 @@ import styles from "./FindId.module.css";
 import NameIcon from "../../assets/auth/name.svg"; 
 import EmailIcon from "../../assets/auth/email.svg";
 import { Circles } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
 const FindId = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
@@ -202,7 +204,8 @@ const FindId = () => {
               누락되었을 경우, 아이디 찾기를 다시 시도해 주시기 바랍니다.
             </>
           }
-          onReset={handleReset}
+          onResetId={handleReset}                     
+          onResetPassword={() => navigate("/find-password")} 
         />
       ) : (
         renderForm()
