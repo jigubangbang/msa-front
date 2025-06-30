@@ -41,7 +41,7 @@ const AppRouter = () => {
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>
           <Route path="/quest/list" element={<QuestListPage/>}/>
-          <Route path="/badge/list" element={<QuestListPage/>}/>
+          <Route path="/badge/list" element={<BadgeListPage/>}/>
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
