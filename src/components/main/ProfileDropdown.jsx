@@ -32,27 +32,27 @@ export default function ProfileDropdown({ onLogout }) {
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to={`/${userId}/profile`}>
+          <Link to={`/profile/${userId}/main`}>
             <div className={styles.dropdownItem}>
               <img src={profileIcon} alt="프로필" /> 프로필
             </div>
           </Link>
-          <Link to={`/${userId}/countries`}>
+          <Link to={`/profile/${userId}/countries`}>
             <div className={styles.dropdownItem}>
               <img src={globeIcon} alt="국가" /> 국가
             </div>
           </Link>
-          <Link to={`/${userId}/badges`}>
+          <Link to={`/profile/${userId}/badges`}>
             <div className={styles.dropdownItem}>
               <img src={badgeIcon} alt="뱃지함" /> 뱃지함
             </div>
           </Link>
-          <Link to={`/${userId}/bucketlist`}>
+          <Link to={`/profile/${userId}/bucketlist`}>
             <div className={styles.dropdownItem}>
               <img src={listIcon} alt="버킷리스트" /> 버킷리스트
             </div>
           </Link>
-          <Link to={`/${userId}/diary`}>
+          <Link to={`/profile/${userId}/diary`}>
             <div className={styles.dropdownItem}>
               <img src={inkpenIcon} alt="여행일지" /> 여행일지
             </div>
