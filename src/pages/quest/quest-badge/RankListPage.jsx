@@ -2,65 +2,45 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-import styles from "./QuestListPage.module.css";
+import styles from "./RankListPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
-
+import RankingList from "../../../components/rank/RankList/RankList";
 import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel";
 import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
-import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
 
-
-
-export default function QuestListPage() {
+export default function RankListPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
-  const [quest, setQuest] = useState(null);
 
   //SideBar//
-    const location = useLocation();
-    const currentPath = location.pathname;
-      const getActiveMenuItems = () => {
-      return QUEST_SIDEBAR.map(item => {
-        let isActive = false;
-        
-        if (item.submenu) {
-          isActive = item.path === currentPath;
-        } else {
-          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
-        }
-        return {
-          ...item,
-          active: isActive
-        };
-      });
-    };
+  const location = useLocation();
+  const currentPath = location.pathname;
   
-    const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
-    //SideBar//
-
-
-  useEffect(()=>{
-    fetchUser();
-    fetchUserQuests();
-    fetchQuest();
-  }, []);
-
-  const fetchQuest = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`);
-      setQuest(response.data);
-      console.log("Quest data fetched:", response.data);
-    } catch (error) {
-      console.error("Failed to fetch quest data:", error);
-      setQuest(null);
-    } finally {
-      setLoading(false);
-    }
+  const getActiveMenuItems = () => {
+    return QUEST_SIDEBAR.map(item => {
+      let isActive = false;
+      
+      if (item.submenu) {
+        isActive = item.path === currentPath;
+      } else {
+        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+      }
+      return {
+        ...item,
+        active: isActive
+      };
+    });
   };
 
+  const finalMenuItems = getActiveMenuItems();
+  //SideBar//
+
+  useEffect(() => {
+    fetchUser();
+    fetchUserQuests();
+  }, []);
 
   const fetchUser = async () => {
     setLoading(true);
@@ -103,8 +83,7 @@ export default function QuestListPage() {
     return Math.round((completedCount / total) * 100) + "%";
   };
 
-
- if (loading) {
+  if (loading) {
     return (
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} />
@@ -121,14 +100,13 @@ export default function QuestListPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <RankQuestList myUserId={user?.user_id || ""}/>
+          <RankingList myUserId={user?.user_id || ""}/>
 
           <UserInfoPanel 
             user={user}
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
           />
-
         </div>
       </div>
     </div>
