@@ -46,37 +46,9 @@ const RankingList = ({ myUserId }) => {
     setCurrentPage(1); 
   };
 
-//   const getPageNumbers = () => {
-//     const pages = [];
-//     const startPage = Math.max(1, currentPage - 2);
-//     const endPage = Math.min(totalPages, currentPage + 2);
-
-//     if (startPage > 1) {
-//       pages.push(1);
-//       if (startPage > 2) pages.push('...');
-//     }
-
-//     for (let i = startPage; i <= endPage; i++) {
-//       pages.push(i);
-//     }
-
-//     if (endPage < totalPages) {
-//       if (endPage < totalPages - 1) pages.push('...');
-//       pages.push(totalPages);
-//     }
-
-//     return pages;
-//   };
-
-//   const goToPage = (page) => {
-//     if (page >= 1 && page <= totalPages) {
-//       setCurrentPage(page);
-//     }
-//   };
-
     const handlePageChange = (pageNum) => {
-  setCurrentPage(pageNum);
-};
+        setCurrentPage(pageNum);
+    };
 
   if (loading) {
     return (
