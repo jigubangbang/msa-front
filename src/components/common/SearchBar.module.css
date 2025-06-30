@@ -46,3 +46,7 @@
   color: #242424;
   font-weight: 500;
 }
+
+.searchClearIcon {
+  cursor: pointer;
+}
