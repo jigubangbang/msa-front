@@ -370,7 +370,7 @@ const Register = () => {
     <div className={styles.registerPage}>
       <div className={styles.registerContainer}>
         <div className={styles.registerHeader}>
-          <div className={styles.logo}>Join JIGUBB and Share your Journey!</div>
+          <div className={styles.logo}>지구방방 회원가입</div>
         </div>
 
         <form className={styles.registerForm} onSubmit={handleSubmit}>

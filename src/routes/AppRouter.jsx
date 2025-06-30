@@ -17,6 +17,8 @@ import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
 import Logout from "../components/common/Logout";
 import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
+import FindId from "../pages/auth/FindId";
+import FindPassword from "../pages/auth/FindPassword";
 
 import ChatPanel from "../components/Chat/ChatPanel";
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
@@ -50,6 +52,8 @@ const AppRouter = () => {
           <Route path="/oauth/kakao/callback" element={<SocialLoginHandler/>}/>
           <Route path="/oauth/naver/callback" element={<SocialLoginHandler/>}/>
           <Route path="/oauth/google/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/find-id" element={<FindId/>}/>
+          <Route path="/find-password" element={<FindPassword/>}/>
 
           <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>

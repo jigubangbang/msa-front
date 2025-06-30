@@ -30,10 +30,10 @@ const Login = () => {
     // 유효성 검사
     const newErrors = {}; 
     if (!userId.trim()) {
-      newErrors.userId = "아이디를 입력해 주세요.";
+      newErrors.userId = "아이디를 입력해 주세요";
     }
     if (!password.trim()) {
-      newErrors.password = "비밀번호를 입력해 주세요.";
+      newErrors.password = "비밀번호를 입력해 주세요";
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -86,7 +86,7 @@ const Login = () => {
     <div className={styles.loginPage}>
       <div className={styles.loginContainer}>
         <div className={styles.loginHeader}>
-          <div className={styles.logo}>JIGUBB LOGIN</div>
+          <div className={styles.logo}>지구방방 로그인</div>
         </div>
         
         <form className={styles.loginForm} onSubmit={handleLogin}>

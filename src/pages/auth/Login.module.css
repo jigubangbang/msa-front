@@ -1,7 +1,8 @@
 /* Login.module.css */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .loginPage {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard';
   line-height: 1.6;
   background-color: #000;
   color: #fff;
