@@ -13,8 +13,10 @@ import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 
-import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+import Login from "../pages/auth/Login";
+import Logout from "../components/common/Logout";
+import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
 
 import ChatPanel from "../components/Chat/ChatPanel";
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
@@ -41,8 +43,13 @@ const AppRouter = () => {
           <Route path="/quest/list" element={<QuestListPage/>}/>
           <Route path="/badge/list" element={<QuestListPage/>}/>
 
+          {/* Auth */}
+          <Route path="/register" element={<Register/>}/>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>} />
+          <Route path="/logout" element={<Logout/>}/> 
+          <Route path="/oauth/kakao/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/oauth/naver/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/oauth/google/callback" element={<SocialLoginHandler/>}/>
 
           <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>

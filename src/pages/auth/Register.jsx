@@ -678,7 +678,7 @@ const Register = () => {
                   />
                   <button
                     type="button"
-                    disabled={!(emailStatus === "valid" || ["sent", "expired", "error"].includes(emailCodeStatus))}
+                    disabled={!(emailStatus === "valid" || ["sent", "expired", "error"].includes(emailCodeStatus)) || emailCodeStatus === "verified"}
                     onClick={() => {
                       setMessage("");
                       if (emailCodeStatus === "sent") {
