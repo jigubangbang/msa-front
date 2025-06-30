@@ -48,6 +48,7 @@ const Login = () => {
       });
       console.log("로그인 성공:", response.data);
       localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
       navigate("/", { replace: true }); // 메인페이지 이동 (뒤로가기 방지)
       
     } catch (error) {

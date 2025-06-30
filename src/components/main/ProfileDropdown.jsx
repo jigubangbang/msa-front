@@ -58,6 +58,8 @@ export default function ProfileDropdown({ onLogout }) {
             </div>
           </Link>
 
+          <div className={styles.dropdownDivider}></div>
+
           {/* 로그아웃 버튼 */}
           <div
             className={styles.dropdownItem}
