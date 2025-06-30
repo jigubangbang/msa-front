@@ -36,8 +36,8 @@ export function useStomp() {
 
         // STOMP 클라이언트 생성
         const stompClient = new Client({
-       // webSocketFactory: () => socket,
-        webSocketFactory: () => new WebSocket(WEBSOCKET_ENDPOINT_URL),
+        // webSocketFactory: () => socket,
+        webSocketFactory: () => new WebSocket(WEBSOCKET_ENDPOINT_URL), // SockJs 사용 안하면 위 socket 지우고 이 줄만 작성 - 현재 안되는 상태
         debug: (msg) => console.log("[STOMP]:", msg),
         connectHeaders: {
           // 필요시 인증 토큰 등을 보낼 수 있습니다. (예: 'Authorization': `Bearer ${yourAuthToken}`)
@@ -63,9 +63,21 @@ export function useStomp() {
       stompClient.activate();
       setStompClient(stompClient);
     }, [setStompClient]
-);
+  );
+
+  const disconnect = useCallback(() => {
+  const currentClient = useStore.getState().stompClient;
+    if (currentClient && typeof currentClient.deactivate === "function" && currentClient.active) {
+      currentClient.deactivate();
+      console.log("[useStomp] STOMP 연결 해제 완료");
+      setStompClient(null);
+    } else {
+      console.warn("[useStomp] disconnect skipped: stompClient 없거나 연결 안 됨 또는 deactivate 함수 없음.");
+    }
+  }, [setStompClient]);
 
     return {
-        connect
+        connect,
+        disconnect
     };
 }

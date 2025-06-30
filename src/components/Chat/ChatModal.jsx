@@ -6,19 +6,19 @@ import { joinSock } from '../../hooks/Chat/joinSock.js';
 import '../../styles/Chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
-  const { isJoining, isLoading, error, messages, sendMessage, stompClient, chatGroup } = joinSock(isOpen, onClose, chatId, senderId);
+  const { isJoining, isLoading, error, messages, sendMessage, stompClient, chatGroup, disconnectStompClient } = joinSock(isOpen, chatId, senderId);
 
   // 모달이 닫힐 때 채팅 상태 초기화
   useEffect(() => {
     if (!isOpen) {
       console.log("[ChatModal] Modal is closing.");
+      disconnectStompClient?.();
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleClose = () => {
-    console.log("[ChatModal] handleClose called. Closing modal");
     onClose();
   };
 
@@ -50,13 +50,10 @@ export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
             // chatGroup={chatGroup} // chatGroup이 joinSock 훅에서 반환되지 않으므로 제거 또는 추가 필요
             messages={messages}
             onSendMessage={sendMessage}
+            onClose={onClose}
           />
         )}
         
-        {/* 모달 닫기 버튼 */}
-        <button className="modal-close-button" onClick={handleClose}>
-          ×
-        </button>
       </div>
     </div>,
     document.body // body 태그에 렌더링
