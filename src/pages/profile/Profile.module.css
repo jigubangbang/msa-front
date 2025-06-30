@@ -1,0 +1,40 @@
+.mapContainer {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.btnOutline {
+  border: 0.5px solid black;
+  background: white;
+  color: var(--color-text-primary);
+  margin-right: 5px;
+}
+
+.btnOutline:hover {
+    background-color: black;
+    color: white;
+}
+
+
+.expandButton {
+    position: absolute;
+    top: 16px;      /* distance from the top */
+    right: 16px;    /* distance from the right */
+    z-index: 10;    /* ensure it is above the map */
+}
+
+
+.icon {
+  height: 1em;
+  vertical-align: middle;
+}

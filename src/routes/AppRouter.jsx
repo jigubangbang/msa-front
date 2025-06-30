@@ -31,12 +31,12 @@ const AppRouter = () => {
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
 
-          <Route path="/:userId/profile" element={<Profile/>}/>
-          <Route path="/:userId/countries" element={<Countries/>}/>
-          <Route path="/:userId/badges" element={<Badges/>}/>
-          <Route path="/:userId/bucketlist" element={<Bucketlist/>}/>
-          <Route path="/:userId/diary" element={<Diary/>}/>
-          <Route path="/:userId/map" element={<MapPage/>}/>
+          <Route path="/profile/:userId/main" element={<Profile/>}/>
+          <Route path="/profile/:userId/countries" element={<Countries/>}/>
+          <Route path="/profile/:userId/badges" element={<Badges/>}/>
+          <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
+          <Route path="/profile/:userId/diary" element={<Diary/>}/>
+          <Route path="/profile/:userId/map" element={<MapPage/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>

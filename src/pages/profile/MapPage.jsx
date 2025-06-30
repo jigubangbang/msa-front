@@ -119,7 +119,9 @@ export default function MapPage() {
                 <div className={styles.btnBottomRightContainer}>
                     <button className={styles.btnOutline} onClick={handleRandomCountry}>랜덤 추천</button>
                 </div>
-                <Map ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries}/>
+                <div className={styles.mapWrapper}>
+                    <Map ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries}/>
+                </div>
             </div>
             {isLoading && (
                 <div className={styles.loadingOverlay}>
