@@ -1,12 +1,17 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import axios from "axios";
 import { ComposableMap, Geographies, Geography, Sphere, Graticule, ZoomableGroup, Annotation } from "react-simple-maps";
 import geography from "../../../src/assets/features.json";
 import styles from "./Map.module.css";
+import API_ENDPOINTS from "../../utils/constants";
+import { useParams } from "react-router-dom";
 
-// TODO: Tooltip show visit date
 // TODO: Add onClick function (show sidebar linking travel entries)
 
 const Map = forwardRef((props, ref) => {
+    const {userId} = useParams();
+    const [mapColor, setMapColor] = useState('#83D9E0');
+
     const {
         sphereStrokeColor="#E4E5E6",
         sphereStrokeWidth=0.5,
@@ -29,6 +34,26 @@ const Map = forwardRef((props, ref) => {
             setPosition({coordinates: countryCoords, zoom: 4});
         }
     }));
+
+    useEffect(() => {
+        axios
+            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`)
+            .then((response) => {
+                switch (response.data.mapColor) {
+                    case 'GREEN':
+                        setMapColor("#93AD28");
+                        break;
+                    case 'PINK':
+                        setMapColor("#FFB6C1");
+                        break;
+                    case 'YELLOW':
+                        setMapColor("#F1DC81");
+                        break;
+                    default:
+                        setMapColor("#83D9E0");
+                }
+            })
+    }, []);
     return (
         <div 
             className={styles.mapContainer}
@@ -51,7 +76,7 @@ const Map = forwardRef((props, ref) => {
                                 <Geography 
                                     key={geo.rsmKey}
                                     geography={geo}
-                                    fill={filledCountries.includes(geo.id) ? "red" : geographyFill}
+                                    fill={filledCountries.includes(geo.id) ? mapColor : geographyFill}
                                     stroke={geogrphyStrokeColor}
                                     strokeWidth={geographyStrokeWidth}
                                     onMouseEnter={() => {

@@ -5,7 +5,7 @@ import styles from './CountrySearchSection.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
 import { useParams } from 'react-router-dom';
 
-export default function CountrySearchSection({handleMapUpdate, mapType="VISITED"}) {
+export default function CountrySearchSection({handleMapUpdate, mapType="visited"}) {
     const {userId} = useParams();
     const [keyword, setKeyword] = useState('');
     const [countries, setCountries] = useState([]);
@@ -23,18 +23,42 @@ export default function CountrySearchSection({handleMapUpdate, mapType="VISITED"
         }
     };
 
-    // TODO : onClick (add / remove countries)
-    const addVisit = async () => {
-        
+    const addCountry = async (countryId) => {
+        try {
+            const response = await axios.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`, {
+                userId,
+                countryId
+            });
+            setCountries(prev => 
+                prev.map(c => 
+                    c.id === countryId
+                    ? mapType === "visited"
+                        ? { ...c, visitStatus: true }
+                        : { ...c, wishStatus: true }
+                    : c
+                )
+            );
+            handleMapUpdate();
+        } catch (error) {
+            console.error("Failed to add country", error);
+        }
     }
-    const removeVisit = async () => {
-        
-    }
-    const addWishlist = async () => {
-        
-    }
-    const removeWishlist = async () => {
-        
+    const removeCountry = async (countryId) => {
+        try {
+            const response = await axios.delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}/${countryId}`, {});
+            setCountries(prev =>
+                prev.map(c =>
+                    c.id === countryId
+                    ? mapType === "visited"
+                        ? {...c, visitStatus: false}
+                        : {...c, wishStatus: false}
+                    : c
+                )
+            );
+            handleMapUpdate();
+        } catch (error) {
+            console.error("Failed to remove country", error);
+        }
     }
 
     useEffect(() => {
@@ -75,34 +99,34 @@ export default function CountrySearchSection({handleMapUpdate, mapType="VISITED"
                     {countries.map((country) => (
                         <div key={country.id} className={styles.countryItem}>
                             {country.name}
-                            {mapType === "VISITED" && country.visitStatus && (
+                            {mapType === "visited" && country.visitStatus && (
                                 <button
                                     className={`${styles.btn} ${styles.btnOutline}`}
-                                    onClick={() => addVisit(country.id)}
+                                    onClick={() => removeCountry(country.id)}
                                 >
                                     -
                                 </button>
                             )}
-                            {mapType === "VISITED" && !country.visitStatus && (
+                            {mapType === "visited" && !country.visitStatus && (
                                 <button
                                     className={`${styles.btn} ${styles.btnSecondary}`}
-                                    onClick={() => removeVisit(country.id)}
+                                    onClick={() => addCountry(country.id)}
                                 >
                                     +
                                 </button>
                             )}
-                            {mapType === "WISHLIST" && country.wishStatus && (
+                            {mapType === "wishlist" && country.wishStatus && (
                                 <button
                                     className={`${styles.btn} ${styles.btnOutline}`}
-                                    onClick={() => addWishlist(country.id)}
+                                    onClick={() => removeCountry(country.id)}
                                 >
                                     -
                                 </button>
                             )}
-                            {mapType === "WISHLIST" && !country.wishStatus && (
+                            {mapType === "wishlist" && !country.wishStatus && (
                                 <button
                                     className={`${styles.btn} ${styles.btnSecondary}`}
-                                    onClick={() => removeWishlist(country.id)}>
+                                    onClick={() => addCountry(country.id)}>
                                     +
                                 </button>
                             )}

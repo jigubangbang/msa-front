@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+
 import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
-import lockIcon from "../../assets/profile/lock_white.svg";
+import lockIcon from "../../assets/profile/lock_grey.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
 
 import Map from "./Map";
@@ -15,8 +16,6 @@ import API_ENDPOINTS from "../../utils/constants";
 import { useParams } from "react-router-dom";
 
 // TODO: Condition lock icon on premium membership
-// TODO: Condition country color on visited countries data
-// TODO: Search bar: Add onChange function
 
 export default function MapPage() {
     const {userId} = useParams();
@@ -39,25 +38,29 @@ export default function MapPage() {
         }, 3000);
     }; 
 
-    const fetchVisitedCountries = async () => {
+    const fetchFilledCountries = async () => {
         try {
             const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`);
             const countriesList = response.data.countries.map(c => c.countryId);
+            setFilledCountries(countriesList);
         } catch (error) {
-
+            console.error("Failed to fetch", error);
         }
     }
 
-    // TODO: get list of visited / wishlist countries
+    function handleMapUpdate() {
+        fetchFilledCountries();
+    }
+
     useEffect(() => {
-        
+        fetchFilledCountries();
     }, [mapType])
 
     return (
         <>
             <div className={styles.mapContainer}>
                 <div className={styles.btnTopLeftContainer}>
-                    <CountrySearchSection mapType={mapType}/>
+                    <CountrySearchSection mapType={mapType} handleMapUpdate={handleMapUpdate}/>
                 </div>
                 
                 <div className={styles.btnTopContainer}>
