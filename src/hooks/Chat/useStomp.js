@@ -76,8 +76,46 @@ export function useStomp() {
     }
   }, [setStompClient]);
 
+  // ✅ 메시지 전송
+  const send = useCallback((destination, payload) => {
+    const client = useStore.getState().stompClient;
+    if (client && client.connected) {
+      client.publish({
+        destination,
+        body: JSON.stringify(payload),
+      });
+    } else {
+      console.warn("[useStomp] send 실패: STOMP 연결되지 않음");
+    }
+  }, []);
+
+  // ✅ 구독
+  const subscribe = useCallback((topic, callback) => {
+    const client = useStore.getState().stompClient;
+    if (client && client.connected) {
+      const subscription = client.subscribe(topic, (message) => {
+        const body = JSON.parse(message.body);
+        callback(body);
+      });
+      return subscription;
+    } else {
+      console.warn("[useStomp] subscribe 실패: STOMP 연결되지 않음");
+    }
+  }, []);
+
+  // ✅ 구독 해제
+  const unsubscribe = useCallback((subscription) => {
+    if (subscription && typeof subscription.unsubscribe === "function") {
+      subscription.unsubscribe();
+      console.log("[useStomp] 구독 해제 완료");
+    }
+  }, []);
+
     return {
         connect,
-        disconnect
+        disconnect,
+        send,
+        subscribe,
+        unsubscribe
     };
 }

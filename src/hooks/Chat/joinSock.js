@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useStomp, useStore } from "./useStomp";
 import API_ENDPOINTS from '../../utils/constants';
 
-const WEBSOCKET_ENDPOINT_URL = `${API_ENDPOINTS.WS}`; // 백엔드 서버 주소와 포트를 정확히 명시
-
 export function joinSock(isOpen, chatId, senderId) {
   const { accessToken, stompClient, senderId: storeSenderId } = useStore();
   // const accessToken = localStorage.getItem("accessToken");
@@ -93,8 +91,13 @@ export function joinSock(isOpen, chatId, senderId) {
             });
 
           if (joinResponse.ok) { 
-              const data = await joinResponse.json();
-              console.log("[joinSock] 채팅방 REST 입장 성공:", data);
+              const contentType = joinResponse.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                  const data = await joinResponse.json();
+                  console.log("[joinSock] 채팅방 REST 입장 성공:", data);
+              } else {
+                  console.log("[joinSock] REST 입장 성공 (본문 없음 또는 JSON 아님)");
+              }
               setIsJoining(false);
               restApiJoinSuccess = true;
           } else {

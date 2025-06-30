@@ -1,4 +1,5 @@
 .chat-panel-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -18,7 +19,6 @@
   display: flex;
   align-items: center;
   justify-content: center; /* H2를 가운데 정렬 */
-  position: relative;
 }
 
 .chat-header h2 {
@@ -28,26 +28,52 @@
 
 .chat-header-menu {
   position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
-  left: 17px;
+  right: 17px;
   font-size: 1.5em;
   cursor: pointer;
   color: white; /* 헤더 텍스트와 같은 색상 */
 }
 
-.close-button {
+.chat-close-button {
   position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
-  right: 18px;
-  font-size: 1.5em;
+  top: 21px;
+  left: 20px;
+  font-size: 1em;
   cursor: pointer;
   color: white; /* 헤더 텍스트와 같은 색상 */
+}
+
+.chat-body-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .chat-messages-display {
-  flex-grow: 1;
+  flex: 1;
   padding: 15px;
   overflow-y: auto; /* Enable scrolling for messages */
+  min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+.system-message-row {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.system-message {
+  display: inline-block;
+  background-color: transparent;
+  color: #555;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 /* 개별 메시지 행 컨테이너 (프로필 + 닉네임 + 메시지 버블을 감쌈) */

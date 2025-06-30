@@ -1,8 +1,11 @@
 /* src/styles/Chat/ChatSidebar.css */
+.hidden {
+  display: none;
+}
 
 .chat-sidebar-overlay {
-  position: fixed; /* 전체 화면을 덮음 */
-  top: 0;
+  position: absolute;
+  top: 72px;
   left: 0;
   width: 100%;
   height: 100%;
@@ -20,7 +23,9 @@
   flex-direction: column;
   transform: translateX(0%); /* 기본적으로 보임 */
   transition: transform 0.3s ease-out; /* 슬라이드 애니메이션 */
-  height: 100%; /* 전체 높이 */
+  max-height: 100vh; /* 전체 높이 */
+  overflow-y: auto;
+  padding-bottom: 80px;
 }
 
 /* 사이드바 닫힐 때의 애니메이션 (ChatPanel.jsx에서 isOpen이 false면 렌더링 안하므로 이 트랜지션은 직접 제어하기 어렵습니다.
@@ -51,6 +56,9 @@
 }
 
 .close-button {
+  position: absolute;       /* 상단 고정 위치 */
+  top: 15px;
+  right: 20px;
   background: none;
   border: none;
   font-size: 1em;
@@ -72,17 +80,17 @@
 }
 
 .chat-info-section p {
+  max-height: 150px; /* 높이 제한 (필요에 따라 조정 가능) */
+  overflow-y: auto; 
   font-size: 0.9em;
   color: #777;
   margin-bottom: 10px;
 }
 
 .edit-button {
-  background-color: #007bff;
-  color: white;
+  background-color: none;
+  color: #242424;
   border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
   cursor: pointer;
   font-size: 0.85em;
   width: 100%;
@@ -92,6 +100,8 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 250px; /* 높이 제한 (필요에 따라 조정 가능) */
+  overflow-y: auto; 
 }
 
 .member-item {

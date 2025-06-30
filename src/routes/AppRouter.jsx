@@ -16,7 +16,7 @@ import Bucketlist from "../pages/profile/Bucketlist";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
-import ChatPanel from "../components/Chat/ChatPanel";
+import ChatPanel from "../pages/chat/ChatPanel";
 
 const AppRouter = () => {
     return (

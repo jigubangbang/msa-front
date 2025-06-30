@@ -1,7 +1,7 @@
-// src/components/Chat/ChatModal.jsx
+// src/components/chat/ChatModal.jsx
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
-import ChatPanel from './ChatPanel'; // 기존 채팅 패널 컴포넌트
+import ChatPanel from './ChatPanel.jsx'; // 기존 채팅 패널 컴포넌트
 import { joinSock } from '../../hooks/Chat/joinSock.js';
 import '../../styles/Chat/ChatModal.css'
 
