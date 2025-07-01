@@ -21,6 +21,23 @@
   flex-grow: 1;
 }
 
+.settingsBtn {
+  background-color: transparent;
+}
+
+.settingsBtn:hover {
+  border: transparent;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
 .btnOutline {
   border: 0.5px solid black;
   background: white;
@@ -51,6 +68,12 @@
 .btnTopLeftContainer {
     position: absolute;
     left: 3vw;
+}
+
+.btnTopRightContainer {
+  position: absolute;
+  right: 3vw;
+  margin-top: 1vh;
 }
 
 .btnTopContainer {
