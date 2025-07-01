@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from "axios";
 import BucketlistItem from '../../components/profile/bucketlist/BucketlistItem';
 import ProfileTemplate from '../../components/profile/ProfileTemplate';
-import Modal from '../../components/profile/Modal';
+import Modal from '../../components/common/Modal/Modal';
 import Dropdown from '../../components/common/Dropdown';
 import styles from './Bucketlist.module.css';
 import API_ENDPOINTS from '../../utils/constants';
@@ -34,6 +34,8 @@ export default function Bucketlist() {
     const [reloadData, setReloadData] = useState(false);
 
     const [showGoalModal, setShowGoalModal] = useState(false); // showing modal to create new bucket list item
+    const [title, setTitle] = useState();
+    const [description, setDescription] = useState();
 
     const sensors = useSensors(
         useSensor(PointerSensor)
@@ -67,21 +69,16 @@ export default function Bucketlist() {
             });
     }
 
-    function saveNewGoal(event) {
-        event.preventDefault();
-
-        const form = event.target;
-        const title = form.title.value.trim();
-        const description = form.description.value.trim();
-
+    function saveNewGoal() {
         axios
             .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`, {
                 title,
                 description
             })
             .then((response) => {
-                setReloadData(!reloadData); // to fetch data again
-                form.reset();
+                setTitle("");
+                setDescription("");
+                setReloadData(!reloadData);
                 setShowGoalModal(false);
             })
             .catch((err) => {
@@ -214,21 +211,41 @@ export default function Bucketlist() {
                 </div>
             </div>
         </ProfileTemplate>
-        <Modal show={showGoalModal} onClose={() => setShowGoalModal(false)}>
-            <form onSubmit={saveNewGoal} className={styles.modal} >
-                <div>
-                    <label>목표</label>
-                    <input type="text" name="title" required maxLength={50}/>
+        <Modal 
+            show={showGoalModal}
+            onClose={() => setShowGoalModal(false)}
+            onSubmit={saveNewGoal}
+            heading='NEW BUCKETLIST'
+            firstLabel='추가'
+            secondLabel='취소'
+        >
+            <div className={styles.formGroup}>
+                <label>목표</label>
+                <div className={styles.inputWrapper}>
+                    <input
+                        className={styles.formInput}
+                        type="text"
+                        value={title}
+                        required
+                        maxLength={50}
+                        placeholder="목표를 입력하세요"
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
                 </div>
-                <div>
-                    <label>상세</label>
-                    <textarea name="description" maxLength={120} rows={6}/>
+            </div>
+            <div className={styles.formGroup}>
+                <label>상세</label>
+                <div className={styles.inputWrapper}>
+                    <textarea
+                        className={styles.formInput}
+                        value={description}
+                        maxLength={120}
+                        rows={6}
+                        placeholder="목표 상세를 입력하세요"
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
                 </div>
-                <div className={styles.btnContainer}>
-                    <button type="submit" className={`${styles.btn} ${styles.btnSecondary}`}>추가</button>
-                    <button className={`${styles.btn} ${styles.btnOutline}`} onClick={() => {setShowGoalModal(false)}}>취소</button>
-                </div>
-            </form>
+            </div>
         </Modal>
 
         </>
