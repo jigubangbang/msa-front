@@ -2,6 +2,7 @@ import {useState} from "react";
 import AppRouter from "./routes/AppRouter";
 import Header from "./components/main/Header";
 import ChatModal from "./pages/chat/ChatModal";
+import './App.css';
 
 function App() {
   const [isChatModal, setIsChatModal] = useState(false); // 채팅 모달 상태

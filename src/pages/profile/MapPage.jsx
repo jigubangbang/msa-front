@@ -1,24 +1,34 @@
-import React, { useState } from "react";
-import { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+
 import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
-import lockIcon from "../../assets/profile/lock_white.svg";
+import lockIcon from "../../assets/profile/lock_grey.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
-import SearchBar from "../../components/common/Searchbar";
+
 import Map from "./Map";
-import geography from "../../../public/features.json";
+import geography from "../../../src/assets/features.json";
 import { geoCentroid } from "d3-geo";
 import { feature } from "topojson-client"; 
 import MutatingLoadingSpinner from "../../components/common/MutatingLoadingSpinner";
+import CountrySearchSection from "../../components/profile/CountrySearchSection/CountrySearchSection";
+import API_ENDPOINTS from "../../utils/constants";
+import { useParams } from "react-router-dom";
+import StatsModal from "../../components/profile/map/StatsModal";
 
 // TODO: Condition lock icon on premium membership
-// TODO: Condition country color on visited countries data
-// TODO: Search bar: Add onChange function
 
 export default function MapPage() {
+    const {userId} = useParams();
     const mapRef = useRef();
     const [selectedCountry, setSelectedCountry] = useState({id:null, name:null});
+    const [mapType, setMapType] = useState("visited"); // "visited" / "wishlist"
+    const [filledCountries, setFilledCountries] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [showStats, setShowStats] = useState(false);
+
+    const [mapColor, setMapColor] = useState("white");
+    const [isPremium, setIsPremium] = useState(false);
 
     const handleRandomCountry = () => {
         const countries = feature(geography, geography.objects.world).features;
@@ -33,14 +43,56 @@ export default function MapPage() {
         }, 3000);
     }; 
 
+    const handleStatsClick = () => {
+        setShowStats(!showStats);
+    }
+
+    const fetchFilledCountries = async () => {
+        try {
+            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`);
+            const countriesList = response.data.countries.map(c => c.countryId);
+            setFilledCountries(countriesList);
+        } catch (error) {
+            console.error("Failed to fetch", error);
+        }
+    }
+
+    const fetchUserData = async () => {
+        try {
+            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`);
+            setIsPremium(response.data.premium); 
+            switch (response.data.mapColor) {
+                    case 'GREEN':
+                        setMapColor("#93AD28");
+                        break;
+                    case 'PINK':
+                        setMapColor("#FFB6C1");
+                        break;
+                    case 'YELLOW':
+                        setMapColor("#F1DC81");
+                        break;
+                    default:
+                        setMapColor("#83D9E0");
+                }
+        } catch (error) {
+            console.error("Failed to fetch user", error);
+        }
+    }
+
+    function handleMapUpdate() {
+        fetchFilledCountries();
+    }
+
+    useEffect(() => {
+        fetchUserData();
+        fetchFilledCountries();
+    }, [mapType])
+
     return (
         <>
             <div className={styles.mapContainer}>
                 <div className={styles.btnTopLeftContainer}>
-                    <SearchBar
-                        placeholder="나라 이름"
-                        barWidth="300px"
-                    />
+                    <CountrySearchSection mapType={mapType} handleMapUpdate={handleMapUpdate}/>
                 </div>
                 
                 <div className={styles.btnTopContainer}>
@@ -51,10 +103,15 @@ export default function MapPage() {
                                 <img src={lockIcon} className={styles.icon}/>희망 국가
                             </span>
                         }
+                        firstValue = "visited"
+                        secondValue = "wishlist"
+                        onToggle={(selectedOption) => {
+                            setMapType(selectedOption);
+                        }}
                     />
                 </div>
                 <div className={styles.btnBottomContainer}>
-                    <button className={styles.btnOutline}>통계</button>
+                    <button className={styles.btnOutline} onClick={handleStatsClick}>통계</button>
                     <button className={styles.btnOutline}>
                         공유 <img src={shareIcon} className={styles.icon}/>
                     </button>
@@ -62,7 +119,9 @@ export default function MapPage() {
                 <div className={styles.btnBottomRightContainer}>
                     <button className={styles.btnOutline} onClick={handleRandomCountry}>랜덤 추천</button>
                 </div>
-                <Map ref={mapRef} selectedCountry={selectedCountry}/>
+                <div className={styles.mapWrapper}>
+                    <Map ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries}/>
+                </div>
             </div>
             {isLoading && (
                 <div className={styles.loadingOverlay}>
@@ -75,6 +134,9 @@ export default function MapPage() {
                     />
                     <p className={styles.loadingText}>Searching...</p>
                 </div>
+            )}
+            {showStats && (
+                <StatsModal userId={userId} onClose={() => setShowStats(false)} mapColor={mapColor}/>
             )}
         </>
     );

@@ -41,7 +41,7 @@ const API_ENDPOINTS = {
     // Public 경로 (인증 불필요)
     PUBLIC: `${LOCAL}/api/quests`,
     // User 권한 필요
-    USER: `${LOCAL}/api/user-quest`,
+    USER: `${LOCAL}/api/user-quests`,
     // Admin 권한 필요
     ADMIN: `${LOCAL}/api/admin-quests`
   },

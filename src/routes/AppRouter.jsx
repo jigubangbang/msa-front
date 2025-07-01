@@ -13,10 +13,21 @@ import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 
-import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+import Login from "../pages/auth/Login";
+import Logout from "../components/common/Logout";
+import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
+import FindId from "../pages/auth/FindId";
+import FindPassword from "../pages/auth/FindPassword";
 
 import ChatPanel from "../pages/chat/ChatPanel";
+import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
+import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
+import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
+import RankListPage from "../pages/quest/quest-badge/RankListPage";
+import MyQuestPage from "../pages/quest/my-quest-badge/MyQuestPage";
+import MyQuestBadgePage from "../pages/quest/my-quest-badge/MyQuestBadgePage";
+import MyQuestRecordPage from "../pages/quest/my-quest-badge/MyQuestRecordPage";
 
 const AppRouter = () => {
     return (
@@ -25,15 +36,33 @@ const AppRouter = () => {
           <Route path="/style-guide" element={<StyleGuidePage/>}/>
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
-          <Route path="/:userId/profile" element={<Profile/>}/>
-          <Route path="/:userId/countries" element={<Countries/>}/>
-          <Route path="/:userId/badges" element={<Badges/>}/>
-          <Route path="/:userId/bucketlist" element={<Bucketlist/>}/>
-          <Route path="/:userId/diary" element={<Diary/>}/>
-          <Route path="/map" element={<MapPage/>}/>
 
+          <Route path="/profile/:userId/main" element={<Profile/>}/>
+          <Route path="/profile/:userId/countries" element={<Countries/>}/>
+          <Route path="/profile/:userId/badges" element={<Badges/>}/>
+          <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
+          <Route path="/profile/:userId/diary" element={<Diary/>}/>
+          <Route path="/profile/:userId/map" element={<MapPage/>}/>
+
+          {/* Quest */}
+          <Route path="/quest" element={<QuestMainPage/>}/>
+          <Route path="/quest/list" element={<QuestListPage/>}/>
+          <Route path="/quest/badge" element={<BadgeListPage/>}/>
+          <Route path="/rank/list" element={<RankListPage/>}/>
+          <Route path="/my-quest" element={<MyQuestPage/>}/>
+          <Route path="/my-quest/badge" element={<MyQuestBadgePage/>}/>
+          <Route path="/my-quest/record" element={<MyQuestRecordPage/>}/>
+
+
+          {/* Auth */}
+          <Route path="/register" element={<Register/>}/>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>} />
+          <Route path="/logout" element={<Logout/>}/> 
+          <Route path="/oauth/kakao/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/oauth/naver/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/oauth/google/callback" element={<SocialLoginHandler/>}/>
+          <Route path="/find-id" element={<FindId/>}/>
+          <Route path="/find-password" element={<FindPassword/>}/>
 
           <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>

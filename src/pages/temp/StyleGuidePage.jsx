@@ -1,26 +1,85 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 import styles from "./StyleGuidePage.module.css";
+import Sidebar from "../../components/common/SideBar/SideBar";
 
 export default function StyleGuidePage() {
+ /*** ***/
+  const menuItems = [
+    {
+      label: 'Badge',
+      icon: '/icons/sidebar/badge.svg', // 여기에 실제 SVG 경로
+      path: '/style-guide/dashboard',
+      active: true
+    },
+    {
+      label: 'Notifications',
+      icon: '/icons/notifications.svg',
+      path: '/style-guide/notifications',
+      badge: '4'
+    },
+    {
+      label: 'Projects',
+      icon: '/icons/projects.svg',
+      path: '/style-guide/projects',
+      submenus: [
+        {
+          label: 'All Projects',
+          path: '/style-guide/projects/all'
+        },
+        {
+          label: 'My Projects',
+          path: '/style-guide/projects/my',
+          active: true
+        },
+        {
+          label: 'Archived',
+          path: '/style-guide/projects/archived'
+        }
+      ]
+    },
+    {
+      label: 'Tasks',
+      icon: '/icons/tasks.svg',
+      path: '/style-guide/tasks'
+    },
+    {
+      label: 'Analytics',
+      icon: '/icons/analytics.svg',
+      path: '/style-guide/analytics',
+      submenus: [
+        {
+          label: 'Overview',
+          path: '/style-guide/analytics/overview'
+        },
+        {
+          label: 'Reports',
+          path: '/style-guide/analytics/reports',
+          badge: '2'
+        }
+      ]
+    },
+    {
+      label: 'Settings',
+      icon: '/icons/settings.svg',
+      path: '/style-guide/settings'
+    },
+    {
+      label: 'Support',
+      icon: '/icons/support.svg',
+      path: '/style-guide/support'
+    }
+  ];
+  /*** ***/
+
   const [activeTab, setActiveTab] = useState("tab1");
 
   return (
-    <div>
-      {/* 헤더 */}
-      <header className={styles.header}>
-        <div className={styles.logo}>지구방방</div>
-        <nav className={styles.nav}>
-          <Link to="/travel-test">카테고리1</Link>
-          <a href="/">메인 페이지</a>
-          <a href="#">카테고리3</a>
-          <a href="#">카테고리4</a>
-        </nav>
-        <button className={styles.loginButton}>로그인</button>
-      </header>
-
-      <main className={styles.container}>
-        <h1 className={styles.pageTitle}>🎨 스타일 가이드 페이지</h1>
+    <div className={styles.styleGuideContainer}>
+      <Sidebar menuItems={menuItems} />
+      <div className={styles.content}>
+        <h1>Style Guide Page</h1>
+        <p>사이드바가 있는 스타일 가이드 페이지입니다.</p>
 
         <section>
           <h2>📌 타이포그래피</h2>
@@ -89,12 +148,8 @@ export default function StyleGuidePage() {
           <div className={styles.colorBoxSecondary}>Secondary Color</div>
           <div className={styles.colorBoxAccent}>Accent Color</div>
         </section>
-      </main>
 
-      {/* 푸터 */}
-      <footer className={styles.footer}>
-        <p>© 2025 지구방방. All rights reserved.</p>
-      </footer>
+      </div>
     </div>
   );
 }

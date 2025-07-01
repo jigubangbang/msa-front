@@ -1,4 +1,3 @@
-// components/ProfileDropdown.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ProfileDropdown.module.css';
@@ -7,12 +6,14 @@ import globeIcon from '../../assets/profile/profile-menu/globe.svg';
 import badgeIcon from '../../assets/profile/profile-menu/badge.svg';
 import listIcon from '../../assets/profile/profile-menu/list.svg';
 import inkpenIcon from '../../assets/profile/profile-menu/inkpen.svg';
+import logoutIcon from '../../assets/auth/logout.svg'; 
 
-export default function ProfileDropdown() {
+export default function ProfileDropdown({ onLogout }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const userId = "bbb"; // TODO: 실제 로그인 유저 ID로 바꿔야 함
 
-  // Close dropdown when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -26,36 +27,50 @@ export default function ProfileDropdown() {
   return (
     <div className={styles.profileDropdownWrapper} ref={dropdownRef}>
       <button className={styles.dropdownToggle} onClick={() => setOpen(!open)}>
-        프로필 &nbsp;▾
+        프로필 ▾
       </button>
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to="/profile">
+          <Link to={`/profile/${userId}/main`}>
             <div className={styles.dropdownItem}>
-              <img src={profileIcon}/>프로필
+              <img src={profileIcon} alt="프로필" /> 프로필
             </div>
           </Link>
-          <Link to="/countries">
+          <Link to={`/profile/${userId}/countries`}>
             <div className={styles.dropdownItem}>
-              <img src={globeIcon}/>국가
+              <img src={globeIcon} alt="국가" /> 국가
             </div>
           </Link>
-          <Link to="/badges">
+          <Link to={`/profile/${userId}/badges`}>
             <div className={styles.dropdownItem}>
-              <img src={badgeIcon}/>뱃지함
+              <img src={badgeIcon} alt="뱃지함" /> 뱃지함
             </div>
           </Link>
-          <Link to="/bucketlist">
+          <Link to={`/profile/${userId}/bucketlist`}>
             <div className={styles.dropdownItem}>
-              <img src={listIcon}/>버킷리스트
+              <img src={listIcon} alt="버킷리스트" /> 버킷리스트
             </div>
           </Link>
-          <Link to="/diary">
+          <Link to={`/profile/${userId}/diary`}>
             <div className={styles.dropdownItem}>
-              <img src={inkpenIcon}/>여행일지
+              <img src={inkpenIcon} alt="여행일지" /> 여행일지
             </div>
           </Link>
+
+          <div className={styles.dropdownDivider}></div>
+
+          {/* 로그아웃 버튼 */}
+          <div
+            className={styles.dropdownItem}
+            onClick={() => {
+              setOpen(false);
+              onLogout(); 
+            }}
+          >
+            <img src={logoutIcon} alt="로그아웃" />
+            로그아웃
+          </div>
         </div>
       )}
     </div>

@@ -6,17 +6,22 @@ import styles from "./ProfileSidebar.module.css";
 import locationIcon from "../../assets/profile/location_grey.svg";
 import cakeIcon from "../../assets/profile/cake_grey.svg";
 import planeIcon from "../../assets/profile/plane_grey.svg";
-//import API_ENDPOINTS from ''
+import defaultProfile from "../../assets/default_profile.png";
+import API_ENDPOINTS from "../../utils/constants";
 
-// TODO: add backend update travel status on modal click
-// TODO: add backend for follow button
 // TODO: redirect travel style to details page
+// TODO: show modal only if is logged in user's profile
+// TODO: redirect follower/following stats -> network list page
 
 export default function ProfileSidebar() {
+    //const {user} = useContext(UserContext); /* Logged in user */
+    const sessionUserId = "bbb";
     const {userId} = useParams();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [profileImage, setProfileImage] = useState();
     const [travelStatus, setTravelStatus] = useState('TRAVELING');
+    const [followStatus, setFollowStatus] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
 
@@ -32,17 +37,67 @@ export default function ProfileSidebar() {
         {label: 'RESTING', color: '#6b6b6b'}
     ]
 
+    function updateTravelStatus(status) {
+        axios
+            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/travel-status`, null, {
+                params: {status: status}
+            })
+            .then((response) => {})
+            .catch((err) => {
+                console.error("Request failed", err);
+            })
+    }
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await axios.put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            setProfileImage(response.data.profileImage);
+        } catch (error) {
+            console.error("Upload failed", error);
+        }
+    };
+
+    function followUser() {
+        axios
+            .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/network`, null)
+            .then((response) => {
+                setFollowStatus(true);
+            })
+            .catch((err) => {
+                console.error("Request failed", err);
+            })
+    }
+
+    function unfollowUser() {
+        axios
+            .delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/network`, null)
+            .then((response) => {
+                setFollowStatus(false);
+            })
+            .catch((err) => {
+                console.error("Request failed", err);
+            })
+    }
 
     useEffect(() => {
         axios
             //.get(`https://d4f21666-0966-4b15-b291-99b17adce946.mock.pstmn.io/users/aaa`)
-            .get(`http://localhost:8080/api/profile/${userId}`)
+            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`)
             .then((response) => {
                 setData(response.data);
-                console.log(response)
                 setTravelStatus(response.data.travelStatus);
-                console.log("testing:")
-                console.log(response.data.travelStatus)
+                setFollowStatus(response.data.followStatus);
+                setProfileImage(response.data.profileImage);
                 setLoading(false);
             })
             .catch((err) => {
@@ -56,11 +111,21 @@ export default function ProfileSidebar() {
         <div className={styles.sidebar}>
             <div className={styles.container}>
                 <div className={styles.profileImageWrapper}>
-                    <img
-                        className={styles.profileImage}
-                        src={data.profileImage}
-                        alt="Profile"
-                    />
+                    {
+                        data.profileImage ? (
+                            <img
+                                className={styles.profileImage}
+                                src={profileImage}
+                                alt="Profile"
+                            />
+                        ) : (
+                            <img
+                                className={styles.profileImage}
+                                src={defaultProfile}
+                                alt="Profile"
+                            />
+                        )
+                    }
                     <div className={styles.statusContainer}
                         onMouseEnter={() => setShowModal(true)}
                         onClick={() => setShowModal(!showModal)}
@@ -76,6 +141,7 @@ export default function ProfileSidebar() {
                                         className = {styles.statusOption}
                                         onClick = {() => {
                                             setTravelStatus(option.label);
+                                            updateTravelStatus(option.label);
                                             setShowModal(false);
                                         }}
                                     >
@@ -88,11 +154,34 @@ export default function ProfileSidebar() {
                     </div>
                 </div>
 
-                <span className={styles.nickname}>{data.nickname}<img className={styles.flagIcon} src={findFlagUrlByIso3Code(data.nationality)} alt="flag"/></span>
+                <span className={styles.nickname}>
+                    {data.nickname}
+                    {
+                        data.nationality && (
+                            <img className={styles.flagIcon} src={findFlagUrlByIso3Code(data.nationality)} alt="flag"/>
+                        )
+                    }
+                </span>
                 <p className={styles.userId}>@{data.userId}</p>
                 
                 <div className={styles.buttons}>
-                    <button className={styles.followButton}>팔로우</button>
+                    {userId === sessionUserId && (
+                        <label className={styles.followButton}>
+                            프로필 변경
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{display: "none"}}
+                            />
+                        </label>
+                    )}
+                    {followStatus && (
+                        <button className={styles.followButton} onClick={unfollowUser}>팔로우 취소</button>
+                    )}
+                    {(userId != sessionUserId && !followStatus) && (
+                        <button className={styles.followButton} onClick={followUser}>팔로우</button>
+                    )}
                 </div>
 
     
@@ -126,12 +215,17 @@ export default function ProfileSidebar() {
                 <div className={styles.inlineRow}>
                     <div className={styles.infoBlock}>
                         <h4><img src={cakeIcon} alt="가입일" />가입일</h4>
-                        <p>{data.createdAt}</p>
+                        <p>{data.formattedDate}</p>
                     </div>
                     <div className={styles.infoBlock}>
                         <h4><img src={planeIcon}/>여행성향</h4>
                         <p>
-                            <span className={styles.travelBadge}>{data.travelStyleName}</span>
+                            {data.travelStyleName ? (
+                                <span className={styles.travelBadge}>{data.travelStyleName}</span>
+                            ) : (
+                                <span>-</span>
+                            )
+                            }
                         </p>
                     </div>
                 </div>
