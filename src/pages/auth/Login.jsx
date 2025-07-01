@@ -10,6 +10,7 @@ import VisibleOffIcon from "../../assets/auth/visible_off.svg";
 import KakaoIcon from "../../assets/auth/kakao.svg";
 import NaverIcon from "../../assets/auth/naver.svg";
 import GoogleIcon from "../../assets/auth/google.svg";
+import { Circles } from 'react-loader-spinner';
 
 const Login = () => {
   const [userId, setUserId] = useState("");
@@ -18,6 +19,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState(""); // 'success' or 'error'
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate(); 
 
   const handleLogin = async (e) => {
@@ -26,6 +28,7 @@ const Login = () => {
     // 에러 초기화
     setErrors({});
     setMessage("");
+    setIsLoading(true);
     
     // 유효성 검사
     const newErrors = {}; 
@@ -38,6 +41,7 @@ const Login = () => {
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setIsLoading(false); 
       return;
     }
     
@@ -55,6 +59,8 @@ const Login = () => {
       console.error("로그인 실패:", error);
       setMessage("아이디 또는 비밀번호가 일치하지 않습니다");
       setMessageType("error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -158,7 +164,17 @@ const Login = () => {
             </div>
           )}
           
-          <button type="submit" className={styles.loginButton}>로그인</button>
+          <button 
+            type="submit" 
+            className={styles.loginButton}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Circles height="20" width="20" color="#fff" />
+            ) : (
+              "로그인"
+            )}
+          </button>
         </form>
 
         {/* 소셜 로그인 영역 */}
