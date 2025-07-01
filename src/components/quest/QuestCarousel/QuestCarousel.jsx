@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './QuestCarousel.module.css';
 
-const QuestCard = ({ quest, isSelected, onClick, isLarge }) => {
+const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal}) => {
   //#NeedToChange
   const handleCertify = (e) => {
     e.stopPropagation();
@@ -16,12 +17,22 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge }) => {
   const handleCardClick = () => {
     if (isLarge){
       //#NeedToChange
-      console.log(`click detail ${quest.id}`);
+      console.log(`click detail ${quest.quest_id}`);
+      onOpenModal(quest.quest_id);
     }
     else{
       onClick();
     }
   }
+
+    const getDifficultyText = (difficulty) => {
+    switch(difficulty) {
+      case 'EASY': return '초급';
+      case 'MEDIUM': return '중급';
+      case 'HARD': return '고급';
+      default: return difficulty;
+    }
+  };
 
   return(
     <div
@@ -31,7 +42,7 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge }) => {
       <div className={styles.questContent}>
       <div className={styles.questHeader}>
         <div className={styles.questLevel}>
-          Lv.{quest.level} ({quest.xp}XP)
+          {getDifficultyText(quest.difficulty)} ({quest.xp}XP)
         </div>
         <div className={styles.questTitle}>{quest.title}</div>
       </div>
@@ -57,8 +68,12 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge }) => {
           </div>
           
           <div className={styles.questActions}>
-            <button className={styles.btnSecondary} onClick={handleCertify}>인증하기</button>
-            <button className={styles.btnSecondary} onClick={handleGiveUp}>포기하기</button>
+            <button className={styles.btnSecondary} onClick={handleCertify}>
+              인증하기
+              </button>
+            <button className={styles.btnSecondary} onClick={handleGiveUp}>
+              포기하기
+              </button>
           </div>
         </>
       )}
@@ -66,17 +81,19 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge }) => {
   );
 };
 
-const QuestCarousel = ({ quests = [], title= "" }) => {
+const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = true }) => {
   const [selectedQuestId, setSelectedQuestId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const navigate = useNavigate();
 
   const questsPerPage = 4;
   const totalPages = Math.ceil((quests || []).length / questsPerPage);
   
   const startIndex = currentPage * questsPerPage;
   const endIndex = startIndex + questsPerPage;
-  const currentQuests = quests.slice(startIndex, endIndex);
-
+  const currentQuests = quests ? quests.slice(startIndex, endIndex) : [];
+  
   const currentSelectedId = selectedQuestId && currentQuests.find(q => q.id === selectedQuestId) 
     ? selectedQuestId 
     : currentQuests[0]?.id || null;
@@ -89,6 +106,9 @@ const QuestCarousel = ({ quests = [], title= "" }) => {
       arrangedQuests.unshift(selected);
     }
   }
+  
+
+  
 
   const handleQuestClick = (questId) => {
     setSelectedQuestId(questId);
@@ -112,6 +132,67 @@ const QuestCarousel = ({ quests = [], title= "" }) => {
     setCurrentPage(pageIndex);
     setSelectedQuestId(null);
   };
+
+  const handleLoginClick = () => {
+    console.log("navigate to login");
+    //navigate('/login');
+  };
+
+const handleSignupClick = () => {
+  console.log("navigate to sign up");
+    //navigate('/signup');
+  };
+
+  if (!isLogin) {
+    return (
+      <div className={styles.questCarousel}>
+        <div className={styles.questContainer}>
+          <div className={styles.questGrid}>
+            <h2 className={styles.carouselTitle}>{title}</h2>
+            
+            {/* 로그인 퀘스트 카드 */}
+            <div className={styles.selectedQuestArea}>
+              <div className={`${styles.questCard} ${styles.selected} ${styles.large}`}>
+                <div className={styles.questContent}>
+                  <div className={styles.questHeader}>
+                    <div className={styles.questLevel}>
+                      왕초급 (?XP)
+                    </div>
+                    <div className={styles.questTitle}>지구방방의 퀘스트를 즐겨보세요</div>
+                  </div>
+                  
+                  <div className={styles.questBadge}>
+                    <img src="/icons/common/unknwon_badge.png" alt="quest icon"/>
+                  </div>
+                </div>
+                
+                <div className={styles.progressContainer}>
+                  <div className={styles.progressBar}>
+                    <div 
+                      className={styles.progressFill} 
+                      style={{ width: `100%` }}
+                    ></div>
+                  </div>
+                  <div className={styles.progressText}>
+                    방방이가 되기까지 0% 남았습니다.
+                  </div>
+                </div>
+                
+                <div className={styles.questActions}>
+                  <button className={styles.btnSecondary} onClick={handleLoginClick}>
+                    로그인하기
+                  </button>
+                  <button className={styles.btnSecondary} onClick={handleSignupClick}>
+                    회원가입하기
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!quests || quests.length === 0) {
     return (
@@ -139,6 +220,7 @@ const QuestCarousel = ({ quests = [], title= "" }) => {
                 isSelected={true}
                 isLarge={true}
                 onClick={() => handleQuestClick(arrangedQuests[0].id)}
+                onOpenModal={onOpenModal}
               />
             )}
           </div>
@@ -152,6 +234,7 @@ const QuestCarousel = ({ quests = [], title= "" }) => {
                 isSelected={false}
                 isLarge={false}
                 onClick={() => handleQuestClick(quest.id)}
+                onOpenModal={onOpenModal}
               />
             ))}
           </div>

@@ -4,6 +4,7 @@ import axios from 'axios';
 import API_ENDPOINTS from "../../../utils/constants";
 import {QUEST_SIDEBAR} from "../../../utils/sidebar";
 
+import {jwtDecode} from "jwt-decode";
 
 import styles from "./QuestMainPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
@@ -13,6 +14,7 @@ import RankCard from "../../../components/quest/RankCard/RankCard";
 import BadgeCard from "../../../components/quest/BadgeCard/BadgeCard";
 import QuestSlider from "../../../components/quest/QuestSlider/QuestSlider";
 import QuestList from "../../../components/quest/QuestList/QuestList";
+import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -157,6 +159,12 @@ export default function QuestMainPage() {
 
   const [seasonalQuest, setSeasonalQuest] = useState(null);
 
+  const [isLogin, setIsLogin] = useState(false);
+
+  // Modal states
+  const [showModal, setShowModal] = useState(false);
+  const [selectedQuest, setSelectedQuest] = useState(null);
+
   const navigate = useNavigate();
 
 
@@ -183,10 +191,24 @@ export default function QuestMainPage() {
   //SideBar//
 
   useEffect(()=>{
-    fetchUserinfo();
-    fetchUserQuest();
-    fetchUserBadge();
-    fetchUserRank();
+    const token = localStorage.getItem("accessToken");
+    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
+    // setIsLogin(true);
+    // fetchUserinfo();
+    // fetchUserQuest();
+    // fetchUserBadge();
+    // fetchUserRank();
+
+    if (token) {
+      setIsLogin(true);
+      //decoded
+      const decoded = jwtDecode(token);
+      fetchUserinfo();
+      fetchUserQuest();
+      fetchUserBadge();
+      fetchUserRank();
+    }
+
     fetchSeasonalQuest();
   }, []);
 
@@ -214,12 +236,12 @@ export default function QuestMainPage() {
     }
   }
 
-  //#NeedToChange 실제로는 params에 status: "IN_PROGRESS"
   const fetchUserQuest = async () => {
     setLoading(true);
     try{
       const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
       params: {
+        status: "IN_PROGRESS"
       }
     });
       setUserQuest(response.data || {});
@@ -261,6 +283,25 @@ export default function QuestMainPage() {
     }
   }
 
+  const openQuestModal = async (quest_id) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`);
+      setSelectedQuest(response.data);
+      setShowModal(true);
+      console.log("Quest data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch quest data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedQuest(null);
+  };
+
 
   return (
     <div className={styles.Container}>
@@ -268,36 +309,63 @@ export default function QuestMainPage() {
       <div className={styles.content}>
         <Rankings/>
         
-        <div className={styles.loginContent}>
-          {userQuest && 
-            (<QuestCarousel quests={userQuest} title="Ongoing Quests"/>)
-          }
+
+          <div className={styles.loginContent}>
+          {isLogin ? (
+              <>
+                {userQuest && (
+                  <QuestCarousel 
+                    quests={userQuest} 
+                    title="Ongoing Quests" 
+                    onOpenModal={openQuestModal}
+                  />
+                )}
+              </>
+            ) : (
+              <QuestCarousel 
+                quests={null} 
+                title="Ongoing Quests" 
+                onOpenModal={openQuestModal}
+                isLogin={false}
+              />
+            )}
 
           <div className={styles.verticalDivider}></div>
           
           <div className={styles.loginRightContent}>
             <h2 className={styles.rightTitle}>My Quest Journey</h2>
-            
-          {userinfo && (
-            <div className={styles.card}>
-            <ProfileCard id={userinfo.user_id} title={"Total Quests Completed"} count={userinfo.completed_quest_count} 
-                        profile_image={userinfo.profile_image} level={userinfo.level} nickname={userinfo.nickname}/>
-            </div>
-          )}
-          
-          {userRank && (
-            <div className={styles.card}>
-              <RankCard title={"My Rank"} count={userRank.count} totalCount={userRank.totalCount}/>
-            </div>
-          )}
 
-          {userBadge && (
             <div className={styles.card}>
-              <BadgeCard userBadge={userBadge}/>
+            <ProfileCard 
+                id={isLogin && userinfo ? userinfo.user_id : null}
+                title={"Total Quests Completed"} 
+                count={isLogin && userinfo ? userinfo.completed_quest_count : 0} 
+                profile_image={isLogin && userinfo ? userinfo.profile_image : null}
+                level={isLogin && userinfo ? userinfo.level : 0}
+                nickname={isLogin && userinfo ? userinfo.nickname : "Guest"}
+                isLogin={isLogin}
+              />
             </div>
-          )}
+          
+            <div className={styles.card}>
+              <RankCard 
+                title={"My Rank"} 
+                count={isLogin && userRank ? userRank.count : null}
+                totalCount={isLogin && userRank ? userRank.totalCount : null}
+                isLogin={isLogin}
+              />
+            </div>
+
+            <div className={styles.card}>
+              <BadgeCard 
+                userBadge={isLogin ? userBadge : { badges: [], totalCount: 0 }}
+                isLogin={isLogin}
+              />
+            </div>
           </div>
         </div>
+
+        
 
         <div className={styles.questContent}>
         {seasonalQuest && (
@@ -309,6 +377,14 @@ export default function QuestMainPage() {
           </div>
         <QuestList/>
       </div>
+
+      {/* 퀘스트 모달 */}
+      {showModal && (
+        <QuestModal 
+          questData={selectedQuest} 
+          onClose={closeModal} 
+        />
+      )}
     </div>
   );
 }

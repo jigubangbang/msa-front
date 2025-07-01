@@ -17,6 +17,9 @@ import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
 import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
 import RankListPage from "../pages/quest/quest-badge/RankListPage";
+import MyQuestPage from "../pages/quest/my-quest-badge/MyQuestPage";
+import MyQuestBadgePage from "../pages/quest/my-quest-badge/MyQuestBadgePage";
+import MyQuestRecordPage from "../pages/quest/my-quest-badge/MyQuestRecordPage";
 
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
@@ -52,6 +55,9 @@ const AppRouter = () => {
           <Route path="/quest/list" element={<QuestListPage/>}/>
           <Route path="/quest/badge" element={<BadgeListPage/>}/>
           <Route path="/rank/list" element={<RankListPage/>}/>
+          <Route path="/my-quest" element={<MyQuestPage/>}/>
+          <Route path="/my-quest/badge" element={<MyQuestBadgePage/>}/>
+          <Route path="/my-quest/record" element={<MyQuestRecordPage/>}/>
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>

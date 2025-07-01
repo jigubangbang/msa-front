@@ -1,0 +1,388 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@font-face{
+font-family:'DNFBitBitv2';
+font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
+
+.modalOverlay {
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.questModal {
+  font-family: 'Pretendard', sans-serif;
+  background: #1a1a1a;
+  border-radius: 16px;
+  width: 95%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modalHeader {
+  min-height: 32px;
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.closeBtn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.closeBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.closeBtn img {
+  filter: brightness(0) invert(1);
+}
+
+.modalContent {
+  padding: 0 20px 20px;
+}
+
+.modalLayout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  padding: 10px 30px 30px;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.questTitle {
+  font-family: 'DNFBitBitv2', 'Pretendard';
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+  color: #fafafa;
+  line-height: 1.3;
+  letter-spacing: 1px;
+}
+
+.questMeta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #e3e3e3;
+  font-weight: 500;
+}
+
+.difficulty {
+  font-weight: 600;
+  color: #ebebeb;
+}
+
+.separator {
+  color: #ebebeb;
+}
+
+.xp {
+  font-weight: 600;
+  color: #ebebeb;
+}
+
+.seasonInfo {
+  background: #e8f5e8;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #2d5a2d;
+  font-weight: 500;
+  border: 1px solid #ccc;
+}
+
+.badgeSection {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.badgeContainer {
+  position: relative;
+  cursor: pointer;
+}
+
+.badgeIcon {
+  width: 100px;
+  height: 100px;
+  transition: opacity 0.2s;
+}
+
+.badgeTooltip {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.badgeTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #000;
+}
+
+.badgeKorTitle {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.badgeEngTitle {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.questDescription {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  line-height: 1.6;
+  color: #000;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  font-weight: 400;
+  min-height: 200px;
+}
+
+.conditionLine {
+  margin-top: 16px;
+  font-weight: 600;
+  color: #4CAF50;
+  font-size: 16px;
+}
+
+.statsSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #666;
+  justify-content: center;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-weight: 500;
+}
+
+.userSections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.userSection {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 16px;
+}
+
+.userAvatars {
+  cursor: pointer;
+}
+
+.avatarList {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid white;
+  margin-left: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: rgb(173, 173, 173);
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remainingCount {
+  background: #ddd;
+  color: #666;
+  font-size: 14px;
+}
+
+.questButtons {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.statusText {
+  display: block;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.challengeBtn, .verifyBtn, .retryBtn, .viewCertBtn, .giveUpBtn {
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  min-width: 120px;
+  outline: none;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.challengeBtn, .retryBtn {
+  background: #000;
+  color: #fff;
+}
+
+.challengeBtn:hover, .retryBtn:hover {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.challengeBtn:focus, .retryBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.verifyBtn {
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.verifyBtn:hover {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.verifyBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.giveUpBtn {
+  background: transparent;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.giveUpBtn:hover {
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
+}
+
+.giveUpBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.viewCertBtn {
+  background: #000;
+  color: #fff;
+}
+
+.viewCertBtn:hover {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.viewCertBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
