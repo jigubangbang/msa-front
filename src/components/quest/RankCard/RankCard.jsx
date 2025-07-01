@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import styles from './RankCard.module.css';
-
+import { useNavigate } from "react-router-dom";
 
 const RankCard = ({ 
   title, 
   count, 
-  totalCount
+  totalCount,
+  isLogin=true
 }) => {
 
+  const navigate = useNavigate();
+
   const handleButtonClick = () => {
-    // #NeedToChange
-    console.log(`Navigating to rank Page`);
+    navigate(`/rank/list`);
   };
 
   const getOrdinalSuffix = (num) => {
@@ -38,7 +40,7 @@ const RankCard = ({
         </h2>
       </div>
       <p className={styles.count}>
-      : {getOrdinalSuffix(count)} Out of {totalCount}
+      : {isLogin ? getOrdinalSuffix(count) : "?"} Out of {isLogin ? totalCount : "??"}
       </p>
         <button className={`${styles.btn} ${styles.btnSecondary}`}
           onClick={handleButtonClick}>View Full Rankings →</button>

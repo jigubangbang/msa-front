@@ -190,6 +190,8 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   border: 1px solid #e0e0e0;
 }
 
+
+
 .questCard.large .progressBar {
   height: 8px;
 }
@@ -202,7 +204,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .questCard.completed .progressFill {
-  background: #22c55e;
+  background: #ffffff;
 }
 
 .progressText {

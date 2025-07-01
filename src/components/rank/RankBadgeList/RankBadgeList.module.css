@@ -1,6 +1,6 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
-.questList {
+.badgeList {
   width: 100%;
   max-width: 880px;
   margin: 0 auto;
@@ -37,8 +37,8 @@
 /* 테이블 헤더 */
 .tableHeader {
   display: grid;
-  grid-template-columns: 50px 90px 210px 100px 140px 60px 50px 50px;
-  gap: 15px;
+    grid-template-columns: 75px 75px 230px 210px 105px 105px;
+  gap: 10px;
   padding: 12px 20px;
   background: #f8f9fa;
   border-radius: 8px 8px 0 0;
@@ -60,15 +60,52 @@
   overflow: hidden;
 }
 
-.tableRow {
+.badgeRowContainer {
   display: grid;
-  grid-template-columns: 50px 90px 210px 100px 140px 60px 50px 50px;
-  gap: 15px;
+  grid-template-columns: 75px 75px 230px 210px 105px 105px;
+  grid-template-rows: auto auto; 
+  gap: 10px;
   padding: 12px 20px;
   border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.2s ease;
-  align-items: center;
+  margin-bottom: 4px;
 }
+
+.badgeRowContainer:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.tableRow {
+
+}
+
+.firstRow {
+  display: contents; 
+}
+
+.secondRow {
+  display: contents;
+}
+
+.iconCell {
+  grid-row: 1 / 3;
+  grid-column: 1;
+  align-self: stretch; 
+}
+
+.descriptionCell {
+    grid-row: 2;
+  grid-column: 2 / 7; /* 3번째부터 6번째 컬럼까지 차지 */
+  text-align: left;
+}
+
+.firstRow .cell:nth-child(2) { grid-row: 1; grid-column: 2; } /* # */
+.firstRow .cell:nth-child(3) { grid-row: 1; grid-column: 3; } /* Title */
+.firstRow .cell:nth-child(4) { grid-row: 1; grid-column: 4; } /* Quests */
+.firstRow .cell:nth-child(5) { grid-row: 1; grid-column: 5; } /* Difficulty */
+.firstRow .cell:nth-child(6) { grid-row: 1; grid-column: 6; } /* Acquired */
+
+
 
 .tableRow:hover {
   background: #f8f9fa;
@@ -93,8 +130,8 @@
 }
 
 .badgeImage {
-  width: 48px;
-  height: 48px;
+  width: 70px;
+  height: 70px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -105,27 +142,66 @@
 .badgeImage img {
   width: 100%;
   height: 100%;
-
+  object-fit: cover;
 }
 
-.questInfo {
+.badgeTitle {
+  text-align: left; 
+  display: flex;
+  flex-direction: column;
+  gap: 4px; 
+}
+
+.badgeKorTitle {
+  font-weight: 700;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.2; 
+}
+
+.badgeEngTitle {
+  font-weight: 400;
+  color: #666; 
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.badgeDescription {
+  text-align: left;
+  font-size: 13px; 
+  color: #666;
+  line-height: 1.4;
+  word-break: keep-all; 
+  overflow-wrap: break-word;
+  padding: 4px 0; 
+}
+
+.badgeQuests {
   text-align: left;
   display: flex;
-  flex-direction: row;
-  gap: 2px;
+  flex-direction: column;
+  gap: 2px; 
+  overflow-y: auto; /* 스크롤 추가 */
 }
 
-.difficulty {
-  font-weight: 600;
+.questItem {
+  font-size: 11px; 
+  color: #666;
+  padding: 2px 6px; 
+  background: #f8f9fa;
+  border-radius: 4px; 
+  border: 1px solid #e0e0e0; 
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; /* 넘치는 텍스트 ... 처리 */
+}
+
+.acquiredCount {
+  font-weight: 600; 
   color: #333;
   font-size: 14px;
 }
 
-.xp {
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
-}
 
 /* 로딩 */
 .loading {
@@ -137,57 +213,3 @@
   font-size: 16px;
 }
 
-
-/* 필터 */
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 12px;
-}
-
-.filterGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.filterButtons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.filterButton {
-  padding: 8px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 20px;
-  background: #fff;
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.filterButton:hover {
-  border-color: #ccc;
-  background: #fafafa;
-}
-
-.filterButton.active {
-  background: #000;
-  border-color: #000;
-  color: #fff;
-}
-
-.dropdown {
-  display: flex;
-  margin: 10px 0px;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 20px;
-}
