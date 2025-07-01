@@ -2,45 +2,42 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-import styles from "./BadgeListPage.module.css";
+import styles from "./RankListPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
-
+import RankingList from "../../../components/rank/RankList/RankList";
 import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel";
 import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
-import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
 
-
-
-export default function BadgeListPage() {
+export default function RankListPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
 
   //SideBar//
-    const location = useLocation();
-    const currentPath = location.pathname;
-      const getActiveMenuItems = () => {
-      return QUEST_SIDEBAR.map(item => {
-        let isActive = false;
-        
-        if (item.submenu) {
-          isActive = item.path === currentPath;
-        } else {
-          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
-        }
-        return {
-          ...item,
-          active: isActive
-        };
-      });
-    };
+  const location = useLocation();
+  const currentPath = location.pathname;
   
-    const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
-    //SideBar//
+  const getActiveMenuItems = () => {
+    return QUEST_SIDEBAR.map(item => {
+      let isActive = false;
+      
+      if (item.submenu) {
+        isActive = item.path === currentPath;
+      } else {
+        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+      }
+      return {
+        ...item,
+        active: isActive
+      };
+    });
+  };
 
+  const finalMenuItems = getActiveMenuItems();
+  //SideBar//
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchUser();
     fetchUserQuests();
   }, []);
@@ -86,8 +83,7 @@ export default function BadgeListPage() {
     return Math.round((completedCount / total) * 100) + "%";
   };
 
-
- if (loading) {
+  if (loading) {
     return (
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} />
@@ -104,14 +100,13 @@ export default function BadgeListPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <RankQuestList myUserId={user?.user_id || ""}/>
+          <RankingList myUserId={user?.user_id || ""}/>
 
           <UserInfoPanel 
             user={user}
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
           />
-
         </div>
       </div>
     </div>

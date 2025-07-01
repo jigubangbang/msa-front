@@ -24,6 +24,7 @@ import ChatPanel from "../components/Chat/ChatPanel";
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
 import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
+import RankListPage from "../pages/quest/quest-badge/RankListPage";
 
 const AppRouter = () => {
     return (
@@ -33,17 +34,18 @@ const AppRouter = () => {
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
 
-          <Route path="/:userId/profile" element={<Profile/>}/>
-          <Route path="/:userId/countries" element={<Countries/>}/>
-          <Route path="/:userId/badges" element={<Badges/>}/>
-          <Route path="/:userId/bucketlist" element={<Bucketlist/>}/>
-          <Route path="/:userId/diary" element={<Diary/>}/>
-          <Route path="/map" element={<MapPage/>}/>
+          <Route path="/profile/:userId/main" element={<Profile/>}/>
+          <Route path="/profile/:userId/countries" element={<Countries/>}/>
+          <Route path="/profile/:userId/badges" element={<Badges/>}/>
+          <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
+          <Route path="/profile/:userId/diary" element={<Diary/>}/>
+          <Route path="/profile/:userId/map" element={<MapPage/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>
           <Route path="/quest/list" element={<QuestListPage/>}/>
-          <Route path="/badge/list" element={<QuestListPage/>}/>
+          <Route path="/quest/badge" element={<BadgeListPage/>}/>
+          <Route path="/rank/list" element={<RankListPage/>}/>
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>

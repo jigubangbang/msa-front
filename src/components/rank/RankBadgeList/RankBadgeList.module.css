@@ -1,0 +1,193 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.questList {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 20px;
+}
+
+.questListTitle {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: left;
+  color: #000;
+}
+
+/* 검색 섹션 */
+.searchSection {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.totalCount {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* 테이블 헤더 */
+.tableHeader {
+  display: grid;
+  grid-template-columns: 50px 90px 210px 100px 140px 60px 50px 50px;
+  gap: 15px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tableBody {
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 50px 90px 210px 100px 140px 60px 50px 50px;
+  gap: 15px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  align-items: center;
+}
+
+.tableRow:hover {
+  background: #f8f9fa;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow.highlighted {
+  background: #e8e8e8;
+  border-left: 4px solid #8d8d8d;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.badgeImage {
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.badgeImage img {
+  width: 100%;
+  height: 100%;
+
+}
+
+.questInfo {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.difficulty {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.xp {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+/* 로딩 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+
+/* 필터 */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.filterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.filterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.dropdown {
+  display: flex;
+  margin: 10px 0px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+}
