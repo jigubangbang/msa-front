@@ -15,6 +15,28 @@ export const useStore = create((set) => ({
   setSenderId: (senderId) => set({ senderId }),
 }));
 
+// 사용자 참여 채팅방 수 확인 및 제한 확장 가능
+export const useChatSubscriptionStore = create((set, get) => ({
+  subscriptions: {},
+
+  addSubscription: (chatId, subscription) =>
+    set(state => ({
+      subscriptions: {
+        ...state.subscriptions,
+        [chatId]: subscription,
+      },
+    })),
+
+  removeSubscription: (chatId) =>
+    set(state => {
+      const updated = { ...state.subscriptions };
+      delete updated[chatId];
+      return { subscriptions: updated };
+    }),
+
+  getSubscription: (chatId) => get().subscriptions[chatId],
+}));
+
 export function useStomp() {
     // const [accessToken, setAccessToken] = useState(null);
     // const [stompClient, setStompClient] = useState(null);
@@ -76,7 +98,7 @@ export function useStomp() {
     }
   }, [setStompClient]);
 
-  // ✅ 메시지 전송
+  // 메시지 전송
   const send = useCallback((destination, payload) => {
     const client = useStore.getState().stompClient;
     if (client && client.connected) {
@@ -89,7 +111,7 @@ export function useStomp() {
     }
   }, []);
 
-  // ✅ 구독
+  // 구독
   const subscribe = useCallback((topic, callback) => {
     const client = useStore.getState().stompClient;
     if (client && client.connected) {
@@ -103,7 +125,7 @@ export function useStomp() {
     }
   }, []);
 
-  // ✅ 구독 해제
+  // 구독 해제
   const unsubscribe = useCallback((subscription) => {
     if (subscription && typeof subscription.unsubscribe === "function") {
       subscription.unsubscribe();

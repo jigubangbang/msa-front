@@ -1,11 +1,17 @@
 // src/components/chat/ChatSidebar.jsx
-import React from 'react';
+import React, {useState} from 'react';
 import '../../styles/Chat/ChatSidebar.css'; // 사이드바 전용 CSS 파일
-import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
+import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
+import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
+import ChatReportTab from '../../components/chat/ChatReportTab';
+import API_ENDPOINTS from '../../utils/constants';
 
-export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo }) {
+export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose }) {
   const {members, loading, error} = useChatRoomInfo(chatId);
-  const isManager = members.some(member => member.user_id === senderId && member.is_creator);
+  const { removeSubscription, getSubscription } = useChatSubscriptionStore();
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const isManager = members.some(member => member.userId === senderId && member.isCreator == 1);
+
   // 로딩 중일 때 보여줄 UI
   if (loading) {
     return <div>멤버 목록을 불러오는 중...</div>;
@@ -14,6 +20,39 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   if (error) {
     return <div>에러가 발생했습니다: {error.message}</div>;
   }
+
+  const handleLeaveGroup = async () => {
+    const confirmed = window.confirm( "정말로 그룹을 탈퇴하시겠습니까? ");
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/me`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Id': senderId,
+        },
+      });
+
+      const sub = getSubscription(chatId);
+      if (sub) {
+        sub.unsubscribe();
+        console.log(`[ChatSidebar] 채팅방 ${chatId} 구독 해제 완료`);
+      }
+
+      removeSubscription(chatId);
+      alert("채팅방을 성공적으로 탈퇴했습니다.");
+      onForceClose?.(); // 사이드바 닫기
+
+    } catch (error) {
+      console.error("[ChatSidebar] 채팅방 탈퇴 실패:", error);
+      alert("탈퇴 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleReportTab = (userId) => {
+    setSelectedUserId(prev => (prev === userId ? null : userId));
+  };
 
   return (
     <div
@@ -29,7 +68,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         <div className="sidebar-section chat-info-section">
           <h4>채팅방 설명</h4>
           <p>{chatInfo?.description || "채팅방 설명이 나오는 부분입니다."}</p>
-          {isManager && ( // 방장일 경우에만 '수정하기' 버튼 표시
+          {isManager == '1' && ( // 방장일 경우에만 '수정하기' 버튼 표시
             <button className="edit-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -54,13 +93,18 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
                 </div>
                 {isManager && member.userId !== senderId && ( // 방장이고 내 자신이 아닌 경우에만 메뉴 표시
                   <div className="member-actions">
-                    <span className="member-action-dots">
+                    <span className="member-action-dots" onClick={() => handleReportTab(member.userId)}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
                       </svg>
-                    </span> {/* 메뉴 아이콘 */}
-                    {/* 여기에 추가 메뉴 (신고하기, 관리자로 추가/만들기) */}
-                    {/* 실제로는 클릭 시 팝업 등을 띄우는 로직이 필요 */}
+                    </span> 
+                    {selectedUserId === member.userId && (
+                      <ChatReportTab
+                        onReport={() => alert(`${selectedUserId} 신고`)}
+                        onPromote={() => alert(`${selectedUserId}를 관리자 승격`)}
+                        onKick={() => alert(`${selectedUserId} 추방`)}
+                      />
+                    )}
                   </div>
                 )}
               </li>
@@ -71,7 +115,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
 
         <div className="sidebar-footer">
           <button className="report-button">채팅방 신고하기</button>
-          <button className="leave-button">그룹 탈퇴하기</button>
+          <button className="leave-button" onClick={handleLeaveGroup}>그룹 탈퇴하기</button>
         </div>
       </div>
     </div>

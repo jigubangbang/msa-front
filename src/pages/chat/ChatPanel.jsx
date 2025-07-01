@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 // import useChat from '../../hooks/chat/useChat';
 import ChatSidebar from './ChatSideBar';
-import '../../styles/Chat/ChatPanel.css'
-import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
+import '../../styles/chat/ChatPanel.css'
+import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 
-export default function ChatPanel({ chatId, senderId, messages, onSendMessage, onClose }) {
+export default function ChatPanel({ chatId, senderId, messages, onSendMessage, onClose, onForceClose }) {
   // const { messages, postMessage } = useChat(chatId);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null); // Ref for auto-scrolling
@@ -139,6 +139,7 @@ export default function ChatPanel({ chatId, senderId, messages, onSendMessage, o
         senderId={senderId}
         onClose={handleSidebar}
         chatInfo={info}
+        onForceClose={onForceClose}
       />
      )}
 

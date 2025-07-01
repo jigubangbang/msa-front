@@ -2,17 +2,17 @@
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
 import ChatPanel from './ChatPanel.jsx'; // 기존 채팅 패널 컴포넌트
-import { joinSock } from '../../hooks/Chat/joinSock.js';
-import '../../styles/Chat/ChatModal.css'
+import { joinSock } from '../../hooks/chat/joinSock.js';
+import '../../styles/chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
-  const { isJoining, isLoading, error, messages, sendMessage, stompClient, chatGroup, disconnectStompClient } = joinSock(isOpen, chatId, senderId);
+  const { messages, sendMessage, isLoading, chatError, isJoining, unsubscribeChatRoom } = joinSock(isOpen, chatId, senderId);
 
   // 모달이 닫힐 때 채팅 상태 초기화
   useEffect(() => {
     if (!isOpen) {
       console.log("[ChatModal] Modal is closing.");
-      disconnectStompClient?.();
+      unsubscribeChatRoom?.();
     }
   }, [isOpen]);
 
@@ -35,15 +35,15 @@ export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
         )}
         
         {/* 에러 상태 표시 */}
-        {error && (
+        {chatError && (
           <div className="chat-error">
             <p>채팅방 입장에 실패했습니다.</p>
-            <p>{error.message}</p>
+            <p>{chatError.message}</p>
           </div>
         )}
         
         {/* 채팅방 입장 성공 시 채팅 패널 표시 */}
-        {!(isLoading || isJoining) && !error && stompClient && stompClient.connected && (
+        {!(isLoading || isJoining) && !chatError && (
           <ChatPanel
             chatId={chatId}
             senderId={senderId}
@@ -51,6 +51,7 @@ export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
             messages={messages}
             onSendMessage={sendMessage}
             onClose={onClose}
+            onForceClose={onClose}
           />
         )}
         
