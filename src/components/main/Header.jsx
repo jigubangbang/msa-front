@@ -54,11 +54,9 @@ export default function Header({onOpenChat}) {
           <span><Link to="/quest">퀘스트</Link></span>
           <span>커뮤니티 <span className={styles.badge}>New</span></span>
           <span>여행기록 <span className={styles.badge}>New</span></span>
+          <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
           {isLoggedIn && <ProfileDropdown onLogout={handleLogout} />}
-          <ProfileDropdown/>
-            <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
         </nav>
-
         <div className={styles.authButtons}>
           {!isLoggedIn && (
             <>
