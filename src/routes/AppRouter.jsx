@@ -20,7 +20,7 @@ import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
 import FindId from "../pages/auth/FindId";
 import FindPassword from "../pages/auth/FindPassword";
 
-import ChatPanel from "../components/Chat/ChatPanel";
+import ChatPanel from "../pages/chat/ChatPanel";
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
 import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";

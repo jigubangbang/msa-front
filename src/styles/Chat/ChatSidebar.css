@@ -1,0 +1,190 @@
+/* src/styles/Chat/ChatSidebar.css */
+.hidden {
+  display: none;
+}
+
+.chat-sidebar-overlay {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 오버레이 */
+  display: flex;
+  justify-content: flex-end; /* 사이드바를 오른쪽으로 정렬 */
+  z-index: 1000; /* 다른 요소 위에 표시되도록 */
+}
+
+.chat-sidebar {
+  width: 300px; /* 사이드바 너비 */
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0%); /* 기본적으로 보임 */
+  transition: transform 0.3s ease-out; /* 슬라이드 애니메이션 */
+  max-height: 100vh; /* 전체 높이 */
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+/* 사이드바 닫힐 때의 애니메이션 (ChatPanel.jsx에서 isOpen이 false면 렌더링 안하므로 이 트랜지션은 직접 제어하기 어렵습니다.
+   하지만, 만약 isOpen이 false일 때도 잠시 렌더링하며 transform을 주는 방식으로 한다면 아래 클래스도 의미가 있습니다.
+   지금은 `if (!isOpen) return null;` 때문에 사용되지 않습니다.
+   CSS 트랜지션으로 닫는 애니메이션을 만들려면, ChatPanel에서 클래스를 조건부로 토글해야 합니다.
+   예: <div className={`chat-sidebar ${isOpen ? 'is-open' : ''}`}>
+*/
+/*
+.chat-sidebar:not(.is-open) {
+  transform: translateX(100%);
+}
+*/
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f8f8;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.close-button {
+  position: absolute;       /* 상단 고정 위치 */
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1em;
+  cursor: pointer;
+  color: #555;
+  padding: 0;
+}
+
+.sidebar-section {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar-section h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 0.95em;
+  color: #666;
+}
+
+.chat-info-section p {
+  max-height: 150px; /* 높이 제한 (필요에 따라 조정 가능) */
+  overflow-y: auto; 
+  font-size: 0.9em;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.edit-button {
+  background-color: none;
+  color: #242424;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85em;
+  width: 100%;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 250px; /* 높이 제한 (필요에 따라 조정 가능) */
+  overflow-y: auto; 
+}
+
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-profile {
+  display: flex;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  color: #777;
+  margin-right: 8px;
+}
+
+.member-nickname {
+  font-size: 0.9em;
+  color: #333;
+}
+
+.member-role {
+  font-size: 0.75em;
+  color: #888;
+  margin-left: 5px;
+}
+
+.member-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.member-action-dots {
+  font-size: 1.2em;
+  cursor: pointer;
+  color: #777;
+  padding: 5px; /* 클릭 영역 확보 */
+}
+
+.sidebar-footer {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #eee;
+  margin-top: auto; /* 남은 공간을 차지하여 하단에 붙도록 */
+}
+
+.report-button,
+.leave-button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.leave-button {
+  color: #dc3545; /* 빨간색으로 강조 */
+  border-color: #dc3545;
+}
+
+.report-button:hover,
+.leave-button:hover {
+  opacity: 0.9;
+}
