@@ -40,6 +40,7 @@ export default function RankListPage() {
   useEffect(() => {
     fetchUser();
     fetchUserQuests();
+    fectchUserBadges();
   }, []);
 
   const fetchUser = async () => {
@@ -55,6 +56,22 @@ export default function RankListPage() {
       setLoading(false);
     }
   };
+
+    const fectchUserBadges = async() => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
+      setUser(prev => ({
+        ...prev,
+        badge_totalCount: response.data.totalCount
+      }));
+      console.log("User Badge data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const fetchUserQuests = async () => {
     setLoading(true);

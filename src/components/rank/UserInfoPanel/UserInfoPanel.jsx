@@ -46,6 +46,13 @@ const UserInfoPanel = ({
       </div>
 
       <div className={styles.card}>
+        <SimpleCard 
+          title="Badges" 
+          count={user?.badge_totalCount || 0}
+        />
+      </div>
+
+      <div className={styles.card}>
         <QuestListCard 
           title="Ongoing Quests"
           quest={userQuests}

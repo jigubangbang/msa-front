@@ -9,6 +9,7 @@ import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel"
 import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
+import RankBadgeList from "../../../components/rank/RankBadgeList/RankBadgeList";
 
 
 
@@ -43,6 +44,7 @@ export default function BadgeListPage() {
   useEffect(()=>{
     fetchUser();
     fetchUserQuests();
+    fectchUserBadges();
   }, []);
 
   const fetchUser = async () => {
@@ -58,6 +60,22 @@ export default function BadgeListPage() {
       setLoading(false);
     }
   };
+
+  const fectchUserBadges = async() => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
+      setUser(prev => ({
+        ...prev,
+        badge_totalCount: response.data.totalCount
+      }));
+      console.log("User Badge data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const fetchUserQuests = async () => {
     setLoading(true);
@@ -104,7 +122,7 @@ export default function BadgeListPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <RankQuestList myUserId={user?.user_id || ""}/>
+          <RankBadgeList myUserId={user?.user_id || ""}/>
 
           <UserInfoPanel 
             user={user}
