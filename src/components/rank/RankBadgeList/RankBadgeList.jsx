@@ -6,7 +6,7 @@ import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 
 
-const RankBadgeList = ({ myUserId }) => {
+const RankBadgeList = ({ myUserId, onOpenBadgeModal}) => {
     const [badges, setBadges] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -64,6 +64,13 @@ const RankBadgeList = ({ myUserId }) => {
       setCurrentPage(pageNum);
   };
 
+  const handleBadgeRowClick = (badge) => {
+    if (onOpenBadgeModal && badge.id) {
+        onOpenBadgeModal(badge.id);
+      }
+  }
+
+
   if (loading) {
     return (
       <div className={styles.badgeList}>
@@ -108,7 +115,8 @@ const RankBadgeList = ({ myUserId }) => {
           const uniqueKey = badge.id ? `badge-${badge.id}` : `badge-${currentPage}-${index}`;
 
           return (
-            <div key={uniqueKey} className={styles.badgeRowContainer}>
+            <div key={uniqueKey} className={styles.badgeRowContainer}
+              onClick={() => handleBadgeRowClick(badge)}>
               {/* 첫 번째 행 */}
               <div className={`${styles.tableRow} ${styles.firstRow} ${isMyUser ? styles.highlighted : ''}`}>
                 <div className={`${styles.cell} ${styles.iconCell}`} rowSpan="2">

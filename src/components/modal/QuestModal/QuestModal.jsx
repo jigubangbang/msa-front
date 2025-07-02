@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import styles from './QuestModal.module.css';
 import { useNavigate } from 'react-router-dom';
+import ModalUserList from '../ModalUserList/ModalUserList';
 
 
-const QuestModal = ({ questData, onClose, isLogin=false }) => {
+const QuestModal = ({ questData, onClose, isLogin=false, onBadgeClick }) => {
   const [badgeHover, setBadgeHover] = useState(false);
+  const [showUserList, setShowUserList] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -44,16 +47,22 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
   // 배지 클릭 
   const handleBadgeClick = () => {
     console.log('배지 클릭:', questData.badge_id);
+    if (onBadgeClick) {
+      onBadgeClick(questData.badge_id);
+    }
   };
 
   // 유저 목록 클릭 
   const handleUserListClick = (type) => {
-    if (type === 'progress') {
-      console.log('진행 중인 유저들:', questData.in_progress_user);
-    } else {
-      console.log('완료한 유저들:', questData.completed_user);
-    }
+    setShowUserList(true);
+    // if (type === 'progress') {
+    //   console.log('진행 중인 유저들:', questData.in_progress_user);
+    // } else {
+    //   console.log('완료한 유저들:', questData.completed_user);
+    // }
   };
+
+  
 
   // 버튼들
   const handleChallengeClick = () => {
@@ -85,6 +94,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
     window.scrollTo(0, 0);
     navigate('/register');
   };
+
+  
 
   // 유저들
   const renderUserAvatars = (users, type) => {
@@ -291,6 +302,15 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
           </div>
         </div>
       </div>
+      {showUserList && (
+        <ModalUserList
+          isOpen={showUserList}
+          onClose={() => setShowUserList(false)}
+          type="quest"
+          inProgressUsers={questData.in_progress_user || []}
+          completedUsers={questData.completed_user || []}
+        />
+      )}
     </div>
   );
 };
