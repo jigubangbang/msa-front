@@ -38,9 +38,11 @@ export default function AddLanguageModal({showAddLanguageModal, setShowAddLangua
             proficiency: proficiency,
         });
         try {
-            await axios.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages`, newLanguage);
+            const response = await axios.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages`, newLanguage);
             setShowAddLanguageModal(false);
-            onSubmit(newLanguage);
+            const id = response.data.id;
+            const languageWithId = {...newLanguage, id};
+            onSubmit(languageWithId);
         } catch (error) {
             console.error("Failed to add language", error);
         }

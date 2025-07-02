@@ -13,19 +13,22 @@ import trashIcon from "../../assets/profile/trash_grey.svg";
 import AddLanguageModal from "../../components/profile/main/AddLanguageModal";
 import EditLanguageModal from "../../components/profile/main/EditLanguageModal";
 import DeleteLanguageModal from "../../components/profile/main/DeleteLanguageModal";
+import { jwtDecode } from "jwt-decode";
+import TopCountriesForm from "../../components/profile/main/TopCountriesForm";
 
 export default function Profile() {
-    // TODO: condition edit / add languages on session user
-    // TODO: condition add top country on max limit
+    const [sessionUserId, setSessionUserId] = useState();
     const {userId} = useParams();
     const [visitedCountries, setVisitedCountries] = useState([]); 
     const [userLanguages, setUserLanguages] = useState([]);
     const [userFavorites, setUserFavorites] = useState([]);
 
+    const [selectedLanguage, setSelectedLanguage] = useState(null);
     const [showAddLanguageModal, setShowAddLanguageModal] = useState(false);
     const [showEditLanguageModal, setShowEditLanguageModal] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState(null);
     const [showDeleteLanguageModal, setShowDeleteLanguageModal] = useState(false);
+
+    const [showTopCountriesForm, setShowTopCountriesForm] = useState(false);
 
     const proficiencyMap = {
         LOW: "초급",
@@ -81,8 +84,18 @@ export default function Profile() {
             prev.filter(lang => lang.id !== deletedLanguageId)
         );
     }
+    
+    function handleFavUpdate(payload) {
+        setUserFavorites(payload);
+    }
 
     useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setSessionUserId(decoded.sub);
+        }
+
         fetchVisitedCountries();
         fetchUserLanguages();
         fetchUserFavorites();
@@ -101,9 +114,11 @@ export default function Profile() {
                     <div className={styles.infoColumn}>
                         <div className={styles.sectionHeadingContainer}>
                             <h3 className={styles.sectionHeading}>언어</h3>
-                            <button className={styles.iconButton} onClick={() => setShowAddLanguageModal(true)}>
-                                <img src={addIcon} alt="추가" className={styles.icon}/>
-                            </button>
+                            {sessionUserId === userId && (
+                                <button className={styles.iconButton} onClick={() => setShowAddLanguageModal(true)}>
+                                    <img src={addIcon} alt="추가" className={styles.icon}/>
+                                </button>
+                            )}
                         </div>
                         {userLanguages.length === 0 ? (
                             <p className={styles.emptyText}>추가된 언어가 없습니다.</p>
@@ -116,24 +131,28 @@ export default function Profile() {
                                             <span className={styles.proficiency}>
                                                 {proficiencyMap[lang.proficiency] ?? lang.proficiency}
                                             </span>
-                                            <button
-                                                className={styles.iconButton}
-                                                onClick={() => {
-                                                    setSelectedLanguage(lang);
-                                                    setShowEditLanguageModal(true);
-                                                }}
-                                            >
-                                                <img src={editIcon} alt="편집" className={styles.icon}/>
-                                            </button>
-                                            <button
-                                                className={styles.iconButton}
-                                                onClick={() => {
-                                                    setSelectedLanguage(lang);
-                                                    setShowDeleteLanguageModal(true);
-                                                }}
-                                            >
-                                                <img src={trashIcon} alt="삭제" className={styles.icon}/>
-                                            </button>
+                                            {sessionUserId === userId && (
+                                                <>
+                                                    <button
+                                                        className={styles.iconButton}
+                                                        onClick={() => {
+                                                            setSelectedLanguage(lang);
+                                                            setShowEditLanguageModal(true);
+                                                        }}
+                                                    >
+                                                        <img src={editIcon} alt="편집" className={styles.icon}/>
+                                                    </button>
+                                                    <button
+                                                        className={styles.iconButton}
+                                                        onClick={() => {
+                                                            setSelectedLanguage(lang);
+                                                            setShowDeleteLanguageModal(true);
+                                                        }}
+                                                    >
+                                                        <img src={trashIcon} alt="삭제" className={styles.icon}/>
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
                                     </li>
                                 ))}
@@ -142,10 +161,16 @@ export default function Profile() {
                     </div>
                     <div className={styles.infoColumn}>
                         <div className={styles.sectionHeadingContainer}>
-                            <h3 className={styles.sectionHeading}>국가 랭킹</h3>
-                            <button className={styles.iconButton}>
-                                <img src={editIcon} alt="편집" className={styles.icon}/>
-                            </button>
+                            <h3 className={styles.sectionHeading}>최고의 여행지</h3>
+                            {sessionUserId === userId && (
+                                <button className={styles.iconButton}>
+                                    <img 
+                                        src={editIcon} alt="편집"
+                                        className={styles.icon}
+                                        onClick={() => setShowTopCountriesForm(true)}
+                                    />
+                                </button>
+                            )}
                         </div>
                         {userFavorites.length === 0 ? (
                             <p className={styles.emptyText}>추가된 국가가 없습니다.</p>
@@ -187,6 +212,16 @@ export default function Profile() {
                         showDeleteLanguageModal={showDeleteLanguageModal}
                         setShowDeleteLanguageModal={setShowDeleteLanguageModal}
                         onSubmit={handleDeleteLanguage}
+                    />
+                )
+            }
+            {
+                showTopCountriesForm && (
+                    <TopCountriesForm
+                        initialCountries={userFavorites}
+                        showTopCountriesForm={showTopCountriesForm}
+                        setShowTopCountriesForm={setShowTopCountriesForm}
+                        onUpdate={handleFavUpdate}
                     />
                 )
             }
