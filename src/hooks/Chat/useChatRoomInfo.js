@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../utils/constants';
-
+import api from '../../apis/api';
 
 const useChatRoomInfo = (chatId) => {
   const [info, setInfo] = useState([]);
@@ -10,21 +9,24 @@ const useChatRoomInfo = (chatId) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // chatId가 유효하지 않으면 API를 호출하지 않음
     if (!chatId) {
+      setInfo([]);
       setMembers([]);
       return;
     }
 
-    // API를 호출하는 비동기 함수
+    let isMounted = true;
+
     const fetchInfo = async () => {
       setLoading(true); 
       setError(null);
       try {
         const [responseInfo, responseMembers] = await Promise.all([
-          axios.get(`${API_ENDPOINTS.CHAT}/${chatId}/info`),
-          axios.get(`${API_ENDPOINTS.CHAT}/${chatId}/members`)
+          api.get(`${API_ENDPOINTS.CHAT}/${chatId}/info`),
+          api.get(`${API_ENDPOINTS.CHAT}/${chatId}/members`)
         ]);
+        if (!isMounted) return;
+
         setInfo(responseInfo.data);
         setMembers(responseMembers.data);
         console.log(responseInfo, responseMembers.data.length);
@@ -33,12 +35,14 @@ const useChatRoomInfo = (chatId) => {
         console.error("채팅방 멤버를 불러오는 중 에러 발생:", err);
       } finally {
         // 성공/실패 여부와 관계없이 로딩 종료
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchInfo();
-
+    return () => {
+      isMounted = false;
+    };
   }, [chatId]);
 
   return { info, members, loading, error };

@@ -2,13 +2,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useStomp, useStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';
+import api from "../../apis/api";
 
-export function joinSock(isOpen, chatId, senderId) {
-  const { accessToken, stompClient, senderId: storeSenderId } = useStore();
-  // const accessToken = localStorage.getItem("accessToken");
-  // const accessToken = "AXmxOoAbZ+MzB31Diio24unhX3uPneVd0TJCeALqTfhDgHohZdzHG/DXf41DUXQIH+gR1QL7s5ONGcjCZeIg1g== ";
+export function joinSock(isOpen, chatId) {
+  const senderId = useStore(state => state.senderId);
+  const setSenderId = useStore(state => state.setSenderId);
   const { connect, disconnect, send, subscribe, unsubscribe } = useStomp();
-  const effectiveSenderId = senderId || storeSenderId;
   const [isJoining, setIsJoining] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   // const [chatGroup, setChatGroup] = useState(null); // 채팅 그룹 정보 (UI 표시용)
@@ -18,19 +17,17 @@ export function joinSock(isOpen, chatId, senderId) {
 
   // STOMP 클라이언트 활성화 및 메세지 구독
   const activateStompClient = useCallback(() => {
-    console.log(`[joinSock] STOMP 활성화 시작: ${chatId} as ${effectiveSenderId}`);
+    console.log(`[joinSock] STOMP 활성화 시작: Room number: ${chatId}`);
     setIsLoading(true);
     setChatError(null);
 
     // useStomp 훅의 connect 함수 호출
     connect({
-      accessToken: accessToken, // accessToken,
       onConnect: () => {
         console.log("[joinChat] STOMP 연결 성공");
 
         // 입장 메세지 전송
         send(`/app/chat.addUser/${chatId}`, {
-          senderId: effectiveSenderId,
           message: "joined"
         });
 
@@ -54,7 +51,7 @@ export function joinSock(isOpen, chatId, senderId) {
         console.log("[joinChat] STOMP 연결 해제 콜백");
       },
     });
-  }, [accessToken, chatId, effectiveSenderId, connect, send, subscribe]);
+  }, [chatId, connect, send, subscribe]);
 
   // STOMP 잠시 나가기 - 구독 해제
   const unsubscribeChatRoom = () => {
@@ -76,15 +73,15 @@ export function joinSock(isOpen, chatId, senderId) {
 
   // 채팅방 초기화
   useEffect(() => {
-    if (!chatId || !isOpen || !effectiveSenderId ) {
-      console.log("[joinSock] 초기화 건너뛰기: 정보 부족 또는 모달 닫힘", { chatId, isOpen, effectiveSenderId });
+    if (!chatId || !isOpen) {
+      console.log("[joinSock] 초기화 건너뛰기: 정보 부족 또는 모달 닫힘", { chatId, isOpen, senderId });
       setIsLoading(false);
       setIsJoining(false);
       setChatError(null);
       return;
     }
 
-    console.log(`[joinSock] 채팅방 초기화 시작: ${chatId} (${effectiveSenderId})`);
+    console.log(`[joinSock] 채팅방 초기화 시작: Room number: ${chatId}`);
     setIsLoading(true);
     setChatError(null);
     setIsJoining(true);
@@ -93,54 +90,34 @@ export function joinSock(isOpen, chatId, senderId) {
         let restApiJoinSuccess = false;
 
         try {
-            const joinResponse = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/join`, {
-                method: 'POST',
-                headers: {
-                    'User-Id': effectiveSenderId
-                },
-            });
-
-          if (joinResponse.ok) { 
-              const contentType = joinResponse.headers.get("content-type");
-              if (contentType?.includes("application/json")) {
-                  const data = await joinResponse.json();
-                  console.log("[joinSock] 채팅방 REST 입장 성공:", data);
-              } else {
-                  console.log("[joinSock] REST 입장 성공 (본문 없음 또는 JSON 아님)");
-              }
-              restApiJoinSuccess = true;
-          } else {
-              const errorText = await joinResponse.text();
-              setChatError(new Error("채팅방 입장 실패: " + joinResponse.status + " " + errorText));
+            const joinResponse = await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/join`);
+            console.log("[joinSock] " + joinResponse.data.userId +"님 채팅방 REST 입장 성공:", joinResponse.data);
+            restApiJoinSuccess = true;
+            setSenderId(joinResponse.data.userId);
+            } catch (err) {
+              console.error("[joinSock] REST API 입장 실패:", err);
+              setChatError(new Error("REST 입장 실패: " + err.message));
+            }
+        if (restApiJoinSuccess) {
+          // 과거 메세지 조회
+          try {
+            const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/messages`);
+            const history = response.data;
+            setMessages(Array.isArray(history) ? history : []);
+            console.log(`[joinSock] 과거 메시지 ${history.length}개 로드됨`);
+          } catch (err) {
+            console.error('[joinSock] 과거 메시지 조회 실패:', err);
+            setChatError(new Error("과거 메시지 조회 실패: " + (err.message || "알 수 없는 에러")));
           }
-      } catch (err) {
-          console.error("[joinSock] REST API 입장 실패:", err);
-          setChatError(new Error("REST 입장 실패: " + err.message));
-      }
-
-      if (restApiJoinSuccess) {
-        // 과거 메세지 조회
-        try {
-          const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/messages`);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const history = await response.json();
-          setMessages(Array.isArray(history) ? history : []);
-          console.log(`[joinSock] 과거 메시지 ${history.length}개 로드됨`);
-        } catch (err) {
-          console.error('[joinSock] 과거 메시지 조회 실패:', err);
-          setChatError(new Error("과거 메시지 조회 실패: " + (err.message || "알 수 없는 에러")));
+          // 그 후 STOMP 활성화
+          activateStompClient();
+        } else {
+          setIsLoading(false); // REST API 실패 시 로딩 해제
         }
-        // 그 후 STOMP 활성화
-        activateStompClient();
-      } else {
-        setIsLoading(false); // REST API 실패 시 로딩 해제
-      }
-      setIsJoining(false);
-    };
+        setIsJoining(false);
+      };
 
-    initializeChatRoom();
+      initializeChatRoom();
 
     return () => {
       console.log("[joinSock] 훅 클린업 실행.");
@@ -149,7 +126,7 @@ export function joinSock(isOpen, chatId, senderId) {
       setIsLoading(false);
       setChatError(null);
     };
-  }, [chatId, isOpen, effectiveSenderId, activateStompClient]);
+  }, [chatId, isOpen, activateStompClient]);
 
   // 메시지 전송
   const sendMessage = useCallback((messageContent) => {
@@ -157,12 +134,13 @@ export function joinSock(isOpen, chatId, senderId) {
 
     send(`/app/chat.send/${chatId}`, {
       chatId,
-      senderId: effectiveSenderId,
+      senderId: senderId,
       message: messageContent
     });
-  }, [chatId, effectiveSenderId, send]);
+  }, [chatId, senderId, send]);
 
   return { 
+    senderId,
     messages, 
     sendMessage, 
     isLoading, 

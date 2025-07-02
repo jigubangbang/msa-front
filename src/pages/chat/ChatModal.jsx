@@ -5,8 +5,8 @@ import ChatPanel from './ChatPanel.jsx';
 import { joinSock } from '../../hooks/chat/joinSock.js';
 import '../../styles/chat/ChatModal.css'
 
-export default function ChatModal({ isOpen, onClose, chatId, senderId }) {
-  const { messages, sendMessage, isLoading, chatError, isJoining, unsubscribeChatRoom } = joinSock(isOpen, chatId, senderId);
+export default function ChatModal({ isOpen, onClose, chatId }) {
+  const { senderId, messages, sendMessage, isLoading, chatError, isJoining, unsubscribeChatRoom } = joinSock(isOpen, chatId);
 
   // 모달이 닫힐 때 채팅 상태 초기화
   useEffect(() => {

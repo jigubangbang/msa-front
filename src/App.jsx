@@ -17,7 +17,6 @@ function App() {
         isOpen={isChatModal}
         onClose={closeChatModal}
         chatId={1} // 필요한 채팅방 ID
-        senderId="ccc" // 현재 사용자 ID
       />
       </main>
     </div>
