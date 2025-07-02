@@ -6,7 +6,7 @@ import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 
-const RankQuestList = ({ myUserId }) => {
+const RankQuestList = ({ myUserId, onOpenModal }) => {
   const [quests, setQuests] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -129,6 +129,12 @@ const RankQuestList = ({ myUserId }) => {
       setCurrentPage(pageNum);
   };
 
+  const handleQuestRowClick = (quest) => {
+    if (onOpenModal && quest.id) {
+        onOpenModal(quest.id);
+      }
+  }
+
 
   if (loading) {
     return (
@@ -225,6 +231,7 @@ const RankQuestList = ({ myUserId }) => {
             <div 
               key={uniqueKey} 
               className={`${styles.tableRow} ${isMyUser ? styles.highlighted : ''}`}
+              onClick={() => handleQuestRowClick(quest)}
             >
               <div className={styles.cell}>{quest.id}</div>
               <div className={styles.cell}>{getCategoryLabel(quest.category)}</div>

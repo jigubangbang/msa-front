@@ -6,7 +6,8 @@ import globeIcon from '../../assets/profile/profile-menu/globe.svg';
 import badgeIcon from '../../assets/profile/profile-menu/badge.svg';
 import listIcon from '../../assets/profile/profile-menu/list.svg';
 import inkpenIcon from '../../assets/profile/profile-menu/inkpen.svg';
-import logoutIcon from '../../assets/auth/logout.svg'; 
+import logoutIcon from '../../assets/profile/profile-menu/logout.svg'; 
+import manageIcon from '../../assets/profile/profile-menu/manage.svg'; 
 
 export default function ProfileDropdown({ onLogout }) {
   const [open, setOpen] = useState(false);
@@ -59,7 +60,11 @@ export default function ProfileDropdown({ onLogout }) {
           </Link>
 
           <div className={styles.dropdownDivider}></div>
-
+          <Link to={`/user/manage`}>
+            <div className={styles.dropdownItem}>
+              <img src={manageIcon} alt="계정관리" /> 계정 관리
+            </div>
+          </Link>
           {/* 로그아웃 버튼 */}
           <div
             className={styles.dropdownItem}

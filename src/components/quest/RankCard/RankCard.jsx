@@ -6,12 +6,13 @@ const RankCard = ({
   title, 
   count, 
   totalCount,
-  isLogin=true
+  isLogin=false
 }) => {
 
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
+    window.scrollTo(0, 0);
     navigate(`/rank/list`);
   };
 

@@ -55,13 +55,12 @@ export default function Header({onOpenChat}) {
           <span>커뮤니티 <span className={styles.badge}>New</span></span>
           <span>여행기록 <span className={styles.badge}>New</span></span>
           <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
-          {isLoggedIn && <ProfileDropdown onLogout={handleLogout} />}
         </nav>
         <div className={styles.authButtons}>
-          {!isLoggedIn && (
-            <>
-              <Link to="/login"><span>로그인</span></Link>
-            </>
+          {isLoggedIn ? (
+            <ProfileDropdown onLogout={handleLogout} />
+          ) : (
+            <Link to="/login"><span>로그인</span></Link>
           )}
           <button className={styles.proBtn}>Premium</button>
         </div>

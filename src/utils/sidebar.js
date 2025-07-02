@@ -36,3 +36,25 @@ export const QUEST_SIDEBAR = [
     },
   ];
 
+  export const USER_SIDEBAR = [
+  {
+    label: '회원 정보 수정',
+    icon: '/icons/sidebar/manage.svg',
+    path: '/user/manage'
+  },
+  {
+    label: '프리미엄',
+    icon: '/icons/sidebar/premium.svg',
+    path: '/user/premium'
+  },
+  {
+    label: '1:1 문의',
+    icon: '/icons/sidebar/inquiry.svg',
+    path: '/user/inquiry'
+  },
+  {
+    label: '회원 탈퇴',
+    icon: '/icons/sidebar/withdraw.svg',
+    path: '/user/withdraw'
+  }
+];

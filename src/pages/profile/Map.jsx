@@ -10,7 +10,6 @@ import { useParams } from "react-router-dom";
 
 const Map = forwardRef((props, ref) => {
     const {userId} = useParams();
-    const [mapColor, setMapColor] = useState('#83D9E0');
 
     const {
         sphereStrokeColor="#E4E5E6",
@@ -21,9 +20,10 @@ const Map = forwardRef((props, ref) => {
         geogrphyStrokeColor="#6b6b6b",
         geographyStrokeWidth=0.5,
         selectedCountry="",
-        filledCountries=[]
+        filledCountries=[],
+        fillColor
     } = props;
-
+    const [mapColor, setMapColor] = useState(fillColor);
     const [tooltipContent, setTooltipContent] = useState("");
     const [tooltipPos, setTooltipPos] = useState({x: 0, y: 0}); 
     const [showTooltip, setShowTooltip] = useState(false); 

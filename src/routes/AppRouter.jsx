@@ -1,6 +1,6 @@
 import React from "react";
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import StyleGuidePage from "../pages/temp/StyleGuidePage";
 import TravelTypeTest from "../pages/temp/TravelTypeTest";
 import TestPage from "../pages/temp/TestPage";
@@ -13,14 +13,6 @@ import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 
-import Register from "../pages/auth/Register";
-import Login from "../pages/auth/Login";
-import Logout from "../components/common/Logout";
-import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
-import FindId from "../pages/auth/FindId";
-import FindPassword from "../pages/auth/FindPassword";
-
-import ChatPanel from "/../pages/chat/ChatPanel";
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
 import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
@@ -28,6 +20,20 @@ import RankListPage from "../pages/quest/quest-badge/RankListPage";
 import MyQuestPage from "../pages/quest/my-quest-badge/MyQuestPage";
 import MyQuestBadgePage from "../pages/quest/my-quest-badge/MyQuestBadgePage";
 import MyQuestRecordPage from "../pages/quest/my-quest-badge/MyQuestRecordPage";
+
+import Register from "../pages/auth/Register";
+import Login from "../pages/auth/Login";
+import Logout from "../components/common/Logout";
+import SocialLoginHandler from "../pages/auth/SocialLoginHandler";
+import FindId from "../pages/auth/FindId";
+import FindPassword from "../pages/auth/FindPassword";
+
+import UserManage from "../pages/user/UserManage";
+import UserInquiry from "../pages/user/UserInquiry";
+import UserPremium from "../pages/user/UserPremium";
+import UserWithdraw from "../pages/user/UserWithdraw";
+
+import ChatPanel from "../pages/chat/ChatPanel";
 
 const AppRouter = () => {
     return (
@@ -53,7 +59,6 @@ const AppRouter = () => {
           <Route path="/my-quest/badge" element={<MyQuestBadgePage/>}/>
           <Route path="/my-quest/record" element={<MyQuestRecordPage/>}/>
 
-
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
           <Route path="/login" element={<Login/>}/>
@@ -64,6 +69,13 @@ const AppRouter = () => {
           <Route path="/find-id" element={<FindId/>}/>
           <Route path="/find-password" element={<FindPassword/>}/>
 
+          {/* User */}
+          <Route path="/user/manage" element={<UserManage/>}/>
+          <Route path="/user/inquiry" element={<UserInquiry/>}/> 
+          <Route path="/user/premium" element={<UserPremium/>}/> 
+          <Route path="/user/withdraw" element={<UserWithdraw/>}/> 
+
+          {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>
         </Routes>
     );

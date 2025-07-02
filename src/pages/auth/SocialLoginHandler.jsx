@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import API_ENDPOINTS from "../../utils/constants";
+import { Circles } from 'react-loader-spinner';
+import styles from "./SocialLoginHandler.module.css";
 
 const SocialLoginHandler = () => {
   const navigate = useNavigate();
@@ -54,7 +56,16 @@ const SocialLoginHandler = () => {
     fetchSocialToken();
   }, []);
 
-  return <div>로그인 처리 중...</div>;
+  return (
+    <div className={styles.loadingContainer}>
+      <Circles 
+        height="50" 
+        width="50" 
+        color="#000" 
+        ariaLabel="circles-loading"
+      />
+    </div>
+  );
 };
 
 export default SocialLoginHandler;
