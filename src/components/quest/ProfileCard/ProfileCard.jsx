@@ -15,6 +15,7 @@ const ProfileCard = ({
 
   const handleProfileClick = () => {
     // #NeedToChange
+    //window.scrollTo(0, 0);
     // navigate(`/profile/${id}`);
     console.log(`Navigating to /profile/${id}`);
   };

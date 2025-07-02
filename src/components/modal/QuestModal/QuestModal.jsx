@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import styles from './QuestModal.module.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const QuestModal = ({ questData, onClose, isLogin=false }) => {
   const [badgeHover, setBadgeHover] = useState(false);
+
+  const navigate = useNavigate();
 
   // 난이도 영어 -> 한글
   const getDifficultyText = (difficulty) => {
@@ -72,6 +76,16 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
     console.log('다시 도전하기');
   };
 
+  const handleLoginClick = () => {
+    window.scrollTo(0, 0);
+    navigate('/login');
+  };
+
+  const handleSignupClick = () => {
+    window.scrollTo(0, 0);
+    navigate('/register');
+  };
+
   // 유저들
   const renderUserAvatars = (users, type) => {
     const displayUsers = users.slice(0, 3);
@@ -102,6 +116,24 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
     );
   };
 
+  const renderLogoutButtons = () => {
+    return (
+        <div className={styles.questButtons}>
+          <span className={styles.statusText}>
+            지구방방에 로그인 시 퀘스트에 도전할 수 있습니다.
+          </span>
+          <div className={styles.buttonGroup}>
+            <button className={styles.challengeBtn} onClick={handleLoginClick}>
+              로그인
+            </button>
+            <button className={styles.giveUpBtn} onClick={handleSignupClick}>
+              회원가입
+            </button>
+          </div>
+        </div>
+      );
+  }
+
   // 상태별 버튼 렌더링
   const renderStatusButtons = () => {
     switch(questData.quest_status) {
@@ -109,7 +141,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
         return (
           <div className={styles.questButtons}>
             <span className={styles.statusText}>
-              {formatDate(questData.started_at)}에 시작된 퀘스트입니다
+              {formatDate(questData.started_at)}에 시작되어<br />
+              진행 중인 퀘스트입니다
             </span>
             <div className={styles.buttonGroup}>
               <button className={styles.verifyBtn} onClick={handleVerifyClick}>
@@ -126,7 +159,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
         return (
           <div className={styles.questButtons}>
             <span className={styles.statusText}>
-              {formatDate(questData.started_at)}에 시작되어 <br/> {formatDate(questData.completed_at)}에 완료된 퀘스트입니다
+              {formatDate(questData.started_at)}에 시작되어<br />
+              {formatDate(questData.completed_at)}에 완료된 퀘스트입니다
             </span>
             <button className={styles.viewCertBtn} onClick={handleViewCertificationClick}>
               인증 보러가기
@@ -138,7 +172,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
         return (
           <div className={styles.questButtons}>
             <span className={styles.statusText}>
-              {formatDate(questData.started_at)}에 시작되어 {formatDate(questData.given_up_at)}에 포기한 퀘스트입니다
+              {formatDate(questData.started_at)}에 시작되어<br />
+              {formatDate(questData.given_up_at)}에 포기한 퀘스트입니다
             </span>
             <button className={styles.retryBtn} onClick={handleRetryClick}>
               다시 도전하기
@@ -251,7 +286,7 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
               </div>
               
               {/* 상태별 버튼 */}
-              {renderStatusButtons()}
+              {isLogin ? renderStatusButtons() : renderLogoutButtons()}
             </div>
           </div>
         </div>

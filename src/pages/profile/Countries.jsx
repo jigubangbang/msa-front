@@ -64,7 +64,6 @@ export default function Countries() {
         axios
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/stats`)
             .then((response) => {
-                console.log("Stats:", response.data);
                 setStats(response.data);
             })
             .catch((err) => {

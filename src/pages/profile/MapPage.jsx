@@ -5,6 +5,7 @@ import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
 import lockIcon from "../../assets/profile/lock_grey.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
+import settingsIcon from "../../assets/profile/settings_grey.svg";
 
 import Map from "./Map";
 import geography from "../../../src/assets/features.json";
@@ -15,6 +16,8 @@ import CountrySearchSection from "../../components/profile/CountrySearchSection/
 import API_ENDPOINTS from "../../utils/constants";
 import { useParams } from "react-router-dom";
 import StatsModal from "../../components/profile/map/StatsModal";
+import Modal from "../../components/common/Modal/Modal";
+import MapSettingsContent from "../../components/profile/map/MapSettingsContent";
 
 // TODO: Condition lock icon on premium membership
 
@@ -29,6 +32,10 @@ export default function MapPage() {
 
     const [mapColor, setMapColor] = useState("white");
     const [isPremium, setIsPremium] = useState(false);
+
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [selectedColor, setSelectedColor] = useState();
+    const [originalColor, setOriginalColor] = useState();
 
     const handleRandomCountry = () => {
         const countries = feature(geography, geography.objects.world).features;
@@ -57,23 +64,27 @@ export default function MapPage() {
         }
     }
 
+    function getHexCode(color) {
+        switch (color) {
+            case 'GREEN':
+                return "#93AD28";
+            case 'PINK':
+                return "#FFB6C1";
+            case 'YELLOW':
+                return "#F1DC81";
+            default:
+                return "#83D9E0";
+        }
+    }
+
     const fetchUserData = async () => {
         try {
             const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`);
             setIsPremium(response.data.premium); 
-            switch (response.data.mapColor) {
-                    case 'GREEN':
-                        setMapColor("#93AD28");
-                        break;
-                    case 'PINK':
-                        setMapColor("#FFB6C1");
-                        break;
-                    case 'YELLOW':
-                        setMapColor("#F1DC81");
-                        break;
-                    default:
-                        setMapColor("#83D9E0");
-                }
+            setSelectedColor(response.data.mapColor);
+            setOriginalColor(response.data.mapColor);
+            const color = getHexCode(response.data.mapColor);
+            setMapColor(color);
         } catch (error) {
             console.error("Failed to fetch user", error);
         }
@@ -83,10 +94,32 @@ export default function MapPage() {
         fetchFilledCountries();
     }
 
+    function handleColorSubmit() {
+        axios
+            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/settings?color=${selectedColor}`)
+            .then((response) => {
+                setOriginalColor(response.data.color);
+                const color = getHexCode(response.data.color);
+                setMapColor(color);
+                setShowSettingsModal(false);
+            })
+            .catch((error) => {
+                console.error("Failed to update map color", error);
+            })
+    }
+
+    function resetColorSettings() {
+        setSelectedColor(originalColor);
+        setShowSettingsModal(false);
+    }
+
+    useEffect(() => {
+        fetchFilledCountries();
+    }, [mapType]);
+
     useEffect(() => {
         fetchUserData();
-        fetchFilledCountries();
-    }, [mapType])
+    }, [])
 
     return (
         <>
@@ -94,7 +127,11 @@ export default function MapPage() {
                 <div className={styles.btnTopLeftContainer}>
                     <CountrySearchSection mapType={mapType} handleMapUpdate={handleMapUpdate}/>
                 </div>
-                
+                <div className={styles.btnTopRightContainer}>
+                    <button className={styles.settingsBtn} onClick={() => setShowSettingsModal(true)}>
+                        <img src={settingsIcon} alt="설정"/>
+                    </button>
+                </div>
                 <div className={styles.btnTopContainer}>
                     <ToggleBtn 
                         firstOption="방문 국가"
@@ -120,7 +157,7 @@ export default function MapPage() {
                     <button className={styles.btnOutline} onClick={handleRandomCountry}>랜덤 추천</button>
                 </div>
                 <div className={styles.mapWrapper}>
-                    <Map ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries}/>
+                    <Map key={mapColor} ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries} fillColor={mapColor}/>
                 </div>
             </div>
             {isLoading && (
@@ -137,6 +174,21 @@ export default function MapPage() {
             )}
             {showStats && (
                 <StatsModal userId={userId} onClose={() => setShowStats(false)} mapColor={mapColor}/>
+            )}
+            {showSettingsModal && (
+                <Modal
+                    show={showSettingsModal}
+                    onClose={resetColorSettings}
+                    onSubmit={handleColorSubmit}
+                    heading="지도 테마"
+                    firstLabel="저장"
+                    secondLabel="취소"
+                >
+                    <MapSettingsContent
+                        selectedColor={selectedColor}
+                        setSelectedColor={setSelectedColor}
+                    />
+                </Modal>
             )}
         </>
     );
