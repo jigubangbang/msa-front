@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import styles from "./QuestListPage.module.css";
@@ -9,6 +9,8 @@ import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel"
 import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
+import QuestModal from "../../../components/modal/QuestModal/QuestModal";
+import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 
 
 
@@ -16,6 +18,13 @@ export default function QuestListPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
+
+// Modal states 
+const [showQuestModal, setShowQuestModal] = useState(false);
+const [showBadgeModal, setShowBadgeModal] = useState(false);
+const [selectedQuest, setSelectedQuest] = useState(null);
+const [selectedBadge, setSelectedBadge] = useState(null);
 
   //SideBar//
     const location = useLocation();
@@ -41,10 +50,21 @@ export default function QuestListPage() {
 
 
   useEffect(()=>{
+    const token = localStorage.getItem("accessToken");
+    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
+    setIsLogin(true);
     fetchUser();
     fetchUserQuests();
     fectchUserBadges();
+
+    if (token) {
+      setIsLogin(true);
+      fetchUser();
+      fetchUserQuests();
+      fectchUserBadges();
+    }
   }, []);
+
 
   const fetchUser = async () => {
     setLoading(true);
@@ -102,6 +122,66 @@ export default function QuestListPage() {
     if (total === 0) return "0%";
     return Math.round((completedCount / total) * 100) + "%";
   };
+  
+  //quest modal
+const openQuestModal = async (quest_id) => {
+  setLoading(true);
+  try {
+    const endpoint = isLogin 
+    ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
+
+    const response = await axios.get(endpoint);
+    setSelectedQuest(response.data);
+    setShowQuestModal(true);
+    console.log("Quest data fetched:", response.data);
+  } catch (error) {
+    console.error("Failed to fetch quest data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const closeQuestModal = () => {
+  setShowQuestModal(false);
+  setSelectedQuest(null);
+};
+
+// 모달
+const openBadgeModal = async (badge_id) => {
+  setLoading(true);
+  try {
+    const endpoint = isLogin 
+    ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
+
+    const response = await axios.get(endpoint);
+    setSelectedBadge(response.data);
+    setShowBadgeModal(true);
+    console.log("Badge data fetched:", response.data);
+  } catch (error) {
+    console.error("Failed to fetch badge data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const closeBadgeModal = () => {
+  setShowBadgeModal(false);
+  setSelectedBadge(null);
+};
+
+// 퀘스트에서 배지 클릭 핸들러
+const handleBadgeClickFromQuest = (badge_id) => {
+  closeQuestModal(); // 퀘스트 모달 닫기
+  openBadgeModal(badge_id); // 배지 모달 열기
+};
+
+// 배지에서 퀘스트 클릭 핸들러
+const handleQuestClickFromBadge = (quest_id) => {
+  closeBadgeModal(); // 배지 모달 닫기
+  openQuestModal(quest_id); // 퀘스트 모달 열기
+};
 
 
  if (loading) {
@@ -121,16 +201,37 @@ export default function QuestListPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <RankQuestList myUserId={user?.user_id || ""}/>
+          <RankQuestList myUserId={user?.user_id || ""} onOpenModal={openQuestModal}/>
 
           <UserInfoPanel 
             user={user}
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
+            isLogin={isLogin}
           />
 
         </div>
       </div>
+
+      {/* 퀘스트 모달 */}
+      {showQuestModal && (
+        <QuestModal 
+          questData={selectedQuest} 
+          onClose={closeQuestModal}
+          onBadgeClick={handleBadgeClickFromQuest}
+          isLogin={isLogin} 
+        />
+      )}
+
+      {/* 배지 모달 */}
+      {showBadgeModal && (
+        <BadgeModal 
+          badgeData={selectedBadge} 
+          onClose={closeBadgeModal}
+          onQuestClick={handleQuestClickFromBadge}
+          isLogin={isLogin} 
+        />
+      )}
     </div>
   );
 }

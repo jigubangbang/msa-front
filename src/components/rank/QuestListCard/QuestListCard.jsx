@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import styles from './QuestListCard.module.css';
 
-
-
 const QuestListCard = ({ 
   title, 
-  quest=[]
+  quest=[],
+  isLogin=false
 }) => {
 
   const handleButtonClick = () => {
     // #NeedToChange
-    console.log(`Navigating to Quest Page`);
+    console.log(`Navigating to My Quest Page`);
   };
+
+  const handleLoginClick = () => {
+    window.scrollTo(0, 0);
+    navigate('/login');
+  }
 
   const displayQuests = quest.slice(0, 10);
 
@@ -32,15 +36,18 @@ const QuestListCard = ({
             ))
           ) : (
             <div className={styles.noQuests}>
-              진행 중인 퀘스트가 없습니다.
+              진행 중인 퀘스트가 <br/>없습니다.
             </div>
           )}
         </div>
 
       </div>
       
+      {isLogin ? (
         <button className={`${styles.btn} ${styles.btnSecondary}`}
           onClick={handleButtonClick}>View My Quests →</button>
+      ) : (<button className={`${styles.btn} ${styles.btnSecondary}`}
+          onClick={handleLoginClick}>로그인 하러 가기 →</button>)}
     </div>
   );
 };

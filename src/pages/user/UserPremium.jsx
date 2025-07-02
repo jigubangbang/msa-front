@@ -5,6 +5,8 @@ import styles from "./UserManage.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
 
 export default function UserPremium() {
+
+  // 사이드바 
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -14,7 +16,6 @@ export default function UserPremium() {
       active: currentPath === item.path || currentPath.startsWith(item.path + '/')
     }));
   };
-
   const finalMenuItems = getActiveMenuItems();
 
   return (
@@ -23,7 +24,7 @@ export default function UserPremium() {
       <div className={styles.content}>
         <h1 className={styles.title}>프리미엄</h1>
         <div className={styles.formContainer}>
-          <p>프리미엄 결제 및 상태 정보가 들어갈 자리입니다.</p>
+          <p>프리미엄 페이지 내용</p>
         </div>
       </div>
     </div>

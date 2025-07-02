@@ -5,6 +5,8 @@ import styles from "./UserManage.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
 
 export default function UserWithdraw() {
+
+  // 사이드바
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -14,7 +16,6 @@ export default function UserWithdraw() {
       active: currentPath === item.path || currentPath.startsWith(item.path + '/')
     }));
   };
-
   const finalMenuItems = getActiveMenuItems();
 
   return (
@@ -23,7 +24,7 @@ export default function UserWithdraw() {
       <div className={styles.content}>
         <h1 className={styles.title}>회원 탈퇴</h1>
         <div className={styles.formContainer}>
-          <p>회원 탈퇴 관련 안내 및 처리 폼이 들어갈 자리입니다.</p>
+          <p>회원 탈퇴 페이지 내용</p>
         </div>
       </div>
     </div>

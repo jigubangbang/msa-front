@@ -62,7 +62,7 @@ const QuestSliderCard = ({ quest, onClick }) => {
   );
 };
 
-const QuestSlider = ({ quests = [], title = "Seasonal Events" }) => {
+const QuestSlider = ({ quests = [], title = "Seasonal Events", onOpenModal }) => {
   const [currentPage, setCurrentPage] = useState(0);
   
   const questsPerPage = 5;
@@ -73,8 +73,9 @@ const QuestSlider = ({ quests = [], title = "Seasonal Events" }) => {
   const currentQuests = quests.slice(startIndex, endIndex);
 
   const handleQuestClick = (quest) => {
-    //#NeedToChange
-    console.log('Quest clicked:', quest);
+    if (onOpenModal && quest.id) {
+      onOpenModal(quest.id);
+    }
   };
 
   const nextPage = () => {

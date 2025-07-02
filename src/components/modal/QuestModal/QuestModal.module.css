@@ -138,6 +138,96 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   margin: 10px 0;
 }
 
+
+.badgesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.badgeContainer {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.badgeIcon {
+  width: 80px;
+  height: 80px;
+  transition: opacity 0.2s;
+  border-radius: 50%;
+  border: 2px solid #ffd700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.badgeTooltip {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 200px;
+  text-align: center;
+}
+
+.badgeTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #000;
+}
+
+.badgeKorTitle {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.badgeEngTitle {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.badgeClickHint {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.noBadges {
+  text-align: center;
+  color: #cccccc;
+  font-style: italic;
+  padding: 20px;
+  font-size: 14px;
+}
+
+/* 여러 뱃지가 있을 때를 위한 추가 스타일 */
+@media (max-width: 768px) {
+  .badgeIcon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .badgeTooltip {
+    font-size: 12px;
+    min-width: 150px;
+  }
+}
+
 .badgeContainer {
   position: relative;
   cursor: pointer;
@@ -289,11 +379,16 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .questButtons {
+  display: flex;
+  flex-direction: column;
   background: white;
   padding: 20px;
   border-radius: 12px;
   text-align: center;
   border: 1px solid #ccc;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .statusText {

@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import styles from './QuestModal.module.css';
+import { useNavigate } from 'react-router-dom';
+import ModalUserList from '../ModalUserList/ModalUserList';
 
-const QuestModal = ({ questData, onClose, isLogin=false }) => {
-  const [badgeHover, setBadgeHover] = useState(false);
+
+const QuestModal = ({ questData, onClose, isLogin=false, onBadgeClick }) => {
+  const [badgeHover, setBadgeHover] = useState(null);
+  const [showUserList, setShowUserList] = useState(false);
+
+
+  const navigate = useNavigate();
 
   // 난이도 영어 -> 한글
   const getDifficultyText = (difficulty) => {
@@ -38,17 +45,50 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
   };
 
   // 배지 클릭 
-  const handleBadgeClick = () => {
-    console.log('배지 클릭:', questData.badge_id);
-  };
+  const handleBadgeClick = (badge) => {
+  console.log('배지 클릭:', badge.id);
+  if (onBadgeClick) {
+    onBadgeClick(badge.id);
+  }
+};
+
+const renderBadges = () => {
+  if (!questData.badges || questData.badges.length === 0) {
+    return <div className={styles.noBadges}>연관된 뱃지가 없습니다.</div>;
+  }
+
+  return (
+    <div className={styles.badgesContainer}>
+      {questData.badges.map((badge, index) => (
+        <div 
+          key={badge.id}
+          className={styles.badgeContainer}
+          onMouseEnter={() => setBadgeHover(badge.id)}
+          onMouseLeave={() => setBadgeHover(null)}
+          onClick={() => handleBadgeClick(badge)}
+        >
+          <img 
+            src={badge.icon} 
+            alt="badge" 
+            className={styles.badgeIcon}
+            style={{ opacity: badgeHover === badge.id ? 0.7 : 1 }}
+          />
+          {badgeHover === badge.id && (
+            <div className={styles.badgeTooltip}>
+              <div className={styles.badgeKorTitle}>{badge.kor_title}</div>
+              <div className={styles.badgeEngTitle}>{badge.eng_title}</div>
+              <div className={styles.badgeClickHint}>클릭하여 뱃지 보기</div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
 
   // 유저 목록 클릭 
   const handleUserListClick = (type) => {
-    if (type === 'progress') {
-      console.log('진행 중인 유저들:', questData.in_progress_user);
-    } else {
-      console.log('완료한 유저들:', questData.completed_user);
-    }
+    setShowUserList(true);
   };
 
   // 버튼들
@@ -71,6 +111,18 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
   const handleRetryClick = () => {
     console.log('다시 도전하기');
   };
+
+  const handleLoginClick = () => {
+    window.scrollTo(0, 0);
+    navigate('/login');
+  };
+
+  const handleSignupClick = () => {
+    window.scrollTo(0, 0);
+    navigate('/register');
+  };
+
+  
 
   // 유저들
   const renderUserAvatars = (users, type) => {
@@ -102,6 +154,24 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
     );
   };
 
+  const renderLogoutButtons = () => {
+    return (
+        <div className={styles.questButtons}>
+          <span className={styles.statusText}>
+            지구방방에 로그인 시 퀘스트에 도전할 수 있습니다.
+          </span>
+          <div className={styles.buttonGroup}>
+            <button className={styles.challengeBtn} onClick={handleLoginClick}>
+              로그인
+            </button>
+            <button className={styles.giveUpBtn} onClick={handleSignupClick}>
+              회원가입
+            </button>
+          </div>
+        </div>
+      );
+  }
+
   // 상태별 버튼 렌더링
   const renderStatusButtons = () => {
     switch(questData.quest_status) {
@@ -109,7 +179,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
         return (
           <div className={styles.questButtons}>
             <span className={styles.statusText}>
-              {formatDate(questData.started_at)}에 시작된 퀘스트입니다
+              {formatDate(questData.started_at)}에 시작되어<br />
+              진행 중인 퀘스트입니다
             </span>
             <div className={styles.buttonGroup}>
               <button className={styles.verifyBtn} onClick={handleVerifyClick}>
@@ -126,7 +197,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
         return (
           <div className={styles.questButtons}>
             <span className={styles.statusText}>
-              {formatDate(questData.started_at)}에 시작되어 <br/> {formatDate(questData.completed_at)}에 완료된 퀘스트입니다
+              {formatDate(questData.started_at)}에 시작되어<br />
+              {formatDate(questData.completed_at)}에 완료된 퀘스트입니다
             </span>
             <button className={styles.viewCertBtn} onClick={handleViewCertificationClick}>
               인증 보러가기
@@ -138,7 +210,8 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
         return (
           <div className={styles.questButtons}>
             <span className={styles.statusText}>
-              {formatDate(questData.started_at)}에 시작되어 {formatDate(questData.given_up_at)}에 포기한 퀘스트입니다
+              {formatDate(questData.started_at)}에 시작되어<br />
+              {formatDate(questData.given_up_at)}에 포기한 퀘스트입니다
             </span>
             <button className={styles.retryBtn} onClick={handleRetryClick}>
               다시 도전하기
@@ -197,25 +270,7 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
               
               {/* 배지 */}
               <div className={styles.badgeSection}>
-                <div 
-                  className={styles.badgeContainer}
-                  onMouseEnter={() => setBadgeHover(true)}
-                  onMouseLeave={() => setBadgeHover(false)}
-                  onClick={handleBadgeClick}
-                >
-                  <img 
-                    src={questData.badge_icon} 
-                    alt="badge" 
-                    className={styles.badgeIcon}
-                    style={{ opacity: badgeHover ? 0.7 : 1 }}
-                  />
-                  {badgeHover && (
-                    <div className={styles.badgeTooltip}>
-                      <div className={styles.badgeKorTitle}>{questData.kor_title}</div>
-                      <div className={styles.badgeEngTitle}>{questData.eng_title}</div>
-                    </div>
-                  )}
-                </div>
+                {renderBadges()}
               </div>
 
               {/* 유저 목록 */}
@@ -251,11 +306,20 @@ const QuestModal = ({ questData, onClose, isLogin=false }) => {
               </div>
               
               {/* 상태별 버튼 */}
-              {renderStatusButtons()}
+              {isLogin ? renderStatusButtons() : renderLogoutButtons()}
             </div>
           </div>
         </div>
       </div>
+      {showUserList && (
+        <ModalUserList
+          isOpen={showUserList}
+          onClose={() => setShowUserList(false)}
+          type="quest"
+          inProgressUsers={questData.in_progress_user || []}
+          completedUsers={questData.completed_user || []}
+        />
+      )}
     </div>
   );
 };
