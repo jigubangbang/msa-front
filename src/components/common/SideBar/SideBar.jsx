@@ -10,12 +10,14 @@ export default function Sidebar({
 
   const handleMenuClick = (path) => {
     if (path) {
+      window.scrollTo(0, 0);
       navigate(path);
     }
   };
 
   const handleSubmenuClick = (path) => {
     if (path) {
+      window.scrollTo(0, 0);
       navigate(path);
     }
   };

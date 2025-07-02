@@ -3,6 +3,8 @@ import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './QuestList.module.css';
 import Dropdown from '../../common/Dropdown';
+import { useNavigate } from 'react-router-dom';
+
 
 const QuestListCard = ({ quest, onJoin, onDetail }) => {
   const getDifficultyText = (difficulty) => {
@@ -83,7 +85,7 @@ const QuestListCard = ({ quest, onJoin, onDetail }) => {
   );
 };
 
-const QuestList = () => {
+const QuestList = ( { onOpenModal } ) => {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -94,6 +96,8 @@ const QuestList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [questsPerPage] = useState(16); // 4x4 = 16개
   const [totalPages, setTotalPages] = useState(1);
+
+  const navigate = useNavigate();
 
   const categories = [
     { value: 0, label: '전체' },
@@ -166,9 +170,11 @@ const QuestList = () => {
   };
 
   const handleQuestDetail = (quest) => {
-  console.log(`detail ${quest.id}`);
-  // #NeedToChange
-};
+    if (onOpenModal && quest.id) {
+        onOpenModal(quest.id);
+      }
+  };
+
 
   // 현재 페이지에 표시할 퀘스트들
   const startIndex = (currentPage - 1) * questsPerPage;

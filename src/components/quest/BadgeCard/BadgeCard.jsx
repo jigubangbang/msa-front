@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const BadgeCard = ({userBadge, isLogin=true}) => {
+const BadgeCard = ({userBadge, isLogin=false}) => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
+    window.scrollTo(0, 0);
     navigate(`/quest/badge`);
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import styles from "./QuestListPage.module.css";
@@ -9,6 +9,7 @@ import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel"
 import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
+import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 
 
 
@@ -16,6 +17,13 @@ export default function QuestListPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
+
+    // Modal states
+  const [showModal, setShowModal] = useState(false);
+  const [selectedQuest, setSelectedQuest] = useState(null);
+
+  const navigate = useNavigate();
 
   //SideBar//
     const location = useLocation();
@@ -41,10 +49,21 @@ export default function QuestListPage() {
 
 
   useEffect(()=>{
-    fetchUser();
-    fetchUserQuests();
-    fectchUserBadges();
+    const token = localStorage.getItem("accessToken");
+    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
+    // setIsLogin(true);
+    // fetchUser();
+    // fetchUserQuests();
+    // fectchUserBadges();
+
+    if (token) {
+      setIsLogin(true);
+      fetchUser();
+      fetchUserQuests();
+      fectchUserBadges();
+    }
   }, []);
+
 
   const fetchUser = async () => {
     setLoading(true);
@@ -103,6 +122,29 @@ export default function QuestListPage() {
     return Math.round((completedCount / total) * 100) + "%";
   };
 
+  const openQuestModal = async (quest_id) => {
+    setLoading(true);
+    try {
+      const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
+
+      const response = await axios.get(endpoint);
+      setSelectedQuest(response.data);
+      setShowModal(true);
+      console.log("Quest data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch quest data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+    const closeModal = () => {
+    setShowModal(false);
+    setSelectedQuest(null);
+  };
+
 
  if (loading) {
     return (
@@ -121,16 +163,26 @@ export default function QuestListPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <RankQuestList myUserId={user?.user_id || ""}/>
+          <RankQuestList myUserId={user?.user_id || ""} onOpenModal={openQuestModal}/>
 
           <UserInfoPanel 
             user={user}
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
+            isLogin={isLogin}
           />
 
         </div>
       </div>
+
+      {/* 퀘스트 모달 */}
+      {showModal && (
+        <QuestModal 
+          questData={selectedQuest} 
+          onClose={closeModal}
+          isLogin={isLogin} 
+        />
+      )}
     </div>
   );
 }
