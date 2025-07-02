@@ -1,5 +1,5 @@
 // src/components/chat/ChatModal.jsx
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
 import ChatPanel from './ChatPanel.jsx';
 import { joinSock } from '../../hooks/chat/joinSock.js';
@@ -7,6 +7,42 @@ import '../../styles/chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId }) {
   const { senderId, messages, sendMessage, isLoading, chatError, isJoining, unsubscribeChatRoom } = joinSock(isOpen, chatId);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const panelRef = useRef(null);
+  const dragging = useRef(false);
+  const offset = useRef({ x: 0, y: 0 });
+
+  // 채팅창 이동 이벤트 핸들러
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!dragging.current) return;
+      setPosition({
+        x: e.clientX - offset.current.x,
+        y: e.clientY - offset.current.y,
+      });
+    };
+
+    const handleMouseUp = () => {
+      dragging.current = false;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  const startDragging = (e) => {
+    if (!panelRef.current) return;
+    dragging.current = true;
+    const rect = panelRef.current.getBoundingClientRect();
+    offset.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  };
 
   // 모달이 닫힐 때 채팅 상태 초기화
   useEffect(() => {
@@ -24,17 +60,20 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
 
   // Portal을 사용하여 body 바로 아래에 렌더링
   return ReactDOM.createPortal(
-    <div className="chat-modal-overlay" onClick={handleClose}>
-      {/* 모달 내용 컨테이너: 오버레이 클릭 시 닫히는 것을 방지 */}
-      <div className="chat-modal-content" onClick={e => e.stopPropagation()}>
-         {/* 로딩 상태 표시 */}
+    <div className="chat-modal-overlay">
+      <div className="chat-modal-content"
+        onMouseDown={startDragging}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          transform: `translate(${position.x}px, ${position.y}px)`,
+          cursor: 'move',
+        }}>
+
         {(isLoading || isJoining) && (
           <div className="chat-loading">
             <p>채팅방에 입장 중...</p>
           </div>
         )}
-        
-        {/* 에러 상태 표시 */}
         {chatError && (
           <div className="chat-error">
             <p>채팅방 입장에 실패했습니다.</p>
@@ -42,7 +81,6 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
           </div>
         )}
         
-        {/* 채팅방 입장 성공 시 채팅 패널 표시 */}
         {!(isLoading || isJoining) && !chatError && (
           <ChatPanel
             chatId={chatId}
@@ -54,9 +92,8 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
             onForceClose={onClose}
           />
         )}
-        
       </div>
     </div>,
-    document.body // body 태그에 렌더링
+    document.body
   );
 }

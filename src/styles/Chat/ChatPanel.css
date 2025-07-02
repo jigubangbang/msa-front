@@ -1,3 +1,27 @@
+:root {
+  --color-background: #ffffff;
+  --color-text-primary: #242424;
+  --color-text-secondary: #6b6b6b;
+  --color-accent-green: #1a8917;
+  --color-accent-blue: #83D9E0;
+  --color-border: #e5e5e5;
+  --color-tag-bg: #f2f2f2;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+  /*font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  font-family: 'Pretendard', sans-serif; 
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
 .chat-panel-container {
   position: relative;
   display: flex;
@@ -9,21 +33,23 @@
 }
 
 .chat-header {
-  background-color: #0077cc;
+  background-color: #242424;
   color: white;
   padding: 15px;
   text-align: center;
   font-size: 24px;
   font-weight: 700;
-  border-bottom: 1px solid #0056b3;
+  border-bottom: 1px solid #6b6b6b;
   display: flex;
   align-items: center;
   justify-content: center; /* H2를 가운데 정렬 */
 }
 
 .chat-header h2 {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 1.75rem;
+  font-weight: bold;
   margin: 0;
-  flex-grow: 1;
 }
 
 .chat-header-menu {
@@ -36,7 +62,7 @@
 
 .chat-close-button {
   position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
-  top: 21px;
+  top: 17px;
   left: 20px;
   font-size: 1em;
   cursor: pointer;
@@ -154,9 +180,14 @@
 }
 
 .message-text {
-  font-size: 18px;
-  font-weight: 400;
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 16px;
   margin: 0; /* Remove default paragraph margin */
+}
+
+.timestamp {
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 1rem;
 }
 
 .chat-input-area {
@@ -181,23 +212,26 @@
   border-radius: 8px;
   margin-right: 12px;
   margin-left: 12px;
-  font-size: 18px;
-  font-weight: 400;
-  outline: none; /* Remove outline on focus */
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .chat-input:focus {
-  border-color: #0077cc;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
 }
 
 .chat-send-button {
-  background-color: #0077cc;
+  background-color: #242424;
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 18px;
-  font-weight: 400;
+  font: 16px;
+  font-weight: 500;
   border-radius: 8px;
   margin-right: 12px;
   cursor: pointer;
@@ -205,5 +239,5 @@
 }
 
 .chat-send-button:hover {
-  background-color: #0056b3;
+  background-color: #363636;
 }
