@@ -99,7 +99,7 @@ export default function Profile() {
         fetchVisitedCountries();
         fetchUserLanguages();
         fetchUserFavorites();
-    }, []);
+    }, [userId]);
 
     return(
         <>

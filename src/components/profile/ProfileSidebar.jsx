@@ -134,7 +134,7 @@ export default function ProfileSidebar() {
                 console.log(err.message);
                 setLoading(false);
             });
-    }, []);
+    }, [userId]);
 
     if (loading) return <div className={styles.sidebar}></div>;
     return (

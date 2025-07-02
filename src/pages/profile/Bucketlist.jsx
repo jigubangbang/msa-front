@@ -143,7 +143,7 @@ export default function Bucketlist() {
                 setCompleteCount(response.data.completeItems);
                 setIncompleteCount(response.data.incompleteItems);
             })
-    }, [reloadData]);
+    }, [reloadData, userId]);
 
     return (
         <>

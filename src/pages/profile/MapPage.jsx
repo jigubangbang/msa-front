@@ -115,11 +115,11 @@ export default function MapPage() {
 
     useEffect(() => {
         fetchFilledCountries();
-    }, [mapType]);
+    }, [mapType, userId]);
 
     useEffect(() => {
         fetchUserData();
-    }, [])
+    }, [userId])
 
     return (
         <>

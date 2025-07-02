@@ -69,7 +69,7 @@ export default function Countries() {
             .catch((err) => {
                 console.error("Failed to load stats", err.message);
             });
-    }, [activeDropdownOption]);
+    }, [activeDropdownOption, userId]);
     return (
         <ProfileTemplate heading={`@${userId}`}>
             <div className={styles.mainWrapper}>

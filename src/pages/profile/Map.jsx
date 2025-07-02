@@ -53,7 +53,7 @@ const Map = forwardRef((props, ref) => {
                         setMapColor("#83D9E0");
                 }
             })
-    }, []);
+    }, [userId]);
     return (
         <div 
             className={styles.mapContainer}

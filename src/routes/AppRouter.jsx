@@ -12,6 +12,10 @@ import Countries from "../pages/profile/Countries";
 import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
+import Following from "../pages/profile/Following";
+import Followers from "../pages/profile/Followers";
+
+import Feed from "../components/feed/Feed";
 
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
@@ -34,8 +38,6 @@ import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
 import ChatPanel from "../pages/chat/ChatPanel";
-import Network from "../pages/profile/Network";
-import Feed from "../components/feed/Feed";
 
 const AppRouter = () => {
     return (
@@ -52,7 +54,8 @@ const AppRouter = () => {
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
-          <Route path="/profile/:userId/network" element={<Network/>}/>
+          <Route path="/profile/:userId/following" element={<Following/>}/>
+          <Route path="/profile/:userId/followers" element={<Followers/>}/>
 
           {/* Feed */}
           <Route path="/feed" element={<Feed/>}/>
