@@ -1,6 +1,6 @@
 // src/hooks/chat/joinSock.js
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useStomp, useStore } from './useStomp';
+import { useStomp, useStore } from '/../chat/useStomp';
 import API_ENDPOINTS from '../../utils/constants';
 
 export function joinSock(isOpen, chatId, senderId) {

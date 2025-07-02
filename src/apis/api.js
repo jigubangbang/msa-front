@@ -1,10 +1,10 @@
 // src/api/api.js
 import axios from 'axios';
 import { getAccessToken, getRefreshToken, setTokens, removeTokens } from '../utils/tokenUtils';
-import API_ENDPOINTS from '../utils/constants';
+import API_ENDPOINTS, {LOCAL} from '../utils/constants';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', 
+  baseURL: `${LOCAL}`, 
   withCredentials: false, 
 });
 

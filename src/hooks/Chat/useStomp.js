@@ -1,14 +1,13 @@
 import { useState, useCallback } from "react";
 import { create } from "zustand/react";
 import API_ENDPOINTS from '../../utils/constants';
+import { getAccessToken, getRefreshToken, setTokens, isTokenExpired, removeTokens } from "../../utils/tokenUtils";
 // import SockJS from "sockjs-client";
 import {Client} from "@stomp/stompjs";
 
 const WEBSOCKET_ENDPOINT_URL = `${API_ENDPOINTS.WS}`;
 
 export const useStore = create((set) => ({
-  accessToken: "AXmxOoAbZ+MzB31Diio24unhX3uPneVd0TJCeALqTfhDgHohZdzHG/DXf41DUXQIH+gR1QL7s5ONGcjCZeIg1g== ",
-  setAccessToken: (accessToken) => set({ accessToken }),
   stompClient: null,
   setStompClient: (stompClient) => set({ stompClient }),
   senderId: null,
@@ -38,32 +37,40 @@ export const useChatSubscriptionStore = create((set, get) => ({
 }));
 
 export function useStomp() {
-    // const [accessToken, setAccessToken] = useState(null);
-    // const [stompClient, setStompClient] = useState(null);
-    // const [memberId, setMemberId] = useState(null);
     const { setStompClient } = useStore();
 
     const connect = useCallback(
-        /**
-         * STOMP 클라이언트를 활성화하고 연결합니다.
-         * @param {ConnectOptions} options - 연결 옵션 객체
-         */
-    ({
-      accessToken,
-      onConnect,
-      onError,
-      onDisconnect
-    }) => {
-        // const socket = new SockJS(WEBSOCKET_ENDPOINT_URL);
+      async ({ onConnect, onError, onDisconnect }) => {
+        let token = getAccessToken();
+        if (isTokenExpired(token)) {
+          try {
+            const refreshToken = getRefreshToken();
+            const res = await axios.post(`${API_ENDPOINTS.AUTH}/refresh-token`, null, {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`
+              },
+            });
 
+            const { accessToken: newAccessToken } = res.data;
+            setTokens(newAccessToken, refreshToken);
+            token = newAccessToken;
+            console.log("[useStomp] accessToken 재발급 성공");
+          } catch (err) {
+            console.error("[useStomp] refreshToken 만료 → 로그아웃");
+            removeTokens();
+            window.location.href = '/login';
+            return;
+          }
+        }
+
+        // const socket = new SockJS(WEBSOCKET_ENDPOINT_URL);
         // STOMP 클라이언트 생성
         const stompClient = new Client({
         // webSocketFactory: () => socket,
-        webSocketFactory: () => new WebSocket(WEBSOCKET_ENDPOINT_URL), // SockJs 사용 안하면 위 socket 지우고 이 줄만 작성 - 현재 안되는 상태
+        webSocketFactory: () => new WebSocket(`${WEBSOCKET_ENDPOINT_URL}?token=${token}`), // SockJs 사용 안하면 위 socket 지우고 이 줄만 작성 - 현재 안되는 상태
         debug: (msg) => console.log("[STOMP]:", msg),
         connectHeaders: {
-          // 필요시 인증 토큰 등을 보낼 수 있습니다. (예: 'Authorization': `Bearer ${yourAuthToken}`)
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
         onConnect : () => {
             console.log("[STOMP] 연결 성공");
