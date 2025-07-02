@@ -118,7 +118,6 @@ export default function ProfileSidebar() {
         if (token) {
             const decoded = jwtDecode(token);
             setSessionUserId(decoded.sub);
-            console.log(decoded.sub);
         }
 
         axios

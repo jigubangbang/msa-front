@@ -36,3 +36,11 @@
     background: #333;
     color: white;
 }
+
+.iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 1vw;
+}
