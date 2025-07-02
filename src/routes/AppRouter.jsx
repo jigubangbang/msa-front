@@ -33,7 +33,7 @@ import UserInquiry from "../pages/user/UserInquiry";
 import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
-import ChatPanel from "../pages/chat/ChatPanel";
+import ChatPanel from "../pages/Chat/ChatPanel";
 
 const AppRouter = () => {
     return (
