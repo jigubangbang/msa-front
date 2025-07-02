@@ -286,7 +286,11 @@ export default function QuestMainPage() {
   const openQuestModal = async (quest_id) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`);
+      const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
+
+      const response = await axios.get(endpoint);
       setSelectedQuest(response.data);
       setShowModal(true);
       console.log("Quest data fetched:", response.data);
@@ -318,6 +322,7 @@ export default function QuestMainPage() {
                     quests={userQuest} 
                     title="Ongoing Quests" 
                     onOpenModal={openQuestModal}
+                    isLogin={isLogin}
                   />
                 )}
               </>
@@ -326,7 +331,7 @@ export default function QuestMainPage() {
                 quests={null} 
                 title="Ongoing Quests" 
                 onOpenModal={openQuestModal}
-                isLogin={false}
+                isLogin={isLogin}
               />
             )}
 
@@ -370,19 +375,20 @@ export default function QuestMainPage() {
         <div className={styles.questContent}>
         {seasonalQuest && (
             <div className={styles.seasonalQuestContainer}>
-                <QuestSlider quests={seasonalQuest} title="Seasonal Events"/>
+                <QuestSlider quests={seasonalQuest} title="Seasonal Events" onOpenModal={openQuestModal}/>
             </div>
           )}
             
           </div>
-        <QuestList/>
+        <QuestList onOpenModal={openQuestModal}/>
       </div>
 
       {/* 퀘스트 모달 */}
       {showModal && (
         <QuestModal 
           questData={selectedQuest} 
-          onClose={closeModal} 
+          onClose={closeModal}
+          isLogin={isLogin} 
         />
       )}
     </div>

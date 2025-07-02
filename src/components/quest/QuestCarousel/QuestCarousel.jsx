@@ -16,8 +16,6 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal}) => {
 
   const handleCardClick = () => {
     if (isLarge){
-      //#NeedToChange
-      console.log(`click detail ${quest.quest_id}`);
       onOpenModal(quest.quest_id);
     }
     else{
@@ -81,7 +79,7 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal}) => {
   );
 };
 
-const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = true }) => {
+const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false }) => {
   const [selectedQuestId, setSelectedQuestId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -134,13 +132,13 @@ const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = true }) 
   };
 
   const handleLoginClick = () => {
-    console.log("navigate to login");
-    //navigate('/login');
+    window.scrollTo(0, 0);
+   navigate('/login');
   };
 
 const handleSignupClick = () => {
-  console.log("navigate to sign up");
-    //navigate('/signup');
+  window.scrollTo(0, 0);
+    navigate('/register');
   };
 
   if (!isLogin) {
