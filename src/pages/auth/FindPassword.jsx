@@ -91,7 +91,7 @@ const FindPassword = () => {
 
       // 30분 제한 걸린 경우
       if (response.data?.limited) {
-        setMessage("최근 30분 내 임시 비밀번호가 발급되었습니다.");
+        setMessage("최근 30분 내 임시 비밀번호가 발급되었습니다");
         setMessageType("error");
         return;
       }

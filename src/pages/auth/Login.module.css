@@ -34,7 +34,8 @@
 }
 
 .logo {
-  font-size: 28px;
+  font-family: 'Pretendard';
+  font-size: 24px;
   font-weight: bold;
   letter-spacing: 2px;
   margin-top: 10px;
@@ -70,6 +71,7 @@
 }
 
 .formInput {
+  font-family: 'Pretendard';
   width: 100%;
   padding: 12px 12px 12px 40px; 
   border: 1px solid #ccc;
@@ -152,6 +154,7 @@
 
 /* 로그인 버튼 */
 .loginButton {
+  font-family: 'Pretendard';
   width: 100%;
   padding: 12px 20px;
   background-color: #000;
@@ -177,7 +180,6 @@
 
 .loginButton:focus {
   outline: none !important;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .loginButton:active {

@@ -73,7 +73,7 @@ const Register = () => {
       if (!passwordPattern.test(cleanedValue)) {
         setErrors((prev) => ({
           ...prev,
-          password: "비밀번호는 8~20자의 영문, 숫자, 특수문자를 모두 포함해야 합니다",
+          password: "비밀번호는 8~20자의 영문, 숫자, 특수문자(~!@#$%^&*)를 모두 포함해야 합니다",
         }));
       } else {
         setErrors((prev) => ({ ...prev, password: "" }));
@@ -269,7 +269,7 @@ const Register = () => {
     }
   };
 
-  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 200), []);
+  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 400), []);
 
   const sendVerificationCode = async () => {
     setEmailVerifyError("");
@@ -291,7 +291,7 @@ const Register = () => {
       setEmailInterval(interval);
     } catch {
       setEmailCodeStatus("idle");
-      alert("인증코드 전송에 실패했습니다.");
+      alert("인증코드 전송에 실패했습니다");
     }
   };
 
@@ -361,7 +361,7 @@ const Register = () => {
       navigate("/login");
     } catch (err) {
       console.error("회원가입 실패:", err);
-      setMessage("회원가입에 실패했습니다. 다시 시도해주세요");
+      setMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
       setMessageType("error");
     }
   };
