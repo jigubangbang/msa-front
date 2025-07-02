@@ -6,16 +6,19 @@ import styles from "./ProfileSidebar.module.css";
 import locationIcon from "../../assets/profile/location_grey.svg";
 import cakeIcon from "../../assets/profile/cake_grey.svg";
 import planeIcon from "../../assets/profile/plane_grey.svg";
+import editIcon from "../../assets/profile/edit_grey.svg";
 import defaultProfile from "../../assets/default_profile.png";
 import API_ENDPOINTS from "../../utils/constants";
+import Modal from "../common/Modal/Modal";
+
+import { jwtDecode } from "jwt-decode";
 
 // TODO: redirect travel style to details page
 // TODO: show modal only if is logged in user's profile
 // TODO: redirect follower/following stats -> network list page
 
 export default function ProfileSidebar() {
-    //const {user} = useContext(UserContext); /* Logged in user */
-    const sessionUserId = "bbb";
+    const [sessionUserId, setSessionUserId] = useState();
     const {userId} = useParams();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,6 +26,9 @@ export default function ProfileSidebar() {
     const [travelStatus, setTravelStatus] = useState('TRAVELING');
     const [followStatus, setFollowStatus] = useState(false);
     const [showModal, setShowModal] = useState(false);
+
+    const [showEditBioModal, setShowEditBioModal] = useState(false);
+    const [bio, setBio] = useState();
 
 
     const statusClasses = {
@@ -67,6 +73,24 @@ export default function ProfileSidebar() {
         }
     };
 
+    function handleBioSubmit() {
+        axios
+            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bio`, {
+                userId: userId,
+                bio: bio
+            })
+            .then(() => {
+                setData(prev => ({
+                    ...prev,
+                    bio: bio
+                }))
+                setShowEditBioModal(false);
+            })
+            .catch((error) => {
+                console.error("Failed to update bio", error);
+            })
+    }
+
     function followUser() {
         axios
             .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/network`, null)
@@ -90,14 +114,21 @@ export default function ProfileSidebar() {
     }
 
     useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setSessionUserId(decoded.sub);
+            console.log(decoded.sub);
+        }
+
         axios
-            //.get(`https://d4f21666-0966-4b15-b291-99b17adce946.mock.pstmn.io/users/aaa`)
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`)
             .then((response) => {
                 setData(response.data);
                 setTravelStatus(response.data.travelStatus);
                 setFollowStatus(response.data.followStatus);
                 setProfileImage(response.data.profileImage);
+                setBio(response.data.bio);
                 setLoading(false);
             })
             .catch((err) => {
@@ -133,7 +164,7 @@ export default function ProfileSidebar() {
                         <button className={`${styles.travelStatus} ${statusClasses[travelStatus]}`}>
                             {travelStatus}
                         </button>
-                        {showModal && (
+                        {sessionUserId === userId && showModal && (
                             <div className={styles.statusModal}>
                                 {statusOptions.map((option) => (
                                     <div 
@@ -208,9 +239,44 @@ export default function ProfileSidebar() {
             
             <div className={styles.extraInfoContainer}>
                 <div className={styles.bioSection}>
-                    <h3>소개글</h3>
+                    <div className={styles.bioHeader}>
+                        <h3>소개글</h3>
+                        {userId === sessionUserId && (
+                            <button
+                                className={styles.editButton}
+                                onClick={() => setShowEditBioModal(true)}
+                            >
+                                <img src={editIcon} alt="소개글 수정"/>
+                            </button>
+                        )}
+                    </div>
                     <p className={styles.bio}>{data.bio}</p>
                 </div>
+                {
+                    showEditBioModal && (
+                        <Modal
+                            show={showEditBioModal}
+                            onClose={() => setShowEditBioModal(false)}
+                            onSubmit={handleBioSubmit}
+                            firstLabel="저장"
+                            secondLabel="취소"
+                        >
+                            <div className={styles.formGroup}>
+                                <label>소개글</label>
+                                <div className={styles.inputWrapper}>
+                                    <textarea
+                                        className={styles.formInput}
+                                        value={bio}
+                                        maxLength={120}
+                                        rows={6}
+                                        placeholder="소개글을 입력하세요"
+                                        onChange={(e) => setBio(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </Modal>
+                    )
+                }
 
                 <div className={styles.inlineRow}>
                     <div className={styles.infoBlock}>

@@ -1,0 +1,38 @@
+/* FORM STYLING */
+.formGroup {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  color: black;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+
+.input, .select {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: none;
+    background: #333;
+    color: white;
+}

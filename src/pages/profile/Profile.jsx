@@ -7,15 +7,25 @@ import Map from "./Map";
 import styles from './Profile.module.css';
 import API_ENDPOINTS from "../../utils/constants";
 import expandIcon from "../../assets/profile/expand_grey.svg";
+import addIcon from "../../assets/profile/add_grey.svg";
 import editIcon from "../../assets/profile/edit_grey.svg";
-import LanguageModal from "../../components/profile/main/LanguageModal";
+import trashIcon from "../../assets/profile/trash_grey.svg";
+import AddLanguageModal from "../../components/profile/main/AddLanguageModal";
+import EditLanguageModal from "../../components/profile/main/EditLanguageModal";
+import DeleteLanguageModal from "../../components/profile/main/DeleteLanguageModal";
 
 export default function Profile() {
+    // TODO: condition edit / add languages on session user
+    // TODO: condition add top country on max limit
     const {userId} = useParams();
     const [visitedCountries, setVisitedCountries] = useState([]); 
     const [userLanguages, setUserLanguages] = useState([]);
     const [userFavorites, setUserFavorites] = useState([]);
-    const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+    const [showAddLanguageModal, setShowAddLanguageModal] = useState(false);
+    const [showEditLanguageModal, setShowEditLanguageModal] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const [showDeleteLanguageModal, setShowDeleteLanguageModal] = useState(false);
 
     const proficiencyMap = {
         LOW: "초급",
@@ -52,6 +62,26 @@ export default function Profile() {
         }
     }
 
+    function handleAddLanguage(newLanguage) {
+        setUserLanguages((prev) => [...prev, newLanguage]);
+    }
+
+    function handleEditLanguage(id, newProficiency) {
+        setUserLanguages((prev) => 
+            prev.map((lang) => 
+                lang.id === id
+                ? {...lang, proficiency: newProficiency}
+                : lang
+            )
+        );
+    }
+
+    function handleDeleteLanguage(deletedLanguageId) {
+        setUserLanguages((prev) =>
+            prev.filter(lang => lang.id !== deletedLanguageId)
+        );
+    }
+
     useEffect(() => {
         fetchVisitedCountries();
         fetchUserLanguages();
@@ -71,8 +101,8 @@ export default function Profile() {
                     <div className={styles.infoColumn}>
                         <div className={styles.sectionHeadingContainer}>
                             <h3 className={styles.sectionHeading}>언어</h3>
-                            <button className={styles.iconButton} onClick={() => setShowLanguageModal(true)}>
-                                <img src={editIcon} alt="편집" className={styles.icon}/>
+                            <button className={styles.iconButton} onClick={() => setShowAddLanguageModal(true)}>
+                                <img src={addIcon} alt="추가" className={styles.icon}/>
                             </button>
                         </div>
                         {userLanguages.length === 0 ? (
@@ -82,9 +112,29 @@ export default function Profile() {
                                 {userLanguages.map((lang) => (
                                     <li key={lang.id} className={styles.listItem}>
                                         <span>{lang.name}</span>
-                                        <span className={styles.proficiency}>
-                                            {proficiencyMap[lang.proficiency] ?? lang.proficiency}
-                                        </span>
+                                        <div>
+                                            <span className={styles.proficiency}>
+                                                {proficiencyMap[lang.proficiency] ?? lang.proficiency}
+                                            </span>
+                                            <button
+                                                className={styles.iconButton}
+                                                onClick={() => {
+                                                    setSelectedLanguage(lang);
+                                                    setShowEditLanguageModal(true);
+                                                }}
+                                            >
+                                                <img src={editIcon} alt="편집" className={styles.icon}/>
+                                            </button>
+                                            <button
+                                                className={styles.iconButton}
+                                                onClick={() => {
+                                                    setSelectedLanguage(lang);
+                                                    setShowDeleteLanguageModal(true);
+                                                }}
+                                            >
+                                                <img src={trashIcon} alt="삭제" className={styles.icon}/>
+                                            </button>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -112,8 +162,32 @@ export default function Profile() {
                 </div>
             </ProfileTemplate>
             {
-                showLanguageModal && (
-                    <LanguageModal userId={userId} onClose={() => setShowLanguageModal(false)}/>
+                showAddLanguageModal && (
+                    <AddLanguageModal 
+                        showAddLanguageModal={showAddLanguageModal}
+                        setShowAddLanguageModal={setShowAddLanguageModal}
+                        onSubmit={handleAddLanguage}
+                    />
+                )
+            }
+            {
+                showEditLanguageModal && (
+                    <EditLanguageModal
+                        selectedLanguage={selectedLanguage}
+                        showEditLanguageModal={showEditLanguageModal}
+                        setShowEditLanguageModal={setShowEditLanguageModal}
+                        onSubmit={handleEditLanguage}
+                    />
+                )
+            }
+            {
+                showDeleteLanguageModal && (
+                    <DeleteLanguageModal
+                        selectedLanguage={selectedLanguage}
+                        showDeleteLanguageModal={showDeleteLanguageModal}
+                        setShowDeleteLanguageModal={setShowDeleteLanguageModal}
+                        onSubmit={handleDeleteLanguage}
+                    />
                 )
             }
         </>
