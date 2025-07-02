@@ -269,7 +269,7 @@ const Register = () => {
     }
   };
 
-  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 500), []);
+  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 400), []);
 
   const sendVerificationCode = async () => {
     setEmailVerifyError("");
@@ -291,7 +291,7 @@ const Register = () => {
       setEmailInterval(interval);
     } catch {
       setEmailCodeStatus("idle");
-      alert("인증코드 전송에 실패했습니다.");
+      alert("인증코드 전송에 실패했습니다");
     }
   };
 
@@ -361,7 +361,7 @@ const Register = () => {
       navigate("/login");
     } catch (err) {
       console.error("회원가입 실패:", err);
-      setMessage("회원가입에 실패했습니다. 다시 시도해주세요");
+      setMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
       setMessageType("error");
     }
   };

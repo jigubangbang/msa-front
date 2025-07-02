@@ -44,6 +44,14 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
     }
   }, [userInfo]);
 
+  useEffect(() => {
+    return () => {
+      if (emailInterval) {
+        clearInterval(emailInterval);
+      }
+    };
+  }, [emailInterval]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     const cleanedValue = value.replace(/\s/g, "");
@@ -126,25 +134,25 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
 
     // 기존 값이 있던 필드 -> 빈값 변경 방지
     if (userInfo?.name && !form.name.trim()) {
-      setMessage("이름을 입력해 주세요.");
+      setMessage("이름을 입력해 주세요");
       setMessageType("error");
       return;
     }
 
     if (userInfo?.nickname && !form.nickname.trim()) {
-      setMessage("닉네임을 입력해 주세요.");
+      setMessage("닉네임을 입력해 주세요");
       setMessageType("error");
       return;
     }
 
     if (userInfo?.tel && !form.tel.trim()) {
-      setMessage("전화번호를 입력해 주세요.");
+      setMessage("전화번호를 입력해 주세요");
       setMessageType("error");
       return;
     }
 
     if (userInfo?.email && !newEmail.trim()) {
-      setMessage("이메일을 입력해 주세요.");
+      setMessage("이메일을 입력해 주세요");
       setMessageType("error");
       return;
     }
@@ -166,7 +174,8 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
     const hasEmailChanges = emailCodeStatus === "verified";
 
     if (!hasBasicChanges && !hasEmailChanges) {
-      alert("변경된 정보가 없습니다.");
+      setMessage("변경된 정보가 없습니다");
+      setMessageType("error");
       return;
     }
 
@@ -188,6 +197,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
       } catch (err) {
         setMessage("이메일 변경에 실패했습니다");
         setMessageType("error");
+        setIsLoading(false);
         return;
       }
     }
@@ -325,7 +335,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
   };
 
   const debouncedCheckEmail = useMemo(
-    () => debounce(checkEmailDuplicate, 500),
+    () => debounce(checkEmailDuplicate, 400),
     []
   );
 
@@ -591,24 +601,31 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
           ) : null}
         </div>
 
-        {/* 메시지 */}
-        {message && (
-          <div className={`${styles.message} ${styles[messageType]}`}>
-            {messageType === "error" && (
-              <span className={styles.errorIcon}>!</span>
+        {/* 메시지 & 버튼 */}
+        <div className={styles.buttonRow}>
+          <div></div>
+          <div className={styles.rightSide}>
+            {message && (
+              <div className={`${styles.message} ${styles[messageType]}`}>
+                {messageType === "error" && (
+                  <span className={styles.errorIcon}>!</span>
+                )}
+                {message}
+              </div>
             )}
-            {message}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={styles.submitButton}
+            >
+              {isLoading ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                "저장"
+              )}
+            </button>
           </div>
-        )}
-
-        {/* 저장 버튼 */}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={styles.submitButton}
-        >
-          {isLoading ? <Circles height="20" width="20" color="#fff" /> : "저장"}
-        </button>
+        </div>
       </form>
     </div>
   );
