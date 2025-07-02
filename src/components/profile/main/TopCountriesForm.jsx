@@ -1,6 +1,6 @@
 // TopCountriesForm.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../apis/api";
 import Modal from "../../common/Modal/Modal";
 import API_ENDPOINTS from "../../../utils/constants";
 import { useParams } from "react-router-dom";
@@ -17,7 +17,7 @@ export default function TopCountriesForm({ showTopCountriesForm, setShowTopCount
     useEffect(() => {
         const fetchCountries = async () => {
             try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/search`);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/search`);
             setCountriesList(response.data.countries);
         } catch (error) {
             console.error("Failed to fetch countries", error);
@@ -59,8 +59,8 @@ export default function TopCountriesForm({ showTopCountriesForm, setShowTopCount
 
         try {
             setIsSubmitting(true);
-            await axios.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/favorites`, payload);
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/favorites`);
+            await api.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/favorites`, payload);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/favorites`);
             onUpdate(response.data.countries);
             setShowTopCountriesForm(false);
         } catch (err) {

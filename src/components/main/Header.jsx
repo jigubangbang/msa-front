@@ -4,16 +4,26 @@ import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
 import ProfileDropdown from './ProfileDropdown';
+import { jwtDecode } from "jwt-decode";
 
 export default function Header({onOpenChat}) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
+  const [userId, setUserId] = useState();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('accessToken'));
   }, [location]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+      if (token) {
+          const decoded = jwtDecode(token);
+          setUserId(decoded.sub);
+      }
+  }, [isLoggedIn])
 
   const handleLogout = () => {
     navigate('/logout'); 
@@ -49,7 +59,9 @@ export default function Header({onOpenChat}) {
         <Link to="/"><img src={logo} className={styles.logo} alt="logo" /></Link>
 
         <nav className={styles.menu}>
-          <span><Link to="/map">지도</Link></span>
+          {isLoggedIn && (
+            <span><Link to={`/profile/${userId}/map`}>지도</Link></span>
+          )}
           <span><Link to="/style-guide">스타일가이드</Link></span>
           <span><Link to="/quest">퀘스트</Link></span>
           <span>커뮤니티 <span className={styles.badge}>New</span></span>

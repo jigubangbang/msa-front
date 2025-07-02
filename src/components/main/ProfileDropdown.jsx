@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import styles from './ProfileDropdown.module.css';
 import profileIcon from '../../assets/profile/profile-menu/profile.svg';
 import globeIcon from '../../assets/profile/profile-menu/globe.svg';
@@ -12,10 +13,16 @@ import manageIcon from '../../assets/profile/profile-menu/manage.svg';
 export default function ProfileDropdown({ onLogout }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const userId = "bbb"; // TODO: 실제 로그인 유저 ID로 바꿔야 함
+  const [userId, setUserId] = useState();
 
 
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+      if (token) {
+          const decoded = jwtDecode(token);
+          setUserId(decoded.sub);
+      }
+    
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setOpen(false);
@@ -33,7 +40,7 @@ export default function ProfileDropdown({ onLogout }) {
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to={`/profile/${userId}/main`}>
+          <Link to={`/profile/${userId}`}>
             <div className={styles.dropdownItem}>
               <img src={profileIcon} alt="프로필" /> 프로필
             </div>

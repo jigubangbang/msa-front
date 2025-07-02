@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../../../apis/api";
 import API_ENDPOINTS from "../../../utils/constants";
 import Modal from "../../common/Modal/Modal";
 import { useParams } from "react-router-dom";
@@ -23,7 +23,7 @@ export default function EditLanguageModal({
 
     const handleSubmit = async() => {
         try {
-            await axios.put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages/${selectedLanguage.id}`, {
+            await api.put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages/${selectedLanguage.id}`, {
                 userId: userId,
                 id: selectedLanguage.id,
                 proficiency: proficiency

@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../apis/api";
 import ProfileTemplate from "../../components/profile/ProfileTemplate";
 import { useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../utils/constants";
@@ -53,7 +53,7 @@ export default function Countries() {
     }
 
     useEffect(() => {
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/visited?continent=${activeDropdownOption.value}`)
             .then((response) => {
                 setData(response.data);
@@ -61,7 +61,7 @@ export default function Countries() {
             .catch((err) => {
                 console.error("Failed to load countries", err.message);
             });
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/stats`)
             .then((response) => {
                 setStats(response.data);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./StatsModal.module.css";
-import axios from "axios";
+import api from "../../../apis/api";
 import API_ENDPOINTS from "../../../utils/constants";
 
 export default function StatsModal({ onClose, userId, mapColor="white" }) {
@@ -8,12 +8,11 @@ export default function StatsModal({ onClose, userId, mapColor="white" }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/stats`)
             .then((response) => {
                 setStats(response.data);
                 setIsLoading(false);
-                console.log("stats:" + stats);
             })
             .catch((error) => {
                 console.error("Failed to fetch data", error.message);

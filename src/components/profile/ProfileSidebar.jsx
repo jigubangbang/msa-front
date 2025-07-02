@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { findFlagUrlByIso3Code } from 'country-flags-svg';
 import styles from "./ProfileSidebar.module.css";
@@ -12,6 +11,7 @@ import API_ENDPOINTS from "../../utils/constants";
 import Modal from "../common/Modal/Modal";
 
 import { jwtDecode } from "jwt-decode";
+import api from "../../apis/api";
 
 // TODO: redirect travel style to details page
 // TODO: show modal only if is logged in user's profile
@@ -44,7 +44,7 @@ export default function ProfileSidebar() {
     ]
 
     function updateTravelStatus(status) {
-        axios
+        api
             .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/travel-status`, null, {
                 params: {status: status}
             })
@@ -62,7 +62,7 @@ export default function ProfileSidebar() {
         formData.append("file", file);
 
         try {
-            const response = await axios.put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`, formData, {
+            const response = await api.put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -74,7 +74,7 @@ export default function ProfileSidebar() {
     };
 
     function handleBioSubmit() {
-        axios
+        api
             .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bio`, {
                 userId: userId,
                 bio: bio
@@ -92,7 +92,7 @@ export default function ProfileSidebar() {
     }
 
     function followUser() {
-        axios
+        api
             .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/network`, null)
             .then((response) => {
                 setFollowStatus(true);
@@ -103,7 +103,7 @@ export default function ProfileSidebar() {
     }
 
     function unfollowUser() {
-        axios
+        api
             .delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/network`, null)
             .then((response) => {
                 setFollowStatus(false);
@@ -120,7 +120,7 @@ export default function ProfileSidebar() {
             setSessionUserId(decoded.sub);
         }
 
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`)
             .then((response) => {
                 setData(response.data);

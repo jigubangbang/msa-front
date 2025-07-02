@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import axios from 'axios';
+import api from "../../../apis/api";
 import SearchBar from '../../common/SearchBar';
 import styles from './CountrySearchSection.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
@@ -14,7 +14,7 @@ export default function CountrySearchSection({handleMapUpdate, mapType="visited"
 
     const fetchCountries = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/search`, {
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/search`, {
                 params: keyword ? {keyword} : {}
             });
             setCountries(response.data.countries);
@@ -25,7 +25,7 @@ export default function CountrySearchSection({handleMapUpdate, mapType="visited"
 
     const addCountry = async (countryId) => {
         try {
-            const response = await axios.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`, {
+            const response = await api.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`, {
                 userId,
                 countryId
             });
@@ -45,7 +45,7 @@ export default function CountrySearchSection({handleMapUpdate, mapType="visited"
     }
     const removeCountry = async (countryId) => {
         try {
-            const response = await axios.delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}/${countryId}`, {});
+            const response = await api.delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}/${countryId}`, {});
             setCountries(prev =>
                 prev.map(c =>
                     c.id === countryId

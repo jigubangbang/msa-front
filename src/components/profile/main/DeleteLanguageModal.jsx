@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import api from "../../../apis/api";
 import API_ENDPOINTS from "../../../utils/constants";
 import { useParams } from "react-router-dom";
 import Modal from "../../common/Modal/Modal";
@@ -9,7 +9,7 @@ export default function DeleteLanguageModal({selectedLanguage, showDeleteLanguag
 
     const handleSubmit = async() => {
         try {
-            await axios.delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages/${selectedLanguage.id}`);
+            await api.delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages/${selectedLanguage.id}`);
             setShowDeleteLanguageModal(false);
             onSubmit(selectedLanguage.id);
         } catch (error) {

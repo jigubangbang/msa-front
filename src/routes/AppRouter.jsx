@@ -34,6 +34,8 @@ import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
 import ChatPanel from "../pages/chat/ChatPanel";
+import Network from "../pages/profile/Network";
+import Feed from "../components/feed/Feed";
 
 const AppRouter = () => {
     return (
@@ -43,12 +45,17 @@ const AppRouter = () => {
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
 
-          <Route path="/profile/:userId/main" element={<Profile/>}/>
+          {/* Profile */}
+          <Route path="/profile/:userId" element={<Profile/>}/>
           <Route path="/profile/:userId/countries" element={<Countries/>}/>
           <Route path="/profile/:userId/badges" element={<Badges/>}/>
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
+          <Route path="/profile/:userId/network" element={<Network/>}/>
+
+          {/* Feed */}
+          <Route path="/feed" element={<Feed/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>

@@ -1,6 +1,6 @@
 import Modal from "../../common/Modal/Modal";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../../apis/api";
 import styles from "./ProfileModal.module.css";
 import { useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../../utils/constants";
@@ -20,7 +20,7 @@ export default function AddLanguageModal({showAddLanguageModal, setShowAddLangua
 
     const fetchLanguages = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages/search`, {});
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages/search`, {});
             setLanguages(response.data.languages);
         } catch (error) {
             console.error("Failed to fetch languages", error);
@@ -38,7 +38,7 @@ export default function AddLanguageModal({showAddLanguageModal, setShowAddLangua
             proficiency: proficiency,
         });
         try {
-            const response = await axios.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages`, newLanguage);
+            const response = await api.post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages`, newLanguage);
             setShowAddLanguageModal(false);
             const id = response.data.id;
             const languageWithId = {...newLanguage, id};

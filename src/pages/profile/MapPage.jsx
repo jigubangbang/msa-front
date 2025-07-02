@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import api from "../../apis/api";
 
 import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
@@ -56,7 +56,7 @@ export default function MapPage() {
 
     const fetchFilledCountries = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${mapType}`);
             const countriesList = response.data.countries.map(c => c.countryId);
             setFilledCountries(countriesList);
         } catch (error) {
@@ -79,7 +79,7 @@ export default function MapPage() {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`);
             setIsPremium(response.data.premium); 
             setSelectedColor(response.data.mapColor);
             setOriginalColor(response.data.mapColor);
@@ -95,7 +95,7 @@ export default function MapPage() {
     }
 
     function handleColorSubmit() {
-        axios
+        api
             .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/settings?color=${selectedColor}`)
             .then((response) => {
                 setOriginalColor(response.data.color);

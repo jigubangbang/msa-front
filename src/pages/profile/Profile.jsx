@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/api";
 
 import ProfileTemplate from "../../components/profile/ProfileTemplate";
 import Map from "./Map";
@@ -39,7 +39,7 @@ export default function Profile() {
 
     const fetchVisitedCountries = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/visited`);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/visited`);
             const countriesList = response.data.countries.map(c => c.countryId);
             setVisitedCountries(countriesList);
         } catch (error) {
@@ -49,7 +49,7 @@ export default function Profile() {
 
     const fetchUserLanguages = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages`);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/languages`);
             setUserLanguages(response.data.languages);
         } catch (error) {
             console.error("Failed to fetch languages", error);
@@ -58,7 +58,7 @@ export default function Profile() {
 
     const fetchUserFavorites = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/favorites`);
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/favorites`);
             setUserFavorites(response.data.countries);
         } catch (error) {
             console.error("Failed to fetch favorites", error);
@@ -105,9 +105,11 @@ export default function Profile() {
         <>
             <ProfileTemplate heading={`@${userId}`}>
                 <div className={styles.mapContainer}>
-                    <Link to={`/profile/${userId}/map`} className={`${styles.btn} ${styles.btnOutline} ${styles.expandButton}`}>
-                        <img src={expandIcon} className={styles.icon}/>
-                    </Link>
+                    {sessionUserId === userId && (
+                        <Link to={`/profile/${userId}/map`} className={`${styles.btn} ${styles.btnOutline} ${styles.expandButton}`}>
+                            <img src={expandIcon} className={styles.icon}/>
+                        </Link>
+                    )}
                     <Map filledCountries={visitedCountries}/>
                 </div>
                 <div className={styles.infoRow}>

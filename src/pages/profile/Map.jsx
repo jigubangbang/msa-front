@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import axios from "axios";
+import api from "../../apis/api";
 import { ComposableMap, Geographies, Geography, Sphere, Graticule, ZoomableGroup, Annotation } from "react-simple-maps";
 import geography from "../../../src/assets/features.json";
 import styles from "./Map.module.css";
@@ -36,7 +36,7 @@ const Map = forwardRef((props, ref) => {
     }));
 
     useEffect(() => {
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`)
             .then((response) => {
                 switch (response.data.mapColor) {
