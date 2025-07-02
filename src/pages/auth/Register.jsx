@@ -69,7 +69,7 @@ const Register = () => {
         return;
       }
 
-      const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/;
+      const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*]).{8,20}$/;
       if (!passwordPattern.test(cleanedValue)) {
         setErrors((prev) => ({
           ...prev,
