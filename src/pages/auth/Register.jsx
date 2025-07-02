@@ -269,7 +269,7 @@ const Register = () => {
     }
   };
 
-  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 200), []);
+  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 500), []);
 
   const sendVerificationCode = async () => {
     setEmailVerifyError("");

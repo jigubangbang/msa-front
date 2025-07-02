@@ -32,3 +32,11 @@
   border-radius: 12px;
   border: 1px solid #e9ecef;
 }
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #ffffff;
+}

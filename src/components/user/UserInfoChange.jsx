@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import api from '../../apis/api';
+import React, { useState, useEffect } from "react";
+import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
-import styles from './UserInfoChange.module.css';
+import styles from "./UserInfoChange.module.css";
 import IdIcon from "../../assets/auth/id.svg";
 import NameIcon from "../../assets/auth/name.svg";
 import NicknameIcon from "../../assets/auth/nickname.svg";
 import TelIcon from "../../assets/auth/tel.svg";
 import EmailIcon from "../../assets/auth/email.svg";
-import CheckIcon from "../../assets/auth/check.svg";
-import CancelIcon from "../../assets/auth/cancel.svg";
+import { useMemo } from "react";
+import debounce from "lodash.debounce";
+import { Circles } from "react-loader-spinner";
 
 export default function UserInfoChange({ userInfo, onUpdate }) {
   const [form, setForm] = useState({
-    name: '',
-    nickname: '',
-    tel: '',
-    email: ''
+    name: "",
+    nickname: "",
+    tel: "",
+    email: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -23,19 +24,23 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailCode, setEmailCode] = useState("");
   const [emailCodeSent, setEmailCodeSent] = useState(false);
   const [newEmail, setNewEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState("idle");
+  const [emailCodeStatus, setEmailCodeStatus] = useState("idle");
+  const [emailTimer, setEmailTimer] = useState(0);
+  const [emailInterval, setEmailInterval] = useState(null);
 
   useEffect(() => {
     if (userInfo) {
       setForm({
-        name: userInfo.name || '',
-        nickname: userInfo.nickname || '',
-        tel: userInfo.tel || '',
-        email: userInfo.email || ''
+        name: userInfo.name || "",
+        nickname: userInfo.nickname || "",
+        tel: userInfo.tel || "",
+        email: userInfo.email || "",
       });
+      setNewEmail(userInfo.email || "");
     }
   }, [userInfo]);
 
@@ -43,49 +48,49 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
     const { name, value } = e.target;
     const cleanedValue = value.replace(/\s/g, "");
 
-    setForm(prev => ({ ...prev, [name]: cleanedValue }));
+    setForm((prev) => ({ ...prev, [name]: cleanedValue }));
     setMessage("");
 
     // 유효성 검사
     if (name === "name") {
       if (cleanedValue === "") {
-        setErrors(prev => ({ ...prev, name: "" }));
+        setErrors((prev) => ({ ...prev, name: "" }));
         return;
       }
       const namePattern = /^[가-힣]{2,6}$/;
       if (!namePattern.test(cleanedValue)) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
           name: "이름은 2~6자의 한글만 입력 가능합니다",
         }));
       } else {
-        setErrors(prev => ({ ...prev, name: "" }));
+        setErrors((prev) => ({ ...prev, name: "" }));
       }
     }
 
     if (name === "nickname") {
       if (cleanedValue === "") {
-        setErrors(prev => ({ ...prev, nickname: "" }));
+        setErrors((prev) => ({ ...prev, nickname: "" }));
         return;
       }
       const nicknamePattern = /^[가-힣a-zA-Z0-9]{1,10}$/;
       if (!nicknamePattern.test(cleanedValue)) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
           nickname: "닉네임은 1~10자의 한글, 영문, 숫자만 입력 가능합니다",
         }));
       } else {
-        setErrors(prev => ({ ...prev, nickname: "" }));
+        setErrors((prev) => ({ ...prev, nickname: "" }));
       }
     }
 
     if (name === "tel") {
       if (cleanedValue === "") {
-        setForm(prev => ({ ...prev, tel: "" }));
-        setErrors(prev => ({ ...prev, tel: "" }));
+        setForm((prev) => ({ ...prev, tel: "" }));
+        setErrors((prev) => ({ ...prev, tel: "" }));
         return;
       }
-      
+
       const onlyDigits = value.replace(/\D/g, "");
       let formatted = onlyDigits;
       if (onlyDigits.length <= 3) {
@@ -93,19 +98,22 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
       } else if (onlyDigits.length <= 7) {
         formatted = `${onlyDigits.slice(0, 3)}-${onlyDigits.slice(3)}`;
       } else {
-        formatted = `${onlyDigits.slice(0, 3)}-${onlyDigits.slice(3, 7)}-${onlyDigits.slice(7, 11)}`;
+        formatted = `${onlyDigits.slice(0, 3)}-${onlyDigits.slice(
+          3,
+          7
+        )}-${onlyDigits.slice(7, 11)}`;
       }
 
-      setForm(prev => ({ ...prev, [name]: formatted }));
+      setForm((prev) => ({ ...prev, [name]: formatted }));
 
       const telPattern = /^\d{3}-\d{3,4}-\d{4}$/;
       if (!telPattern.test(formatted)) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
           tel: "올바른 전화번호 형식으로 입력해 주세요",
         }));
       } else {
-        setErrors(prev => ({ ...prev, tel: "" }));
+        setErrors((prev) => ({ ...prev, tel: "" }));
       }
     }
   };
@@ -116,29 +124,99 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
     setMessage("");
     setMessageType("");
 
+    // 기존 값이 있던 필드 -> 빈값 변경 방지
+    if (userInfo?.name && !form.name.trim()) {
+      setMessage("이름을 입력해 주세요.");
+      setMessageType("error");
+      return;
+    }
+
+    if (userInfo?.nickname && !form.nickname.trim()) {
+      setMessage("닉네임을 입력해 주세요.");
+      setMessageType("error");
+      return;
+    }
+
+    if (userInfo?.tel && !form.tel.trim()) {
+      setMessage("전화번호를 입력해 주세요.");
+      setMessageType("error");
+      return;
+    }
+
+    if (userInfo?.email && !newEmail.trim()) {
+      setMessage("이메일을 입력해 주세요.");
+      setMessageType("error");
+      return;
+    }
+
     // 유효성 검사
-    const hasError = Object.values(errors).some(err => err);
+    const hasError = Object.values(errors).some((err) => err);
     if (hasError) {
       setMessage("조건에 맞게 입력해 주세요");
       setMessageType("error");
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const token = localStorage.getItem('accessToken');
-      await axios.put(`${API_ENDPOINTS.USER}/me`, {
-        name: form.name,
-        nickname: form.nickname,
-        tel: form.tel
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    // 변경사항 체크
+    const hasBasicChanges =
+      form.name !== userInfo?.name ||
+      form.nickname !== userInfo?.nickname ||
+      form.tel !== userInfo?.tel;
 
-      setMessage("회원정보가 성공적으로 수정되었습니다");
-      setMessageType("success");
-      onUpdate(); 
+    const hasEmailChanges = emailCodeStatus === "verified";
+
+    if (!hasBasicChanges && !hasEmailChanges) {
+      alert("변경된 정보가 없습니다.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    if (emailCodeStatus === "verified") {
+      try {
+        const token = localStorage.getItem("accessToken");
+        await api.put(
+          `${API_ENDPOINTS.USER}/email/change-confirm`,
+          {
+            email: newEmail,
+            emailCode: emailCode,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } catch (err) {
+        setMessage("이메일 변경에 실패했습니다");
+        setMessageType("error");
+        return;
+      }
+    }
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      await api.put(
+        `${API_ENDPOINTS.USER}/me`,
+        {
+          name: form.name,
+          nickname: form.nickname,
+          tel: form.tel,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("회원 정보가 수정되었습니다!");
+
+      if (emailCodeStatus === "verified") {
+        setEmailCodeStatus("idle");
+        setEmailCodeSent(false);
+        setEmailCode("");
+        setNewEmail(userInfo?.email || "");
+      }
+
+      onUpdate();
     } catch (err) {
+      console.error("회원정보 수정 실패:", err);
       setMessage(err.response?.data || "회원정보 수정에 실패했습니다");
       setMessageType("error");
     } finally {
@@ -148,30 +226,31 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
 
   // 이메일 변경 요청
   const handleEmailChangeRequest = async () => {
-    if (!newEmail) {
-      setMessage("변경할 이메일을 입력해주세요");
-      setMessageType("error");
-      return;
-    }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(newEmail)) {
-      setMessage("올바른 이메일 형식으로 입력해 주세요");
-      setMessageType("error");
-      return;
-    }
-
+    setEmailCodeStatus("sending");
     try {
-      const token = localStorage.getItem('accessToken');
-      await axios.post(`${API_ENDPOINTS.USER}/email/change-request`, null, {
+      const token = localStorage.getItem("accessToken");
+      await api.post(`${API_ENDPOINTS.USER}/email/change-request`, null, {
         params: { email: newEmail },
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setEmailCodeSent(true);
-      setMessage("인증 코드가 이메일로 전송되었습니다");
-      setMessageType("success");
+      setEmailCodeStatus("sent");
+      setEmailTimer(180);
+      const interval = setInterval(() => {
+        setEmailTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setEmailCodeSent(false);
+            setEmailCodeStatus("expired");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      setEmailInterval(interval);
     } catch (err) {
+      setEmailCodeStatus("idle");
       setMessage(err.response?.data || "인증 코드 전송에 실패했습니다");
       setMessageType("error");
     }
@@ -186,34 +265,104 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
     }
 
     try {
-      const token = localStorage.getItem('accessToken');
-      await api.put(`${API_ENDPOINTS.USER}/email/change-confirm`, {
+      await api.post(`${API_ENDPOINTS.AUTH}/email/verify`, {
         email: newEmail,
-        emailCode: emailCode
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
+        code: emailCode,
       });
 
-      setMessage("이메일이 성공적으로 변경되었습니다");
-      setMessageType("success");
-      setShowEmailModal(false);
-      setEmailCodeSent(false);
-      setEmailCode("");
-      setNewEmail("");
-      onUpdate(); 
+      setEmailCodeStatus("verified");
+      clearInterval(emailInterval);
     } catch (err) {
-      setMessage(err.response?.data || "이메일 변경에 실패했습니다");
-      setMessageType("error");
+      setEmailCodeStatus("error");
+      setEmailCode("");
     }
+  };
+
+  const checkEmailDuplicate = async (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const isValidFormat = emailRegex.test(email);
+
+    if (!isValidFormat) {
+      if (email === "") {
+        setEmailStatus("idle");
+        setErrors((prev) => ({ ...prev, email: "" }));
+      } else {
+        setEmailStatus("invalid");
+        setErrors((prev) => ({
+          ...prev,
+          email: "올바른 이메일 형식으로 입력해 주세요",
+        }));
+      }
+      return;
+    }
+
+    setEmailStatus("checking");
+    setErrors((prev) => ({ ...prev, email: "" }));
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await api.get(`${API_ENDPOINTS.AUTH}/check-email/${email}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data) {
+        setEmailStatus("invalid");
+        setErrors((prev) => ({
+          ...prev,
+          email: "이미 사용 중인 이메일입니다",
+        }));
+      } else {
+        setEmailStatus("valid");
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    } catch (err) {
+      setEmailStatus("invalid");
+      setErrors((prev) => ({
+        ...prev,
+        email: "중복 검사 중 오류가 발생했습니다",
+      }));
+    }
+  };
+
+  const debouncedCheckEmail = useMemo(
+    () => debounce(checkEmailDuplicate, 500),
+    []
+  );
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setNewEmail(value);
+    setMessage("");
+    setEmailCodeSent(false);
+    setEmailCode("");
+    setEmailCodeStatus("idle");
+    clearInterval(emailInterval);
+    setEmailTimer(0);
+
+    if (value === userInfo?.email) {
+      setEmailStatus("idle");
+      setErrors((prev) => ({ ...prev, email: "" }));
+      return;
+    }
+
+    if (value === "") {
+      setEmailStatus("idle");
+      setErrors((prev) => ({ ...prev, email: "" }));
+      return;
+    }
+
+    setEmailStatus("checking");
+    setErrors((prev) => ({ ...prev, email: "" }));
+    debouncedCheckEmail(value);
   };
 
   // 닉네임 변경 가능일
   const getNicknameStatusMessage = () => {
     if (!userInfo?.nicknameUnlockAt) return null;
-    
+
     const unlockDate = new Date(userInfo.nicknameUnlockAt);
     const now = new Date();
-    
+
     if (now < unlockDate) {
       return `${unlockDate.toLocaleDateString()} ${unlockDate.toLocaleTimeString()}에 변경 가능합니다`;
     }
@@ -223,7 +372,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
   return (
     <div className={styles.section}>
       <h2 className={styles.sectionTitle}>기본 정보 수정</h2>
-      
+
       <form onSubmit={handleBasicInfoSubmit} className={styles.form}>
         {/* 아이디 (읽기전용) */}
         <div className={styles.formGroup}>
@@ -232,7 +381,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
             <img src={IdIcon} alt="아이디" className={styles.inputIcon} />
             <input
               type="text"
-              value={userInfo?.id || ''}
+              value={userInfo?.id || ""}
               disabled
               className={`${styles.formInput} ${styles.disabled}`}
             />
@@ -257,11 +406,11 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
               onBlur={() => setFocusedField(null)}
               onKeyDown={(e) => e.key === " " && e.preventDefault()}
               className={`${styles.formInput} ${
-                form.name === ""
-                  ? ""
-                  : errors.name
+                errors.name
                   ? styles.inputError
-                  : styles.inputValid
+                  : form.name !== userInfo?.name && form.name !== ""
+                  ? styles.inputValid
+                  : ""
               }`}
               placeholder="이름을 입력해 주세요"
             />
@@ -287,21 +436,29 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
               }}
               onBlur={() => setFocusedField(null)}
               onKeyDown={(e) => e.key === " " && e.preventDefault()}
+              disabled={getNicknameStatusMessage() !== null}
               className={`${styles.formInput} ${
-                form.nickname === ""
-                  ? ""
+                getNicknameStatusMessage() !== null
+                  ? styles.disabled
                   : errors.nickname
                   ? styles.inputError
-                  : styles.inputValid
+                  : form.nickname !== userInfo?.nickname && form.nickname !== ""
+                  ? styles.inputValid
+                  : ""
               }`}
               placeholder="닉네임을 입력해 주세요"
             />
           </div>
-          {focusedField === "nickname" && errors.nickname && form.nickname && (
+          {focusedField === "nickname" && errors.nickname && form.nickname ? (
             <div className={styles.errorText}>{errors.nickname}</div>
-          )}
-          {getNicknameStatusMessage() && (
-            <div className={styles.warningText}>{getNicknameStatusMessage()}</div>
+          ) : getNicknameStatusMessage() ? (
+            <div className={styles.warningText}>
+              {getNicknameStatusMessage()}
+            </div>
+          ) : (
+            <div className={styles.helpText}>
+              닉네임은 30일마다 변경 가능합니다
+            </div>
           )}
         </div>
 
@@ -322,11 +479,11 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
               onBlur={() => setFocusedField(null)}
               onKeyDown={(e) => e.key === " " && e.preventDefault()}
               className={`${styles.formInput} ${
-                form.tel === ""
-                  ? ""
-                  : errors.tel
+                errors.tel
                   ? styles.inputError
-                  : styles.inputValid
+                  : form.tel !== userInfo?.tel && form.tel !== ""
+                  ? styles.inputValid
+                  : ""
               }`}
               placeholder="전화번호를 입력해 주세요"
             />
@@ -343,104 +500,116 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
             <img src={EmailIcon} alt="이메일" className={styles.inputIcon} />
             <input
               type="text"
-              value={userInfo?.email || ''}
-              disabled
-              className={`${styles.formInput} ${styles.disabled}`}
+              value={newEmail}
+              onChange={handleEmailChange}
+              onFocus={() => {
+                setFocusedField("email");
+                setMessage("");
+              }}
+              onBlur={() => setFocusedField(null)}
+              className={`${styles.formInput} ${
+                newEmail === userInfo?.email || newEmail === ""
+                  ? ""
+                  : errors.email
+                  ? styles.inputError
+                  : emailStatus === "valid"
+                  ? styles.inputValid
+                  : ""
+              }`}
+              placeholder="이메일을 입력해 주세요"
             />
-            <button
-              type="button"
-              onClick={() => setShowEmailModal(true)}
-              className={styles.changeEmailButton}
-            >
-              변경
-            </button>
           </div>
-          <div className={styles.helpText}>이메일 변경 시 인증이 필요합니다</div>
+          {newEmail === userInfo?.email ? (
+            <div className={styles.helpText}>
+              이메일 변경 시 인증이 필요합니다
+            </div>
+          ) : focusedField === "email" && errors.email ? (
+            <div className={styles.errorText}>{errors.email}</div>
+          ) : emailStatus === "valid" ? (
+            <>
+              <div className={styles.emailCodeWrapper}>
+                <input
+                  type="text"
+                  placeholder="인증코드를 입력해 주세요"
+                  value={emailCode}
+                  onChange={(e) => setEmailCode(e.target.value.trim())}
+                  onFocus={() => setMessage("")}
+                  disabled={emailCodeStatus !== "sent"}
+                  className={`${styles.emailCodeInput} ${
+                    emailCode === ""
+                      ? ""
+                      : emailCodeStatus === "verified"
+                      ? styles.inputValid
+                      : emailCodeStatus === "error" ||
+                        emailCodeStatus === "expired"
+                      ? styles.inputError
+                      : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  disabled={
+                    emailCodeStatus === "verified" || emailStatus !== "valid"
+                  }
+                  onClick={() => {
+                    setMessage("");
+                    if (emailCodeStatus === "sent" && emailCode) {
+                      handleEmailChangeConfirm();
+                    } else {
+                      handleEmailChangeRequest();
+                    }
+                  }}
+                  className={`${styles.verifyButton} ${
+                    emailCodeStatus === "verified" ? styles.buttonValid : ""
+                  }`}
+                >
+                  {emailCodeStatus === "sending" ? (
+                    <Circles height="20" width="20" color="#888" />
+                  ) : emailCodeStatus === "verified" ? (
+                    "인증 완료"
+                  ) : emailCodeStatus === "sent" ? (
+                    emailCode ? (
+                      `인증 (${emailTimer}s)`
+                    ) : (
+                      `전송됨 (${emailTimer}s)`
+                    )
+                  ) : emailCodeStatus === "expired" ||
+                    emailCodeStatus === "error" ? (
+                    "재전송"
+                  ) : (
+                    "전송"
+                  )}
+                </button>
+              </div>
+              {(emailCodeStatus === "error" ||
+                emailCodeStatus === "expired") && (
+                <div className={styles.errorText}>
+                  인증코드가 올바르지 않거나 만료되었습니다. 다시 시도해주세요.
+                </div>
+              )}
+            </>
+          ) : null}
         </div>
 
         {/* 메시지 */}
         {message && (
           <div className={`${styles.message} ${styles[messageType]}`}>
-            {messageType === "error" && <span className={styles.errorIcon}>!</span>}
+            {messageType === "error" && (
+              <span className={styles.errorIcon}>!</span>
+            )}
             {message}
           </div>
         )}
 
         {/* 저장 버튼 */}
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isLoading}
           className={styles.submitButton}
         >
-          {isLoading ? "저장 중..." : "변경사항 저장"}
+          {isLoading ? <Circles height="20" width="20" color="#fff" /> : "저장"}
         </button>
       </form>
-
-      {/* 이메일 변경 모달 */}
-      {showEmailModal && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h3 className={styles.modalTitle}>이메일 변경</h3>
-            
-            <div className={styles.formGroup}>
-              <label className={styles.label}>새 이메일</label>
-              <input
-                type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                className={styles.formInput}
-                placeholder="새 이메일을 입력해주세요"
-              />
-            </div>
-
-            {emailCodeSent && (
-              <div className={styles.formGroup}>
-                <label className={styles.label}>인증 코드</label>
-                <input
-                  type="text"
-                  value={emailCode}
-                  onChange={(e) => setEmailCode(e.target.value)}
-                  className={styles.formInput}
-                  placeholder="인증 코드를 입력해주세요"
-                />
-              </div>
-            )}
-
-            <div className={styles.modalButtons}>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowEmailModal(false);
-                  setEmailCodeSent(false);
-                  setEmailCode("");
-                  setNewEmail("");
-                }}
-                className={styles.cancelButton}
-              >
-                취소
-              </button>
-              
-              {!emailCodeSent ? (
-                <button
-                  type="button"
-                  onClick={handleEmailChangeRequest}
-                  className={styles.submitButton}
-                >
-                  인증 코드 전송
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleEmailChangeConfirm}
-                  className={styles.submitButton}
-                >
-                  이메일 변경
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
