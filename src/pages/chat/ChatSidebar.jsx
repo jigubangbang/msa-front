@@ -1,8 +1,8 @@
 // src/components/chat/ChatSidebar.jsx
 import React, {useState} from 'react';
 import '../../styles/Chat/ChatSidebar.css'; // 사이드바 전용 CSS 파일
-import useChatRoomInfo from '/../hooks/chat/useChatRoomInfo';
-import { useChatSubscriptionStore } from '/../../hooks/chat/useStomp';
+import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
+import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import API_ENDPOINTS from '../../utils/constants';
 
