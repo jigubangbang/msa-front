@@ -1,12 +1,14 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .Container {
+  font-family: 'Pretendard';
   display: flex;
   min-height: 100vh;
   position: relative; /* sidebar 때문에 필수 */
 }
 
 .content {
+  font-family: 'Pretendard';
   flex: 1;
   margin-left: 180px; /* sidebar 때문에 필수 */
   padding: 20px 40px;
@@ -15,16 +17,8 @@
   min-height: 100vh;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  font-size: 16px;
-  color: #6c757d;
-}
-
 .formContainer {
+  font-family: 'Pretendard';
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
