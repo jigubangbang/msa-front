@@ -12,8 +12,7 @@ import Countries from "../pages/profile/Countries";
 import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
-import Following from "../pages/profile/Following";
-import Followers from "../pages/profile/Followers";
+import Network from "../pages/profile/Network";
 
 import Feed from "../components/feed/Feed";
 
@@ -54,8 +53,8 @@ const AppRouter = () => {
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
-          <Route path="/profile/:userId/following" element={<Following/>}/>
-          <Route path="/profile/:userId/followers" element={<Followers/>}/>
+          <Route path="/profile/:userId/following" element={<Network type="following"/>}/>
+          <Route path="/profile/:userId/followers" element={<Network type="followers"/>}/>
 
           {/* Feed */}
           <Route path="/feed" element={<Feed/>}/>

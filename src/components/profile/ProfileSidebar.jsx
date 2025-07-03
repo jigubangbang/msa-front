@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { findFlagUrlByIso3Code } from 'country-flags-svg';
 import styles from "./ProfileSidebar.module.css";
 import locationIcon from "../../assets/profile/location_grey.svg";
@@ -249,11 +249,15 @@ export default function ProfileSidebar() {
                 <div className={styles.stats}>
                     <div className={styles.statItem}>
                         <div className={styles.label}>팔로잉</div>
-                        <div className={styles.value}>{data.followingCount}</div>
+                        <Link to={`/profile/${userId}/following`} className={styles.value}>
+                            {data.followingCount}
+                        </Link>
                     </div>
                     <div className={styles.statItem}>
                         <div className={styles.label}>팔로워</div>
-                        <div className={styles.value}>{data.followerCount}</div>
+                        <Link to={`/profile/${userId}/followers`} className={styles.value}>
+                            {data.followerCount}
+                        </Link>
                     </div>
                     <div className={styles.statItem}>
                         <div className={styles.label}>방문 국가</div>

@@ -2,8 +2,9 @@ import styles from "./ProfileTemplate.module.css";
 import Header from "../main/Header";
 import ProfileMenu from "./ProfileMenu";
 import ProfileSidebar from "./ProfileSidebar";
+import NetworkMenu from "./NetworkMenu";
 
-export default function ProfileTemplate({children, heading="@username"}) {
+export default function ProfileTemplate({children, heading, isNetwork=false}) {
     return (
         <div className={styles.pageWrapper}>
             <div className={styles.profile}>
@@ -12,7 +13,11 @@ export default function ProfileTemplate({children, heading="@username"}) {
                     <div className={styles.heading}>
                         {heading}
                     </div>
-                    <ProfileMenu/>
+                    {isNetwork ? (
+                        <NetworkMenu/>
+                    ) : (
+                        <ProfileMenu/>
+                    )}
                     {children}
                 </div>
             </div>
