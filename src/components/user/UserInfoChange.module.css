@@ -57,6 +57,7 @@
   background-color: #fafafa;
   transition: border-color 0.3s;
   box-sizing: border-box;
+  color: #000;
 }
 
 .formInput:focus {
@@ -162,6 +163,7 @@
   font-size: 16px;
   background-color: #fafafa;
   box-sizing: border-box;
+  color: #000;
 }
 
 .emailCodeInput:focus {

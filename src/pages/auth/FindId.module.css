@@ -48,6 +48,7 @@
   transition: border-color 0.3s;
   background-color: #fafafa;
   box-sizing: border-box;
+  color: #000;
 }
 
 .formInput:focus {
