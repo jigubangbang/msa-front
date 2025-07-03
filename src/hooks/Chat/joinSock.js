@@ -26,6 +26,11 @@ export function joinSock(isOpen, chatId) {
       onConnect: () => {
         console.log("[joinChat] STOMP 연결 성공");
 
+        // 중복 구독 방지
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+
         // 입장 메세지 전송
         send(`/app/chat.addUser/${chatId}`, {
           senderId: userId,
@@ -55,13 +60,14 @@ export function joinSock(isOpen, chatId) {
   }, [chatId, connect, send, subscribe]);
 
   // STOMP 잠시 나가기 - 구독 해제
-  const unsubscribeChatRoom = () => {
+  const unsubscribeChatRoom = useCallback(() => {
     if (subscriptionRef.current) {
-      unsubscribe(subscriptionRef.current);
+      subscriptionRef.current.unsubscribe();
       subscriptionRef.current = null;
-      console.log(`[joinSock] chatId ${chatId}에 대한 구독 해제 완료`);
+      console.log(`[useJoinChatSock] chatId=${chatId} 구독 해제 완료`);
     }
-  }
+  }, [chatId]);
+
 
   // STOMP 완전 해제 - 모든 채팅방의 연결을 끊을 때
   const disconnectStompClient = useCallback(() => {

@@ -1,19 +1,24 @@
 // src/components/chat/ChatSidebar.jsx
-import React, {useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../../styles/Chat/ChatSidebar.css'; // 사이드바 전용 CSS 파일
+import { useStomp } from '../../hooks/chat/useStomp';
 import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
+import ChatDescriptionEditor from '../../components/chat/ChatDescriptionEditor';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
 
 export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose }) {
-  const {members, loading, error} = useChatRoomInfo(chatId);
+  const { subscribe, unsubscribe } = useStomp();
+  const {members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [description, setDescription] = useState(chatInfo?.description || "");
   const isManager = members.some(member => member.userId === senderId && member.isCreator === 1);
   const accessToken = getAccessToken();
+  const subscriptionRef = useRef(null);
 
   if (loading) {
     console.log( "그룹 멤버 조회 중" );
@@ -60,6 +65,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/promote/${userId}`, {
       });
       alert("해당 유저를 관리자로 지정했습니다.");
+      await refetch();
+      setSelectedUserId(null);
     } catch (err) {
       console.error(err);
       alert("관리자 지정에 실패했습니다.");
@@ -81,6 +88,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       });
     if (response.ok) {
       alert(`${userId}님을 성공적으로 강퇴했습니다.`);
+      await refetch();
+      setSelectedUserId(null);
       } else {
         alert("강퇴 처리에 실패했습니다.");
       }
@@ -97,11 +106,31 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     try {
       await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/demote/${userId}`);
       alert(`${userId}님을 운영진에서 제외했습니다.`);
+      await refetch();
+      setSelectedUserId(null);
     } catch (err) {
       console.error(err);
       alert("운영진 제외에 실패했습니다.");
     }
   };
+
+  // 새 멤버 감지
+  useEffect(() => {
+    if (!chatId) return;
+
+    // 새 멤버 입장 구독
+    subscriptionRef.current = subscribe(`/topic/chat/${chatId}/join`, (message) => {
+      console.log("새 멤버 입장 이벤트 수신:", message);
+      refetch(); // useChatRoomInfo에서 받은 refetch
+    });
+
+    return () => {
+      if (subscriptionRef.current) {
+        unsubscribe(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [chatId]);
 
   return (
     <div
@@ -109,22 +138,14 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       onClick={onClose}
     >
       <div className="chat-sidebar" onClick={e => e.stopPropagation()}> {/* 사이드바 자체 클릭 시 오버레이 닫힘 방지 */}
-        <div className="sidebar-header">
-          <h3>채팅방 정보</h3>
-          <button className="close-button" onClick={onClose}>X</button>
-        </div>
+       <div className="scrollable-content"> 
 
-        <div className="sidebar-section chat-info-section">
-          <p>{chatInfo?.description || "채팅방 설명이 나오는 부분입니다."}</p>
-          {isManager == '1' && ( // 방장일 경우에만 '수정하기' 버튼 표시
-            <button className="edit-button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-              </svg>
-            </button>
-          )}
-        </div>
+        <ChatDescriptionEditor
+          description={description}
+          setDescription={setDescription}
+          chatId={chatId}
+          isManager={isManager}
+        />
 
         <div className="sidebar-section members-section">
           <h4>멤버들 ({!members || members.length === 0 ? 0 : members.length})</h4>
@@ -162,7 +183,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
           </ul>
           )}
         </div>
-
+      </div>
         <div className="sidebar-footer">
           <button className="report-button">채팅방 신고하기</button>
           <button className="leave-button" onClick={handleLeaveGroup}>그룹 탈퇴하기</button>

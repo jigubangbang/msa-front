@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
 
@@ -8,44 +8,42 @@ const useChatRoomInfo = (chatId) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchChatRoomInfo = useCallback(async () => {
     if (!chatId) {
-      setInfo([]);
+      setInfo(null);
       setMembers([]);
       return;
     }
 
-    let isMounted = true;
+    setLoading(true);
+    setError(null);
 
-    const fetchInfo = async () => {
-      setLoading(true); 
-      setError(null);
-      try {
-        const [responseInfo, responseMembers] = await Promise.all([
-          api.get(`${API_ENDPOINTS.CHAT}/${chatId}/info`),
-          api.get(`${API_ENDPOINTS.CHAT}/${chatId}/members`)
-        ]);
-        if (!isMounted) return;
-
-        setInfo(responseInfo.data);
-        setMembers(responseMembers.data);
-        console.log(responseInfo, responseMembers.data.length);
-      } catch (err) {
-        setError(err);
-        console.error("채팅방 멤버를 불러오는 중 에러 발생:", err);
-      } finally {
-        // 성공/실패 여부와 관계없이 로딩 종료
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchInfo();
-    return () => {
-      isMounted = false;
-    };
+    try {
+      const [infoRes, membersRes] = await Promise.all([
+        api.get(`${API_ENDPOINTS.CHAT}/${chatId}/info`),
+        api.get(`${API_ENDPOINTS.CHAT}/${chatId}/members`)
+      ]);
+      setInfo(infoRes.data);
+      setMembers(membersRes.data);
+    } catch (err) {
+      setError(err);
+      console.error("[useChatRoomInfo] 채팅방 정보 불러오기 실패:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [chatId]);
 
-  return { info, members, loading, error };
+  useEffect(() => {
+    fetchChatRoomInfo();
+  }, [fetchChatRoomInfo]);
+
+  return {
+    info,
+    members,
+    loading,
+    error,
+    refetch: fetchChatRoomInfo, // 외부에서 수동 호출 가능
+  };
 };
 
 export default useChatRoomInfo;

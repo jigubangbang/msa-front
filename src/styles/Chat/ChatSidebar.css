@@ -24,8 +24,14 @@
   transform: translateX(0%); /* 기본적으로 보임 */
   transition: transform 0.3s ease-out; /* 슬라이드 애니메이션 */
   max-height: 100vh; /* 전체 높이 */
-  overflow-y: auto;
+  overflow: hidden;
   padding-bottom: 80px;
+}
+
+.chat-sidebar .scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px; /* 스크롤 시 footer가 내용 가리는 것 방지 */
 }
 
 /* 사이드바 닫힐 때의 애니메이션 (ChatPanel.jsx에서 isOpen이 false면 렌더링 안하므로 이 트랜지션은 직접 제어하기 어렵습니다.
@@ -72,23 +78,6 @@
 .sidebar-section {
   padding: 15px;
   border-bottom: 1px solid #eee;
-}
-
-.chat-info-section p {
-  max-height: 150px; /* 높이 제한 (필요에 따라 조정 가능) */
-  overflow-y: auto; 
-  font-size: 0.9em;
-  color: #777;
-  margin-bottom: 10px;
-}
-
-.edit-button {
-  background-color: none;
-  color: #242424;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85em;
-  width: 100%;
 }
 
 .member-list {
@@ -155,18 +144,16 @@
 }
 
 .sidebar-footer {
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border-top: 1px solid #eee;
-  margin-top: auto; /* 남은 공간을 차지하여 하단에 붙도록 */
+  padding: 13px 15px 0;
+  background-color: transparent;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .report-button,
 .leave-button {
   width: 100%;
   padding: 10px;
+  margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: white;
@@ -178,6 +165,7 @@
 .leave-button {
   color: #dc3545; /* 빨간색으로 강조 */
   border-color: #dc3545;
+  margin-bottom: 0;
 }
 
 .report-button:hover,

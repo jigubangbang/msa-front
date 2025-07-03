@@ -1,6 +1,7 @@
 // src/components/chat/ChatModal.jsx
 import React, {useEffect, useState, useRef} from 'react';
-import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
+import ReactDOM from 'react-dom';
+import { MutatingDots } from 'react-loader-spinner';
 import ChatPanel from './ChatPanel.jsx';
 import { joinSock } from '../../hooks/chat/joinSock.js';
 import '../../styles/chat/ChatModal.css'
@@ -60,40 +61,39 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
 
   // Portal을 사용하여 body 바로 아래에 렌더링
   return ReactDOM.createPortal(
-    <div className="chat-modal-overlay">
-      <div className="chat-modal-content"
-        onMouseDown={startDragging}
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-          cursor: 'move',
-        }}>
-
-        {(isLoading || isJoining) && (
-          <div className="chat-loading">
-            <p>채팅방에 입장 중...</p>
-          </div>
-        )}
-        {chatError && (
-          <div className="chat-error">
-            <p>채팅방 입장에 실패했습니다.</p>
-            <p>{chatError.message}</p>
-          </div>
-        )}
-        
-        {!(isLoading || isJoining) && !chatError && (
-          <ChatPanel
-            chatId={chatId}
-            senderId={senderId}
-            // chatGroup={chatGroup} // chatGroup이 joinSock 훅에서 반환되지 않으므로 제거 또는 추가 필요
-            messages={messages}
-            onSendMessage={sendMessage}
-            onClose={onClose}
-            onForceClose={onClose}
-          />
-        )}
+    (isLoading || isJoining) ? (
+      <div className="chat-loading-overlay">
+        <div className="loadingContainer">
+          <MutatingDots />
+        </div>
+        <div className="chat-loading-text">입장 중입니다...</div>
       </div>
-    </div>,
+    ) : (
+      <div className="chat-modal-overlay">
+        <div
+          className="chat-modal-content"
+          onMouseDown={startDragging}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            transform: `translate(${position.x}px, ${position.y}px)`,
+            cursor: 'move',
+          }}>
+          {chatError && (
+            console.log("채팅방 입장에 실패하였습니다." + chatError.message)
+          )}
+          {!chatError && (
+            <ChatPanel
+              chatId={chatId}
+              senderId={senderId}
+              messages={messages}
+              onSendMessage={sendMessage}
+              onClose={onClose}
+              onForceClose={onClose}
+            />
+          )}
+      </div>
+    </div>
+    ),
     document.body
   );
 }

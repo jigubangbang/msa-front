@@ -7,7 +7,6 @@ import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, messages, onSendMessage, onClose, onForceClose }) {
-  // const { messages, postMessage } = useChat(chatId);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null); // Ref for auto-scrolling
   const chatMessagesDisplayRef = useRef(null);
@@ -62,9 +61,17 @@ export default function ChatPanel({ chatId, senderId, messages, onSendMessage, o
           className="chat-header-menu"
           onClick={handleSidebar}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-list" viewBox="0 0 16 16">
-            <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-          </svg>
+         {isSidebar ? (
+            // 사이드바 열려 있으면 X 아이콘
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M4.646 4.646a.5.5 0 011.708 0L8 6.293l1.646-1.647a.5.5 0 01.708.708L8.707 7l1.647 1.646a.5.5 0 01-.708.708L8 7.707l-1.646 1.647a.5.5 0 01-.708-.708L7.293 7 5.646 5.354a.5.5 0 010-.708z"/>
+            </svg>
+          ) : (
+            // 사이드바 닫혀 있으면 햄버거 아이콘
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-list" viewBox="0 0 16 16">
+              <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+            </svg>
+          )}
         </div>
       </div>
       <div className='chat-body-wrapper'>

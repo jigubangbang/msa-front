@@ -6,7 +6,7 @@ export default function ChatReportTab({ userId, isManager, onPromote, onKick, on
   return (
     <div className="chat-report-tab">
       {isManager ? (
-        <button className="admin-button" onClick={() => onDemote(userId)}>운영진 제외</button>
+        <button className="report-option" onClick={() => onDemote(userId)}>운영진 제외</button>
       ) : (
         <>
           <button className="report-option" onClick={() => onPromote?.(userId)}>운영진 초대</button>
