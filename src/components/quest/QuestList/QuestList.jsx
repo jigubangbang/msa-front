@@ -4,9 +4,12 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './QuestList.module.css';
 import Dropdown from '../../common/Dropdown';
 import { useNavigate } from 'react-router-dom';
+import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 
 
-const QuestListCard = ({ quest, onJoin, onDetail }) => {
+const QuestListCard = ({ quest, onJoin, onDetail, isLogin = false }) => {
+
+
   const getDifficultyText = (difficulty) => {
     switch(difficulty) {
       case 'EASY': return '초급';
@@ -68,7 +71,8 @@ const QuestListCard = ({ quest, onJoin, onDetail }) => {
             </div>
 
             <div className={styles.questButton}>
-              <button 
+              {!isLogin || quest.user_status == "GIVEN_UP" || !quest.user_status ? (
+                <button 
                   className={styles.joinButton}
                   onClick={(e) => {
                     e.stopPropagation(); 
@@ -77,6 +81,30 @@ const QuestListCard = ({ quest, onJoin, onDetail }) => {
                   <img src="/icons/common/check.svg" className={styles.buttonIcon} alt="check icon"/>
                 도전하기
               </button>
+              ) : (
+                quest.user_status == "IN_PROGRESS" ? (
+                  <button 
+                      className={styles.joiningButton}
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        onDetail(quest)
+                      }}>
+                      <img src="/icons/common/check.svg" className={styles.buttonIcon} alt="check icon"/>
+                    도전 중
+                  </button>
+                ):(
+                  <button 
+                      className={styles.endButton}
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        onDetail(quest)
+                      }}>
+                      <img src="/icons/common/check.svg" className={styles.buttonEndIcon} alt="check icon"/>
+                    도전 완료
+                  </button>
+                )
+              )}
+              
             </div>
             
           </div>
@@ -85,7 +113,7 @@ const QuestListCard = ({ quest, onJoin, onDetail }) => {
   );
 };
 
-const QuestList = ( { onOpenModal } ) => {
+const QuestList = ( { isLogin=false, onOpenModal, onQuestUpdate } ) => {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -96,6 +124,13 @@ const QuestList = ( { onOpenModal } ) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [questsPerPage] = useState(16); // 4x4 = 16개
   const [totalPages, setTotalPages] = useState(1);
+
+  const [selectedQuest, setSelectedQuest] = useState(null);
+
+    const [actionModal, setActionModal] = useState({
+    isOpen: false,
+    type: null
+  });
 
   const navigate = useNavigate();
 
@@ -143,7 +178,12 @@ const QuestList = ( { onOpenModal } ) => {
         limit: 100
       };
 
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, { params });
+      
+      const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/list`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/list`;
+
+      const response = await axios.get(endpoint, { params });
       const allQuests = response.data.quests || [];
       setQuests(allQuests);
       setTotalPages(Math.ceil(allQuests.length / questsPerPage));
@@ -156,6 +196,10 @@ const QuestList = ( { onOpenModal } ) => {
     }
   };
 
+
+
+
+
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -164,9 +208,22 @@ const QuestList = ( { onOpenModal } ) => {
     setCurrentPage(1);
   };
 
+  
+
   const handleJoinQuest = (quest) => {
+    console.log(isLogin);
+    if (!isLogin){
+      window.scroll(0,0);
+      navigate(`/login`);
+      return;
+    }
+
     console.log('Join quest:', quest);
-    // #NeedToChange
+      setSelectedQuest(quest);
+            setActionModal({
+      isOpen: true,
+      type: 'challenge'
+    });
   };
 
   const handleQuestDetail = (quest) => {
@@ -196,6 +253,22 @@ const QuestList = ( { onOpenModal } ) => {
   const handlePageIndicatorClick = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
+
+    const handleActionModalClose = () => {
+      
+  setActionModal({
+    isOpen: false,
+    type: null
+  });
+  setSelectedQuest(null);
+};
+
+  const handleActionSuccess = () => {
+    if (onQuestUpdate && selectedQuest) {
+      onQuestUpdate(selectedQuest.id);
+    }
+  };
+  
 
   if (loading) {
     return (
@@ -263,6 +336,7 @@ const QuestList = ( { onOpenModal } ) => {
               quest={quest}
               onJoin={handleJoinQuest}
               onDetail={handleQuestDetail}
+              isLogin={isLogin}
             />
           ))
         ) : (
@@ -302,6 +376,18 @@ const QuestList = ( { onOpenModal } ) => {
           </button>
         </div>
       )}
+
+    {/* 액션 확인 모달 */}
+    {actionModal.isOpen && selectedQuest && (
+      <QuestActionModal
+        isOpen={actionModal.isOpen}
+        onClose={handleActionModalClose}
+        actionType={actionModal.type}
+        questTitle={selectedQuest.title}
+        quest_id={selectedQuest.id}
+        onSuccess={handleActionSuccess}
+      />
+    )}
     </div>
   );
 };

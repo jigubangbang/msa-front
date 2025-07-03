@@ -2,12 +2,26 @@ import React, { useState } from 'react';
 import styles from './QuestModal.module.css';
 import { useNavigate } from 'react-router-dom';
 import ModalUserList from '../ModalUserList/ModalUserList';
+import QuestActionModal from '../QuestActionModal/QuestActionModal';
+import QuestCertificationModal from '../QuestCertificationModal/QuestCertificationModal';
 
 
-const QuestModal = ({ questData, onClose, isLogin=false, onBadgeClick }) => {
+const QuestModal = ({ 
+  questData, 
+  onClose, 
+  isLogin=false, 
+  onBadgeClick,
+  onQuestUpdate }) => {
   const [badgeHover, setBadgeHover] = useState(null);
+const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
   const [showUserList, setShowUserList] = useState(false);
 
+  const [actionModal, setActionModal] = useState({
+  isOpen: false,
+  type: null
+});
+
+const [isCertiModalOpen, setIsCertiModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -45,43 +59,74 @@ const QuestModal = ({ questData, onClose, isLogin=false, onBadgeClick }) => {
   };
 
   // 배지 클릭 
-  const handleBadgeClick = (badge) => {
-  console.log('배지 클릭:', badge.id);
-  if (onBadgeClick) {
-    onBadgeClick(badge.id);
-  }
-};
+  const handleBadgeClick = (badge, index) => {
+    if (index === currentBadgeIndex) {
+      if (onBadgeClick) {
+        onBadgeClick(badge.id);
+      }
+    } else {
+      setCurrentBadgeIndex(index);
+    }
+  };
 
 const renderBadges = () => {
   if (!questData.badges || questData.badges.length === 0) {
     return <div className={styles.noBadges}>연관된 뱃지가 없습니다.</div>;
   }
 
+  const currentBadge = questData.badges[currentBadgeIndex];
+
   return (
     <div className={styles.badgesContainer}>
-      {questData.badges.map((badge, index) => (
-        <div 
-          key={badge.id}
-          className={styles.badgeContainer}
-          onMouseEnter={() => setBadgeHover(badge.id)}
-          onMouseLeave={() => setBadgeHover(null)}
-          onClick={() => handleBadgeClick(badge)}
-        >
-          <img 
-            src={badge.icon} 
-            alt="badge" 
-            className={styles.badgeIcon}
-            style={{ opacity: badgeHover === badge.id ? 0.7 : 1 }}
-          />
-          {badgeHover === badge.id && (
-            <div className={styles.badgeTooltip}>
-              <div className={styles.badgeKorTitle}>{badge.kor_title}</div>
-              <div className={styles.badgeEngTitle}>{badge.eng_title}</div>
-              <div className={styles.badgeClickHint}>클릭하여 뱃지 보기</div>
+      <div className={styles.badgeCarousel}>
+        {questData.badges.map((badge, index) => {
+          const isActive = index === currentBadgeIndex;
+          const isLeft = index < currentBadgeIndex;
+          const isRight = index > currentBadgeIndex;
+          
+          let position = '';
+          if (isActive) position = styles.activeBadge;
+          else if (isLeft) position = styles.leftBadge;
+          else if (isRight) position = styles.rightBadge;
+
+          return (
+            <div 
+              key={badge.id}
+              className={`${styles.badgeContainer} ${position}`}
+              onMouseEnter={() => isActive && setBadgeHover(badge.id)}
+              onMouseLeave={() => setBadgeHover(null)}
+              onClick={() => handleBadgeClick(badge, index)}
+            >
+              <img 
+                src={badge.icon} 
+                alt="badge" 
+                className={styles.badgeIcon}
+                style={{ opacity: badgeHover === badge.id ? 0.7 : 1 }}
+              />
+              {badgeHover === badge.id && isActive && (
+                <div className={styles.badgeTooltip}>
+                  <div className={styles.badgeKorTitle}>{badge.kor_title}</div>
+                  <div className={styles.badgeEngTitle}>{badge.eng_title}</div>
+                  <div className={styles.badgeClickHint}>클릭하여 뱃지 보기</div>
+                </div>
+              )}
             </div>
-          )}
+          );
+        })}
+      </div>
+      
+      {/* 배지 인디케이터 */}
+      {questData.badges.length > 1 && (
+        <div className={styles.badgeIndicators}>
+          {questData.badges.map((_, index) => (
+            <div 
+              key={index}
+              className={`${styles.indicator} ${index === currentBadgeIndex ? styles.activeIndicator : ''}`}
+              onClick={() => setCurrentBadgeIndex(index)}
+            />
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 };
@@ -93,23 +138,33 @@ const renderBadges = () => {
 
   // 버튼들
   const handleChallengeClick = () => {
-    console.log('도전하기');
+      setActionModal({
+    isOpen: true,
+    type: 'challenge'
+  });
   };
 
   const handleVerifyClick = () => {
-    console.log('인증하기', questData.quest_user_id);
+    setIsCertiModalOpen(true);
   };
 
   const handleGiveUpClick = () => {
-    console.log('포기하기', questData.quest_user_id);
+    setActionModal({
+    isOpen: true,
+    type: 'abandon'
+  });
   };
 
   const handleViewCertificationClick = () => {
+    //#NeedToChange
     console.log('인증 보러가기', questData.quest_user_id);
   };
 
   const handleRetryClick = () => {
-    console.log('다시 도전하기');
+    setActionModal({
+    isOpen: true,
+    type: 'retry'
+  });
   };
 
   const handleLoginClick = () => {
@@ -122,6 +177,18 @@ const renderBadges = () => {
     navigate('/register');
   };
 
+  const handleActionModalClose = () => {
+  setActionModal({
+    isOpen: false,
+    type: null
+  });
+};
+
+  const handleActionSuccess = () => {
+    if (onQuestUpdate) {
+      onQuestUpdate(questData.id);
+    }
+  };
   
 
   // 유저들
@@ -298,11 +365,13 @@ const renderBadges = () => {
               
               {/* 설명 */}
               <div className={styles.questDescription}>
-                {formatDescription(questData.description).split('\n').map((line, index) => (
-                  <div key={index} className={line.startsWith('✅') ? styles.conditionLine : ''}>
-                    {line}
-                  </div>
-                ))}
+                <div className={styles.descriptionInner}>
+                  {formatDescription(questData.description).split('\n').map((line, index) => (
+                    <div key={index} className={line.startsWith('✅') ? styles.conditionLine : ''}>
+                      {line}
+                    </div>
+                  ))}
+                </div>
               </div>
               
               {/* 상태별 버튼 */}
@@ -311,6 +380,7 @@ const renderBadges = () => {
           </div>
         </div>
       </div>
+
       {showUserList && (
         <ModalUserList
           isOpen={showUserList}
@@ -320,6 +390,25 @@ const renderBadges = () => {
           completedUsers={questData.completed_user || []}
         />
       )}
+
+      {/* 액션 확인 모달 */}
+      <QuestActionModal
+        isOpen={actionModal.isOpen}
+        onClose={handleActionModalClose}
+        actionType={actionModal.type}
+        questTitle={questData.title}
+        quest_id={questData.id}
+        quest_user_id={questData.quest_user_id}
+        onSuccess={handleActionSuccess}
+      />
+
+      <QuestCertificationModal
+        isOpen={isCertiModalOpen}
+        onClose={() => setIsCertiModalOpen(false)}
+        questData={questData}
+        questUserId={questData.quest_user_id}
+        onSuccess={handleActionSuccess}
+      />
     </div>
   );
 };

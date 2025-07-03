@@ -31,12 +31,12 @@ const ProfileCard = ({
 
       <div className={styles.footer}>
         <p className={styles.count}>
-          : {count}
+          : {count? count : 0}
         </p>
         <div className={styles.rightSection}>
 
         <span className={styles.level}>
-            Lv. {level}
+            Lv. {level ? level :  0}
           </span>
 
         <div className={styles.profile}>

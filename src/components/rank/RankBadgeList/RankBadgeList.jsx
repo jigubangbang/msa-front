@@ -4,16 +4,24 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankBadgeList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
+import ReactDOM from 'react-dom';
 
 
-const RankBadgeList = ({ myUserId, onOpenBadgeModal}) => {
+
+const RankBadgeList = ({ 
+  onOpenBadgeModal,
+  searchTerm = '',
+  setSearchTerm,
+  currentPage = 1,
+  setCurrentPage
+}) => {
     const [badges, setBadges] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const [searchTerm, setSearchTerm] = useState('');
 
-    const [searchTerm, setSearchTerm] = useState('');
     const itemsPerPage = 10;
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -182,4 +190,4 @@ const RankBadgeList = ({ myUserId, onOpenBadgeModal}) => {
   );
 };
 
-export default RankBadgeList;
+export default React.memo(RankBadgeList);

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import API_ENDPOINTS from "../../../utils/constants";
 import {QUEST_SIDEBAR} from "../../../utils/sidebar";
+import ReactDOM from 'react-dom';
 
 import {jwtDecode} from "jwt-decode";
 
@@ -40,17 +41,12 @@ function Rankings() {
           fetch(`${API_ENDPOINTS.QUEST.PUBLIC}/top-quest`)
         ]);
 
-        // 응답 확인
-        if (!weeklyQuestRes.ok || !weeklyLevelRes.ok || !topLevelRes.ok || !topQuestRes.ok) {
-          throw new Error('API 요청 실패');
-        }
-
         // JSON 파싱
         const [weeklyQuest, weeklyLevel, topLevel, topQuest] = await Promise.all([
-          weeklyQuestRes.json(),
-          weeklyLevelRes.json(),
-          topLevelRes.json(),
-          topQuestRes.json()
+          weeklyQuestRes.ok ? weeklyQuestRes.json() : Promise.resolve([]),
+          weeklyLevelRes.ok ? weeklyLevelRes.json() : Promise.resolve([]),
+          topLevelRes.ok ? topLevelRes.json() : Promise.resolve([]),
+          topQuestRes.ok ? topQuestRes.json() : Promise.resolve([])
         ]);
 
         setRankingData({
@@ -194,11 +190,11 @@ export default function QuestMainPage() {
   useEffect(()=>{
     const token = localStorage.getItem("accessToken");
     //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    // setIsLogin(true);
-    // fetchUserinfo();
-    // fetchUserQuest();
-    // fetchUserBadge();
-    // fetchUserRank();
+    setIsLogin(true);
+    fetchUserinfo();
+    fetchUserQuest();
+    fetchUserBadge();
+    fetchUserRank();
 
     if (token) {
       setIsLogin(true);
@@ -247,7 +243,7 @@ export default function QuestMainPage() {
     });
       setUserQuest(response.data || {});
     }catch(err){
-      console.error("Failed to fetch user info", err);
+      console.error("Failed to fetch user quests", err);
       setUserQuest(null);
     }finally{
       setLoading(false);
@@ -284,8 +280,38 @@ export default function QuestMainPage() {
     }
   }
 
+  
+const handleQuestUpdate = async (questId) => {
+  console.log('퀘스트 데이터 새로고침 중...', questId);
+  setLoading(true);
+  try {
+    // 1. 현재 퀘스트 모달 새로고침
+    const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+
+    const response = await axios.get(endpoint);
+    setSelectedQuest(response.data); 
+    
+    // 2. 사용자 퀘스트 목록 새로고침
+    const userQuestsResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
+      params: { status: "IN_PROGRESS" }
+    });
+    setUserQuest(userQuestsResponse.data || []);
+    
+    // 3. 사용자 정보 새로고침
+    const userResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+    setUserinfo(userResponse.data);
+    
+  } catch (error) {
+    console.error("Failed to refresh quest data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
   //quest modal
-  const openQuestModal = async (quest_id) => {
+  const openQuestModal = useCallback(async (quest_id) => {
     setLoading(true);
     try {
       const endpoint = isLogin 
@@ -301,7 +327,7 @@ export default function QuestMainPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLogin]);
 
   const closeQuestModal = () => {
     setShowQuestModal(false);
@@ -309,7 +335,7 @@ export default function QuestMainPage() {
   };
 
   // 모달
-  const openBadgeModal = async (badge_id) => {
+  const openBadgeModal = useCallback(async (badge_id) => {
     setLoading(true);
     try {
       const endpoint = isLogin 
@@ -325,7 +351,7 @@ export default function QuestMainPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLogin]);
 
   const closeBadgeModal = () => {
     setShowBadgeModal(false);
@@ -361,6 +387,7 @@ export default function QuestMainPage() {
                     title="Ongoing Quests" 
                     onOpenModal={openQuestModal}
                     isLogin={isLogin}
+                    onQuestUpdate={handleQuestUpdate}
                   />
                 )}
               </>
@@ -370,6 +397,7 @@ export default function QuestMainPage() {
                 title="Ongoing Quests" 
                 onOpenModal={openQuestModal}
                 isLogin={isLogin}
+                onQuestUpdate={handleQuestUpdate}
               />
             )}
 
@@ -418,27 +446,30 @@ export default function QuestMainPage() {
           )}
             
           </div>
-        <QuestList onOpenModal={openQuestModal}/>
+        <QuestList isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}/>
       </div>
 
       {/* 퀘스트 모달 */}
-      {showQuestModal && (
+      {showQuestModal && ReactDOM.createPortal(
         <QuestModal 
           questData={selectedQuest} 
           onClose={closeQuestModal}
           onBadgeClick={handleBadgeClickFromQuest}
-          isLogin={isLogin} 
-        />
+          isLogin={isLogin}
+          onQuestUpdate={handleQuestUpdate} 
+        />,
+        document.body
       )}
 
       {/* 배지 모달 */}
-      {showBadgeModal && (
+      {showBadgeModal && ReactDOM.createPortal(
         <BadgeModal 
           badgeData={selectedBadge} 
           onClose={closeBadgeModal}
           onQuestClick={handleQuestClickFromBadge}
           isLogin={isLogin} 
-        />
+        />,
+        document.body
       )}
     </div>
   );

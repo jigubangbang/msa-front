@@ -6,19 +6,26 @@ import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 
-const RankQuestList = ({ myUserId, onOpenModal }) => {
+const RankQuestList = ({  
+  onOpenModal,
+  searchTerm,
+  setSearchTerm,
+  currentPage,
+  setCurrentPage,
+  filters,
+  setFilters }) => {
   const [quests, setQuests] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({
-    category: 0,
-    difficulty: '',
-    sortOption: 'default'
-  });
-
-  const [searchTerm, setSearchTerm] = useState('');
+  
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [filters, setFilters] = useState({
+  //   category: 0,
+  //   difficulty: '',
+  //   sortOption: 'default'
+  // });
+  // const [searchTerm, setSearchTerm] = useState('');
   
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -84,6 +91,7 @@ const RankQuestList = ({ myUserId, onOpenModal }) => {
   const handleSortChange = (option) => {
   handleFilterChange('sortOption', option.value);
   };
+  
     const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -276,4 +284,4 @@ const RankQuestList = ({ myUserId, onOpenModal }) => {
   );
 };
 
-export default RankQuestList;
+export default React.memo(RankQuestList);
