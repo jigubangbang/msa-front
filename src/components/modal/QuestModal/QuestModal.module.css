@@ -130,6 +130,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   color: #2d5a2d;
   font-weight: 500;
   border: 1px solid #ccc;
+  text-align: center;
 }
 
 .badgeSection {
@@ -142,29 +143,77 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .badgesContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.badgeCarousel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 140px;
+  margin: 0 auto;
 }
 
 .badgeContainer {
-  position: relative;
+  position: absolute;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.activeBadge {
+  z-index: 3;
+  transform: translateX(0) scale(1);
+}
+
+.leftBadge {
+  z-index: 2;
+  transform: translateX(-5px) scale(0.85);
+  opacity: 0.6;
+}
+
+.rightBadge {
+  z-index: 2;
+  transform: translateX(5px) scale(0.85);
+  opacity: 0.6;
+}
+
+.badgeContainer:hover {
+  transform-origin: center;
+}
+
+.activeBadge:hover {
+  transform: translateX(0) scale(1.05);
+}
+
+.leftBadge:hover {
+  transform: translateX(-5px) scale(0.9);
+  opacity: 0.8;
+}
+
+.rightBadge:hover {
+  transform: translateX(5px) scale(0.9);
+  opacity: 0.8;
 }
 
 .badgeIcon {
-  width: 80px;
-  height: 80px;
-  transition: opacity 0.2s;
-  border-radius: 50%;
-  border: 2px solid #ffd700;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  width: 120px;
+  height: 120px;
+  transition: all 0.3s ease;
+}
+
+.leftBadge .badgeIcon,
+.rightBadge .badgeIcon {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .badgeTooltip {
-  position: absolute;
-  top: -80px;
+ position: absolute;
+  top: -90px;
   left: 50%;
   transform: translateX(-50%);
   background: #000;
@@ -180,7 +229,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .badgeTooltip::after {
-  content: '';
+ content: '';
   position: absolute;
   top: 100%;
   left: 50%;
@@ -207,6 +256,21 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   font-style: italic;
 }
 
+.badgeIndicators {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.activeIndicator {
+  background: #ffd700;
+  transform: scale(1.2);
+}
+
+.indicator:hover {
+  background: #999;
+}
+
 .noBadges {
   text-align: center;
   color: #cccccc;
@@ -215,17 +279,8 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   font-size: 14px;
 }
 
-/* 여러 뱃지가 있을 때를 위한 추가 스타일 */
-@media (max-width: 768px) {
-  .badgeIcon {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .badgeTooltip {
-    font-size: 12px;
-    min-width: 150px;
-  }
+.badgeContainer:nth-child(n+4) {
+  display: none;
 }
 
 .badgeContainer {
@@ -284,7 +339,37 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   border: 1px solid #ccc;
   font-size: 16px;
   font-weight: 400;
-  min-height: 200px;
+  min-height: 300px;
+  max-height: 500px; 
+  overflow-y: auto;
+flex-direction: column;
+    display: flex;
+  align-items: center; 
+  justify-content: center; 
+}
+
+.descriptionInner {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.questDescription::-webkit-scrollbar {
+  width: 6px;
+}
+
+.questDescription::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.questDescription::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.questDescription::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 .conditionLine {

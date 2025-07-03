@@ -116,6 +116,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
 
   // 상태별 버튼 렌더링
   const renderStatusSection = () => {
+    console.log(badgeData);
     if (!isLogin) {
       return (
         <div className={styles.statusSection}>
@@ -143,23 +144,25 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
           </span>
         </div>
       );
+    }else{
+      return (
+          <div className={styles.statusSection}>
+            <div className={styles.progressInfo}>
+              <span className={styles.progressText}>
+                진행률: {badgeData.completed_quest}/{badgeData.total_quest} ({calculateProgress()}%)
+              </span>
+              <div className={styles.progressBar}>
+                <div 
+                  className={styles.progressFill} 
+                  style={{ width: `${calculateProgress()}%` }}
+                ></div>
+              </div>
+            </div>
+          </div>
+        );
     }
 
-    return (
-      <div className={styles.statusSection}>
-        <div className={styles.progressInfo}>
-          <span className={styles.progressText}>
-            진행률: {badgeData.completed_quest}/{badgeData.total_quest} ({calculateProgress()}%)
-          </span>
-          <div className={styles.progressBar}>
-            <div 
-              className={styles.progressFill} 
-              style={{ width: `${calculateProgress()}%` }}
-            ></div>
-          </div>
-        </div>
-      </div>
-    );
+    
   };
 
   if (!badgeData) return null;
