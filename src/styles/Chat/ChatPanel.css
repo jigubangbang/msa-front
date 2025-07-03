@@ -35,10 +35,8 @@ body {
 .chat-header {
   background-color: #242424;
   color: white;
-  padding: 15px;
+  padding: 12px;
   text-align: center;
-  font-size: 24px;
-  font-weight: 700;
   border-bottom: 1px solid #6b6b6b;
   display: flex;
   align-items: center;
@@ -55,7 +53,6 @@ body {
 .chat-header-menu {
   position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
   right: 17px;
-  font-size: 1.5em;
   cursor: pointer;
   color: white; /* 헤더 텍스트와 같은 색상 */
 }
@@ -95,11 +92,9 @@ body {
 .system-message {
   display: inline-block;
   background-color: transparent;
-  color: #555;
+  color: #6b6b6b;
   padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-style: italic;
+  font-size: 1rem;
 }
 
 /* 개별 메시지 행 컨테이너 (프로필 + 닉네임 + 메시지 버블을 감쌈) */
@@ -146,8 +141,8 @@ body {
 }
 
 .nickname {
-  font-size: 14px;
-  font-weight: 300;
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 13px;
   color: #555;
   white-space: nowrap; /* 닉네임이 줄바꿈되지 않도록 */
   overflow: hidden;
@@ -160,15 +155,15 @@ body {
 .chat-message-bubble {
   max-width: 75%;
   padding: 10px 15px;
-  border-radius: 20px;
+  border-radius: 8px;
   word-wrap: break-word; /* Ensure long words wrap */
   /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); /* 약간의 그림자 추가 (선택 사항) */
   line-height: 1.4; /* 줄 간격 */
 }
 
 .my-message {
-  align-self: flex-end; /* Align my messages to the right */
-  background-color: #dcf8c6; /* Greenish background for my messages */
+  align-self: flex-end;
+  background-color: #F1DC81;
   color: #333;
   margin-left: auto; /* message-row가 flex-end로 정렬하지만, 버블 자체를 오른쪽 끝으로 밀어냄 */
 }
@@ -187,14 +182,7 @@ body {
 
 .timestamp {
   font-family: 'Pretendard', sans-serif; 
-  font-size: 1rem;
-}
-
-.chat-input-area {
-  display: flex;
-  padding: 15px;
-  border-top: 1px solid #ddd;
-  background-color: #fff;
+  font-size: 13px;
 }
 
 .chat-input-area {
@@ -213,6 +201,7 @@ body {
   margin-right: 12px;
   margin-left: 12px;
   border-radius: 6px;
+  font-family: 'Pretendard', sans-serif; 
   font-size: 16px;
   background-color: #fafafa;
   transition: border-color 0.3s ease;
@@ -230,7 +219,8 @@ body {
   color: white;
   border: none;
   padding: 10px 20px;
-  font: 16px;
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
   margin-right: 12px;

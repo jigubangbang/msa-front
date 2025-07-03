@@ -5,20 +5,21 @@ import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import API_ENDPOINTS from '../../utils/constants';
+import api from "../../apis/api";
+import { getAccessToken } from '../../utils/tokenUtils';
 
 export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose }) {
   const {members, loading, error} = useChatRoomInfo(chatId);
-  const { removeSubscription, getSubscription } = useChatSubscriptionStore();
+  const {removeSubscription, getSubscription} = useChatSubscriptionStore();
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const isManager = members.some(member => member.userId === senderId && member.isCreator == 1);
+  const isManager = members.some(member => member.userId === senderId && member.isCreator === 1);
+  const accessToken = getAccessToken();
 
-  // 로딩 중일 때 보여줄 UI
   if (loading) {
-    return <div>멤버 목록을 불러오는 중...</div>;
+    console.log( "그룹 멤버 조회 중" );
   }
-  // 에러 발생 시 보여줄 UI
   if (error) {
-    return <div>에러가 발생했습니다: {error.message}</div>;
+    console.log(  "그룹 멤버 조회 중 에러 발생" );
   }
 
   const handleLeaveGroup = async () => {
@@ -30,7 +31,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         method: "DELETE",
         headers: {
           'Content-Type': 'application/json',
-          'User-Id': senderId,
+          'Authorization': `Bearer ${accessToken}`,
         },
       });
 
@@ -54,6 +55,54 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     setSelectedUserId(prev => (prev === userId ? null : userId));
   };
 
+  const promoteToManager = async (userId) => {
+    try {
+      await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/promote/${userId}`, {
+      });
+      alert("해당 유저를 관리자로 지정했습니다.");
+    } catch (err) {
+      console.error(err);
+      alert("관리자 지정에 실패했습니다.");
+    }
+  };
+
+  const kickUser = async (userId) => {
+    const confirmed = window.confirm( `정말 ${userId}을 내보내시겠습니까?` );
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/${userId}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'User-Id': senderId,
+        },
+      });
+    if (response.ok) {
+      alert(`${userId}님을 성공적으로 강퇴했습니다.`);
+      } else {
+        alert("강퇴 처리에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("강퇴 오류:", error);
+      alert("강퇴 중 오류가 발생했습니다.");
+    }
+  };
+
+  const demoteManager = async(userId) => {
+    const confirmed = window.confirm(`${userId}님을 운영진에서 제외하시겠습니까?`);
+    if (!confirmed) return;
+
+    try {
+      await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/demote/${userId}`);
+      alert(`${userId}님을 운영진에서 제외했습니다.`);
+    } catch (err) {
+      console.error(err);
+      alert("운영진 제외에 실패했습니다.");
+    }
+  };
+
   return (
     <div
       className={`chat-sidebar-overlay ${!isOpen ? 'hidden' : ''}`}
@@ -66,7 +115,6 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         </div>
 
         <div className="sidebar-section chat-info-section">
-          <h4>채팅방 설명</h4>
           <p>{chatInfo?.description || "채팅방 설명이 나오는 부분입니다."}</p>
           {isManager == '1' && ( // 방장일 경우에만 '수정하기' 버튼 표시
             <button className="edit-button">
@@ -100,9 +148,11 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
                     </span> 
                     {selectedUserId === member.userId && (
                       <ChatReportTab
-                        onReport={() => alert(`${selectedUserId} 신고`)}
-                        onPromote={() => alert(`${selectedUserId}를 관리자 승격`)}
-                        onKick={() => alert(`${selectedUserId} 추방`)}
+                        userId={member.userId} 
+                        isManager={member.isCreator === 1}
+                        onPromote={promoteToManager}
+                        onKick={kickUser}
+                        onDemote={demoteManager}
                       />
                     )}
                   </div>

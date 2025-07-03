@@ -16,7 +16,7 @@ export function joinSock(isOpen, chatId) {
   const subscriptionRef = useRef(null); // 현 구독 객체 저장 ref
 
   // STOMP 클라이언트 활성화 및 메세지 구독
-  const activateStompClient = useCallback(() => {
+  const activateStompClient = useCallback((userId) => {
     console.log(`[joinSock] STOMP 활성화 시작: Room number: ${chatId}`);
     setIsLoading(true);
     setChatError(null);
@@ -28,6 +28,7 @@ export function joinSock(isOpen, chatId) {
 
         // 입장 메세지 전송
         send(`/app/chat.addUser/${chatId}`, {
+          senderId: userId,
           message: "joined"
         });
 
@@ -88,11 +89,13 @@ export function joinSock(isOpen, chatId) {
 
     const initializeChatRoom = async () => {
         let restApiJoinSuccess = false;
+        let userIdFromJoin = null;
 
         try {
             const joinResponse = await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/join`);
             console.log("[joinSock] " + joinResponse.data.userId +"님 채팅방 REST 입장 성공:", joinResponse.data);
             restApiJoinSuccess = true;
+            userIdFromJoin = joinResponse.data.userId;
             setSenderId(joinResponse.data.userId);
             } catch (err) {
               console.error("[joinSock] REST API 입장 실패:", err);
@@ -110,7 +113,7 @@ export function joinSock(isOpen, chatId) {
             setChatError(new Error("과거 메시지 조회 실패: " + (err.message || "알 수 없는 에러")));
           }
           // 그 후 STOMP 활성화
-          activateStompClient();
+          activateStompClient(userIdFromJoin);
         } else {
           setIsLoading(false); // REST API 실패 시 로딩 해제
         }

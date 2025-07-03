@@ -1,6 +1,7 @@
 // /src/components/chat/ChatPanel.jsx
 import React, { useState, useEffect, useRef } from 'react';
 // import useChat from '../../hooks/chat/useChat';
+import API_ENDPOINTS from '../../utils/constants';
 import ChatSidebar from './ChatSideBar';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
@@ -37,15 +38,6 @@ export default function ChatPanel({ chatId, senderId, messages, onSendMessage, o
       setIsScrolledToBottom(false);
     }
   };
-
-  // 폴링 메세지 전송
-  /*
-  const handleSend = () => {
-    if (!input.trim()) return;
-    postMessage(senderId, input);
-    setInput('');
-  };
-  */
 
   // 웹소켓 메세지 전송
   const handleSubmit = (e) => {

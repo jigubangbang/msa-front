@@ -2,12 +2,17 @@
 import React from 'react';
 import '../../styles/chat/ChatReportTab.css';
 
-export default function ChatReportTab({ onReport, onPromote, onKick }) {
+export default function ChatReportTab({ userId, isManager, onPromote, onKick, onDemote }) {
   return (
     <div className="chat-report-tab">
-      <button className="report-option" onClick={onReport}>신고하기</button>
-      <button className="report-option" onClick={onPromote}>관리자로 만들기</button>
-      <button className="report-option" onClick={onKick}>추방하기</button>
+      {isManager ? (
+        <button className="admin-button" onClick={() => onDemote(userId)}>운영진 제외</button>
+      ) : (
+        <>
+          <button className="report-option" onClick={() => onPromote?.(userId)}>운영진 초대</button>
+          <button className="report-option" onClick={() => onKick?.(userId)}>내보내기</button>
+        </>
+      )}
     </div>
   );
 }
