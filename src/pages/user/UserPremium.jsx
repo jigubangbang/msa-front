@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from 'react-router-dom';
 import { USER_SIDEBAR } from "../../utils/sidebar";
-import styles from "./UserManage.module.css";
+import styles from "./UserLayout.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
 
 export default function UserPremium() {

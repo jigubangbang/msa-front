@@ -15,8 +15,8 @@ import TelIcon from "../../assets/auth/tel.svg";
 import EmailIcon from "../../assets/auth/email.svg";
 import { Circles } from "react-loader-spinner";
 import debounce from "lodash.debounce";
-import requiredTerms from "./terms-required.txt?raw";
-import optionalTerms from "./terms-optional.txt?raw";
+import requiredTerms from "../../assets/text/terms-required.txt?raw";
+import optionalTerms from "../../assets/text/terms-optional.txt?raw";
 
 const Register = () => {
   const navigate = useNavigate();

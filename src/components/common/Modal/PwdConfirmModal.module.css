@@ -1,0 +1,187 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding-top: 60px;
+}
+
+.modal {
+  background-color: #fff;
+  color: #000;
+  padding: 28px 36px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
+  position: relative;
+  width: 400px; 
+  font-family: 'Pretendard', sans-serif;
+}
+
+.heading {
+  margin-top: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* 폼 필드 */
+.formField {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 아이디 표시 박스 */
+.idDisplay {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  color: #000;
+}
+
+/* 비밀번호 입력 */
+.passwordInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.passwordInput:focus {
+  outline: none;
+  border-color: #000;
+}
+
+/* 설명 텍스트 */
+.description {
+  font-size: 14px;
+  margin: 25px 0;
+  color: #666;
+  line-height: 0.5;
+}
+
+/* 버튼 컨테이너 */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.confirmButton, .cancelButton {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14x;
+  cursor: pointer;
+  border: none;
+  min-width: 80px;  /* 너비 조정 */
+  font-family: 'Pretendard';
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.confirmButton {
+  background-color: #000; 
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.confirmButton:hover {
+  background-color: #333;
+  border-color: #333;
+}
+
+.cancelButton {
+  background-color: transparent;  
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.cancelButton:hover {
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
+}
+
+.confirmButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.cancelButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 에러 메시지 */
+.errorMessage {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.errorIcon {
+  font-weight: bold;
+  font-size: 16px;
+  color: #dc3545;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordInput {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.toggleIcon {
+  position: absolute;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.toggleIcon:hover {
+  opacity: 1;
+}

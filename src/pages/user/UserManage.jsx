@@ -4,7 +4,7 @@ import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import { USER_SIDEBAR } from "../../utils/sidebar";
 
-import styles from "./UserManage.module.css";
+import styles from "./UserLayout.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
 import UserInfoChange from "../../components/user/UserInfoChange";
 import PasswordChange from "../../components/user/PasswordChange";
