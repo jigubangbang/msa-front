@@ -27,6 +27,8 @@ function Rankings() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  
 
   useEffect(() => {
     const fetchRankingData = async () => {
@@ -156,7 +158,8 @@ export default function QuestMainPage() {
 
   const [seasonalQuest, setSeasonalQuest] = useState(null);
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(null);
+
 
   // Modal states 
   const [showQuestModal, setShowQuestModal] = useState(false);
@@ -446,7 +449,9 @@ const handleQuestUpdate = async (questId) => {
           )}
             
           </div>
-        <QuestList isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}/>
+        <QuestList isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}
+       />
+        
       </div>
 
       {/* 퀘스트 모달 */}

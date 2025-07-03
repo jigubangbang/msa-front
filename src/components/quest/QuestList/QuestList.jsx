@@ -7,8 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 
 
-const QuestListCard = ({ quest, onJoin, onDetail, isLogin = false }) => {
-
+const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
 
   const getDifficultyText = (difficulty) => {
     switch(difficulty) {
@@ -113,7 +112,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin = false }) => {
   );
 };
 
-const QuestList = ( { isLogin=false, onOpenModal, onQuestUpdate } ) => {
+const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, } ) => {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -163,9 +162,11 @@ const QuestList = ( { isLogin=false, onOpenModal, onQuestUpdate } ) => {
     { value: 'xp_low', label: 'XP Low to High' }
   ];
 
-  useEffect(() => {
+useEffect(() => {
+  if (isLogin !== null) { 
     fetchQuests();
-  }, [filters, currentPage]);
+  }
+}, [filters, currentPage, isLogin]);
 
   const fetchQuests = async () => {
     setLoading(true);
@@ -182,6 +183,8 @@ const QuestList = ( { isLogin=false, onOpenModal, onQuestUpdate } ) => {
       const endpoint = isLogin 
       ? `${API_ENDPOINTS.QUEST.USER}/list`
       : `${API_ENDPOINTS.QUEST.PUBLIC}/list`;
+
+       console.log('Fetching from:', endpoint, 'isLogin:', isLogin);
 
       const response = await axios.get(endpoint, { params });
       const allQuests = response.data.quests || [];
@@ -264,13 +267,15 @@ const QuestList = ( { isLogin=false, onOpenModal, onQuestUpdate } ) => {
 };
 
   const handleActionSuccess = () => {
+    fetchQuests();
     if (onQuestUpdate && selectedQuest) {
       onQuestUpdate(selectedQuest.id);
     }
+    
   };
   
 
-  if (loading) {
+  if (loading || isLogin === null) {
     return (
       <div className={styles.questList}>
         <div className={styles.loading}>로딩 중...</div>
