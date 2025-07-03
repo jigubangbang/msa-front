@@ -12,6 +12,9 @@ import Countries from "../pages/profile/Countries";
 import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
+import Network from "../pages/profile/Network";
+
+import Feed from "../components/feed/Feed";
 
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
@@ -43,12 +46,18 @@ const AppRouter = () => {
           <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
 
-          <Route path="/profile/:userId/main" element={<Profile/>}/>
+          {/* Profile */}
+          <Route path="/profile/:userId" element={<Profile/>}/>
           <Route path="/profile/:userId/countries" element={<Countries/>}/>
           <Route path="/profile/:userId/badges" element={<Badges/>}/>
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
+          <Route path="/profile/:userId/following" element={<Network type="following"/>}/>
+          <Route path="/profile/:userId/followers" element={<Network type="followers"/>}/>
+
+          {/* Feed */}
+          <Route path="/feed" element={<Feed/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>

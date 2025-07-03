@@ -1,17 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './QuestCarousel.module.css';
+import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
+import QuestCertificationModal from '../../modal/QuestCertificationModal/QuestCertificationModal';
 
-const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal}) => {
+const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionClick, onCertiClick}) => {
   //#NeedToChange
   const handleCertify = (e) => {
     e.stopPropagation();
-    console.log(`click certify ${quest.id}`)
+    onCertiClick(quest);
   }
 
   const handleGiveUp = (e) => {
     e.stopPropagation();
-    console.log(`click giveup ${quest.id}`);
+    onActionClick('abandon', quest);
   }
 
   const handleCardClick = () => {
@@ -79,9 +81,21 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal}) => {
   );
 };
 
-const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false }) => {
+const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false, onQuestUpdate }) => {
   const [selectedQuestId, setSelectedQuestId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+
+    const [actionModal, setActionModal] = useState({
+    isOpen: false,
+    type: null,
+    quest: null
+  });
+
+  const [certiModal, setCertiModal] = useState({
+    isOpen: false,
+    questData: null,
+    questUserId: null,
+  });
 
   const navigate = useNavigate();
 
@@ -105,6 +119,45 @@ const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false })
     }
   }
   
+
+  const handleActionClick = (actionType, quest) => {
+    setActionModal({
+      isOpen: true,
+      type: actionType,
+      quest: quest
+    });
+  };
+
+    const handleCertiClick = (quest) => {
+      setCertiModal({
+        isOpen: true,
+        questData: quest,
+        questUserId: quest.id,
+      })
+    }
+
+  const handleActionModalClose = () => {
+    setActionModal({
+      isOpen: false,
+      type: null,
+      quest: null
+    });
+  };
+
+  const handleCertiModalClose = () => {
+    setCertiModal({
+        isOpen: false,
+        questData:null,
+        questUserId: null,
+      })
+  }
+
+  const handleActionSuccess = () => {
+    if (onQuestUpdate && actionModal.quest) {
+      onQuestUpdate(actionModal.quest.quest_id || actionModal.quest.id);
+    }
+  };
+
 
   
 
@@ -140,6 +193,16 @@ const handleSignupClick = () => {
   window.scrollTo(0, 0);
     navigate('/register');
   };
+
+  const handleQuestListClick = () => {
+    window.scrollTo(0,0);
+    navigate('/quest/list');
+  }
+
+  const handleBadgeListClick = () => {
+    window.scrollTo(0,0);
+    navigate('/quest/badge');
+  }
 
   if (!isLogin) {
     return (
@@ -195,14 +258,56 @@ const handleSignupClick = () => {
   if (!quests || quests.length === 0) {
     return (
       <div className={styles.questCarousel}>
-        <div className={styles.emptyState}>
-          <p>진행 중인 퀘스트가 없습니다.</p>
+        <div className={styles.questContainer}>
+          <div className={styles.questGrid}>
+            <h2 className={styles.carouselTitle}>{title}</h2>
+            
+            {/* 로그인 퀘스트 카드 */}
+            <div className={styles.selectedQuestArea}>
+              <div className={`${styles.questCard} ${styles.selected} ${styles.large}`}>
+                <div className={styles.questContent}>
+                  <div className={styles.questHeader}>
+                    <div className={styles.questLevel}>
+                      ? (?XP)
+                    </div>
+                    <div className={styles.questTitle}>진행 중인 퀘스트가 없습니다.</div>
+                  </div>
+                  
+                  <div className={styles.questBadge}>
+                    <img src="/icons/common/unknwon_badge.png" alt="quest icon"/>
+                  </div>
+                </div>
+                
+                <div className={styles.progressContainer}>
+                  <div className={styles.progressBar}>
+                    <div 
+                      className={styles.progressFill} 
+                      style={{ width: `100%` }}
+                    ></div>
+                  </div>
+                  <div className={styles.progressText}>
+                    지구방방의 퀘스트를 즐겨보세요
+                  </div>
+                </div>
+                
+                <div className={styles.questActions}>
+                  <button className={styles.btnSecondary} onClick={handleQuestListClick}>
+                    퀘스트 둘러보기
+                  </button>
+                  <button className={styles.btnSecondary} onClick={handleBadgeListClick}>
+                    뱃지 둘러보기
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
+    <>
     <div className={styles.questCarousel}>
       <div 
         className={styles.questContainer}>
@@ -219,6 +324,8 @@ const handleSignupClick = () => {
                 isLarge={true}
                 onClick={() => handleQuestClick(arrangedQuests[0].id)}
                 onOpenModal={onOpenModal}
+                 onActionClick={handleActionClick}
+                 onCertiClick={handleCertiClick}
               />
             )}
           </div>
@@ -233,6 +340,7 @@ const handleSignupClick = () => {
                 isLarge={false}
                 onClick={() => handleQuestClick(quest.id)}
                 onOpenModal={onOpenModal}
+                onActionClick={handleActionClick}
               />
             ))}
           </div>
@@ -269,6 +377,28 @@ const handleSignupClick = () => {
         </div>
       )}
     </div>
+
+    {/* 액션 확인 모달 */}
+      {actionModal.isOpen && (
+        <QuestActionModal
+          isOpen={actionModal.isOpen}
+          onClose={handleActionModalClose}
+          actionType={actionModal.type}
+          questTitle={actionModal.quest?.title}
+          quest_id={actionModal.quest?.quest_id || actionModal.quest?.id}
+          quest_user_id={actionModal.quest?.id}
+          onSuccess={handleActionSuccess}
+        />
+      )}
+
+      <QuestCertificationModal
+        isOpen={certiModal.isOpen}
+        onClose={handleCertiModalClose}
+        questData={certiModal.questData}
+        questUserId={certiModal.questUserId}
+        onSuccess={handleActionSuccess}
+      />
+      </>
   );
 };
 

@@ -203,7 +203,9 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   margin: 0px;
 }
 
-.joinButton {
+.joinButton, 
+.joiningButton, 
+.endButton {
   padding: 10px 20px;
   background: #000;
   color: #fff;
@@ -216,12 +218,25 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   outline: none;
 }
 
-.joinButton:hover {
+.endButton {
+  background: #cccccc;
+  color: #8a8a8a;
+}
+
+.joinButton:hover, 
+.joiningButton:hover{
   background: #333;
   transform: translateY(-1px);
 }
 
-.joinButton:active {
+.endButton:hover{
+  background: #aaaaaa;
+  transform: translateY(-1px);
+}
+
+.joinButton:active, 
+.joiningButton:active, 
+.endButton:active {
   transform: translateY(0);
 }
 
@@ -229,6 +244,12 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   width: 10px;
   height: 10px;
   filter: brightness(0) invert(1); 
+  margin-right: 6px; 
+}
+
+.buttonEndIcon{
+  width: 10px;
+  height: 10px;
   margin-right: 6px; 
 }
 

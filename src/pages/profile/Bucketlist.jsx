@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from "axios";
+import api from "../../apis/api";
 import BucketlistItem from '../../components/profile/bucketlist/BucketlistItem';
 import ProfileTemplate from '../../components/profile/ProfileTemplate';
 import Modal from '../../components/common/Modal/Modal';
@@ -59,7 +59,7 @@ export default function Bucketlist() {
 
     function handleOptionClick(option) {
         setActiveDropdownOption(option.label);
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist?status=${option.value}`)
             .then((response) => {
                 setItems(response.data.items);
@@ -70,7 +70,7 @@ export default function Bucketlist() {
     }
 
     function saveNewGoal() {
-        axios
+        api
             .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`, {
                 title,
                 description
@@ -107,7 +107,7 @@ export default function Bucketlist() {
             id: item.id,
             displayOrder: index + 1
         }));
-        axios
+        api
             .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist/reorder`, payload)
             .catch((err) => {
                 console.log(err.message);
@@ -135,7 +135,7 @@ export default function Bucketlist() {
     }
     
     useEffect(() => {
-        axios
+        api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`)
             .then((response) => {
                 setItems(response.data.items);
@@ -143,7 +143,7 @@ export default function Bucketlist() {
                 setCompleteCount(response.data.completeItems);
                 setIncompleteCount(response.data.incompleteItems);
             })
-    }, [reloadData]);
+    }, [reloadData, userId]);
 
     return (
         <>

@@ -8,7 +8,7 @@
   padding: 20px;
 }
 
-.questListTitle {
+.badgeListTitle {
   margin: 0;
   font-family: Pretendard, sans-serif;
   font-size: 26px;
@@ -68,6 +68,12 @@
   padding: 12px 20px;
   border-bottom: 1px solid #f0f0f0;
   margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.badgeRowContainer:hover {
+
+  background: #e9ecef;
 }
 
 .badgeRowContainer:last-child {
@@ -75,9 +81,6 @@
   margin-bottom: 0;
 }
 
-.tableRow {
-
-}
 
 .firstRow {
   display: contents; 

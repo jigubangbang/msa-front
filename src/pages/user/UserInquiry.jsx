@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import { USER_SIDEBAR } from "../../utils/sidebar";
-import styles from "./UserManage.module.css"; // 공통 스타일 사용
+import styles from "./UserLayout.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
 
 export default function UserInquiry() {
+
+  // 사이드바
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -14,7 +16,6 @@ export default function UserInquiry() {
       active: currentPath === item.path || currentPath.startsWith(item.path + '/')
     }));
   };
-
   const finalMenuItems = getActiveMenuItems();
 
   return (
@@ -23,7 +24,7 @@ export default function UserInquiry() {
       <div className={styles.content}>
         <h1 className={styles.title}>1:1 문의</h1>
         <div className={styles.formContainer}>
-          <p>문의 내역 및 문의 작성 폼이 들어갈 자리입니다.</p>
+          <p>문의 페이지 내용</p>
         </div>
       </div>
     </div>

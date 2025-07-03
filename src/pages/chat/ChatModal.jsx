@@ -1,7 +1,12 @@
 // src/components/chat/ChatModal.jsx
+<<<<<<< HEAD
 import React, {useEffect, useState, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import { MutatingDots } from 'react-loader-spinner';
+=======
+import React, {useEffect} from 'react';
+import ReactDOM from 'react-dom'; // Portal을 사용하기 위해 필요
+>>>>>>> acb7a8fa91b721fab160a85672e79f0220cb3da3
 import ChatPanel from './ChatPanel.jsx';
 import { joinSock } from '../../hooks/chat/joinSock.js';
 import '../../styles/chat/ChatModal.css'

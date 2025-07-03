@@ -3,9 +3,8 @@ import { CSS } from "@dnd-kit/utilities";
 
 import styles from "../../../pages/profile/Bucketlist.module.css"
 import { useState } from "react";
-import axios from "axios";
+import api from "../../../apis/api";
 import dragIcon from "../../../assets/profile/drag_grey.svg";
-import editIcon from "../../../assets/profile/edit_grey.svg";
 import deleteIcon from "../../../assets/profile/close_grey.svg";
 import API_ENDPOINTS from "../../../utils/constants";
 
@@ -27,7 +26,7 @@ export default function BucketlistItem({id, title, description, completionStatus
 
     function handleCheckboxClick() {
         const newChecked = !isChecked;
-        axios
+        api
             .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist/${id}/status`, null)
             .then((response) => {
                 setIsChecked(!isChecked);
@@ -39,7 +38,7 @@ export default function BucketlistItem({id, title, description, completionStatus
     }
 
     function handleDeleteClick() {
-        axios
+        api
             .delete(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist/${id}`, null)
             .then(() => {
                 onDelete(id, completionStatus);

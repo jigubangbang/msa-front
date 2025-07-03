@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { create } from "zustand/react";
+import { create } from "zustand";
 import API_ENDPOINTS from '../../utils/constants';
 import { getAccessToken, getRefreshToken, setTokens, isTokenExpired, removeTokens } from "../../utils/tokenUtils";
 // import SockJS from "sockjs-client";

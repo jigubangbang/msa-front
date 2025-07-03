@@ -4,16 +4,24 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankBadgeList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
+import ReactDOM from 'react-dom';
 
 
-const RankBadgeList = ({ myUserId }) => {
+
+const RankBadgeList = ({ 
+  onOpenBadgeModal,
+  searchTerm = '',
+  setSearchTerm,
+  currentPage = 1,
+  setCurrentPage
+}) => {
     const [badges, setBadges] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const [searchTerm, setSearchTerm] = useState('');
 
-    const [searchTerm, setSearchTerm] = useState('');
     const itemsPerPage = 10;
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -64,6 +72,13 @@ const RankBadgeList = ({ myUserId }) => {
       setCurrentPage(pageNum);
   };
 
+  const handleBadgeRowClick = (badge) => {
+    if (onOpenBadgeModal && badge.id) {
+        onOpenBadgeModal(badge.id);
+      }
+  }
+
+
   if (loading) {
     return (
       <div className={styles.badgeList}>
@@ -108,7 +123,8 @@ const RankBadgeList = ({ myUserId }) => {
           const uniqueKey = badge.id ? `badge-${badge.id}` : `badge-${currentPage}-${index}`;
 
           return (
-            <div key={uniqueKey} className={styles.badgeRowContainer}>
+            <div key={uniqueKey} className={styles.badgeRowContainer}
+              onClick={() => handleBadgeRowClick(badge)}>
               {/* 첫 번째 행 */}
               <div className={`${styles.tableRow} ${styles.firstRow} ${isMyUser ? styles.highlighted : ''}`}>
                 <div className={`${styles.cell} ${styles.iconCell}`} rowSpan="2">
@@ -174,4 +190,4 @@ const RankBadgeList = ({ myUserId }) => {
   );
 };
 
-export default RankBadgeList;
+export default React.memo(RankBadgeList);

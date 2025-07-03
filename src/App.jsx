@@ -1,8 +1,19 @@
-import {useState} from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import AppRouter from "./routes/AppRouter";
 import Header from "./components/main/Header";
 import ChatModal from "./pages/Chat/ChatModal";
 import './App.css';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const [isChatModal, setIsChatModal] = useState(false); // 채팅 모달 상태
@@ -12,6 +23,7 @@ function App() {
     <div className="app-container">
       <Header onOpenChat={openChatModal} ></Header>
       <main className="main-container">
+      <ScrollToTop />
       <AppRouter/>
       <ChatModal
         isOpen={isChatModal}

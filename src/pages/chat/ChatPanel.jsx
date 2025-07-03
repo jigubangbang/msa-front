@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import API_ENDPOINTS from '../../utils/constants';
 import ChatSidebar from './ChatSideBar';
 import '../../styles/chat/ChatPanel.css'
-import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
+import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, messages, onSendMessage, onClose, onForceClose }) {
   const [input, setInput] = useState('');

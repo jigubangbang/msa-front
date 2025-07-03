@@ -1,7 +1,8 @@
 /* Register.module.css */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .registerPage {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard';
   line-height: 1.6;
   background-color: #000;
   color: #fff;
@@ -34,9 +35,13 @@
 }
 
 .logo {
-  font-size: 28px;
+  font-family: 'Pretendard';
+  font-size: 24px;
   font-weight: bold;
   letter-spacing: 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #000;
 }
 
 /* 폼 영역 */
@@ -72,6 +77,7 @@
 }
 
 .formInput {
+  font-family: 'Pretendard'; 
   width: 100%;
   padding: 12px 44px; 
   border: 1px solid #ccc;
@@ -79,6 +85,7 @@
   font-size: 16px;
   background-color: #fafafa;
   transition: border-color 0.3s;
+  color: #000;
 }
 
 .formInput:focus {
@@ -94,6 +101,7 @@
 }
 
 .emailCodeInput {
+  font-family: 'Pretendard'; 
   flex: 1;
   padding: 12px 16px;
   border: 1px solid #ccc;
@@ -102,6 +110,7 @@
   font-size: 16px;
   background-color: #fafafa;
   box-sizing: border-box; 
+  color: #000;
 }
 
 .emailCodeInput:focus {
@@ -110,6 +119,7 @@
 }
 
 .verifyButton {
+  font-family: 'Pretendard'; 
   padding: 12px 16px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -195,6 +205,7 @@ button:active {
 
 /* 메시지 */
 .errorText {
+  font-family: 'Pretendard'; 
   color: #dc3545;
   font-size: 12px;
   margin-top: 4px;
@@ -202,6 +213,7 @@ button:active {
 }
 
 .successText {
+  font-family: 'Pretendard'; 
   color: #28a745;
   font-size: 12px;
   margin-top: 4px;
@@ -264,6 +276,7 @@ button:active {
 }
 
 .submitButton {
+  font-family: 'Pretendard'; 
   padding: 12px 20px;
   background-color: #000;
   color: #fff;
@@ -286,7 +299,6 @@ button:active {
 
 .submitButton:focus {
   outline: none !important;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .submitButton:active {
@@ -295,6 +307,7 @@ button:active {
 
 /* 에러 메시지 */
 .registerErrorMessage {
+  font-family: 'Pretendard'; 
   display: flex;
   align-items: center;
   gap: 6px;

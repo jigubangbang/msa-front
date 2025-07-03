@@ -1,38 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useLocation, useNavigate } from "react-router-dom";
+import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import { USER_SIDEBAR } from "../../utils/sidebar";
 
-import styles from "./UserManage.module.css";
+import styles from "./UserLayout.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
+import UserInfoChange from "../../components/user/UserInfoChange";
+import PasswordChange from "../../components/user/PasswordChange";
+
+import { Circles } from 'react-loader-spinner';
 
 export default function UserManage() {
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-  
+
   const navigate = useNavigate();
 
   // 사이드바
   const location = useLocation();
   const currentPath = location.pathname;
-  
+
   const getActiveMenuItems = () => {
-    return USER_SIDEBAR.map(item => {
+    return USER_SIDEBAR.map((item) => {
       let isActive = false;
-      
+
       if (item.submenu) {
         isActive = item.path === currentPath;
       } else {
-        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+        isActive =
+          currentPath === item.path || currentPath.startsWith(item.path + "/");
       }
       return {
         ...item,
-        active: isActive
+        active: isActive,
       };
     });
   };
-
   const finalMenuItems = getActiveMenuItems(USER_SIDEBAR);
 
   useEffect(() => {
@@ -42,9 +46,23 @@ export default function UserManage() {
   const fetchUserInfo = async () => {
     setLoading(true);
     try {
-      // 여기에 유저 정보 가져오는 API 호출
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const response = await api.get(`${API_ENDPOINTS.USER}/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserInfo(response.data);
     } catch (err) {
       console.error("Failed to fetch user info", err);
+
+      if (err.response?.status === 401) {
+        localStorage.removeItem("accessToken");
+        navigate("/login");
+      }
     } finally {
       setLoading(false);
     }
@@ -54,13 +72,19 @@ export default function UserManage() {
     <div className={styles.Container}>
       <Sidebar menuItems={finalMenuItems} />
       <div className={styles.content}>
-        <h1 className={styles.title}>회원정보 수정</h1>
-        
         {loading ? (
-          <div className={styles.loading}>로딩 중...</div>
+          <div className={styles.loadingContainer}>
+            <Circles 
+              height="50" 
+              width="50" 
+              color="#000" 
+              ariaLabel="circles-loading"
+            />
+          </div>
         ) : (
           <div className={styles.formContainer}>
-            <p>회원정보 수정 페이지 내용이 여기에 들어갑니다.</p>
+            <UserInfoChange userInfo={userInfo} onUpdate={fetchUserInfo} />
+            <PasswordChange />
           </div>
         )}
       </div>

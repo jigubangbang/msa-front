@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import ReactDOM from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,6 +11,7 @@ import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import RankQuestList from "../../../components/rank/RankQuestList/RankQuestList";
 import QuestModal from "../../../components/modal/QuestModal/QuestModal";
+import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 
 
 
@@ -19,11 +21,19 @@ export default function QuestListPage() {
   const [userQuests, setUserQuests] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
 
-    // Modal states
-  const [showModal, setShowModal] = useState(false);
-  const [selectedQuest, setSelectedQuest] = useState(null);
+// Modal states 
+const [showQuestModal, setShowQuestModal] = useState(false);
+const [showBadgeModal, setShowBadgeModal] = useState(false);
+const [selectedQuest, setSelectedQuest] = useState(null);
+const [selectedBadge, setSelectedBadge] = useState(null);
 
-  const navigate = useNavigate();
+  const [questSearchTerm, setQuestSearchTerm] = useState('');
+  const [questCurrentPage, setQuestCurrentPage] = useState(1);
+  const [questFilters, setQuestFilters] = useState({
+    category: 0,
+    difficulty: '',
+    sortOption: 'default'
+  });
 
   //SideBar//
     const location = useLocation();
@@ -51,10 +61,10 @@ export default function QuestListPage() {
   useEffect(()=>{
     const token = localStorage.getItem("accessToken");
     //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    // setIsLogin(true);
-    // fetchUser();
-    // fetchUserQuests();
-    // fectchUserBadges();
+    setIsLogin(true);
+    fetchUser();
+    fetchUserQuests();
+    fectchUserBadges();
 
     if (token) {
       setIsLogin(true);
@@ -121,29 +131,96 @@ export default function QuestListPage() {
     if (total === 0) return "0%";
     return Math.round((completedCount / total) * 100) + "%";
   };
+  
+  //quest modal
+const openQuestModal = useCallback( async (quest_id) => {
+  setLoading(true);
+  try {
+    const endpoint = isLogin 
+    ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-  const openQuestModal = async (quest_id) => {
-    setLoading(true);
-    try {
-      const endpoint = isLogin 
-      ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
-      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
+    const response = await axios.get(endpoint);
+    setSelectedQuest(response.data);
+    setShowQuestModal(true);
+    console.log("Quest data fetched:", response.data);
+  } catch (error) {
+    console.error("Failed to fetch quest data:", error);
+  } finally {
+    setLoading(false);
+  }
+}, [isLogin]);
 
-      const response = await axios.get(endpoint);
-      setSelectedQuest(response.data);
-      setShowModal(true);
-      console.log("Quest data fetched:", response.data);
-    } catch (error) {
-      console.error("Failed to fetch quest data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const closeQuestModal = () => {
+  setShowQuestModal(false);
+  setSelectedQuest(null);
+};
 
-    const closeModal = () => {
-    setShowModal(false);
-    setSelectedQuest(null);
-  };
+
+const handleQuestUpdate = async (questId) => {
+  console.log('퀘스트 데이터 새로고침 중...', questId);
+  setLoading(true);
+  try {
+    // 1. 현재 퀘스트 모달 새로고침
+    const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+
+    const response = await axios.get(endpoint);
+    setSelectedQuest(response.data); 
+    
+    // 2. 사용자 퀘스트 목록 새로고침
+    const userQuestsResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
+      params: { status: "IN_PROGRESS" }
+    });
+       setUserQuests(userQuestsResponse.data || []);
+
+    // 3. 사용자 정보 새로고침
+    const userResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+    setUser(userResponse.data);
+    
+  } catch (error) {
+    console.error("Failed to refresh quest data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// 모달
+const openBadgeModal = useCallback(async (badge_id) => {
+  setLoading(true);
+  try {
+    const endpoint = isLogin 
+    ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
+
+    const response = await axios.get(endpoint);
+    setSelectedBadge(response.data);
+    setShowBadgeModal(true);
+    console.log("Badge data fetched:", response.data);
+  } catch (error) {
+    console.error("Failed to fetch badge data:", error);
+  } finally {
+    setLoading(false);
+  }
+},[isLogin]);
+
+const closeBadgeModal = () => {
+  setShowBadgeModal(false);
+  setSelectedBadge(null);
+};
+
+// 퀘스트에서 배지 클릭 핸들러
+const handleBadgeClickFromQuest = (badge_id) => {
+  closeQuestModal(); // 퀘스트 모달 닫기
+  openBadgeModal(badge_id); // 배지 모달 열기
+};
+
+// 배지에서 퀘스트 클릭 핸들러
+const handleQuestClickFromBadge = (quest_id) => {
+  closeBadgeModal(); // 배지 모달 닫기
+  openQuestModal(quest_id); // 퀘스트 모달 열기
+};
 
 
  if (loading) {
@@ -163,9 +240,20 @@ export default function QuestListPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <RankQuestList myUserId={user?.user_id || ""} onOpenModal={openQuestModal}/>
+          <RankQuestList 
+            key="quest-list"
+            onOpenModal={openQuestModal}
+
+            searchTerm={questSearchTerm}
+            setSearchTerm={setQuestSearchTerm}
+            currentPage={questCurrentPage}
+            setCurrentPage={setQuestCurrentPage}
+            filters={questFilters}
+            setFilters={setQuestFilters}
+          />
 
           <UserInfoPanel 
+            key="user-info"
             user={user}
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
@@ -175,13 +263,26 @@ export default function QuestListPage() {
         </div>
       </div>
 
-      {/* 퀘스트 모달 */}
-      {showModal && (
+      {/* 모달들을 Portal로 body에 렌더링 */}
+      {showQuestModal && ReactDOM.createPortal(
         <QuestModal 
           questData={selectedQuest} 
-          onClose={closeModal}
+          onClose={closeQuestModal}
+          onBadgeClick={handleBadgeClickFromQuest}
           isLogin={isLogin} 
-        />
+          onQuestUpdate={handleQuestUpdate}
+        />,
+        document.body
+      )}
+
+      {showBadgeModal && ReactDOM.createPortal(
+        <BadgeModal 
+          badgeData={selectedBadge} 
+          onClose={closeBadgeModal}
+          onQuestClick={handleQuestClickFromBadge}
+          isLogin={isLogin} 
+        />,
+        document.body
       )}
     </div>
   );

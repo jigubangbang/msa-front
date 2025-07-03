@@ -284,10 +284,6 @@ p.bodyPrimary {
   transform: translateY(-1px);
 }
 
-.darkButton:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-}
-
 /* === 외곽선 버튼 (findLink 기반) === */
 .outlineButton {
   background-color: transparent;
@@ -300,8 +296,4 @@ p.bodyPrimary {
   background-color: #fafafa;
   border-color: #000;
   color: #000;
-}
-
-.outlineButton:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
