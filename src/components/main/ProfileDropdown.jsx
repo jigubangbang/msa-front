@@ -1,19 +1,28 @@
-// components/ProfileDropdown.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import styles from './ProfileDropdown.module.css';
 import profileIcon from '../../assets/profile/profile-menu/profile.svg';
 import globeIcon from '../../assets/profile/profile-menu/globe.svg';
 import badgeIcon from '../../assets/profile/profile-menu/badge.svg';
 import listIcon from '../../assets/profile/profile-menu/list.svg';
 import inkpenIcon from '../../assets/profile/profile-menu/inkpen.svg';
+import logoutIcon from '../../assets/profile/profile-menu/logout.svg'; 
+import manageIcon from '../../assets/profile/profile-menu/manage.svg'; 
 
-export default function ProfileDropdown() {
+export default function ProfileDropdown({ onLogout }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [userId, setUserId] = useState();
 
-  // Close dropdown when clicking outside
+
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+      if (token) {
+          const decoded = jwtDecode(token);
+          setUserId(decoded.sub);
+      }
+    
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setOpen(false);
@@ -26,36 +35,54 @@ export default function ProfileDropdown() {
   return (
     <div className={styles.profileDropdownWrapper} ref={dropdownRef}>
       <button className={styles.dropdownToggle} onClick={() => setOpen(!open)}>
-        프로필 &nbsp;▾
+        프로필 ▾
       </button>
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to="/profile">
+          <Link to={`/profile/${userId}`}>
             <div className={styles.dropdownItem}>
-              <img src={profileIcon}/>프로필
+              <img src={profileIcon} alt="프로필" /> 프로필
             </div>
           </Link>
-          <Link to="/countries">
+          <Link to={`/profile/${userId}/countries`}>
             <div className={styles.dropdownItem}>
-              <img src={globeIcon}/>국가
+              <img src={globeIcon} alt="국가" /> 국가
             </div>
           </Link>
-          <Link to="/badges">
+          <Link to={`/profile/${userId}/badges`}>
             <div className={styles.dropdownItem}>
-              <img src={badgeIcon}/>뱃지함
+              <img src={badgeIcon} alt="뱃지함" /> 뱃지함
             </div>
           </Link>
-          <Link to="/bucketlist">
+          <Link to={`/profile/${userId}/bucketlist`}>
             <div className={styles.dropdownItem}>
-              <img src={listIcon}/>버킷리스트
+              <img src={listIcon} alt="버킷리스트" /> 버킷리스트
             </div>
           </Link>
-          <Link to="/diary">
+          <Link to={`/profile/${userId}/diary`}>
             <div className={styles.dropdownItem}>
-              <img src={inkpenIcon}/>여행일지
+              <img src={inkpenIcon} alt="여행일지" /> 여행일지
             </div>
           </Link>
+
+          <div className={styles.dropdownDivider}></div>
+          <Link to={`/user/manage`}>
+            <div className={styles.dropdownItem}>
+              <img src={manageIcon} alt="계정관리" /> 계정 관리
+            </div>
+          </Link>
+          {/* 로그아웃 버튼 */}
+          <div
+            className={styles.dropdownItem}
+            onClick={() => {
+              setOpen(false);
+              onLogout(); 
+            }}
+          >
+            <img src={logoutIcon} alt="로그아웃" />
+            로그아웃
+          </div>
         </div>
       )}
     </div>

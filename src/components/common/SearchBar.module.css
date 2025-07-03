@@ -1,7 +1,6 @@
 .searchContainer {
   text-align: center;
   font-family: 'Pretendard', sans-serif;
-  padding: 2rem;
 }
 
 .searchTitle {
@@ -46,4 +45,8 @@
   margin-left: 1rem;
   color: #242424;
   font-weight: 500;
+}
+
+.searchClearIcon {
+  cursor: pointer;
 }

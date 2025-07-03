@@ -1,0 +1,61 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.loginContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 0 auto;
+  padding: 20px;
+  width: 320px;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.myInfo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.myProfile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profileImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.myText {
+  display: flex;
+  flex-direction: column;
+}
+
+.myNickname {
+  font-family: Pretendard, sans-serif;
+  color: #333333;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.myLevel {
+  font-size: 18px;
+  font-weight: 500;
+  color: #666;
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 320px;
+}

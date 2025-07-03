@@ -2,10 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
 .mapContainer {
-  height: 100vh;
-  width: 100vw;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  padding: 10%;
   background-color: black;
   display: flex;
   flex-direction: column;
@@ -16,10 +15,27 @@
   box-sizing: border-box;
 }
 
-.map {
-  width: 100%;
+.mapWrapper {
+  width: 70%;
   height: auto;
   flex-grow: 1;
+}
+
+.settingsBtn {
+  background-color: transparent;
+}
+
+.settingsBtn:hover {
+  border: transparent;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
 }
 
 .btnOutline {
@@ -52,6 +68,12 @@
 .btnTopLeftContainer {
     position: absolute;
     left: 3vw;
+}
+
+.btnTopRightContainer {
+  position: absolute;
+  right: 3vw;
+  margin-top: 1vh;
 }
 
 .btnTopContainer {

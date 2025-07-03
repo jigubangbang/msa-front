@@ -67,20 +67,28 @@ body {
 }
 
 h1 {
+  font-family: 'Pretendard', sans-serif;
   font-size: 2.5rem;
   font-weight: bold;
 }
 
 h2 {
+  font-family: 'Pretendard', sans-serif;
   font-size: 1.75rem;
   font-weight: bold;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
 
-p.body-secondary {
+p.bodySecondary {
   font-size: 1rem;
   color: var(--color-text-secondary);
+}
+
+p.bodyPrimary {
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 16px;
+  color: var(--color-text-primary);
 }
 
 /* === Buttons === */
@@ -276,10 +284,6 @@ p.body-secondary {
   transform: translateY(-1px);
 }
 
-.darkButton:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-}
-
 /* === 외곽선 버튼 (findLink 기반) === */
 .outlineButton {
   background-color: transparent;
@@ -292,8 +296,4 @@ p.body-secondary {
   background-color: #fafafa;
   border-color: #000;
   color: #000;
-}
-
-.outlineButton:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
