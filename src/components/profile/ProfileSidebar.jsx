@@ -12,6 +12,7 @@ import Modal from "../common/Modal/Modal";
 
 import { jwtDecode } from "jwt-decode";
 import api from "../../apis/api";
+import EditNationalityModal from "./main/EditNationalityModal";
 
 // TODO: redirect travel style to details page
 // TODO: show modal only if is logged in user's profile
@@ -23,12 +24,17 @@ export default function ProfileSidebar() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [profileImage, setProfileImage] = useState();
+    
     const [travelStatus, setTravelStatus] = useState('TRAVELING');
     const [followStatus, setFollowStatus] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
     const [showEditBioModal, setShowEditBioModal] = useState(false);
     const [bio, setBio] = useState();
+
+    const [nationality, setNationality] = useState();
+    const [nationalityName, setNationalityName] = useState();
+    const [showNationalityModal, setShowNationalityModal] = useState(false);
 
 
     const statusClasses = {
@@ -91,6 +97,11 @@ export default function ProfileSidebar() {
             })
     }
 
+    function handleNationalityUpdate(newNationality, newNationalityName) {
+        setNationality(newNationality);
+        setNationalityName(newNationalityName);
+    } 
+
     function followUser() {
         api
             .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/network`, null)
@@ -128,6 +139,8 @@ export default function ProfileSidebar() {
                 setFollowStatus(response.data.followStatus);
                 setProfileImage(response.data.profileImage);
                 setBio(response.data.bio);
+                setNationality(response.data.nationality);
+                setNationalityName(response.data.nationalityName);
                 setLoading(false);
             })
             .catch((err) => {
@@ -187,8 +200,8 @@ export default function ProfileSidebar() {
                 <span className={styles.nickname}>
                     {data.nickname}
                     {
-                        data.nationality && (
-                            <img className={styles.flagIcon} src={findFlagUrlByIso3Code(data.nationality)} alt="flag"/>
+                        nationality && (
+                            <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>
                         )
                     }
                 </span>
@@ -217,9 +230,22 @@ export default function ProfileSidebar() {
     
 
                 <div className={styles.location}>
-                    <img src={locationIcon}/>
-                    {data.nationalityName}
+                    <button 
+                        className={styles.editButton}
+                        onClick={() => setShowNationalityModal(true)}
+                    >
+                        <img src={locationIcon} alt="국적 수정"/>
+                    </button>
+                    {nationalityName}
                 </div>
+                {showNationalityModal && (
+                    <EditNationalityModal
+                        prevNationality={nationality}
+                        showNationalityModal={showNationalityModal}
+                        setShowNationalityModal={setShowNationalityModal}
+                        onUpdate={handleNationalityUpdate}
+                    />
+                )}
                 <div className={styles.stats}>
                     <div className={styles.statItem}>
                         <div className={styles.label}>팔로잉</div>
