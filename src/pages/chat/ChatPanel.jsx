@@ -1,18 +1,24 @@
 // /src/components/chat/ChatPanel.jsx
-import React, { useState, useEffect, useRef } from 'react';
-// import useChat from '../../hooks/chat/useChat';
-import API_ENDPOINTS from '../../utils/constants';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { ThemeContext } from '../../utils/themeContext';
+import { kickSock } from '../../hooks/chat/kickSock.js';
 import ChatSidebar from './ChatSideBar';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, messages, onSendMessage, onClose, onForceClose }) {
+  
+  const { isDark, setIsDark } = useContext(ThemeContext);
+  console.log( "다크모드 매개변수" + isDark + setIsDark );
+
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null); // Ref for auto-scrolling
   const chatMessagesDisplayRef = useRef(null);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
   const {info} = useChatRoomInfo(chatId);
+  const [isKicked, setIsKicked] = useState(localStorage.getItem(`kicked:${chatId}`) === 'true');
+  kickSock(chatId, senderId, setIsKicked);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -41,15 +47,27 @@ export default function ChatPanel({ chatId, senderId, messages, onSendMessage, o
   // 웹소켓 메세지 전송
   const handleSubmit = (e) => {
     e.preventDefault();
+    // 강제 퇴장 멤버 메세지 전송 차단
+    if (isKicked) {
+      alert("채팅방에서 강제 퇴장되었으므로 메시지를 보낼 수 없습니다.");
+      return;
+    }
     if(input.trim()) {
-      onSendMessage(input); // 부모로부터 받은 메세지 전송 함수 호출
+      onSendMessage(input);
       setInput('');
     }
   }
 
+  const handleTheme = () => {
+    setIsDark(!isDark);
+  }
+
   return (
     <div className="chat-panel-container">
-      <div className="chat-header">
+      <div className="chat-header" style={{
+          backgroundColor: isDark ? 'black' : 'white',
+          color: isDark ? 'white' : 'black'
+      }}>
         <div className="chat-close-button" onClick={onClose}>
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
             <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
@@ -120,15 +138,28 @@ export default function ChatPanel({ chatId, senderId, messages, onSendMessage, o
           <div ref={messagesEndRef} />
         </div>
         <form onSubmit={handleSubmit} className="chat-input-area">
+          <div onClick={handleTheme}>
+          { !isDark && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-low-fill" viewBox="0 0 16 16">
+              <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8.5 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 11a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m5-5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m-11 0a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m9.743-4.036a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707m-7.779 7.779a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707m7.072 0a.5.5 0 1 1 .707-.707.5.5 0 0 1-.707.707M3.757 4.464a.5.5 0 1 1 .707-.707.5.5 0 0 1-.707.707"/>
+            </svg>
+            )}
+            { isDark && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-low" viewBox="0 0 16 16">
+              <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8m.5-9.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 11a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m5-5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m-11 0a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m9.743-4.036a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707m-7.779 7.779a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707m7.072 0a.5.5 0 1 1 .707-.707.5.5 0 0 1-.707.707M3.757 4.464a.5.5 0 1 1 .707-.707.5.5 0 0 1-.707.707"/>
+            </svg>
+            )}
+          </div>
           <input
             type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSubmit(e)}
-            placeholder="Type a message..."
+            placeholder={isKicked ? "강제 퇴장되어 메시지를 보낼 수 없습니다." : "메세지를 입력하세요..."}
             className="chat-input"
+            disabled={isKicked}
           />
-        <button type="submit" className="chat-send-button">Send</button>
+        <button type="submit" className="chat-send-button" disabled={isKicked}>Send</button>
         </form>
       </div>
 

@@ -158,9 +158,9 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
                 <div className="member-profile">
                   <div className="member-avatar">👤</div>
                   <span className="member-nickname">{member.nickname || member.userId}</span>
-                  {member.isCreator == '1' && <span className="member-role">(방장)</span>}
+                  {member.isCreator == '1' && <span className="member-role">(관리자)</span>}
                 </div>
-                {isManager && member.userId !== senderId && ( // 방장이고 내 자신이 아닌 경우에만 메뉴 표시
+                {isManager && member.userId !== senderId && (
                   <div className="member-actions">
                     <span className="member-action-dots" onClick={() => handleReportTab(member.userId)}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
