@@ -6,7 +6,8 @@ import { Circles } from "react-loader-spinner";
 import WithdrawComplete from "./WithdrawComplete";
 import noticeText from "../../assets/text/withdraw-notice.txt?raw";
 import warningText from "../../assets/text/withdraw-warning.txt?raw";
-import PwdConfirmModal from "../../components/common/Modal/PwdConfirmModal";
+import PwdConfirmModal from "../../components/modal/WithdrawModal/PwdConfirmModal";
+import ConfirmModal from "../../components/modal/WithdrawModal/ConfirmModal";
 
 export default function WithdrawForm() {
   const [reasonCode, setReasonCode] = useState("");
@@ -20,6 +21,8 @@ export default function WithdrawForm() {
   const [password, setPassword] = useState("");
   const [userId, setUserId] = useState("");
   const [modalErrorMessage, setModalErrorMessage] = useState("");
+  const [isSocialUser, setIsSocialUser] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // 탈퇴 사유 옵션
   const reasonOptions = [
@@ -75,7 +78,12 @@ export default function WithdrawForm() {
       setMessageType("error");
       return;
     }
-    setShowPasswordModal(true);
+
+    if (isSocialUser) {
+      setShowConfirmModal(true); // 소셜은 확인 모달
+    } else {
+      setShowPasswordModal(true); // 일반은 비번 모달
+    }
   };
 
   const handleConfirmWithdraw = async () => {
@@ -111,18 +119,50 @@ export default function WithdrawForm() {
     }
   };
 
+  const handleWithdrawWithoutPassword = async () => {
+    setIsLoading(true);
+    try {
+      await api.delete(`${API_ENDPOINTS.USER}/me`, {
+        data: {
+          reasonCode,
+          reasonText: reasonCode === "ETC" ? reasonText : null,
+        },
+      });
+      setIsCompleted(true);
+      localStorage.removeItem("accessToken");
+    } catch (err) {
+      console.error("소셜 회원 탈퇴 실패:", err);
+      setMessage("탈퇴 처리 중 오류가 발생했습니다.");
+      setMessageType("error");
+    } finally {
+      setIsLoading(false);
+      setShowConfirmModal(false);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setUserId(payload.sub || "사용자");
+
+        // 소셜 로그인 여부 판단
+        api.get(`${API_ENDPOINTS.USER}/me`).then((res) => {
+          setIsSocialUser(res.data.provider !== null);
+        });
       } catch (error) {
         console.error("토큰 파싱 오류:", error);
         setUserId("사용자");
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (isCompleted) {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [isCompleted]);
 
   // 탈퇴 완료 화면
   if (isCompleted) {
@@ -255,10 +295,29 @@ export default function WithdrawForm() {
         description={
           <>
             <p>본인확인을 위해 비밀번호를 다시 한번 확인합니다.</p>
-            <p>본인확인 후 최종 회원 탈퇴가 가능합니다.</p>
+            <p>
+              본인확인 후 <span className={styles.redText}>최종</span> 회원
+              탈퇴가 가능합니다.
+            </p>
           </>
         }
         errorMessage={modalErrorMessage}
+      />
+
+      {/* 소셜 로그인 모달 */}
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleWithdrawWithoutPassword}
+        description={
+          <>
+            <p>정말 탈퇴하시겠습니까?</p>
+            <p>
+              확인 시 <span className={styles.redText}>즉시</span> 회원 탈퇴가
+              진행됩니다.
+            </p>
+          </>
+        }
       />
     </div>
   );
