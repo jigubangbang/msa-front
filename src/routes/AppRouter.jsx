@@ -39,6 +39,8 @@ import UserWithdraw from "../pages/user/UserWithdraw";
 import ChatPanel from "../pages/Chat/ChatPanel";
 
 import Payment from "../pages/payment/Payment";
+import PaymentFail from "../pages/payment/PaymentFail";
+import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 
 const AppRouter = () => {
@@ -92,6 +94,8 @@ const AppRouter = () => {
 
           {/* Payment */}
           <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/fail" element={<PaymentFail />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
         </Routes>
     );
 }

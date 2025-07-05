@@ -2,18 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../apis/api';
 import '../../styles/payment/Payment.css';
+import SubscriptionStatus from './SubscriptionStatus';
+import Modal from '../../components/common/Modal/Modal'; // 공통 모달 import
 
 const Payment = () => {
   const [error, setError] = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false); // 해지 확인 모달 상태
   const navigate = useNavigate();
 
+  const checkSubscriptionStatus = async () => {
+    setIsLoading(true);
+    try {
+      const response = await api.get('/api/payment/premium/status');
+      if (response.data) {
+        setSubscription(response.data);
+      } else {
+        setSubscription(null);
+      }
+    } catch (err) {
+      if (err.response && err.response.status !== 404) {
+        setError('구독 상태를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.');
+      }
+      setSubscription(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
+    checkSubscriptionStatus();
+
     const jquery = document.createElement("script");
     jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
     const iamport = document.createElement("script");
     iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
     document.head.appendChild(jquery);
     document.head.appendChild(iamport);
+    
     return () => {
       document.head.removeChild(jquery);
       document.head.removeChild(iamport);
@@ -40,7 +67,7 @@ const Payment = () => {
         name: '지구방방 프리미엄 구독',
         amount,
         customer_uid: userId,
-        m_redirect_url: `/payment/callback?merchant_uid=${merchant_uid}`,
+        m_redirect_url: `/payment/success?merchant_uid=${merchant_uid}`,
       };
 
       IMP.request_pay(paymentData, (rsp) => {
@@ -49,7 +76,6 @@ const Payment = () => {
           navigate(`/payment/success?merchant_uid=${rsp.merchant_uid}`);
         } else {
           console.error('결제 실패:', rsp.error_msg);
-          setError(`결제에 실패했습니다: ${rsp.error_msg}`);
           navigate(`/payment/fail?merchant_uid=${rsp.merchant_uid}`);
         }
       });
@@ -60,12 +86,57 @@ const Payment = () => {
     }
   };
 
+  // "구독 해지하기" 버튼 클릭 시 모달을 띄우는 함수
+  const handleCancelSubscription = () => {
+    setShowCancelModal(true);
+  };
+
+  // 모달에서 "확인" 버튼을 눌렀을 때 실제 해지를 실행하는 함수
+  const confirmCancellation = async () => {
+    setShowCancelModal(false); // 먼저 모달을 닫고
+    try {
+      await api.delete('/api/payment/premium/cancel');
+      // 성공 시 별도 알림 없이, 상태 재확인을 통해 화면이 자연스럽게 바뀌도록 유도
+      await checkSubscriptionStatus(); 
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || '구독 해지 중 오류가 발생했습니다.';
+      // 실패 시에는 에러 메시지를 표시
+      setError(errorMessage); 
+    }
+  };
+
   const PremiumBenefit = ({ icon, text }) => (
     <li className="benefitItem">
       <span className="benefitIcon">{icon}</span>
       {text}
     </li>
   );
+
+  if (isLoading) {
+    return <div className="loading-container">구독 정보를 확인하는 중입니다...</div>;
+  }
+
+  if (error) {
+    return <div className="payment-container error">{error}</div>;
+  }
+
+  if (subscription) {
+    return (
+      <>
+        <SubscriptionStatus subscription={subscription} onCancel={handleCancelSubscription} />
+        <Modal
+          show={showCancelModal}
+          onClose={() => setShowCancelModal(false)}
+          onSubmit={confirmCancellation}
+          heading="구독 해지 확인"
+          firstLabel="해지하기"
+          secondLabel="취소"
+        >
+          <p>정말로 프리미엄 구독을 해지하시겠습니까? <br /> 남은 기간 동안은 계속 프리미엄 혜택을 이용할 수 있습니다.</p>
+        </Modal>
+      </>
+    );
+  }
 
   return (
     <div className="paymentPageContainer">
