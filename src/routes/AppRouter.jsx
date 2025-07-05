@@ -38,6 +38,9 @@ import UserWithdraw from "../pages/user/UserWithdraw";
 
 import ChatPanel from "../pages/Chat/ChatPanel";
 
+import Payment from "../pages/payment/Payment";
+
+
 const AppRouter = () => {
     return (
         <Routes>
@@ -86,6 +89,9 @@ const AppRouter = () => {
 
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>
+
+          {/* Payment */}
+          <Route path="/payment" element={<Payment />} />
         </Routes>
     );
 }
