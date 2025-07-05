@@ -1,12 +1,12 @@
 // /src/components/chat/ChatPanel.jsx
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { ThemeContext } from '../../utils/themeContext';
-import { kickSock } from '../../hooks/chat/kickSock.js';
+import { useKickSock } from '../../hooks/chat/useKickSock.js';
 import ChatSidebar from './ChatSideBar';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
-export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose }) {
+export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose, unsubscribeMainChat }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
@@ -15,9 +15,28 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
   const chatMessagesDisplayRef = useRef(null);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
-  const {info} = useChatRoomInfo(chatId);
   const [isKicked, setIsKicked] = useState(false);
-  kickSock(chatId, senderId, setIsKicked, setMessages);
+  const {info} = useChatRoomInfo(chatId);
+
+  const kickSockDeps = useMemo(() => ({
+    chatId,
+    senderId,
+    setIsKicked,
+    setMessages
+  }), [chatId, senderId, setIsKicked, setMessages]);
+
+  useKickSock(kickSockDeps.chatId, kickSockDeps.senderId, kickSockDeps.setIsKicked, kickSockDeps.setMessages);
+
+  // 강퇴 상태 변경 시 메인 채팅 구독 해제
+  useEffect(() => {
+    if (isKicked) {
+      alert("운영진에 의해 강제 퇴장되었습니다. 채팅 기능이 제한됩니다.");
+      if (unsubscribeMainChat) {
+        unsubscribeMainChat(); // 메인 채팅 구독 해제
+      }
+    }
+  }, [isKicked, unsubscribeMainChat]);
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

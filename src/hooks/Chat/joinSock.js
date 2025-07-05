@@ -15,6 +15,15 @@ export function joinSock(isOpen, chatId) {
   const [chatError, setChatError] = useState(null);
   const subscriptionRef = useRef(null); // 현 구독 객체 저장 ref
 
+  // 메인 채팅 구독 해제 함수 (강퇴 시 사용)
+  const unsubscribeMainChat = useCallback(() => {
+    if (subscriptionRef.current) {
+      subscriptionRef.current.unsubscribe();
+      subscriptionRef.current = null;
+      console.log(`[joinSock] 메인 채팅 구독 해제 완료: chatId=${chatId}`);
+    }
+  }, [chatId]);
+
   // STOMP 클라이언트 활성화 및 메세지 구독
   const activateStompClient = useCallback((userId) => {
     console.log(`[joinSock] STOMP 활성화 시작: Room number: ${chatId}`);
@@ -156,7 +165,8 @@ export function joinSock(isOpen, chatId) {
     chatError, 
     isJoining,
     unsubscribeChatRoom,
-    disconnectStompClient 
+    disconnectStompClient,
+    unsubscribeMainChat
   };
 
 }
