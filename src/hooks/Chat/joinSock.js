@@ -99,7 +99,6 @@ export function joinSock(isOpen, chatId) {
 
         try {
             const joinResponse = await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/join`);
-            console.log("[joinSock] " + joinResponse.data.userId +"님 채팅방 REST 입장 성공:", joinResponse.data);
             restApiJoinSuccess = true;
             userIdFromJoin = joinResponse.data.userId;
             setSenderId(joinResponse.data.userId);
@@ -150,8 +149,9 @@ export function joinSock(isOpen, chatId) {
 
   return { 
     senderId,
-    messages, 
-    sendMessage, 
+    messages,
+    setMessages,
+    sendMessage,
     isLoading, 
     chatError, 
     isJoining,

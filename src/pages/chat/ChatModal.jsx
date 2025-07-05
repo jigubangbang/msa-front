@@ -7,7 +7,7 @@ import { joinSock } from '../../hooks/chat/joinSock.js';
 import '../../styles/chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId }) {
-  const { senderId, messages, sendMessage, isLoading, chatError, isJoining, unsubscribeChatRoom } = joinSock(isOpen, chatId);
+  const { senderId, messages, setMessages, sendMessage, isLoading, chatError, isJoining, unsubscribeChatRoom } = joinSock(isOpen, chatId);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const panelRef = useRef(null);
   const dragging = useRef(false);
@@ -86,6 +86,7 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
               chatId={chatId}
               senderId={senderId}
               messages={messages}
+              setMessages={setMessages}
               onSendMessage={sendMessage}
               onClose={onClose}
               onForceClose={onClose}
