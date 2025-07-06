@@ -33,6 +33,9 @@ import FindPassword from "../pages/auth/FindPassword";
 
 import UserManage from "../pages/user/UserManage";
 import UserInquiry from "../pages/user/UserInquiry";
+import InquiryMain from "../components/user/InquiryMain";
+import InquiryForm from "../components/user/InquiryForm";
+import InquiryDetail from "../components/user/InquiryDetail";
 import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
@@ -80,7 +83,11 @@ const AppRouter = () => {
 
           {/* User */}
           <Route path="/user/manage" element={<UserManage/>}/>
-          <Route path="/user/inquiry" element={<UserInquiry/>}/> 
+          <Route path="/user/inquiry" element={<UserInquiry />}>
+            <Route index element={<InquiryMain />} />          
+            <Route path="form" element={<InquiryForm />} />        
+            <Route path=":id" element={<InquiryDetail />} />     
+          </Route>
           <Route path="/user/premium" element={<UserPremium/>}/> 
           <Route path="/user/withdraw" element={<UserWithdraw/>}/> 
 

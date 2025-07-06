@@ -12,11 +12,11 @@ export default function ConfirmModal({ show, onClose, onConfirm, description }) 
         {description && <div className={styles.description}>{description}</div>}
 
         <div className={styles.buttonContainer}>
-          <button className={styles.cancelButton} onClick={onClose}>
-            취소
-          </button>
           <button className={styles.confirmButton} onClick={onConfirm}>
             확인
+          </button>
+          <button className={styles.cancelButton} onClick={onClose}>
+            취소
           </button>
         </div>
       </div>

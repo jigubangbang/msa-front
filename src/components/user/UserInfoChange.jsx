@@ -215,7 +215,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert("회원 정보가 수정되었습니다!");
+      alert("회원정보가 성공적으로 수정되었습니다!");
 
       if (emailCodeStatus === "verified") {
         setEmailCodeStatus("idle");
