@@ -61,7 +61,7 @@ const API_ENDPOINTS = {
   CHAT: `${LOCAL}/api/chat`,
 
   WS: `ws://localhost:8080/api/ws/chat`,
-  // WS: `ws://192.168.219.162:8080/api/ws/chat`,
+  // WS: `ws://192.168.219.114:8080/api/ws/chat`,
   // WS: `http://localhost:8080/api/ws/chat`,
 
   // 결제 서비스 (User 권한 필요)

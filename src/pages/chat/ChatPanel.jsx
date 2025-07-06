@@ -6,7 +6,7 @@ import ChatSidebar from './ChatSideBar';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
-export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose, unsubscribeMainChat }) {
+export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
@@ -15,28 +15,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
   const chatMessagesDisplayRef = useRef(null);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
-  const [isKicked, setIsKicked] = useState(false);
   const {info} = useChatRoomInfo(chatId);
-
-  const kickSockDeps = useMemo(() => ({
-    chatId,
-    senderId,
-    setIsKicked,
-    setMessages
-  }), [chatId, senderId, setIsKicked, setMessages]);
-
-  useKickSock(kickSockDeps.chatId, kickSockDeps.senderId, kickSockDeps.setIsKicked, kickSockDeps.setMessages);
-
-  // 강퇴 상태 변경 시 메인 채팅 구독 해제
-  useEffect(() => {
-    if (isKicked) {
-      alert("운영진에 의해 강제 퇴장되었습니다. 채팅 기능이 제한됩니다.");
-      if (unsubscribeMainChat) {
-        unsubscribeMainChat(); // 메인 채팅 구독 해제
-      }
-    }
-  }, [isKicked, unsubscribeMainChat]);
-
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -74,7 +53,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
     e.preventDefault();
     // 강제 퇴장 멤버 메세지 전송 차단
     const kickedStatus = localStorage.getItem(`kicked:${chatId}`) === 'true';
-    if (kickedStatus || isKicked) {
+    if (kickedStatus) {
       alert("강제 퇴장되셨습니다. 메시지를 전송할 수 없습니다.");
       return;
     }
@@ -88,6 +67,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
     setIsDark(!isDark);
   }
 
+  const isKicked = localStorage.getItem(`kicked:${chatId}`) === 'true';
   return (
     <div className="chat-panel-container" style={{
           backgroundColor: isDark ? '#242424' : '#f9f9f9',
