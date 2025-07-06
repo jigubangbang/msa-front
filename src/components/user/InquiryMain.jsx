@@ -69,7 +69,7 @@ export default function InquiryMain() {
         localStorage.removeItem("accessToken");
         navigate("/login");
       } else {
-        setMessage("문의 목록을 불러오는데 실패했습니다.");
+        setMessage("문의 목록을 불러오는데 실패했습니다");
         setMessageType("error");
       }
     } finally {
@@ -158,8 +158,8 @@ export default function InquiryMain() {
             </div>
           ) : (
             <div className={styles.emptyContainer}>
-              <p className={styles.emptyText}>아직 문의 내역이 없습니다.</p>
-              <p className={styles.emptySubText}>궁금한 사항이 있으시면 문의글을 작성해주세요.</p>
+              <p className={styles.emptyText}>아직 문의 내역이 없습니다</p>
+              <p className={styles.emptySubText}>궁금한 사항이 있으시면 문의글을 작성해주세요</p>
             </div>
           )}
 

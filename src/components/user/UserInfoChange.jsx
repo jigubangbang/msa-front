@@ -10,6 +10,7 @@ import EmailIcon from "../../assets/auth/email.svg";
 import { useMemo } from "react";
 import debounce from "lodash.debounce";
 import { Circles } from "react-loader-spinner";
+import Modal from "../../components/common/Modal/Modal";
 
 export default function UserInfoChange({ userInfo, onUpdate }) {
   const [form, setForm] = useState({
@@ -31,6 +32,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
   const [emailCodeStatus, setEmailCodeStatus] = useState("idle");
   const [emailTimer, setEmailTimer] = useState(0);
   const [emailInterval, setEmailInterval] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     if (userInfo) {
@@ -215,7 +217,7 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert("회원정보가 성공적으로 수정되었습니다!");
+      setShowSuccessModal(true);
 
       if (emailCodeStatus === "verified") {
         setEmailCodeStatus("idle");
@@ -223,8 +225,6 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
         setEmailCode("");
         setNewEmail(userInfo?.email || "");
       }
-
-      onUpdate();
     } catch (err) {
       console.error("회원정보 수정 실패:", err);
       setMessage(err.response?.data || "회원정보 수정에 실패했습니다");
@@ -377,6 +377,11 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
       return `${unlockDate.toLocaleDateString()} ${unlockDate.toLocaleTimeString()}에 변경 가능합니다`;
     }
     return null;
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    onUpdate();
   };
 
   return (
@@ -627,6 +632,17 @@ export default function UserInfoChange({ userInfo, onUpdate }) {
           </div>
         </div>
       </form>
+      {/* 회원정보 수정 성공 모달 */}
+      <Modal
+        show={showSuccessModal}
+        onClose={handleSuccessConfirm}
+        onSubmit={handleSuccessConfirm}
+        heading="수정 완료"
+        firstLabel="확인"
+        secondLabel={null}
+      >
+        회원정보가 성공적으로 수정되었습니다!
+      </Modal>
     </div>
   );
 }
