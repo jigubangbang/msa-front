@@ -45,7 +45,7 @@ export function joinSock(isOpen, chatId) {
         });
 
         // 2. 개별 강제 퇴장 알림 구독 추가
-        const kickSubscription = subscribe(`/user/queue/kick`, (kickMessage) => {
+        const kickSubscription = subscribe(`/topic/chat/${chatId}/kick/${userId}`, (kickMessage) => {
           console.log('[joinChat] 강제 퇴장 알림 수신: ', kickMessage);
           handleKickMessage(kickMessage);
         });
