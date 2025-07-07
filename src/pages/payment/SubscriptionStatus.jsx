@@ -30,10 +30,12 @@ const SubscriptionStatus = ({ subscription, onCancel }) => {
             <span className="detail-label">구독 시작일</span>
             <span className="detail-value">{formatDate(subscription.startDate)}</span>
           </div>
-          <div className="detail-item">
-            <span className="detail-label">{subscription.isActive ? "다음 결제 예정일" : "혜택 만료일"}</span>
-            <span className="detail-value">{formatDate(subscription.endDate)}</span>
-          </div>
+          {subscription.endDate && (
+            <div className="detail-item">
+              <span className="detail-label">{subscription.isActive ? "다음 결제 예정일" : "혜택 만료일"}</span>
+              <span className="detail-value">{formatDate(subscription.endDate)}</span>
+            </div>
+          )}
         </div>
         {subscription.isActive && (
           <button onClick={onCancel} className="cancel-button">

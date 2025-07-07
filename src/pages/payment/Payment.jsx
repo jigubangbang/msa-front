@@ -22,10 +22,11 @@ const Payment = () => {
         setSubscription(null);
       }
     } catch (err) {
-      if (err.response && err.response.status !== 404) {
+      if (err.response && err.response.status === 404) {
+        setSubscription(null);
+      } else {
         setError('구독 상태를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.');
       }
-      setSubscription(null);
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +121,7 @@ const Payment = () => {
     return <div className="payment-container error">{error}</div>;
   }
 
-  if (subscription) {
+  if (subscription && subscription.startDate) {
     return (
       <>
         <SubscriptionStatus subscription={subscription} onCancel={handleCancelSubscription} />
