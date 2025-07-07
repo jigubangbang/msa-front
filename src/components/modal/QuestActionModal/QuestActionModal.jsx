@@ -5,7 +5,7 @@ import API_ENDPOINTS from '../../../utils/constants';
 const QuestActionModal = ({ 
   isOpen, 
   onClose, 
-  actionType, // 'challenge', 'retry', 'abandon', 'success'
+  actionType, // 'challenge', 'retry', 'abandon', 'success', 'season_end'
   questTitle, 
   quest_id, 
   quest_user_id,
@@ -33,6 +33,8 @@ const QuestActionModal = ({
         return '포기';
       case 'success':
         return '완료';
+      case 'season_end':
+        return '시즌 종료';
       default:
         return '';
     }
@@ -54,6 +56,35 @@ const QuestActionModal = ({
   const handleConfirm = async () => {
     if (actionType === 'success') {
       handleResultConfirm();
+      return;
+    }
+
+    // season_end의 경우 바로 API 호출하고 모달 닫기
+    if (actionType === 'season_end') {
+      setIsLoading(true);
+      
+      try {
+        const url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/season-end`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const result = await response.json();
+        console.log('Season end result:', result);
+        
+      } catch (error) {
+        console.error('Season end API 요청 실패:', error);
+      } finally {
+        setIsLoading(false);
+        onClose();
+        // API 성공/실패 여부와 상관없이 onSuccess 호출
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
       return;
     }
 
@@ -129,6 +160,28 @@ const QuestActionModal = ({
               onClick={handleResultConfirm}
             >
               확인
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+   if (actionType === 'season_end') {
+    return (
+      <div className={styles.overlay} onClick={onClose}>
+        <div className={styles.modal} onClick={e => e.stopPropagation()}>
+          <h2>시즌 종료</h2>
+          <div className={styles.formGroup}>
+            <p>시즌이 종료된 퀘스트입니다.</p>
+          </div>
+          <div className={styles.btnContainer}>
+            <button 
+              className={`${styles.btn} ${styles.darkButton}`}
+              onClick={handleConfirm}
+              disabled={isLoading}
+            >
+              {isLoading ? '처리중...' : '확인'}
             </button>
           </div>
         </div>

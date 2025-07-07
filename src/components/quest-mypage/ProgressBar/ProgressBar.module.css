@@ -1,0 +1,69 @@
+.container {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+    width: 100%;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.progressItem {
+  margin-bottom: 1.5rem;
+}
+
+.progressItem:last-child {
+  margin-bottom: 0;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progressLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.progressPercentage {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  background-color: #3b82f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.progressTrack {
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.625rem;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 0.625rem;
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progressFill.quest {
+  background-color: #3b82f6;
+}
+
+.progressFill.badge {
+  background-color: #10b981;
+}
+
+.progressDescription {
+  font-size: 0.75rem;
+  color: #6b7280;
+}

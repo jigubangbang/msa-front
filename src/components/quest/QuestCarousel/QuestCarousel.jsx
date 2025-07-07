@@ -4,17 +4,26 @@ import styles from './QuestCarousel.module.css';
 import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 import QuestCertificationModal from '../../modal/QuestCertificationModal/QuestCertificationModal';
 
-const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionClick, onCertiClick}) => {
+const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionClick, onCertiClick, onSeasonClick}) => {
   //#NeedToChange
   const handleCertify = (e) => {
     e.stopPropagation();
+    if (quest.quest_status=="INACTIVE"){
+      onSeasonClick(quest);
+      return;
+    }
     onCertiClick(quest);
   }
 
   const handleGiveUp = (e) => {
     e.stopPropagation();
+    if (quest.quest_status=="INACTIVE"){
+      onSeasonClick(quest);
+      return;
+    }
     onActionClick('abandon', quest);
   }
+
 
   const handleCardClick = () => {
     if (isLarge){
@@ -63,7 +72,10 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionC
               ></div>
             </div>
             <div className={styles.progressText}>
-              {quest.badge} 뱃지 획득까지 {quest.progress}% 진행되었습니다.
+              {quest.quest_status == 'INACTIVE' 
+                ? '시즌이 종료된 퀘스트입니다.' 
+                : `${quest.badge} 뱃지 획득까지 ${quest.progress}% 진행되었습니다.`
+              }
             </div>
           </div>
           
@@ -136,6 +148,14 @@ const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false, o
       })
     }
 
+    const handleSeasonClick = (quest) => {
+      setActionModal({
+      isOpen: true,
+      type: "season_end",
+      quest: quest
+    });
+    }
+
   const handleActionModalClose = () => {
     setActionModal({
       isOpen: false,
@@ -152,14 +172,25 @@ const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false, o
       })
   }
 
-  const handleActionSuccess = () => {
-    if (onQuestUpdate && actionModal.quest) {
+const handleCertiSuccess = () => {
+  console.log('handleCertiSuccess called!'); // 이게 출력되는지 확인
+  console.log('certiModal.questData:', certiModal.questData);
+  handleCertiModalClose();
+  
+  if (onQuestUpdate && certiModal.questData) {
+    onQuestUpdate(certiModal.questData.quest_id || certiModal.questData.id);
+  }
+};
+
+const handleActionSuccess = () => {
+  if (onQuestUpdate) {
+    if (actionModal.type === 'season_end') {
+      onQuestUpdate();
+    } else if (actionModal.quest) {
       onQuestUpdate(actionModal.quest.quest_id || actionModal.quest.id);
     }
-  };
-
-
-  
+  }
+};
 
   const handleQuestClick = (questId) => {
     setSelectedQuestId(questId);
@@ -326,6 +357,7 @@ const handleSignupClick = () => {
                 onOpenModal={onOpenModal}
                  onActionClick={handleActionClick}
                  onCertiClick={handleCertiClick}
+                 onSeasonClick={handleSeasonClick}
               />
             )}
           </div>
@@ -396,7 +428,7 @@ const handleSignupClick = () => {
         onClose={handleCertiModalClose}
         questData={certiModal.questData}
         questUserId={certiModal.questUserId}
-        onSuccess={handleActionSuccess}
+        onSuccess={handleCertiSuccess}
       />
       </>
   );
