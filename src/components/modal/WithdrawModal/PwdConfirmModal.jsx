@@ -61,11 +61,11 @@ export default function PwdConfirmModal({
         )}
 
         <div className={styles.buttonContainer}>
-          <button className={styles.cancelButton} onClick={onClose}>
-            취소
-          </button>
           <button className={styles.confirmButton} onClick={onConfirm}>
             확인
+          </button>
+          <button className={styles.cancelButton} onClick={onClose}>
+            취소
           </button>
         </div>
       </div>

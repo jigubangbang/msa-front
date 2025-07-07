@@ -17,6 +17,7 @@ import { Circles } from "react-loader-spinner";
 import debounce from "lodash.debounce";
 import requiredTerms from "../../assets/text/terms-required.txt?raw";
 import optionalTerms from "../../assets/text/terms-optional.txt?raw";
+import Modal from "../../components/common/Modal/Modal";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Register = () => {
   const [emailVerifyError, setEmailVerifyError] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -357,13 +358,17 @@ const Register = () => {
     // 5. 회원가입 요청
     try {
       await axios.post(`${API_ENDPOINTS.AUTH}/register`, form);
-      alert("회원가입이 완료되었습니다!");
-      navigate("/login");
+      setShowSuccessModal(true);
     } catch (err) {
       console.error("회원가입 실패:", err);
       setMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
       setMessageType("error");
     }
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    navigate("/login");
   };
 
   return (
@@ -730,6 +735,17 @@ const Register = () => {
           </div>
         </form>
       </div>
+      {/* 회원가입 성공 모달 */}
+      <Modal
+        show={showSuccessModal}
+        onClose={handleSuccessConfirm}
+        onSubmit={handleSuccessConfirm}
+        heading="회원가입 완료"
+        firstLabel="확인"
+        secondLabel={null}
+      >
+        지구방방에 오신 걸 환영합니다!<br/>
+      </Modal>
     </div>
   );
 };
