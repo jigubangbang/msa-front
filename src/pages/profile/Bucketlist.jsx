@@ -6,6 +6,7 @@ import Modal from '../../components/common/Modal/Modal';
 import Dropdown from '../../components/common/Dropdown';
 import styles from './Bucketlist.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import { jwtDecode } from 'jwt-decode';
 
 import {
   DndContext, 
@@ -25,6 +26,7 @@ import { useParams } from 'react-router-dom';
 // TODO: get session user
 
 export default function Bucketlist() {
+    const [sessionUserId, setSessionUserId] = useState();
     const {userId} = useParams();
     const [items, setItems] = useState([]);
     const [totalCount, setTotalCount] = useState();
@@ -135,6 +137,12 @@ export default function Bucketlist() {
     }
     
     useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setSessionUserId(decoded.sub);
+        }
+
         api
             .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`)
             .then((response) => {
@@ -151,14 +159,16 @@ export default function Bucketlist() {
             <div className={styles.row}>
                 <div className={styles.columnLeft}>
                     <div className={styles.topControls}>
-                        <div>
-                            <button
-                                className={`${styles.btn} ${styles.btnPrimary}`}
-                                onClick={() => setShowGoalModal(true)}
-                            >
-                                +
-                            </button>
-                        </div>
+                        {sessionUserId === userId && (
+                            <div>
+                                <button
+                                    className={`${styles.btn} ${styles.btnPrimary}`}
+                                    onClick={() => setShowGoalModal(true)}
+                                >
+                                    +
+                                </button>
+                            </div>
+                        )}
                         <Dropdown 
                             options={dropdownOptions}
                             defaultOption={activeDropdownOption}
@@ -185,6 +195,7 @@ export default function Bucketlist() {
                                     completedAt={item.formattedDate}
                                     displayOrder={item.displayOrder}
                                     userId={userId}
+                                    sessionUserId={sessionUserId}
                                     activeDropdownOption={activeDropdownOption}
                                     onDelete={handleDeleteItem}
                                     onCheck={handleCheckItem}
