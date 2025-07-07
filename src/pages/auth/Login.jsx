@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./Login.module.css";
 import IdIcon from "../../assets/auth/id.svg";
@@ -20,7 +20,17 @@ const Login = () => {
   const [messageType, setMessageType] = useState(""); // 'success' or 'error'
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.errorMessage) {
+      setMessage(location.state.errorMessage);
+      setMessageType("error");
+      window.history.replaceState({}, document.title); 
+    }
+  }, [location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
