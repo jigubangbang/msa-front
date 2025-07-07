@@ -20,6 +20,8 @@ export default function QuestListPage() {
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+  
 
 // Modal states 
 const [showQuestModal, setShowQuestModal] = useState(false);
@@ -38,23 +40,23 @@ const [selectedBadge, setSelectedBadge] = useState(null);
   //SideBar//
     const location = useLocation();
     const currentPath = location.pathname;
-      const getActiveMenuItems = () => {
-      return QUEST_SIDEBAR.map(item => {
-        let isActive = false;
-        
-        if (item.submenu) {
-          isActive = item.path === currentPath;
-        } else {
-          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
-        }
-        return {
-          ...item,
-          active: isActive
-        };
-      });
-    };
+  const getActiveMenuItems = () => {
+    return QUEST_SIDEBAR(isAdmin).map(item => {
+      let isActive = false;
+
+      if (item.submenu) {
+        isActive = item.path === currentPath;
+      } else {
+        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+      }
+      return {
+        ...item,
+        active: isActive
+      };
+    });
+  };
   
-    const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
+    const finalMenuItems = getActiveMenuItems();
     //SideBar//
 
 
@@ -62,6 +64,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
     const token = localStorage.getItem("accessToken");
     //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
     setIsLogin(true);
+    setIsAdmin(true);
     fetchUser();
     fetchUserQuests();
     fectchUserBadges();
@@ -236,7 +239,7 @@ const handleQuestClickFromBadge = (quest_id) => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} />
+      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
