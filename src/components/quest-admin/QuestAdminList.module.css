@@ -1,0 +1,306 @@
+/* QuestAdminList.module.css */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.questAdminList {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 20px;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.questListTitle {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: left;
+  color: #000;
+}
+
+.updateButton {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.updateButton:hover {
+  background: #0056b3;
+}
+
+/* 검색 섹션 */
+.searchSection {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.totalCount {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* 필터 */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filterLabel {
+  font-weight: 600;
+  color: #333;
+  min-width: 60px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.filterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.filterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.dropdown {
+  display: flex;
+  margin: 10px 0px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 테이블 헤더 */
+.tableHeader {
+  display: grid;
+  grid-template-columns: 60px 140px 240px 100px 80px 100px 160px 100px 120px;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tableBody {
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 60px 140px 240px 100px 80px 100px 160px 100px 120px;
+  gap: 10px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  align-items: center;
+  cursor: pointer;
+  min-height: 60px;
+}
+
+.tableRow:hover {
+  background: #f8f9fa;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow.inactive {
+  background: #f5f5f5;
+  opacity: 0.8;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+}
+
+.titleCell {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 180px;
+  text-align: left;
+}
+
+/* 태그 스타일 */
+.typeTag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.typeTag.auth {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.typeTag.check {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.difficultyTag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.difficultyTag.easy {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.difficultyTag.medium {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.difficultyTag.hard {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.seasonalTag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.seasonalTag.seasonal {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.seasonalTag.permanent {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.statusTag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusTag.active {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.statusTag.inactive {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.xpValue {
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.dateRange {
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+/* 로딩 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .questAdminList {
+    padding: 15px;
+  }
+  
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 50px 70px 100px 150px 80px 50px 70px 120px 70px 90px;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  
+  .titleCell {
+    max-width: 130px;
+  }
+}

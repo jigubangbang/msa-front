@@ -46,6 +46,7 @@ import PaymentFail from "../pages/payment/PaymentFail";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
+import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPage";
 
 const AppRouter = () => {
     return (
@@ -86,7 +87,9 @@ const AppRouter = () => {
 
           {/* Admin Quest */}
           <Route path="/quest-admin/quest" element={<QuestAdminPage page="quest"/>}/>
+          <Route path="/quest-admin/quest/:questId" element={<QuestAdminDetailPage />} />
           <Route path="/quest-admin/badge" element={<QuestAdminPage page="badge"/>}/>
+          
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
