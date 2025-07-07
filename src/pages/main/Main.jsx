@@ -1,11 +1,22 @@
+import React, { useState } from "react";
 import SearchBar from '../../components/common/Searchbar';
 import Header from '../../components/main/Header';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
 import Dropdown from '../../components/common/Dropdown';
 import ToggleBtn from '../../components/common/ToggleBtn';
+import ReportModal from '../../components/common/Modal/ReportModal';
 
 export default function Main() {
+    const [showReportModal, setShowReportModal] = useState(false); // 신고
+
+    // 신고
+    const handleReportSubmit = (data) => {
+        console.log("신고 전송 데이터:", data);
+        setShowReportModal(false);
+        // 신고 API 호출 자리
+    };
+
     // dropdown menu 에 들어갈 옵션
     const dropdownOptions = [
         {
@@ -31,6 +42,18 @@ export default function Main() {
                 <button className={styles.startButton}>START NOW</button>
             </div>
             <div className={styles.container}>
+                <div className={styles.section}>
+                    <h2>신고 테스트</h2>
+                    <button className={`${styles.button} ${styles.darkButton}`} onClick={() => setShowReportModal(true)}>
+                        신고하기
+                    </button>
+
+                    <ReportModal
+                        show={showReportModal}
+                        onClose={() => setShowReportModal(false)}
+                        onSubmit={handleReportSubmit}
+                    />
+                </div>
 
                 <div className={styles.section}>
                 <h1>Header 1</h1>
