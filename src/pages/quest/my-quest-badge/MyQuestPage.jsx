@@ -29,26 +29,28 @@ export default function MyQuestPage({page, isMine}) {
   const [selectedBadge, setSelectedBadge] = useState(null);
     const { userId } = useParams();
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   //SideBar//
     const location = useLocation();
     const currentPath = location.pathname;
       const getActiveMenuItems = () => {
-      return QUEST_SIDEBAR.map(item => {
-        let isActive = false;
-        
-        if (item.submenu) {
-          isActive = item.path === currentPath;
-        } else {
-          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
-        }
-        return {
-          ...item,
-          active: isActive
+          return QUEST_SIDEBAR(isAdmin).map(item => {
+            let isActive = false;
+      
+            if (item.submenu) {
+              isActive = item.path === currentPath;
+            } else {
+              isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+            }
+            return {
+              ...item,
+              active: isActive
+            };
+          });
         };
-      });
-    };
   
-    const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
+    const finalMenuItems = getActiveMenuItems();
     //SideBar//
 
 
@@ -57,12 +59,13 @@ export default function MyQuestPage({page, isMine}) {
     //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
     setIsLogin(isMine);
     fetchUserInfo();
+    setIsAdmin(true);
 
     // if (token) {
     //   setIsLogin(true);
     //   fetchUserInfo();
     // }
-  }, [isMine, userId]);
+  }, [isMine, userId, isAdmin]);
 
   const fetchUserInfo = useCallback(async () => {
     if (!isMine && !userId) {
@@ -178,7 +181,7 @@ const handleQuestClickFromBadge = (quest_id) => {
  if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>

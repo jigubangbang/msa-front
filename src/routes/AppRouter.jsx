@@ -32,6 +32,7 @@ import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
 import ChatPanel from "../pages/chat/ChatPanel";
+import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
 
 const AppRouter = () => {
     return (
@@ -63,6 +64,10 @@ const AppRouter = () => {
           <Route path="/my-quest/profile/:userId" element={<MyQuestPage page="main" isMine={false}/>}/>
           <Route path="/my-quest/profile/:userId/badges" element={<MyQuestPage page="badge" isMine={false}/>}/>
           <Route path="/my-quest/profile/:userId/record" element={<MyQuestPage page="record" isMine={false}/>}/>
+
+          {/* Admin Quest */}
+          <Route path="/quest-admin/quest" element={<QuestAdminPage page="quest"/>}/>
+          <Route path="/quest-admin/badge" element={<QuestAdminPage page="badge"/>}/>
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>

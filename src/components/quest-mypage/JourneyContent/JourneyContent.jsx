@@ -9,6 +9,7 @@ import QuestModal from "../../modal/QuestModal/QuestModal";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CircleProgress from "../ProgressBar/CircleProgress";
 import UserTimeline from "../UserTimeline/UserTimeline";
+import CompactLevelChart from "../CompactLevelChart/CompactLevelChart";
 
 
 
@@ -126,8 +127,12 @@ const handleQuestClickFromBadge = (quest_id) => {
     <div className={styles.container}>
         <div className={styles.content}>
 
+            
             <div className={styles.Container}>
-                <ProgressBar data={userInfo} />
+                <div className={styles.top}>
+                  <CompactLevelChart userId={userInfo.user.user_id}/>
+                  <ProgressBar data={userInfo} />
+                </div>
                 <CircleProgress questData={userInfo.quest} />
                 <UserTimeline data={userInfo} onBadgeClick={handleBadgeClick} onQuestClick={handleQuestClick}/>
             </div>

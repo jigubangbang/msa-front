@@ -13,35 +13,40 @@ export default function RankListPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userQuests, setUserQuests] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  useEffect(() => {
+    //#NeedToChange
+    setIsAdmin(true);
+    fetchUser();
+    fetchUserQuests();
+    fectchUserBadges();
+  }, []);
+
+  
   //SideBar//
   const location = useLocation();
   const currentPath = location.pathname;
   
   const getActiveMenuItems = () => {
-    return QUEST_SIDEBAR.map(item => {
-      let isActive = false;
-      
-      if (item.submenu) {
-        isActive = item.path === currentPath;
-      } else {
-        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
-      }
-      return {
-        ...item,
-        active: isActive
-      };
-    });
-  };
+      return QUEST_SIDEBAR(isAdmin).map(item => {
+        let isActive = false;
+  
+        if (item.submenu) {
+          isActive = item.path === currentPath;
+        } else {
+          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+        }
+        return {
+          ...item,
+          active: isActive
+        };
+      });
+    };
 
   const finalMenuItems = getActiveMenuItems();
   //SideBar//
 
-  useEffect(() => {
-    fetchUser();
-    fetchUserQuests();
-    fectchUserBadges();
-  }, []);
 
   const fetchUser = async () => {
     setLoading(true);
@@ -113,7 +118,7 @@ export default function RankListPage() {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} />
+      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
