@@ -49,7 +49,7 @@ export default function Network({type}) {
                             onClick={() => navigate(`/profile/${user.userId}`)}
                         >
                             <img
-                                src={user.profile_image || defaultProfile}
+                                src={user.profileImage || defaultProfile}
                                 alt="profile"
                                 className={styles.profileImage}
                             />

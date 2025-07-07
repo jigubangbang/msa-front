@@ -14,7 +14,7 @@ import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 import Network from "../pages/profile/Network";
 
-import Feed from "../components/feed/Feed";
+import Feed from "../pages/feed/Feed";
 
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
