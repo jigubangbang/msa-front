@@ -115,13 +115,15 @@ const QuestSlider = ({ quests = [], title = "Seasonal Events", onOpenModal }) =>
       
       <div className={styles.questContainer}>
         <div className={styles.questGrid}>
-          {currentQuests.map((quest) => (
-            <QuestSliderCard
-              key={quest.id}
-              quest={quest}
-              onClick={handleQuestClick}
-            />
-          ))}
+          {currentQuests
+            .filter(quest => quest.status === "ACTIVE")
+            .map((quest) => (
+              <QuestSliderCard
+                key={quest.id}
+                quest={quest}
+                onClick={handleQuestClick}
+              />
+            ))}
         </div>
       </div>
       

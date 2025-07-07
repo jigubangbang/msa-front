@@ -271,7 +271,8 @@ export default function QuestMainPage() {
     try{
       const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, {
         params: {
-          category: 10
+          category: 10,
+          isSeasonList: true
         }
       });
       setSeasonalQuest(response.data.quests || {});
@@ -289,12 +290,15 @@ const handleQuestUpdate = async (questId) => {
   setLoading(true);
   try {
     // 1. 현재 퀘스트 모달 새로고침
-    const endpoint = isLogin 
-      ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
-      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+    if (questId){
+      const endpoint = isLogin 
+          ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+          : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
 
-    const response = await axios.get(endpoint);
-    setSelectedQuest(response.data); 
+        const response = await axios.get(endpoint);
+        setSelectedQuest(response.data); 
+    }
+    
     
     // 2. 사용자 퀘스트 목록 새로고침
     const userQuestsResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {

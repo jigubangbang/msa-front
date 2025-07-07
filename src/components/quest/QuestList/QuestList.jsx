@@ -70,7 +70,14 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
             </div>
 
             <div className={styles.questButton}>
-              {!isLogin || quest.user_status == "GIVEN_UP" || !quest.user_status ? (
+              {quest.status === "INACTIVE" ? (
+                <button 
+                  className={styles.inactiveButton}
+                  disabled
+                >
+                  시즌 종료
+                </button>
+              ) : !isLogin || quest.user_status == "GIVEN_UP" || !quest.user_status ? (
                 <button 
                   className={styles.joinButton}
                   onClick={(e) => {
@@ -78,8 +85,8 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
                     onJoin(quest);
                   }}>
                   <img src="/icons/common/check.svg" className={styles.buttonIcon} alt="check icon"/>
-                도전하기
-              </button>
+                  도전하기
+                </button>
               ) : (
                 quest.user_status == "IN_PROGRESS" ? (
                   <button 
@@ -103,7 +110,6 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
                   </button>
                 )
               )}
-              
             </div>
             
           </div>

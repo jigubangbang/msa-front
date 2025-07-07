@@ -1,0 +1,258 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 20px;
+}
+
+.totalCount {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.noQuests {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* 필터 */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.filterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.filterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.statusFilterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.statusFilterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.statusFilterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+/* 테이블 */
+.tableHeader {
+  display: grid;
+  grid-template-columns: 50px 80px 80px 150px 80px 70px 70px 2fr 70px;
+  gap: 15px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tableBody {
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 50px 80px 80px 150px 80px 70px 70px 2fr 70px;
+  gap: 15px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  align-items: center;
+  cursor: pointer;
+}
+
+.tableRow:hover {
+  background: #f8f9fa;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+/* 상태 배지 */
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.statusBadge.inProgress {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.statusBadge.completed {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.statusBadge.givenUp {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.statusBadge.default {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+/* 퀘스트 정보 */
+.questTitle {
+  font-weight: 600;
+  color: #333;
+}
+
+.questInfo {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  justify-content: center;
+}
+
+.difficulty {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.separator {
+  color: #333;
+  font-weight: 600;
+}
+
+.xp {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.description {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-align: left;
+}
+
+/* 인증 보기 버튼 */
+.certificationButton {
+  padding: 6px 12px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.certificationButton:hover {
+  background-color: #555;
+  transform: translateY(-1px);
+}
+
+.certificationButton:active {
+  transform: translateY(0);
+}
