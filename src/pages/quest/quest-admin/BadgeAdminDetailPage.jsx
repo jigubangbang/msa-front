@@ -5,14 +5,15 @@ import styles from "./QuestAdminPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
-import QuestAdminDetail from "../../../components/quest-admin/QuestAdminDetail";
+import BadgeAdminDetail from "../../../components/quest-admin/BadgeAdminDetail";
 
 
-export default function QuestAdminDetailPage() {
+export default function BadgeAdminDetailPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const {questId} = useParams();
+  const {badgeId} = useParams();
+
   
 
   //SideBar//
@@ -70,7 +71,7 @@ export default function QuestAdminDetailPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <QuestAdminDetail questId={parseInt(questId)}/>
+          <BadgeAdminDetail badgeId={parseInt(badgeId)}/>
         </div>
       </div>
 
