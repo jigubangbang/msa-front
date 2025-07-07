@@ -1,17 +1,20 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import styles from "./QuestAdminPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
-import QuestAdminList from "../../../components/quest-admin/QuestAdminList";
+
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
+import QuestAdminDetail from "../../../components/quest-admin/QuestAdminDetail";
 
 
-export default function QuestAdminPage() {
+export default function QuestAdminDetailPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const {questId} = useParams();
   
+
   //SideBar//
   const location = useLocation();
   const currentPath = location.pathname;
@@ -35,9 +38,6 @@ export default function QuestAdminPage() {
     const finalMenuItems = getActiveMenuItems();
     //SideBar//
 
-    const handleQuestRowClick = (questId) => {
-    navigate(`/quest-admin/quest/${questId}`);
-  };
 
 
   useEffect(()=>{
@@ -52,16 +52,16 @@ export default function QuestAdminPage() {
   }, []);
 
 
-  if (!isAdmin) {
-     return (
-       <div className={styles.Container}>
-         <Sidebar menuItems={finalMenuItems} />
-         <div className={styles.content}>
-           <div className={styles.loading}>접근 권한이 없습니다</div>
-         </div>
-       </div>
-     );
-   }
+ if (!isAdmin) {
+    return (
+      <div className={styles.Container}>
+        <Sidebar menuItems={finalMenuItems} />
+        <div className={styles.content}>
+          <div className={styles.loading}>접근 권한이 없습니다</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.Container}>
@@ -69,7 +69,7 @@ export default function QuestAdminPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <QuestAdminList onQuestClick={handleQuestRowClick}/>
+          <QuestAdminDetail questId={parseInt(questId)}/>
         </div>
       </div>
 
