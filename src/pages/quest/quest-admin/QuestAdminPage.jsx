@@ -5,9 +5,10 @@ import styles from "./QuestAdminPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 import QuestAdminList from "../../../components/quest-admin/QuestAdminList";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
+import BadgeAdminList from "../../../components/quest-admin/BadgeAdminList";
 
 
-export default function QuestAdminPage() {
+export default function QuestAdminPage({page}) {
   const [isLogin, setIsLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
@@ -17,20 +18,21 @@ export default function QuestAdminPage() {
   const currentPath = location.pathname;
 
   const getActiveMenuItems = () => {
-    return QUEST_SIDEBAR(isAdmin).map(item => {
-      let isActive = false;
+      return QUEST_SIDEBAR(isAdmin).map(item => {
+        let isActive = false;
 
-      if (item.submenu) {
-        isActive = item.path === currentPath;
-      } else {
-        isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
-      }
-      return {
-        ...item,
-        active: isActive
-      };
-    });
-  };
+        if (item.submenu) {
+          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+        } else {
+          isActive = currentPath === item.path || currentPath.startsWith(item.path + '/');
+        }
+
+        return {
+          ...item,
+          active: isActive
+        };
+      });
+    };
   
     const finalMenuItems = getActiveMenuItems();
     //SideBar//
@@ -38,6 +40,15 @@ export default function QuestAdminPage() {
     const handleQuestRowClick = (questId) => {
     navigate(`/quest-admin/quest/${questId}`);
   };
+
+  const handleBadgeRowClick = (badgeId )=> {
+    navigate(`/quest-admin/badge/${badgeId}`);
+  }
+
+  const handleBadgeMModifyClick = (badge) => {
+    //#NeedToChange badge
+    console.log('Badge modify clicked:', badge);
+  }
 
 
   useEffect(()=>{
@@ -69,7 +80,12 @@ export default function QuestAdminPage() {
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
-          <QuestAdminList onQuestClick={handleQuestRowClick}/>
+          {page==='quest' ? (
+            <QuestAdminList onQuestClick={handleQuestRowClick}/>
+          ) : (
+            <BadgeAdminList onBadgeClick={handleBadgeRowClick} onBadgeModify={handleBadgeMModifyClick}/>
+          )}
+          
         </div>
       </div>
 

@@ -135,6 +135,7 @@ const handleCancelUserQuest = async (user) => {
     const response = await axios.put(
       `${API_ENDPOINTS.QUEST.ADMIN}/quests-certi/${user.quest_user_id}/reject`,
       {
+        quest_id: questDetail.quest_id,
         xp: questDetail.xp,  
         user_id: user.user_id
       }
@@ -199,7 +200,7 @@ const truncateText = (text, maxLength = 100) => {
       <div className={styles.header}>
         <h2 className={styles.detailTitle}>Quest Detail</h2>
         <button className={styles.closeButton} onClick={onClose}>
-          ✕
+          목록으로 돌아가기
         </button>
       </div>
 
@@ -433,7 +434,7 @@ const truncateText = (text, maxLength = 100) => {
         <div className={styles.userDetailModal} onClick={handleCloseUserDetail}>
           <div className={styles.userDetailContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.userDetailHeader}>
-              <h3>사용자 상세 정보</h3>
+              <h3> 상세 인증 정보</h3>
               <button className={styles.closeModalButton} onClick={handleCloseUserDetail}>
                 ✕
               </button>

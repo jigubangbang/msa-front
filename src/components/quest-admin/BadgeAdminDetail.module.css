@@ -1,0 +1,374 @@
+/* BadgeAdminDetail.module.css */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+/* =================
+   BASE STYLES
+   ================= */
+.badgeAdminDetail {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* =================
+   HEADER
+   ================= */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.closeButton {
+  padding: 8px 16px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #5a6268;
+}
+
+/* =================
+   BADGE INFO
+   ================= */
+.badgeInfo {
+  margin-bottom: 32px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.basicInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.descriptionSection {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.awardedValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #28a745;
+}
+
+/* Badge Icon Section */
+.badgeIconSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.badgeIconLarge {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.descriptionContent {
+  flex: 1;
+}
+
+.descriptionText {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #495057;
+  margin-top: 8px;
+}
+
+/* =================
+   DIFFICULTY TAGS
+   ================= */
+.difficultyTag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.difficultyTag.difficulty1 {
+  background: #d1edcc;
+  color: #2e7d32;
+}
+
+.difficultyTag.difficulty2 {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.difficultyTag.difficulty3 {
+  background: #fff3cd;
+  color: #f57c00;
+}
+
+.difficultyTag.difficulty4 {
+  background: #f8d7da;
+  color: #d32f2f;
+}
+
+/* =================
+   ACTION BUTTONS
+   ================= */
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.editButton {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editButton:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* =================
+   QUESTS SECTION
+   ================= */
+.questsSection {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.questsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.questCard {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 25px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.questCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.questId {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 8px;
+}
+
+.questTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.questStats {
+  display: flex;
+  gap: 30px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.statValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.noQuests {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* =================
+   USERS SECTION
+   ================= */
+.usersSection {
+  margin-bottom: 20px;
+}
+
+.usersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.usersCount {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.usersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.userCard {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.userCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e9ecef;
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.userNickname {
+  font-size: 14px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 2px;
+}
+
+.userId {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.noUsers {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* =================
+   LOADING & ERROR STATES
+   ================= */
+.loading,
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.error {
+  color: #dc3545;
+}
