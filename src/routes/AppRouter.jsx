@@ -37,6 +37,8 @@ import InquiryDetail from "../components/user/InquiryDetail";
 import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
+import Admin from "../components/admin/Admin";
+
 import ChatPanel from "../pages/Chat/ChatPanel";
 
 import Payment from "../pages/payment/Payment";
@@ -98,13 +100,16 @@ const AppRouter = () => {
 
           {/* User */}
           <Route path="/user/manage" element={<UserManage/>}/>
-          <Route path="/user/inquiry" element={<UserInquiry />}>
-            <Route index element={<InquiryMain />} />          
-            <Route path="form" element={<InquiryForm />} />        
-            <Route path=":id" element={<InquiryDetail />} />     
+          <Route path="/user/inquiry" element={<UserInquiry/>}>
+            <Route index element={<InquiryMain/>}/>          
+            <Route path="form" element={<InquiryForm/>}/>        
+            <Route path=":id" element={<InquiryDetail/>}/>     
           </Route>
           <Route path="/user/premium" element={<UserPremium/>}/> 
           <Route path="/user/withdraw" element={<UserWithdraw/>}/> 
+
+          {/* Admin */}
+          <Route path="/admin" element={<Admin />}/>
 
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>
