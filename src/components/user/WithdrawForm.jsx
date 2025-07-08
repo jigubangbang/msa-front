@@ -121,8 +121,10 @@ export default function WithdrawForm() {
 
   const handleWithdrawWithoutPassword = async () => {
     setIsLoading(true);
+    const token = localStorage.getItem("accessToken");
     try {
       await api.delete(`${API_ENDPOINTS.USER}/me`, {
+        headers: { Authorization: `Bearer ${token}` }, 
         data: {
           reasonCode,
           reasonText: reasonCode === "ETC" ? reasonText : null,
