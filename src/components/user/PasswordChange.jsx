@@ -6,6 +6,7 @@ import PasswordIcon from "../../assets/auth/password.svg";
 import VisibleIcon from "../../assets/auth/visible.svg";
 import VisibleOffIcon from "../../assets/auth/visible_off.svg";
 import { Circles } from "react-loader-spinner";
+import Modal from "../../components/common/Modal/Modal";
 
 export default function PasswordChange() {
   const [form, setForm] = useState({
@@ -24,6 +25,7 @@ export default function PasswordChange() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -143,19 +145,7 @@ export default function PasswordChange() {
         }
       );
 
-      alert("비밀번호가 성공적으로 변경되었습니다!");
-
-      setForm({
-        currentPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
-      });
-      setErrors({});
-      setShowPasswords({
-        currentPassword: false,
-        newPassword: false,
-        confirmNewPassword: false,
-      });
+      setShowSuccessModal(true);
     } catch (err) {
       // 현재 비밀번호 틀린 경우
       if (err.response?.status === 401 || err.response?.status === 400) {
@@ -167,6 +157,23 @@ export default function PasswordChange() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    
+    // 폼 초기화
+    setForm({
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    });
+    setErrors({});
+    setShowPasswords({
+      currentPassword: false,
+      newPassword: false,
+      confirmNewPassword: false,
+    });
   };
 
   return (
@@ -327,6 +334,17 @@ export default function PasswordChange() {
           </div>
         </div>
       </form>
+      {/* 비밀번호 변경 성공 모달 */}
+      <Modal
+        show={showSuccessModal}
+        onClose={handleSuccessConfirm}
+        onSubmit={handleSuccessConfirm}
+        heading="변경 완료"
+        firstLabel="확인"
+        secondLabel={null}
+      >
+        비밀번호가 성공적으로 변경되었습니다!
+      </Modal>
     </div>
   );
 }

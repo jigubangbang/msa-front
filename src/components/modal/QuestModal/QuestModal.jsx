@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import ModalUserList from '../ModalUserList/ModalUserList';
 import QuestActionModal from '../QuestActionModal/QuestActionModal';
 import QuestCertificationModal from '../QuestCertificationModal/QuestCertificationModal';
+import QuestCertificationViewModal from '../QuestCertificationViewModal/QuestCertificationViewModal';
+import axios from "axios";
 
 
 const QuestModal = ({ 
@@ -20,6 +22,11 @@ const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
   isOpen: false,
   type: null
 });
+
+  const [CertiViewModal, setCertiViewModal] = useState({
+    isOpen: false,
+    questUserId: null
+  })
 
 const [isCertiModalOpen, setIsCertiModalOpen] = useState(false);
 
@@ -144,20 +151,32 @@ const renderBadges = () => {
   });
   };
 
-  const handleVerifyClick = () => {
+  const handleVerifyClick = async() => {
+    if (questData.status=="INACTIVE"){
+      setActionModal({
+        isOpen: true,
+        type: 'season_end'
+      });
+      return;
+    }
     setIsCertiModalOpen(true);
   };
 
   const handleGiveUpClick = () => {
+    const actionType = questData.status === "INACTIVE" ? 'season_end' : 'abandon';
     setActionModal({
-    isOpen: true,
-    type: 'abandon'
-  });
+      isOpen: true,
+      type: actionType
+    });
   };
 
   const handleViewCertificationClick = () => {
     //#NeedToChange
     console.log('인증 보러가기', questData.quest_user_id);
+    setCertiViewModal({
+      isOpen: true,
+      questUserId: questData.quest_user_id
+    })
   };
 
   const handleRetryClick = () => {
@@ -184,11 +203,19 @@ const renderBadges = () => {
   });
 };
 
+const handleViewModalClose = () => {
+  setCertiViewModal({
+    isOpen: false,
+    questUserId: null
+  });
+};
+
   const handleActionSuccess = () => {
     if (onQuestUpdate) {
       onQuestUpdate(questData.id);
     }
   };
+
   
 
   // 유저들
@@ -280,18 +307,30 @@ const renderBadges = () => {
               {formatDate(questData.started_at)}에 시작되어<br />
               {formatDate(questData.given_up_at)}에 포기한 퀘스트입니다
             </span>
-            <button className={styles.retryBtn} onClick={handleRetryClick}>
-              다시 도전하기
-            </button>
+            {questData.status === "INACTIVE" ? (
+              <span className={styles.statusText}>
+                시즌이 종료된 퀘스트입니다
+              </span>
+            ) : (
+              <button className={styles.retryBtn} onClick={handleRetryClick}>
+                다시 도전하기
+              </button>
+            )}
           </div>
         );
-      
+
       default:
         return (
           <div className={styles.questButtons}>
-            <button className={styles.challengeBtn} onClick={handleChallengeClick}>
-              도전하기
-            </button>
+            {questData.status === "INACTIVE" ? (
+              <span className={styles.statusText}>
+                시즌이 종료된 퀘스트입니다
+              </span>
+            ) : (
+              <button className={styles.challengeBtn} onClick={handleChallengeClick}>
+                도전하기
+              </button>
+            )}
           </div>
         );
     }
@@ -409,6 +448,12 @@ const renderBadges = () => {
         questUserId={questData.quest_user_id}
         onSuccess={handleActionSuccess}
       />
+
+      <QuestCertificationViewModal
+      isOpen={CertiViewModal.isOpen}
+      onClose={handleViewModalClose}
+      questUserId={CertiViewModal.questUserId}
+    />
     </div>
   );
 };

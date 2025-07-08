@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
 .overlay {
   position: fixed;
   top: 0;
@@ -20,74 +22,78 @@
   font-size: 16px;
   line-height: 1.6;
   position: relative;
-  min-width: 20vw;
+  width: 400px;
   font-family: 'Pretendard', sans-serif;
 }
 
+/* 제목 스타일 */
 h2 {
   margin-top: 0;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 20px; 
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-/* === Buttons === */
+/* 입력 필드 그룹 */
+.formGroup {
+  margin-bottom: 20px; 
+  text-align: center;
+}
+
+/* 버튼 컨테이너 */
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* 버튼 기본 */
 .btn {
-  padding: 0.5rem 2rem;
-  font-size: 0.875rem;
-  font-weight: bold;
-  border-radius: 5px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
   cursor: pointer;
   border: none;
-  min-height: 30px;
-  min-width: 40px;
-  padding: 5px 10px;
-  margin-right: 5px;
+  min-height: 36px;
+  min-width: 80px;
+  font-family: 'Pretendard';
+  transition: all 0.3s ease;
 }
 
-.btnContainer {
-  margin: 0 20%;
-  display: inline-block;
-  text-align: center;
-  width: 60%;
-}
-
-/* 입력 필드 */
-.formGroup {
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-/* === 다크 버튼 === */
+/* 다크 버튼 */
 .darkButton {
   background-color: #000;
   color: #fff;
-  border: none;
+  border: 1px solid #000;
 }
 
 .darkButton:hover {
   background-color: #333;
+  border-color: #333;
 }
 
 .darkButton:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
-/* === 외곽선 버튼 (findLink 기반) === */
+/* 외곽선 버튼 */
 .outlineButton {
   background-color: transparent;
   color: #666;
   border: 1px solid #ccc;
-  font-weight: 500;
 }
 
 .outlineButton:hover {
-  background-color: #fafafa;
   border-color: #000;
   color: #000;
+  background-color: #fafafa;
 }
 
 .outlineButton:focus {
+  outline: none;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }

@@ -15,7 +15,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 800;
+  z-index: 2000;
   padding: 20px;
   box-sizing: border-box;
   /* 파일 다이얼로그 열릴 때 모달이 닫히지 않도록 */

@@ -240,6 +240,30 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   transform: translateY(0);
 }
 
+.inactiveButton {
+  padding: 10px 20px;
+  background: #e9ecef;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  outline: none;
+  opacity: 0.7;
+}
+
+.inactiveButton:hover {
+  background: #e9ecef;
+  color: #6c757d;
+  transform: none;
+}
+
+.inactiveButton:active {
+  transform: none;
+}
+
 .buttonIcon{
   width: 10px;
   height: 10px;

@@ -155,10 +155,12 @@ export default function QuestMainPage() {
   const [userQuest, setUserQuest] = useState(null);
   const [userRank, setUserRank] = useState(null);
   const [userBadge, setUserBadge] = useState(null);
+  
 
   const [seasonalQuest, setSeasonalQuest] = useState(null);
 
   const [isLogin, setIsLogin] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
 
   // Modal states 
@@ -171,10 +173,10 @@ export default function QuestMainPage() {
   //SideBar//
   const location = useLocation();
   const currentPath = location.pathname;
-    const getActiveMenuItems = () => {
-    return QUEST_SIDEBAR.map(item => {
+  const getActiveMenuItems = () => {
+    return QUEST_SIDEBAR(isAdmin).map(item => {
       let isActive = false;
-      
+
       if (item.submenu) {
         isActive = item.path === currentPath;
       } else {
@@ -186,14 +188,16 @@ export default function QuestMainPage() {
       };
     });
   };
-
-  const finalMenuItems = getActiveMenuItems(QUEST_SIDEBAR);
+  const finalMenuItems = getActiveMenuItems();
   //SideBar//
 
   useEffect(()=>{
     const token = localStorage.getItem("accessToken");
     //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
     setIsLogin(true);
+    //admin도 잘 받아왔다고 가정..
+    setIsAdmin(true);
+
     fetchUserinfo();
     fetchUserQuest();
     fetchUserBadge();
@@ -210,7 +214,7 @@ export default function QuestMainPage() {
     }
 
     fetchSeasonalQuest();
-  }, []);
+  }, [isAdmin]);
 
   const fetchUserinfo = async () => {
     setLoading(true);
@@ -271,7 +275,8 @@ export default function QuestMainPage() {
     try{
       const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, {
         params: {
-          category: 10
+          category: 10,
+          isSeasonList: true
         }
       });
       setSeasonalQuest(response.data.quests || {});
@@ -289,12 +294,15 @@ const handleQuestUpdate = async (questId) => {
   setLoading(true);
   try {
     // 1. 현재 퀘스트 모달 새로고침
-    const endpoint = isLogin 
-      ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
-      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+    if (questId){
+      const endpoint = isLogin 
+          ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+          : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
 
-    const response = await axios.get(endpoint);
-    setSelectedQuest(response.data); 
+        const response = await axios.get(endpoint);
+        setSelectedQuest(response.data); 
+    }
+    
     
     // 2. 사용자 퀘스트 목록 새로고침
     const userQuestsResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
@@ -376,7 +384,7 @@ const handleQuestUpdate = async (questId) => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} />
+      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
       <div className={styles.content}>
         <Rankings/>
         

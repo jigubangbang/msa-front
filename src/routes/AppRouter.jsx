@@ -14,15 +14,13 @@ import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 import Network from "../pages/profile/Network";
 
-import Feed from "../components/feed/Feed";
+import Feed from "../pages/feed/Feed";
 
 import QuestMainPage from "../pages/quest/quest-badge/QuestMainPage";
 import QuestListPage from "../pages/quest/quest-badge/QuestListPage";
 import BadgeListPage from "../pages/quest/quest-badge/BadgeListPage";
 import RankListPage from "../pages/quest/quest-badge/RankListPage";
 import MyQuestPage from "../pages/quest/my-quest-badge/MyQuestPage";
-import MyQuestBadgePage from "../pages/quest/my-quest-badge/MyQuestBadgePage";
-import MyQuestRecordPage from "../pages/quest/my-quest-badge/MyQuestRecordPage";
 
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
@@ -33,10 +31,25 @@ import FindPassword from "../pages/auth/FindPassword";
 
 import UserManage from "../pages/user/UserManage";
 import UserInquiry from "../pages/user/UserInquiry";
+import InquiryMain from "../components/user/InquiryMain";
+import InquiryForm from "../components/user/InquiryForm";
+import InquiryDetail from "../components/user/InquiryDetail";
 import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
+import Admin from "../components/admin/Admin";
+
 import ChatPanel from "../pages/Chat/ChatPanel";
+
+import Payment from "../pages/payment/Payment";
+import PaymentFail from "../pages/payment/PaymentFail";
+import PaymentSuccess from "../pages/payment/PaymentSuccess";
+
+import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
+import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPage";
+import BadgeAdminDetail from "../components/quest-admin/BadgeAdminDetail";
+import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPage";
+import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
 
 const AppRouter = () => {
     return (
@@ -64,9 +77,29 @@ const AppRouter = () => {
           <Route path="/quest/list" element={<QuestListPage/>}/>
           <Route path="/quest/badge" element={<BadgeListPage/>}/>
           <Route path="/rank/list" element={<RankListPage/>}/>
-          <Route path="/my-quest" element={<MyQuestPage/>}/>
-          <Route path="/my-quest/badge" element={<MyQuestBadgePage/>}/>
-          <Route path="/my-quest/record" element={<MyQuestRecordPage/>}/>
+          
+          {/* My Quest - 본인 */}
+          <Route path="/my-quest" element={<MyQuestPage page="main" isMine={true}/>}/>
+          <Route path="/my-quest/badge" element={<MyQuestPage page="badge" isMine={true}/>}/>
+          <Route path="/my-quest/record" element={<MyQuestPage page="record" isMine={true}/>}/>
+
+          {/* My Quest - 다른 사용자 프로필 */}
+          <Route path="/my-quest/profile/:userId" element={<MyQuestPage page="main" isMine={false}/>}/>
+          <Route path="/my-quest/profile/:userId/badges" element={<MyQuestPage page="badge" isMine={false}/>}/>
+          <Route path="/my-quest/profile/:userId/record" element={<MyQuestPage page="record" isMine={false}/>}/>
+
+          {/* 퀘스트 관리 */}
+          <Route path="/quest-admin/quest" element={<QuestAdminPage page="quest"/>}/>
+          <Route path="/quest-admin/quest/:questId" element={<QuestAdminDetailPage/>} />
+          <Route path="/quest-admin/quest/new" element={<AdminFormPage />}/>
+          <Route path="/quest-admin/quest/:id/modify" element={<AdminFormPage />}/>
+
+          {/* 뱃지 관리 */}
+          <Route path="/quest-admin/badge" element={<QuestAdminPage page="badge"/>}/>
+          <Route path="/quest-admin/badge/:badgeId" element={<BadgeAdminDetailPage/>}/>
+          <Route path="/quest-admin/badge/new" element={<AdminFormPage />}/>
+          <Route path="/quest-admin/badge/:id/modify" element={<AdminFormPage />}/>
+          
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
@@ -80,12 +113,24 @@ const AppRouter = () => {
 
           {/* User */}
           <Route path="/user/manage" element={<UserManage/>}/>
-          <Route path="/user/inquiry" element={<UserInquiry/>}/> 
+          <Route path="/user/inquiry" element={<UserInquiry/>}>
+            <Route index element={<InquiryMain/>}/>          
+            <Route path="form" element={<InquiryForm/>}/>        
+            <Route path=":id" element={<InquiryDetail/>}/>     
+          </Route>
           <Route path="/user/premium" element={<UserPremium/>}/> 
           <Route path="/user/withdraw" element={<UserWithdraw/>}/> 
 
+          {/* Admin */}
+          <Route path="/admin" element={<Admin />}/>
+
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>
+
+          {/* Payment */}
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/fail" element={<PaymentFail />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
         </Routes>
     );
 }

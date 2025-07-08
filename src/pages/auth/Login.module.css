@@ -145,9 +145,8 @@
   font-size: 14px;
   font-weight: 400;
   text-align: center;
-  
+  white-space: pre-line;
   word-break: keep-all; 
-  white-space: normal;
 }
 
 .errorIcon {

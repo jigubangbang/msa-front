@@ -1,4 +1,5 @@
-export const QUEST_SIDEBAR = [
+export const QUEST_SIDEBAR = (isAdmin = false) => {
+  const basicMenus = [
     {
       label: '퀘스트와 뱃지',
       icon: '/icons/sidebar/badge.svg',
@@ -33,8 +34,39 @@ export const QUEST_SIDEBAR = [
       label: '유저들',
       icon: '/icons/sidebar/user_search.svg',
       path: '/rank/list'
-    },
+    }
   ];
+
+  const adminMenus = [
+    {
+      label: '관리자 메뉴',
+      icon: '/icons/sidebar/admin.svg',
+      path: '/quest-admin/quest'
+    },
+    {
+      label: '퀘스트 관리',
+      path: '/quest-admin/quest',
+      submenu: true
+    },
+    {
+      label: '뱃지 관리',
+      path: '/quest-admin/badge',
+      submenu: true
+    },
+    {
+      label: '퀘스트 생성',
+      path: '/quest-admin/quest/new',
+      submenu: true
+    },
+    {
+      label: '뱃지 생성',
+      path: '/quest-admin/badge/new',
+      submenu: true
+    }
+  ];
+
+  return isAdmin ? [...basicMenus, ...adminMenus] : basicMenus;
+};
 
   export const USER_SIDEBAR = [
   {

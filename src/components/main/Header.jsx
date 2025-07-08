@@ -74,7 +74,7 @@ export default function Header({onOpenChat}) {
           ) : (
             <Link to="/login"><span>로그인</span></Link>
           )}
-          <button className={styles.proBtn}>Premium</button>
+          <Link to="/payment" className={styles.proBtn}><span>Premium</span></Link>
         </div>
       </header>
     </div>
