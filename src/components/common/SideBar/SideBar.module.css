@@ -112,9 +112,12 @@
   cursor: pointer;
   border-radius: 4px;
   margin: 1px 8px 1px 0;
-  font-size: 13px;
+  font-size: 14px;
   color: #6c757d;
   transition: all 0.15s ease;
+
+  background-color: #f0f0f0 !important;
+  color: #333 !important;
 }
 
 .submenuItem:hover {
@@ -123,6 +126,11 @@
 }
 
 /* 서브메뉴 현재 위치도 연한 회색으로 표시 */
+.submenuItem::before {
+  content: '–\00A0\00A0\00A0';
+  color: #6c757d;
+}
+
 .submenuItem.active {
   background-color: #e9ecef;
   color: #495057;

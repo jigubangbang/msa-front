@@ -37,7 +37,13 @@ import InquiryDetail from "../components/user/InquiryDetail";
 import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
-import Admin from "../components/admin/Admin";
+import AdminUser from "../pages/admin/AdminUser";
+import AdminContent from "../pages/admin/AdminContent";
+import PostManage from "../components/admin/PostManage";
+import CommentManage from "../components/admin/CommentManage";
+import GroupManage from "../components/admin/GroupManage";
+import AdminReport from "../pages/admin/AdminReport";
+import AdminInquiry from "../pages/admin/AdminInquiry";
 
 import ChatPanel from "../pages/Chat/ChatPanel";
 
@@ -122,7 +128,14 @@ const AppRouter = () => {
           <Route path="/user/withdraw" element={<UserWithdraw/>}/> 
 
           {/* Admin */}
-          <Route path="/admin" element={<Admin />}/>
+          <Route path="/admin/users" element={<AdminUser/>}/>
+          <Route path="/admin/content" element={<AdminContent/>}>
+            <Route path="posts" element={<PostManage/>}/>
+            <Route path="comments" element={<CommentManage/>}/>
+            <Route path="groups" element={<GroupManage/>}/>
+          </Route>
+          <Route path="/admin/reports" element={<AdminReport/>}/>
+          <Route path="/admin/inquiries" element={<AdminInquiry/>}/>
 
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>
