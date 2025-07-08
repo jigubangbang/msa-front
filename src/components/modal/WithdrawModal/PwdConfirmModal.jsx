@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./PwdConfirmModal.module.css";
 import VisibleIcon from "../../../assets/auth/visible.svg";
 import VisibleOffIcon from "../../../assets/auth/visible_off.svg";
@@ -17,6 +16,12 @@ export default function PwdConfirmModal({
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    if (show) {
+      setShowPassword(false);
+    }
+  }, [show]);
+  
   if (!show) return null;
 
   return (
