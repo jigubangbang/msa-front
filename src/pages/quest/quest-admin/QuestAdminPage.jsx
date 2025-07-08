@@ -46,8 +46,7 @@ export default function QuestAdminPage({page}) {
   }
 
   const handleBadgeMModifyClick = (badge) => {
-    //#NeedToChange badge
-    console.log('Badge modify clicked:', badge);
+    navigate(`/quest-admin/badge/${badge.badge_id}/modify`);
   }
 
 

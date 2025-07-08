@@ -49,6 +49,7 @@ import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
 import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPage";
 import BadgeAdminDetail from "../components/quest-admin/BadgeAdminDetail";
 import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPage";
+import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
 
 const AppRouter = () => {
     return (
@@ -87,11 +88,17 @@ const AppRouter = () => {
           <Route path="/my-quest/profile/:userId/badges" element={<MyQuestPage page="badge" isMine={false}/>}/>
           <Route path="/my-quest/profile/:userId/record" element={<MyQuestPage page="record" isMine={false}/>}/>
 
-          {/* Admin Quest */}
+          {/* 퀘스트 관리 */}
           <Route path="/quest-admin/quest" element={<QuestAdminPage page="quest"/>}/>
           <Route path="/quest-admin/quest/:questId" element={<QuestAdminDetailPage/>} />
+          <Route path="/quest-admin/quest/new" element={<AdminFormPage />}/>
+          <Route path="/quest-admin/quest/:id/modify" element={<AdminFormPage />}/>
+
+          {/* 뱃지 관리 */}
           <Route path="/quest-admin/badge" element={<QuestAdminPage page="badge"/>}/>
           <Route path="/quest-admin/badge/:badgeId" element={<BadgeAdminDetailPage/>}/>
+          <Route path="/quest-admin/badge/new" element={<AdminFormPage />}/>
+          <Route path="/quest-admin/badge/:id/modify" element={<AdminFormPage />}/>
           
 
           {/* Auth */}

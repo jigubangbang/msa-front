@@ -52,6 +52,16 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       label: '뱃지 관리',
       path: '/quest-admin/badge',
       submenu: true
+    },
+    {
+      label: '퀘스트 생성',
+      path: '/quest-admin/quest/new',
+      submenu: true
+    },
+    {
+      label: '뱃지 생성',
+      path: '/quest-admin/badge/new',
+      submenu: true
     }
   ];
 
