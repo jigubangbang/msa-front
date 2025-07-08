@@ -65,6 +65,7 @@
   font-size: 14px;
   margin-bottom: 20px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .message.error {
