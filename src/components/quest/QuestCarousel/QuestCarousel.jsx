@@ -57,7 +57,7 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionC
       </div>
       
       <div className={styles.questBadge}>
-          <img src={quest.icon} alt="badge icon"/>
+          <img src={quest.icon||"/icons/common/unknwon_badge.png"} alt="badge icon"/>
         </div>
       
       </div>
@@ -254,7 +254,7 @@ const handleSignupClick = () => {
                   </div>
                   
                   <div className={styles.questBadge}>
-                    <img src="/icons/common/unknwon_badge.png" alt="quest icon"/>
+                    <img src={"/icons/common/unknwon_badge.png"} alt="quest icon"/>
                   </div>
                 </div>
                 

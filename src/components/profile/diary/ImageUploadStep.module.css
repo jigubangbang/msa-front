@@ -1,0 +1,80 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.uploadLabel {
+    font-size: 0.875rem;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    padding: 5px 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.uploadLabel:hover {
+    background-color: #333;
+}
+
+.fileInput {
+    display: none;
+}
+
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.previewGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 5px;
+    width: 80%;
+    margin-bottom: 1rem;
+}
+
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.removeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+
+input:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.error {
+    margin-bottom: 1rem;
+}

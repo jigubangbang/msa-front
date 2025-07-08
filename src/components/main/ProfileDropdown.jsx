@@ -9,18 +9,20 @@ import listIcon from '../../assets/profile/profile-menu/list.svg';
 import inkpenIcon from '../../assets/profile/profile-menu/inkpen.svg';
 import logoutIcon from '../../assets/profile/profile-menu/logout.svg'; 
 import manageIcon from '../../assets/profile/profile-menu/manage.svg'; 
+import adminIcon from '../../assets/profile/profile-menu/admin.svg';
 
 export default function ProfileDropdown({ onLogout }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [userId, setUserId] = useState();
-
+  const [userRole, setUserRole] = useState();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
       if (token) {
           const decoded = jwtDecode(token);
           setUserId(decoded.sub);
+          setUserRole(Array.isArray(decoded.role) ? decoded.role : [decoded.role]);
       }
     
     const handleClickOutside = (e) => {
@@ -72,6 +74,16 @@ export default function ProfileDropdown({ onLogout }) {
               <img src={manageIcon} alt="계정관리" /> 계정 관리
             </div>
           </Link>
+
+          {userRole?.includes('ROLE_ADMIN') && (
+            <Link to="/admin/users" onClick={() => setOpen(false)}>
+              <div className={styles.dropdownItem}>
+                <img src={adminIcon} alt="관리자"/>
+                관리자
+              </div>
+            </Link>
+          )}
+
           {/* 로그아웃 버튼 */}
           <div
             className={styles.dropdownItem}

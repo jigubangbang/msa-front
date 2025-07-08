@@ -18,17 +18,6 @@ const RankQuestList = ({
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-
-
-  
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [filters, setFilters] = useState({
-  //   category: 0,
-  //   difficulty: '',
-  //   sortOption: 'default'
-  // });
-  // const [searchTerm, setSearchTerm] = useState('');
-  
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -262,7 +251,7 @@ const RankQuestList = ({
               
               <div className={styles.cell}>
                 <div className={styles.badgeImage}>
-                  <img src={quest.icon} alt="profile" />
+                  <img src={quest.icon ? quest.icon : '/icons/common/unknwon_badge.png'} alt="profile" />
                 </div>
               </div>
 

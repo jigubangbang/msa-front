@@ -3,12 +3,14 @@
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   border: 1px solid #f3f4f6;
-    width: 100%;
+  width: 100%;
   font-family: "Pretendard Variable", Pretendard, sans-serif;
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
 }
 
 .progressItem {

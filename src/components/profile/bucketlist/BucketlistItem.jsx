@@ -8,7 +8,7 @@ import dragIcon from "../../../assets/profile/drag_grey.svg";
 import deleteIcon from "../../../assets/profile/close_grey.svg";
 import API_ENDPOINTS from "../../../utils/constants";
 
-export default function BucketlistItem({id, title, description, completionStatus, completedAt, userId, activeDropdownOption, onDelete, onCheck}) {
+export default function BucketlistItem({id, title, description, completionStatus, completedAt, userId, sessionUserId, activeDropdownOption, onDelete, onCheck}) {
     const [isChecked, setIsChecked] = useState(completionStatus);
     
     const {
@@ -53,7 +53,9 @@ export default function BucketlistItem({id, title, description, completionStatus
             <div className={styles.contentWrapper}>
                 <label className={styles.customCheckbox}>
                     <input name="dummy" type="checkbox" checked={isChecked} onChange={handleCheckboxClick}/>
-                    <span className={styles.checkmark}></span>
+                    {sessionUserId === userId && (
+                        <span className={styles.checkmark}></span>
+                    )}
                     <div className={styles.customCheckboxText}>
                         <div className={`${styles.title} ${isChecked ? styles.completed : ""}`}>{title}</div>
                         <div className={`${styles.description} ${isChecked ? styles.completed : ""}`}>{description}</div>
@@ -64,18 +66,20 @@ export default function BucketlistItem({id, title, description, completionStatus
                         }
                     </div>
                 </label>
-                <div className={styles.iconWrapper}>
-                    <button className={styles.deleteIcon} onClick={handleDeleteClick}>
-                        <img src={deleteIcon}/>
-                    </button>
-                    {
-                        activeDropdownOption == "전체" && (
-                            <div className={styles.dragHandle} {...listeners}>
-                                <img src={dragIcon}/>
-                            </div>
-                        )
-                    }
-                </div>
+                {userId === sessionUserId && (
+                    <div className={styles.iconWrapper}>
+                        <button className={styles.deleteIcon} onClick={handleDeleteClick}>
+                            <img src={deleteIcon}/>
+                        </button>
+                        {
+                            activeDropdownOption == "전체" && (
+                                <div className={styles.dragHandle} {...listeners}>
+                                    <img src={dragIcon}/>
+                                </div>
+                            )
+                        }
+                    </div>
+                )}
             </div>
         </div>
     );
