@@ -251,7 +251,7 @@ const RankQuestList = ({
               
               <div className={styles.cell}>
                 <div className={styles.badgeImage}>
-                  <img src={quest.icon} alt="profile" />
+                  <img src={quest.icon ? quest.icon : '/icons/common/unknwon_badge.png'} alt="profile" />
                 </div>
               </div>
 

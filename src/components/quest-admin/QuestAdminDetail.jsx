@@ -66,9 +66,7 @@ const QuestAdminDetail = ({ questId }) => {
   };
 
   const handleEdit = () => {
-    // 수정 모드 진입 또는 수정 페이지로 이동하는 로직
-    console.log('Edit quest:', questId);
-    // 예: onEdit(questId) 또는 router.push(`/admin/quest/edit/${questId}`)
+    navigate(`/quest-admin/quest/${questId}/modify`);
   };
 
   const fetchQuestDetail = async () => {
@@ -117,6 +115,31 @@ const QuestAdminDetail = ({ questId }) => {
       setUsersLoading(false);
     }
   };
+
+    const handleDelete = async () => {
+  if (!window.confirm(`정말로 "${questDetail.title}" 퀘스트를 삭제하시겠습니까?`)) {
+    return;
+  }
+
+  if (!window.confirm('⚠️ 주의: 뱃지를 삭제하면 모든 사용자와 뱃지에게서 해당 퀘스트가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?')) {
+    return;
+  }
+
+  try {
+    await axios.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
+    
+    alert('퀘스트가 성공적으로 삭제되었습니다.');
+    navigate('/quest-admin/quest');
+  } catch (error) {
+    console.error('Failed to delete badge:', error);
+    
+    if (error.response && error.response.data && error.response.data.error) {
+      alert(`퀘스트 삭제에 실패했습니다: ${error.response.data.error}`);
+    } else {
+      alert('퀘스트 삭제에 실패했습니다.');
+    }
+  }
+};
 
   const handleRowClick = (user) => {
   setSelectedUser(user);
@@ -306,6 +329,9 @@ const truncateText = (text, maxLength = 100) => {
             <div className={styles.actionButtons}>
               <button className={styles.editButton} onClick={handleEdit}>
                 ✏️ 수정하기
+              </button>
+              <button className={styles.deleteButton} onClick={handleDelete}>
+                🗑️ 삭제하기
               </button>
             </div>
           </div>

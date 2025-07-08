@@ -1,10 +1,10 @@
-/* QuestModifyForm.module.css */
+/* QuestCreateForm.module.css */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
 /* =================
    BASE STYLES
    ================= */
-.questModifyForm {
+.questCreateForm {
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
@@ -84,7 +84,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  margin-bottom: 24px;
 }
 
 .leftColumn {
@@ -138,13 +137,6 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.input:disabled {
-  background-color: #f1f1f1;
-  color: #aaadaf;
-  cursor: not-allowed;
-}
-
-
 .textarea {
   flex: 1;
   padding: 10px 12px;
@@ -192,62 +184,38 @@
 }
 
 /* =================
-   QUEST STATS
+   ID INPUT GROUP
    ================= */
-.questStats {
-  margin-top: 24px;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.statItem {
+.idInputGroup {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 8px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+  align-items: center;
 }
 
-.statLabel {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6c757d;
-  text-transform: uppercase;
+.idInput {
+  flex: 1;
 }
 
-.statValue {
-  font-size: 16px;
-  font-weight: 600;
-  color: #495057;
+.idCheckButton {
+  padding: 10px 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
 }
 
-.statCompletedValue {
-  font-size: 16px;
-  font-weight: 600;
-  color: #28a745;
+.idCheckButton:hover:not(:disabled) {
+  background: #0056b3;
 }
 
-.statInProgressValue {
-  font-size: 16px;
-  font-weight: 600;
-  color: #007bff;
-}
-
-.statGivenUpValue {
-  font-size: 16px;
-  font-weight: 600;
-  color: #dc3545;
+.idCheckButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
 }
 
 /* =================
@@ -268,6 +236,11 @@
 
 .invalidMessage {
   color: #dc3545;
+  font-weight: 500;
+}
+
+.suggestedMessage {
+  color: #007bff;
   font-weight: 500;
 }
 
@@ -361,72 +334,6 @@
 }
 
 /* =================
-   BADGE SECTION
-   ================= */
-.badgeGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.badgeCard {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-  transition: box-shadow 0.2s ease;
-}
-
-.badgeIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-}
-
-.badgeInfo {
-  flex: 1;
-}
-
-.badgeTitle {
-  margin: 0 0 4px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #212529;
-}
-
-.badgeSubtitle {
-  margin: 0;
-  font-size: 12px;
-  color: #6c757d;
-}
-
-.noBadges {
-  text-align: center;
-  padding: 40px;
-  color: #6c757d;
-  font-style: italic;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-  margin: 0;
-  font-size: 12px;
-  color: #6c757d;
-}
-
-.noBadges {
-  text-align: center;
-  padding: 40px;
-  color: #6c757d;
-  font-style: italic;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-/* =================
    ACTIONS
    ================= */
 .actions {
@@ -472,54 +379,4 @@
 .saveButton:disabled {
   background: #6c757d;
   cursor: not-allowed;
-}
-
-/* =================
-   LOADING & ERROR
-   ================= */
-.loading,
-.error {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
-  color: #6c757d;
-  font-size: 16px;
-}
-
-.error {
-  color: #dc3545;
-}
-
-/* =================
-   RESPONSIVE
-   ================= */
-@media (max-width: 768px) {
-  .questModifyForm {
-    padding: 16px;
-  }
-  
-  .basicInfo {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  
-  .seasonDates {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .badgeGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .modalContent {
-    width: 95%;
-    margin: 20px;
-  }
 }

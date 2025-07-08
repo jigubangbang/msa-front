@@ -27,8 +27,6 @@ const BadgeAdminDetail = ({ badgeId }) => {
   };
 
   const handleEdit = () => {
-    console.log('Edit badge:', badgeId);
-    // 수정 모드 진입 또는 수정 페이지로 이동하는 로직
     navigate(`/quest-admin/badge/${badgeId}/modify`);
   };
 

@@ -1,12 +1,12 @@
-// QuestModifyForm.jsx
-import React, { useState, useEffect } from 'react';
+// QuestCreateForm.jsx
+import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './QuestModifyForm.module.css';
+import styles from './QuestCreateForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 
-const QuestModifyForm = ({ questId, onClose, onSave }) => {
-  const [questData, setQuestData] = useState(null);
+const QuestCreateForm = ({ onClose, onSave }) => {
   const [formData, setFormData] = useState({
+    id: '',
     category: '1',
     title: '',
     description: '',
@@ -16,8 +16,10 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     season_start: '',
     season_end: ''
   });
-  const [badgeList, setBadgeList] = useState([]);
+  
   const [loading, setLoading] = useState(false);
+  const [idCheckStatus, setIdCheckStatus] = useState(null); // null, 'checking', 'available', 'unavailable'
+  const [suggestedId, setSuggestedId] = useState(null);
   
   // 유효성 검사 상태
   const [validationErrors, setValidationErrors] = useState({});
@@ -42,26 +44,6 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     { value: '9', label: '특수 조건' },
     { value: '10', label: '기간 제한' }
   ];
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().slice(0, 16);
-    } catch (error) {
-      return '';
-    }
-  };
-
-  const parseDescription = (description) => {
-    if (!description) return { description: '', quest_conditions: '' };
-    
-    const parts = description.split('✅ 퀘스트 조건:');
-    return {
-      description: parts[0]?.trim() || '',
-      quest_conditions: parts[1]?.trim() || ''
-    };
-  };
 
   // XP에 따른 난이도 계산
   const getDifficultyFromXP = (xp) => {
@@ -140,41 +122,29 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     }
   };
 
-  const fetchQuestData = async () => {
-    setLoading(true);
+  const checkIdAvailability = async () => {
+    if (!formData.id) {
+      alert('ID를 입력해주세요.');
+      return;
+    }
+
+    setIdCheckStatus('checking');
     try {
-      // 퀘스트 상세 정보 가져오기
-      const questResponse = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}`);
-      const questDetail = questResponse.data.questDetail;
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/quests/check-quest-id/${formData.id}`);
       
-      // 퀘스트 뱃지 정보 가져오기
-      const badgesResponse = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/badges`);
-      const questBadges = badgesResponse.data.questBadges;
-      
-      setQuestData(questDetail);
-      setBadgeList(questBadges);
-      
-      // 설명과 조건 분리
-      const { description, quest_conditions } = parseDescription(questDetail.description);
-      
-      // 카테고리 값 찾기
-      const categoryValue = categories.find(cat => cat.label === questDetail.category)?.value || '1';
-      
-      setFormData({
-        category: categoryValue,
-        title: questDetail.title,
-        description: description,
-        quest_conditions: quest_conditions,
-        xp: questDetail.xp.toString(),
-        is_seasonal: questDetail.is_seasonal,
-        season_start: formatDate(questDetail.season_start),
-        season_end: formatDate(questDetail.season_end)
-      });
-      
+      if (response.data.available) {
+        setIdCheckStatus('available');
+        setSuggestedId(null);
+        
+      } else {
+        setIdCheckStatus('unavailable');
+        setSuggestedId(response.data.suggestedId);
+        console.log(response.data.suggestedId);
+      }
     } catch (err) {
-      console.error("Failed to fetch quest data", err);
-    } finally {
-      setLoading(false);
+      console.error("Failed to check ID availability", err);
+      setIdCheckStatus('unavailable');
+      setSuggestedId(null);
     }
   };
 
@@ -186,6 +156,12 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       ...prev,
       [name]: newValue
     }));
+    
+    // ID가 변경되면 확인 상태 초기화
+    if (name === 'id') {
+      setIdCheckStatus(null);
+      setSuggestedId(null);
+    }
     
     // 시즌 체크박스가 해제되면 시즌 날짜 초기화
     if (name === 'is_seasonal' && !checked) {
@@ -299,6 +275,11 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       alert('입력값을 확인해주세요.');
       return;
     }
+    
+    if (idCheckStatus !== 'available') {
+      alert('ID 확인을 먼저 해주세요.');
+      return;
+    }
 
     setLoading(true);
     
@@ -309,7 +290,8 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       // 설명과 조건을 합치기
       const combinedDescription = `${formData.description} ✅ 퀘스트 조건: ${formData.quest_conditions}`;
       
-      const updateData = {
+      const createData = {
+        id: parseInt(formData.id),
         category: parseInt(formData.category),
         title: formData.title,
         description: combinedDescription,
@@ -321,9 +303,9 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
         status: status
       };
 
-      const response = await axios.put(
-        `${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`,
-        updateData,
+      const response = await axios.post(
+        `${API_ENDPOINTS.QUEST.ADMIN}/quests`,
+        createData,
         {
           headers: {
             'Content-Type': 'application/json'
@@ -331,51 +313,29 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
         }
       );
       
-      console.log('Quest updated successfully:', response.data);
-      alert('퀘스트가 성공적으로 수정되었습니다.');
+      console.log('Quest created successfully:', response.data);
+      alert('퀘스트가 성공적으로 생성되었습니다.');
       
       if (onSave) onSave();
       if (onClose) onClose();
       
     } catch (error) {
-      console.error('Failed to update quest:', error);
+      console.error('Failed to create quest:', error);
       
       if (error.response && error.response.data && error.response.data.error) {
-        alert(`퀘스트 수정에 실패했습니다: ${error.response.data.error}`);
+        alert(`퀘스트 생성에 실패했습니다: ${error.response.data.error}`);
       } else {
-        alert('퀘스트 수정에 실패했습니다.');
+        alert('퀘스트 생성에 실패했습니다.');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (questId) {
-      fetchQuestData();
-    }
-  }, [questId]);
-
-  if (loading && !questData) {
-    return (
-      <div className={styles.questModifyForm}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (!questData) {
-    return (
-      <div className={styles.questModifyForm}>
-        <div className={styles.error}>퀘스트 정보를 불러올 수 없습니다.</div>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.questModifyForm}>
+    <div className={styles.questCreateForm}>
       <div className={styles.header}>
-        <h2 className={styles.title}>퀘스트 수정</h2>
+        <h2 className={styles.title}>퀘스트 생성</h2>
         <button className={styles.closeButton} onClick={onClose}>✕</button>
       </div>
 
@@ -388,15 +348,43 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
             <div className={styles.leftColumn}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  ID
-                  <span className={styles.idNote}>(수정 불가)</span>
+                  ID <span className={styles.required}>*</span>
+                  <span className={styles.idNote}>(생성 후 변경 불가)</span>
                 </label>
-                <input
-                  type="text"
-                  value={questData.quest_id}
-                  className={`${styles.input} ${styles.disabledInput}`}
-                  disabled
-                />
+                <div className={styles.idInputGroup}>
+                  <input
+                    type="number"
+                    name="id"
+                    value={formData.id}
+                    onChange={handleInputChange}
+                    className={`${styles.input} ${styles.idInput}`}
+                    required
+                    min="1"
+                  />
+                  <button
+                    type="button"
+                    className={styles.idCheckButton}
+                    onClick={checkIdAvailability}
+                    disabled={idCheckStatus === 'checking'}
+                  >
+                    {idCheckStatus === 'checking' ? '확인 중...' : 'ID 확인'}
+                  </button>
+                </div>
+                {idCheckStatus === 'available' && (
+                  <div className={styles.validationMessage}>
+                    <span className={styles.validMessage}>✓ 사용 가능한 ID입니다</span>
+                  </div>
+                )}
+                {idCheckStatus === 'unavailable' && (
+                  <div className={styles.validationMessage}>
+                    <span className={styles.invalidMessage}>✗ 이미 사용 중인 ID입니다</span>
+                    {suggestedId && (
+                      <span className={styles.suggestedMessage}>
+                        추천 ID: {suggestedId}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className={styles.formGroup}>
@@ -541,28 +529,6 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
               </div>
             </div>
           </div>
-
-          {/* 퀘스트 통계 정보 */}
-          <div className={styles.questStats}>
-            <div className={styles.statsGrid}>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>생성일</span>
-                <span className={styles.statValue}>{new Date(questData.created_at).toLocaleDateString()}</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>완료자 수</span>
-                <span className={styles.statCompletedValue}>{questData.count_completed}명</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>진행 중</span>
-                <span className={styles.statInProgressValue}>{questData.count_in_progress}명</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>포기자 수</span>
-                <span className={styles.statGivenUpValue}>{questData.count_given_up}명</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* 시즌 설정 섹션 */}
@@ -656,38 +622,13 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
           </div>
         </div>
 
-        {/* 연결된 뱃지 섹션 */}
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>연결된 뱃지 ({badgeList.length}개)</h3>
-
-          {badgeList.length > 0 ? (
-            <div className={styles.badgeGrid}>
-              {badgeList.map(badge => (
-                <div key={badge.badge_id} className={styles.badgeCard}>
-                  <img 
-                    src={badge.icon} 
-                    alt={badge.kor_title}
-                    className={styles.badgeIcon}
-                  />
-                  <div className={styles.badgeInfo}>
-                    <h4 className={styles.badgeTitle}>{badge.kor_title}</h4>
-                    <p className={styles.badgeSubtitle}>{badge.eng_title}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.noBadges}>연결된 뱃지가 없습니다.</div>
-          )}
-        </div>
-
         {/* 제출 버튼 */}
         <div className={styles.actions}>
           <button type="button" className={styles.cancelButton} onClick={onClose}>
             취소
           </button>
           <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '수정 중...' : '수정'}
+            {loading ? '생성 중...' : '생성'}
           </button>
         </div>
       </form>
@@ -695,4 +636,4 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
   );
 };
 
-export default React.memo(QuestModifyForm);
+export default React.memo(QuestCreateForm);
