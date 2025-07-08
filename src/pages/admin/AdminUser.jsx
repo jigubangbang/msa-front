@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ADMIN_SIDEBAR } from "../../utils/sidebar";
 import styles from "./AdminLayout.module.css";
@@ -14,61 +14,12 @@ export default function AdminUser() {
   const currentPath = location.pathname;
 
   const getActiveMenuItems = () => {
-    return ADMIN_SIDEBAR.map((item) => {
-      const isMainActive =
-        currentPath === item.path || currentPath.startsWith(item.path + "/");
-
-      let submenus = [];
-      let isSubmenuActive = false;
-
-      if (item.submenus) {
-        submenus = item.submenus.map((submenu) => {
-          const isActive =
-            currentPath === submenu.path ||
-            currentPath.startsWith(submenu.path + "/");
-
-          if (isActive) isSubmenuActive = true;
-
-          return { ...submenu, active: isActive };
-        });
-      }
-
-      if (item.label === "콘텐츠 관리" && item.submenus) {
-        submenus = item.submenus.map((submenu) => {
-          let isActive = false;
-
-          if (
-            submenu.path === "/admin/content/posts" &&
-            (currentPath === "/admin/content/posts" ||
-              currentPath.startsWith("/admin/content/posts/"))
-          ) {
-            isActive = true;
-          } else if (
-            submenu.path === "/admin/content/comments" &&
-            (currentPath === "/admin/content/comments" ||
-              currentPath.startsWith("/admin/content/comments/"))
-          ) {
-            isActive = true;
-          } else if (
-            submenu.path === "/admin/content/groups" &&
-            (currentPath === "/admin/content/groups" ||
-              currentPath.startsWith("/admin/content/groups/"))
-          ) {
-            isActive = true;
-          }
-          if (isActive) isSubmenuActive = true;
-          return { ...submenu, active: isActive };
-        });
-      }
-
-      return {
-        ...item,
-        active: isMainActive || isSubmenuActive,
-        submenus,
-      };
-    });
+    return ADMIN_SIDEBAR.map((item) => ({
+      ...item,
+      active:
+        currentPath === item.path || currentPath.startsWith(item.path + "/"),
+    }));
   };
-
   const finalMenuItems = getActiveMenuItems();
 
   return (
