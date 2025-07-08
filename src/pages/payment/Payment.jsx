@@ -121,7 +121,7 @@ const Payment = () => {
     return <div className="payment-container error">{error}</div>;
   }
 
-  if (subscription && subscription.startDate) {
+  if (subscription && subscription.premiumHistory && subscription.premiumHistory.startDate) {
     return (
       <>
         <SubscriptionStatus subscription={subscription} onCancel={handleCancelSubscription} />
@@ -177,7 +177,8 @@ const Payment = () => {
           결제 버튼을 클릭함으로써 귀하는 서비스 약관 및 개인정보 보호정책에 동의하게 됩니다. 구독은 언제든지 해지할 수 있습니다.
         </p>
       </div>
-    </div>
+ </div>
+    
   );
 };
 
