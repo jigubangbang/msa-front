@@ -29,12 +29,13 @@ const BadgeAdminDetail = ({ badgeId }) => {
   const handleEdit = () => {
     console.log('Edit badge:', badgeId);
     // 수정 모드 진입 또는 수정 페이지로 이동하는 로직
+    navigate(`/quest-admin/badge/${badgeId}/modify`);
   };
 
   const fetchBadgeDetail = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}`);
+      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}/modify`);
       setBadgeDetail(response.data);
     } catch (err) {
       console.error("Failed to fetch badge detail", err);
@@ -43,6 +44,31 @@ const BadgeAdminDetail = ({ badgeId }) => {
       setLoading(false);
     }
   };
+
+  const handleDelete = async () => {
+  if (!window.confirm(`정말로 "${badgeDetail.kor_title}" 뱃지를 삭제하시겠습니까?`)) {
+    return;
+  }
+
+  if (!window.confirm('⚠️ 주의: 뱃지를 삭제하면 모든 사용자의 해당 뱃지가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?')) {
+    return;
+  }
+
+  try {
+    await axios.delete(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}`);
+    
+    alert('뱃지가 성공적으로 삭제되었습니다.');
+    navigate('/quest-admin/badge');
+  } catch (error) {
+    console.error('Failed to delete badge:', error);
+    
+    if (error.response && error.response.data && error.response.data.error) {
+      alert(`뱃지 삭제에 실패했습니다: ${error.response.data.error}`);
+    } else {
+      alert('뱃지 삭제에 실패했습니다.');
+    }
+  }
+};
 
   useEffect(() => {
     if (badgeId) {
@@ -57,7 +83,7 @@ const BadgeAdminDetail = ({ badgeId }) => {
 
   const handleQuestDetail = (quest) => {
     window.scrollTo(0, 0);
-    navigate(`/quest-admin/quest/${quest.id}`);
+    navigate(`/quest-admin/quest/${quest.quest_id}`);
   }
 
   const handleUserClick = (user) => {
@@ -78,7 +104,7 @@ const BadgeAdminDetail = ({ badgeId }) => {
   if (!badgeDetail) {
     return (
       <div className={styles.badgeAdminDetail}>
-        <div className={styles.error}>뱃지 정보를 불러올 수 없습니다.</div>
+        <div className={styles.error}>뱃지 정보를 불러올 수 없습니다. 뱃지 폼</div>
       </div>
     );
   }
@@ -152,6 +178,9 @@ const BadgeAdminDetail = ({ badgeId }) => {
               <button className={styles.editButton} onClick={handleEdit}>
                 ✏️ 수정하기
               </button>
+              <button className={styles.deleteButton} onClick={handleDelete}>
+                🗑️ 삭제하기
+              </button>
             </div>
           </div>
         </div>
@@ -163,8 +192,8 @@ const BadgeAdminDetail = ({ badgeId }) => {
         <div className={styles.questsGrid}>
           {badgeDetail.quest_list && badgeDetail.quest_list.length > 0 ? (
             badgeDetail.quest_list.map((quest) => (
-              <div key={quest.id} className={styles.questCard} onClick={() => {handleQuestDetail(quest)}}>
-                <div className={styles.questId}>#{quest.id}</div>
+              <div key={quest.quest_id} className={styles.questCard} onClick={() => {handleQuestDetail(quest)}}>
+                <div className={styles.questId}>#{quest.quest_id}</div>
                 <div className={styles.questTitle}>{quest.title}</div>
                 <div className={styles.questStats}>
                   <span className={styles.statItem}>
