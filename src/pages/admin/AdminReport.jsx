@@ -22,7 +22,6 @@ export default function AdminReport() {
     <div className={styles.Container}>
       <Sidebar menuItems={finalMenuItems} />
       <div className={styles.content}>
-        <h1 className={styles.title}>신고 처리</h1>
         <div className={styles.formContainer}>
           <p>신고 처리 페이지 내용</p>
         </div>

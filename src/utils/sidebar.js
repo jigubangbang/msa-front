@@ -3,32 +3,32 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
     {
       label: '퀘스트와 뱃지',
       icon: '/icons/sidebar/badge.svg',
-      path: '/quest'
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0퀘스트 목록',
-      path: '/quest/list',
-      submenu: true
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0뱃지 목록',
-      path: '/quest/badge',
-      submenu: true
+      path: '/quest',
+      submenus: [
+        {
+          label: '퀘스트 목록',
+          path: '/quest/list'
+        },
+        {
+          label: '뱃지 목록',
+          path: '/quest/badge'
+        }
+      ]
     },
     {
       label: '내 퀘스트/뱃지',
       icon: '/icons/sidebar/record.svg',
-      path: '/my-quest'
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0내 뱃지',
-      path: '/my-quest/badge',
-      submenu: true
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0내 퀘스트 기록',
-      path: '/my-quest/record',
-      submenu: true
+      path: '/my-quest',
+      submenus: [
+        {
+          label: '내 뱃지',
+          path: '/my-quest/badge'
+        },
+        {
+          label: '내 퀘스트 기록',
+          path: '/my-quest/record'
+        }
+      ]
     },
     {
       label: '유저들',
@@ -41,27 +41,25 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
     {
       label: '관리자 메뉴',
       icon: '/icons/sidebar/admin.svg',
-      path: '/quest-admin/quest'
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0퀘스트 관리',
       path: '/quest-admin/quest',
-      submenu: true
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0뱃지 관리',
-      path: '/quest-admin/badge',
-      submenu: true
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0퀘스트 생성',
-      path: '/quest-admin/quest/new',
-      submenu: true
-    },
-    {
-      label: '–\u00A0\u00A0\u00A0뱃지 생성',
-      path: '/quest-admin/badge/new',
-      submenu: true
+      submenus: [
+        {
+          label: '퀘스트 관리',
+          path: '/quest-admin/quest'
+        },
+        {
+          label: '뱃지 관리',
+          path: '/quest-admin/badge'
+        },
+        {
+          label: '퀘스트 생성',
+          path: '/quest-admin/quest/new'
+        },
+        {
+          label: '뱃지 생성',
+          path: '/quest-admin/badge/new'
+        }
+      ]
     }
   ];
 
@@ -100,22 +98,21 @@ export const ADMIN_SIDEBAR = [
   {
     label: '콘텐츠 관리',
     icon: '/icons/sidebar/content.svg',
-    path: '/admin/content'
-  },
-  {
-    label: '–\u00A0\u00A0\u00A0게시글 관리',
-    path: '/admin/content/posts',
-    submenu: true
-  },
-  {
-    label: '–\u00A0\u00A0\u00A0댓글 관리',
-    path: '/admin/content/comments',
-    submenu: true
-  },
-  {
-    label: '–\u00A0\u00A0\u00A0모임 관리',
-    path: '/admin/content/groups',
-    submenu: true
+    path: '/admin/content/posts', 
+    submenus: [
+      {
+        label: '게시글 관리',
+        path: '/admin/content/posts'
+      },
+      {
+        label: '댓글 관리',
+        path: '/admin/content/comments'
+      },
+      {
+        label: '모임 관리',
+        path: '/admin/content/groups'
+      }
+    ]
   },
   {
     label: '퀘스트/뱃지 관리',
