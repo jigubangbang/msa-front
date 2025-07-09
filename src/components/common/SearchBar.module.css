@@ -21,8 +21,9 @@
 }
 
 .searchIcon {
-  color: #a3a3a3;
-  font-size: 1rem;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
 .searchInput {
@@ -35,6 +36,13 @@
   margin-left: 5px;
 }
 
+.searchClearIcon {
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
 .searchRecommendation {
   margin-top: 1rem;
   font-size: 0.95rem;
@@ -45,8 +53,4 @@
   margin-left: 1rem;
   color: #242424;
   font-weight: 500;
-}
-
-.searchClearIcon {
-  cursor: pointer;
 }

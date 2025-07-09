@@ -7,6 +7,8 @@ import Sidebar from "../../../components/common/SideBar/SideBar";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import BadgeModifyForm from "../../../components/quest-admin/BadgeModifyForm";
 import BadgeCreateForm from "../../../components/quest-admin/BadgeCreateForm";
+import QuestCreateForm from "../../../components/quest-admin/QuestCreateForm";
+import QuestModifyForm from "../../../components/quest-admin/QuestModifyForm";
 // import QuestModifyForm from "../../../components/quest-admin/QuestModifyForm";
 // import BadgeCreateForm from "../../../components/quest-admin/BadgeCreateForm";
 // import QuestCreateForm from "../../../components/quest-admin/QuestCreateForm";
@@ -131,7 +133,6 @@ export default function AdminFormPage({page}) {
       case 'badge-create':
         return (
           <BadgeCreateForm 
-            badgeId={entityId} 
             onClose={handleBadgeClose} 
             onSave={handleBadgeSave}
           />
@@ -139,23 +140,19 @@ export default function AdminFormPage({page}) {
       
       case 'quest':
         return (
-          <div className={styles.placeholder}>
-            {/* QuestModifyForm 컴포넌트가 만들어지면 여기에 */}
-            <h2>퀘스트 수정 폼</h2>
-            <p>퀘스트 ID: {entityId}</p>
-            <p>퀘스트 수정 컴포넌트를 구현해주세요</p>
-            <button onClick={() => handleQuestClose(entityId)}>취소</button>
-          </div>
+          <QuestModifyForm
+            questId={entityId}
+            onClose={handleQuestClose} 
+            onSave={handleBadgeSave}
+          />
         );
       
       case 'quest-create':
         return (
-          <div className={styles.placeholder}>
-            {/* QuestCreateForm 컴포넌트가 만들어지면 여기에 */}
-            <h2>퀘스트 생성 폼</h2>
-            <p>퀘스트 생성 컴포넌트를 구현해주세요</p>
-            <button onClick={() => handleQuestClose()}>목록으로 돌아가기</button>
-          </div>
+          <QuestCreateForm
+            onClose={handleQuestClose} 
+            onSave={handleQuestSave}
+          />
         );
       
       default:

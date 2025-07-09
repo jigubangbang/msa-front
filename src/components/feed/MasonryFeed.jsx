@@ -2,8 +2,12 @@ import Masonry from "react-masonry-css";
 import styles from "./MasonryFeed.module.css";
 import commentIcon from "../../assets/feed/comment_white.svg";
 import likeIcon from "../../assets/feed/like_white.svg";
+import { useState } from "react";
+import FeedDetail from "./FeedDetail";
 
 export default function MasonryFeed({posts}) {
+    const [selectedPost, setSelectedPost] = useState(null);
+
     const breakpointColumnsObj = {
         default: 4,
         1100: 3,
@@ -18,7 +22,7 @@ export default function MasonryFeed({posts}) {
             columnClassName={styles.masonryColumn}
         >
             {posts.map((post) => (
-                <div key={post.id} className={styles.postCard}>
+                <div key={post.id} className={styles.postCard}  onClick={() => setSelectedPost(post)}>
                     <img src={post.photoUrl} className={styles.postImage}/>
                     <div className={styles.overlay}>
                         <div className={styles.stats}>
@@ -35,6 +39,12 @@ export default function MasonryFeed({posts}) {
                     </div>
                 </div>
             ))}
+            {selectedPost && (
+                <FeedDetail 
+                    post={selectedPost}
+                    onClose={() => setSelectedPost(null)}
+                />
+            )}
         </Masonry>
     );
 }

@@ -22,7 +22,7 @@ export default function ProfileDropdown({ onLogout }) {
       if (token) {
           const decoded = jwtDecode(token);
           setUserId(decoded.sub);
-          setUserRole(decoded.role);
+          setUserRole(Array.isArray(decoded.role) ? decoded.role : [decoded.role]);
       }
     
     const handleClickOutside = (e) => {
@@ -75,8 +75,8 @@ export default function ProfileDropdown({ onLogout }) {
             </div>
           </Link>
 
-          {userRole === 'ROLE_ADMIN' && (
-            <Link to="/admin" onClick={() => setOpen(false)}>
+          {userRole?.includes('ROLE_ADMIN') && (
+            <Link to="/admin/users" onClick={() => setOpen(false)}>
               <div className={styles.dropdownItem}>
                 <img src={adminIcon} alt="관리자"/>
                 관리자

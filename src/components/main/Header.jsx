@@ -65,7 +65,7 @@ export default function Header({onOpenChat}) {
           )}
           <span><Link to="/style-guide">스타일가이드</Link></span>
           <span><Link to="/quest">퀘스트</Link></span>
-          <span>커뮤니티 <span className={styles.badge}>New</span></span>
+          <span><Link to="/traveler/mate">커뮤니티</Link><span className={styles.badge}>New</span></span>
           <span>여행기록 <span className={styles.badge}>New</span></span>
           <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
         </nav>
