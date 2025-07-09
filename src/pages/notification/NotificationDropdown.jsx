@@ -4,7 +4,7 @@ import styles from './NotificationDropdown.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import { Circles } from 'react-loader-spinner';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
-import bell from '../../assets/chat/notification_bell.svg';
+import bell from '../../assets/chat/notification_bell_26.svg';
 
 const NotificationDropdown = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
