@@ -4,6 +4,7 @@ import api from '../../apis/api';
 import '../../styles/payment/Payment.css';
 import SubscriptionStatus from './SubscriptionStatus';
 import Modal from '../../components/common/Modal/Modal'; // 공통 모달 import
+import CirclesSpinner from '../../components/common/Spinner/CirclesSpinner';
 
 const Payment = () => {
   const [error, setError] = useState(null);
@@ -114,7 +115,7 @@ const Payment = () => {
   );
 
   if (isLoading) {
-    return <div className="loading-container">구독 정보를 확인하는 중입니다...</div>;
+    return <CirclesSpinner />;
   }
 
   if (error) {
