@@ -61,7 +61,7 @@ export default function PremiumActionButtons({ subscriptionStatus, paymentHistor
           alert('결제 수단이 성공적으로 변경되었습니다.');
           window.location.reload(); // 페이지 새로고침하여 변경사항 반영
         } catch (err) {
-          const errorMessage = err.response?.data?.message || '결제 수�� 변경에 실패했습니다.';
+          const errorMessage = err.response?.data?.message || '결제 수단 변경에 실패했습니다.';
           alert(errorMessage);
         }
       } else {
@@ -123,7 +123,7 @@ export default function PremiumActionButtons({ subscriptionStatus, paymentHistor
     });
     return (
       <div className={styles.infoText}>
-        프리미엄 혜택은 {endDate}까지 유지됩니다.
+        프리미엄 혜택은 {endDate}까지 유지됩니다
       </div>
     );
   }
@@ -150,7 +150,7 @@ export default function PremiumActionButtons({ subscriptionStatus, paymentHistor
         firstLabel="해지하기"
         secondLabel="취소"
       >
-        <p>정말로 프리미엄 구독을 해지하시겠습니까? <br /> 남은 기간 동안은 계속 프리미�� 혜택을 이용할 수 있습니다.</p>
+        <p>정말로 프리미엄 구독을 해지하시겠습니까? <br /> 남은 기간 동안은 계속 프리미엄 혜택을 이용할 수 있습니다.</p>
       </Modal>
 
       {/* 환불 요청 확인 모달 (신규 추가) */}

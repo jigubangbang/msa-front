@@ -60,8 +60,8 @@ const PaymentSuccess = () => {
     <div className="success-container">
       <div className="success-card">
         <div className="success-icon">✓</div>
-        <h1>결제가 완료되었습니다!</h1>
-        <p>이제부터 지구방방의 모든 프리미엄 혜택을 누릴 수 있습니다.</p>
+        <h1>결제가 완료되었습니다</h1>
+        <p>이제부터 지구방방의 모든 프리미엄 혜택을 누릴 수 있습니다!</p>
         <button onClick={goToHome} className="confirm-button">
           프리미엄 서비스 즐기러 가기
         </button>

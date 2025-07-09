@@ -21,7 +21,7 @@ export default function PremiumPaymentInfo({ latestPayment }) {
           </div>
         </>
       ) : (
-        <p className={styles.noInfoText}>결제 정보가 없습니다.</p>
+        <p className={styles.noInfoText}>결제 정보가 없습니다</p>
       )}
     </div>
   );
