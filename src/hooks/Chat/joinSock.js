@@ -41,7 +41,15 @@ export function joinSock(isOpen, chatId, showAlert) {
         // 구독 시작
         const subscription = subscribe(`/topic/chat/${chatId}`, (receivedMessage) => {
           console.log('[joinChat] 메시지 수신: ', receivedMessage);
-          setMessages(prevMessages => [...prevMessages, receivedMessage]);
+
+          // 백엔드에서 "강제 퇴장" 문구가 포함된 LEAVE 메시지를 보내므로, 이를 KICK으로 간주
+          if (receivedMessage.type === 'LEAVE' && receivedMessage.message.includes('강제 퇴장')) {
+            // 화면 표시를 위해 KICK 타입으로 변경하여 시스템 메시지처럼 보이게 함
+            const kickSystemMessage = { ...receivedMessage, type: 'KICK' };
+            setMessages(prevMessages => [...prevMessages, kickSystemMessage]);
+          } else {
+            setMessages(prevMessages => [...prevMessages, receivedMessage]);
+          }
         });
 
         // 2. 개별 강제 퇴장 알림 구독 추가
