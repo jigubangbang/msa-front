@@ -92,7 +92,7 @@ export default function UserPremium() {
     if (!subscriptionStatus) {
       return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <p>프리미엄 구독회원이 아닙니다.</p>
+          <p>프리미엄 구독회원이 아닙니다</p>
           <button onClick={() => navigate('/payment')} className={styles.btnPrimary}>
             결제 페이지로 이동하기
           </button>
@@ -129,7 +129,6 @@ export default function UserPremium() {
       <Sidebar menuItems={finalMenuItems} />
       <div className={styles.content}>
         <div className={styles.formContainer}>
-          <h2 className={styles.sectionTitle}>프리미엄 구독</h2>
           {renderContent()}
         </div>
       </div>

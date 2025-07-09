@@ -159,7 +159,7 @@ export const TRAVELER_SIDEBAR = [
 
 export const ADMIN_SIDEBAR = [
   {
-    label: '사용자 관리',
+    label: '회원 관리',
     icon: '/icons/sidebar/user.svg',
     path: '/admin/users'
   },

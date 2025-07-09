@@ -145,7 +145,7 @@ export default function PremiumActionButtons({ subscriptionStatus, paymentHistor
     });
     return (
       <div className={styles.infoText}>
-        프리미엄 혜택은 {endDate}까지 유지됩니다.
+        프리미엄 혜택은 {endDate}까지 유지됩니다
       </div>
     );
   }
