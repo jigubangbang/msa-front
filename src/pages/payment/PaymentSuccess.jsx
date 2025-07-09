@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../styles/payment/PaymentSuccess.css';
+import CirclesSpinner from '../../components/common/Spinner/CirclesSpinner';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const PaymentSuccess = () => {
   };
 
   if (isLoading) {
-    return <div className="loading-container">결제 정보를 확인 중입니다...</div>;
+    return <CirclesSpinner />;
   }
 
   if (error) {

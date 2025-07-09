@@ -34,3 +34,20 @@
   min-height: 100vh;
   background-color: #ffffff;
 }
+
+/* 프리미엄 */
+.btnPrimary {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btnPrimary:hover {
+  background-color: #333;
+}
