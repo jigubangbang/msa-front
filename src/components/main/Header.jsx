@@ -4,6 +4,7 @@ import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
 import ProfileDropdown from './ProfileDropdown';
+import NotificationDropdown from '../../pages/notification/NotificationDropdown';
 import { jwtDecode } from "jwt-decode";
 
 export default function Header({onOpenChat}) {
@@ -70,7 +71,10 @@ export default function Header({onOpenChat}) {
         </nav>
         <div className={styles.authButtons}>
           {isLoggedIn ? (
-            <ProfileDropdown onLogout={handleLogout} />
+            <>
+              <NotificationDropdown userId={userId}/>
+              <ProfileDropdown onLogout={handleLogout} />
+            </>
           ) : (
             <Link to="/login"><span>로그인</span></Link>
           )}

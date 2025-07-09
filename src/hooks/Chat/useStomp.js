@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { create } from "zustand";
+import axios from 'axios';
 import API_ENDPOINTS from '../../utils/constants';
 import { getAccessToken, getRefreshToken, setTokens, isTokenExpired, removeTokens } from "../../utils/tokenUtils";
 // import SockJS from "sockjs-client";
@@ -12,6 +13,8 @@ export const useStore = create((set) => ({
   setStompClient: (stompClient) => set({ stompClient }),
   senderId: null,
   setSenderId: (senderId) => set({ senderId }),
+  isConnected: false,
+  setIsConnected: (isConnected) => set({ isConnected }),
 }));
 
 // 사용자 참여 채팅방 수 확인 및 제한 확장 가능
@@ -37,7 +40,7 @@ export const useChatSubscriptionStore = create((set, get) => ({
 }));
 
 export function useStomp() {
-    const { setStompClient } = useStore();
+    const { setStompClient, setIsConnected, isConnected } = useStore();
 
     const connect = useCallback(
       async ({ onConnect, onError, onDisconnect }) => {
@@ -73,15 +76,19 @@ export function useStomp() {
           Authorization: `Bearer ${token}`,
         },
         onConnect : () => {
-            console.log("[STOMP] 연결 성공");
+            console.log("[STOMP] 연결 성공 - setIsConnected(true) 호출 예정");
+            setIsConnected(true); // 전역 상태 업데이트
+            console.log("[STOMP] setIsConnected(true) 호출 완료");
             onConnect();
         },
         onStompError: (e) => {
           console.error("[STOMP] 연결 실패: ", e);
+          setIsConnected(false);
           onError(e);
         },
         onDisconnect: () => {
             console.log("[STOMP] 연결 해제");
+            setIsConnected(false);
             onDisconnect();
         },
         reconnectDelay: 5000, // 연결 끊어졌을 때 5초 후 재연결 시도
@@ -100,6 +107,7 @@ export function useStomp() {
       currentClient.deactivate();
       console.log("[useStomp] STOMP 연결 해제 완료");
       setStompClient(null);
+      setIsConnected(false);
     } else {
       console.warn("[useStomp] disconnect skipped: stompClient 없거나 연결 안 됨 또는 deactivate 함수 없음.");
     }
@@ -142,6 +150,7 @@ export function useStomp() {
 
     return {
         connect,
+        isConnected,
         disconnect,
         send,
         subscribe,
