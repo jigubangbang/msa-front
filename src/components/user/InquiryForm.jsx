@@ -56,7 +56,7 @@ export default function InquiryForm({ onBack, onSuccess }) {
 
     // 파일 크기 제한: 각 5MB 이하
     for (let file of newFiles) {
-      if (file.size > 1 * 1024 * 1024) {
+      if (file.size > 5 * 1024 * 1024) {
         const trimmedFileName = trimFileName(file.name, 30);
         setMessage(`${trimmedFileName}은(는) 5MB를 초과합니다`);
         setMessageType("error");
