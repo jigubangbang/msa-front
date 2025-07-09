@@ -1,8 +1,10 @@
 // /src/components/chat/ChatPanel.jsx
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { ThemeContext } from '../../utils/themeContext';
-import { useKickSock } from '../../hooks/chat/useKickSock.js';
 import ChatSidebar from './ChatSideBar';
+import menu_vert_white from '../../assets/common/more_vert_white.svg';
+import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
+import exit_white from '../../assets/chat/exit_white.svg';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
@@ -75,10 +77,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
       }}>
       <div className="chat-header">
         <div className="chat-close-button" onClick={onClose}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
-            <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
-            <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
-          </svg>
+          <img src={exit_white}/>
         </div>
         <h2>{info?.groupType || `Room ${chatId}`}</h2>
         <div 
@@ -86,15 +85,10 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
           onClick={handleSidebar}
         >
          {isSidebar ? (
-            // 사이드바 열려 있으면 X 아이콘
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M4.646 4.646a.5.5 0 011.708 0L8 6.293l1.646-1.647a.5.5 0 01.708.708L8.707 7l1.647 1.646a.5.5 0 01-.708.708L8 7.707l-1.646 1.647a.5.5 0 01-.708-.708L7.293 7 5.646 5.354a.5.5 0 010-.708z"/>
-            </svg>
+            // 사이드바 열려 있을때
+            <img src={menu_horiz_white}/>
           ) : (
-            // 사이드바 닫혀 있으면 햄버거 아이콘
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-list" viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-            </svg>
+            <img src={menu_vert_white}/>
           )}
         </div>
       </div>

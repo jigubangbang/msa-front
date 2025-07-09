@@ -62,9 +62,7 @@ body.dark-mode {
 
 .chat-close-button {
   position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
-  top: 17px;
   left: 20px;
-  font-size: 1em;
   cursor: pointer;
   color: white;
 }

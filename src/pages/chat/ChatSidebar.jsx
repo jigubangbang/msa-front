@@ -6,6 +6,7 @@ import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import ChatDescriptionEditor from '../../components/chat/ChatDescriptionEditor';
+import ReportModal from '../../components/common/Modal/ReportModal';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
@@ -16,6 +17,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [description, setDescription] = useState(chatInfo?.description || "");
+  const [showReportModal, setShowReportModal] = useState(false);
   const isManager = members.some(member => member.userId === senderId && member.isCreator === 1);
   const accessToken = getAccessToken();
   const subscriptionRef = useRef(null);
@@ -26,6 +28,31 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   if (error) {
     console.log(  "그룹 멤버 조회 중 에러 발생" );
   }
+
+  // 채팅방 신고 핸들러
+  const handleReport = () => {
+    setShowReportModal(true);
+  };
+
+  // 신고 제출 핸들러
+  const handleReportSubmit = async (reportData) => {
+    try {
+      const response = await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/report`, {
+        reasonCode: reportData.reasonCode,
+        reasonText: reportData.reasonText,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        alert("신고가 접수되었습니다.");
+        setShowReportModal(false);
+      } else {
+        alert("신고 접수에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("[ChatSidebar] 채팅방 신고 실패:", error);
+      alert("신고 처리 중 오류가 발생했습니다.");
+    }
+  };
 
   const handleLeaveGroup = async () => {
     const confirmed = window.confirm( "정말로 그룹을 탈퇴하시겠습니까? ");
@@ -185,10 +212,15 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         </div>
       </div>
         <div className="sidebar-footer">
-          <button className="report-button">채팅방 신고하기</button>
+          <button className="report-button" onClick={handleReport}>채팅방 신고하기</button>
           <button className="leave-button" onClick={handleLeaveGroup}>그룹 탈퇴하기</button>
         </div>
       </div>
+      <ReportModal
+        show={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 }
