@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './NotificationDropdown.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import { Circles } from 'react-loader-spinner';
+import { formatRelativeTime } from '../../utils/formatRelativeTime';
+import bell from '../../assets/chat/notification_bell_26.svg';
 
 const NotificationDropdown = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,9 +13,9 @@ const NotificationDropdown = ({ userId }) => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  
+
   const dropdownRef = useRef(null);
-  const baseUrl = `${API_ENDPOINTS.NOTI}`;
+  const navigate = useNavigate();
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -28,7 +32,7 @@ const NotificationDropdown = ({ userId }) => {
   // 읽지 않은 알림 개수 조회
   const fetchUnreadCount = async () => {
     try {
-      const response = await fetch(`${baseUrl}/notifications/unread-count`, {
+      const response = await fetch(`${API_ENDPOINTS.NOTI}/unread-count`, {
         headers: {
           'User-Id': userId,
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -49,7 +53,7 @@ const NotificationDropdown = ({ userId }) => {
   const fetchNotifications = async (page = 0, append = false) => {
     setLoading(true);
     try {
-      const response = await fetch(`${baseUrl}/notifications/all?page=${page}&size=10`, {
+      const response = await fetch(`${API_ENDPOINTS.NOTI}/all?page=${page}&size=5`, {
         headers: {
           'User-Id': userId,
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -63,56 +67,13 @@ const NotificationDropdown = ({ userId }) => {
         } else {
           setNotifications(data);
         }
-        setHasMore(data.length === 10);
+        setHasMore(data.length === 5);
         setCurrentPage(page);
       } else {
-        // 개발용 더미 데이터
-        const dummyData = [
-          { 
-            id: 1, 
-            type: 'CHAT_MESSAGE', 
-            message: '새로운 메시지가 도착했습니다.', 
-            createdAt: '2025-07-08T10:30:00', 
-            isRead: false 
-          },
-          { 
-            id: 2, 
-            type: 'FRIEND_REQUEST', 
-            message: '친구 요청이 도착했습니다.', 
-            createdAt: '2025-07-08T09:15:00', 
-            isRead: false 
-          },
-          { 
-            id: 3, 
-            type: 'SYSTEM', 
-            message: '시스템 점검이 예정되어 있습니다.', 
-            createdAt: '2025-07-08T08:00:00', 
-            isRead: true 
-          }
-        ];
-        setNotifications(dummyData);
         setHasMore(false);
       }
     } catch (error) {
       console.error('알림 조회 실패:', error);
-      // 개발용 더미 데이터
-      const dummyData = [
-        { 
-          id: 1, 
-          type: 'CHAT_MESSAGE', 
-          message: '새로운 메시지가 도착했습니다.', 
-          createdAt: '2025-07-08T10:30:00', 
-          isRead: false 
-        },
-        { 
-          id: 2, 
-          type: 'FRIEND_REQUEST', 
-          message: '친구 요청이 도착했습니다.', 
-          createdAt: '2025-07-08T09:15:00', 
-          isRead: false 
-        }
-      ];
-      setNotifications(dummyData);
       setHasMore(false);
     }
     setLoading(false);
@@ -121,7 +82,7 @@ const NotificationDropdown = ({ userId }) => {
   // 알림 읽음 처리
   const markAsRead = async (notificationId) => {
     try {
-      const response = await fetch(`${baseUrl}/notifications/${notificationId}/read`, {
+      const response = await fetch(`${API_ENDPOINTS.NOTI}/${notificationId}/read`, {
         method: 'POST',
         headers: {
           'User-Id': userId,
@@ -149,10 +110,21 @@ const NotificationDropdown = ({ userId }) => {
     }
   };
 
+  const handleNotificationClick = async (notification) => {
+    if (!notification.isRead) {
+      await markAsRead(notification.id);
+    }
+    if (notification.relatedUrl) {
+      navigate(notification.relatedUrl);
+      setIsOpen(false);
+    }
+  };
+
+
   // 모든 알림 읽음 처리
   const markAllAsRead = async () => {
     try {
-      const response = await fetch(`${baseUrl}/notifications/read-all`, {
+      const response = await fetch(`${API_ENDPOINTS.NOTI}/read-all`, {
         method: 'POST',
         headers: {
           'User-Id': userId,
@@ -174,7 +146,7 @@ const NotificationDropdown = ({ userId }) => {
   // 알림 삭제
   const deleteNotification = async (notificationId) => {
     try {
-      const response = await fetch(`${baseUrl}/notifications/${notificationId}`, {
+      const response = await fetch(`${API_ENDPOINTS.NOTI}/${notificationId}`, {
         method: 'DELETE',
         headers: {
           'User-Id': userId,
@@ -228,18 +200,6 @@ const NotificationDropdown = ({ userId }) => {
     }
   };
 
-  // 시간 포맷팅
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now - date;
-    
-    if (diff < 60000) return '방금 전';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}분 전`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}시간 전`;
-    return date.toLocaleDateString();
-  };
-
   // 컴포넌트 마운트 시 읽지 않은 알림 개수 조회
   useEffect(() => {
     if (userId) {
@@ -254,7 +214,7 @@ const NotificationDropdown = ({ userId }) => {
     <div className={styles.notificationContainer} ref={dropdownRef}>
       {/* 알림 아이콘 */}
       <button className={styles.notificationButton} onClick={toggleDropdown}>
-        <span className={styles.bellIcon}>🔔</span>
+        <img src={bell}/>
         {unreadCount > 0 && (
           <span className={styles.badge}>
             {unreadCount > 99 ? '99+' : unreadCount}
@@ -296,7 +256,7 @@ const NotificationDropdown = ({ userId }) => {
                           {getNotificationIcon(notification.type)}
                         </span>
                         <span className={styles.time}>
-                          {formatTime(notification.createdAt)}
+                          {formatRelativeTime(notification.createdAt)}
                         </span>
                         {!notification.isRead && (
                           <span className={styles.unreadDot}></span>
@@ -304,7 +264,7 @@ const NotificationDropdown = ({ userId }) => {
                       </div>
                       <p 
                         className={styles.message}
-                        onClick={() => !notification.isRead && markAsRead(notification.id)}
+                        onClick={() => handleNotificationClick(notification)}
                       >
                         {notification.message}
                       </p>
@@ -324,7 +284,7 @@ const NotificationDropdown = ({ userId }) => {
                     onClick={loadMore}
                     disabled={loading}
                   >
-                    {loading ? '로딩 중...' : '더 보기'}
+                    {loading ? <Circles /> : '더 보기'}
                   </button>
                 )}
               </>

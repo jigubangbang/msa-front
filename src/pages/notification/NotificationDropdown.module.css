@@ -8,8 +8,8 @@
   border: none;
   cursor: pointer;
   position: relative;
-  padding: 8px;
-  border-radius: 4px;
+  padding: 11px 5px 8px 8px;
+  border-radius: 15px;
   transition: background-color 0.2s;
 }
 
@@ -17,20 +17,15 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.bellIcon {
-  font-size: 20px;
-  color: #333;
-}
-
 .badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  background-color: #ff4757;
-  color: white;
+  top: 5.5px;
+  right: -2.5px;
+  background-color: #98b1338d;
+  color: rgba(24, 23, 23, 0.87) !important;
   font-size: 10px;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 1px 1px;
   border-radius: 10px;
   min-width: 16px;
   height: 16px;
@@ -38,6 +33,22 @@
   align-items: center;
   justify-content: center;
   line-height: 1;
+  animation: pulseEffect 1.5s infinite;
+}
+
+@keyframes pulseEffect {
+    0% {
+        box-shadow: 0 0 0 0 rgba(147, 173, 40, 0.7);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(147, 173, 40, 0);
+        transform: scale(1.1);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(147, 173, 40, 0);
+        transform: scale(1);
+    }
 }
 
 .dropdown {
@@ -85,7 +96,7 @@
 .markAllButton {
   background: none;
   border: none;
-  color: #007bff;
+  color: #1a8917;
   font-size: 14px;
   cursor: pointer;
   padding: 4px 8px;
@@ -136,8 +147,8 @@
 }
 
 .notificationItem.unread {
-  background-color: #f0f8ff;
-  border-left: 3px solid #007bff;
+  background-color: #f4fce4;
+  border-left: 3px solid #93AD28;
 }
 
 .notificationContent {
@@ -166,7 +177,7 @@
 .unreadDot {
   width: 6px;
   height: 6px;
-  background-color: #007bff;
+  background-color: #93AD28;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -203,8 +214,7 @@
 }
 
 .deleteButton:hover {
-  background-color: #f8d7da;
-  color: #dc3545;
+  color: #1a8917;
 }
 
 .loading,
@@ -220,7 +230,7 @@
   padding: 12px;
   background: none;
   border: none;
-  color: #007bff;
+  color: #242424;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s;
