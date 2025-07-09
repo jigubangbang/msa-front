@@ -221,7 +221,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 600px;
+  max-width: 700px;
   cursor: pointer;
 }
 
