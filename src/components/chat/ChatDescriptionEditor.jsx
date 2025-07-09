@@ -5,7 +5,7 @@ import api from '../../apis/api';
 import edit_grey from '../../assets/profile/edit_grey.svg';
 import "../../styles/chat/ChatDescriptionEditor.css";
 
-export default function ChatDescriptionEditor({ description, setDescription, chatId, isManager }) {
+export default function ChatDescriptionEditor({ description, setDescription, chatId, isManager, showAlert }) {
     const [isEditing, setIsEditing] = useState(false);
     const [tempDesc, setTempDesc] = useState(description);
 
@@ -15,10 +15,10 @@ export default function ChatDescriptionEditor({ description, setDescription, cha
             await api.put(`${API_ENDPOINTS.CHAT}/${chatId}/description`, { description });
             setDescription(tempDesc);
             setIsEditing(false);
-            alert("채팅방 설명이 수정되었습니다.");
+            showAlert("성공", "채팅방 설명이 수정되었습니다.");
         } catch (err) {
             console.error("설명 수정 실패:", err);
-            alert("채팅방 설명 수정에 실패했습니다.");
+            showAlert("오류", "채팅방 설명 수정에 실패했습니다.");
         }
     };
 

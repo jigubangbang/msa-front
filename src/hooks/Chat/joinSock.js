@@ -4,7 +4,7 @@ import { useStomp, useStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 
-export function joinSock(isOpen, chatId) {
+export function joinSock(isOpen, chatId, showAlert) {
   const senderId = useStore(state => state.senderId);
   const setSenderId = useStore(state => state.setSenderId);
   const { connect, disconnect, send, subscribe, unsubscribe } = useStomp();
@@ -90,7 +90,7 @@ export function joinSock(isOpen, chatId) {
     // 현재 채팅방에서 강제 퇴장당한 경우
     if (kickMessage.chatId === chatId) {
       setIsKicked(true);
-      alert('관리자에 의해 채팅방에서 내보내졌습니다.');
+      showAlert('강제 퇴장', '관리자에 의해 채팅방에서 내보내졌습니다.');
       
       // 구독 해제
       unsubscribeChatRoom();
