@@ -1,27 +1,31 @@
 // src/api/api.js
 import axios from 'axios';
 import { getAccessToken, getRefreshToken, setTokens, removeTokens } from '../utils/tokenUtils';
-import API_ENDPOINTS, {LOCAL} from '../utils/constants';
+import API_ENDPOINTS, { LOCAL } from '../utils/constants';
 
 const api = axios.create({
-  baseURL: `${LOCAL}`, 
-  withCredentials: false, 
+  baseURL: `${LOCAL}`,
+  withCredentials: false,
 });
+
+// 인터셉터 없는 인스턴스 (refresh-token 요청에 사용)
+const rawAxios = axios.create();
+
+function isPublicApi(url = '') {
+  return url.includes('/public/') ||
+         url.startsWith('/api/auth/') ||
+         url.startsWith('/api/actuator/');
+}
 
 // 요청 인터셉터
 api.interceptors.request.use((config) => {
-  const publicApi = config.url?.includes('/public/') || 
-                    config.url?.startsWith('/api/auth/') ||
-                    config.url?.startsWith('/api/actuator/');
-  
-  // Public API가 아닌 경우에만 토큰 추가
-  if (!publicApi) {
+  if (!isPublicApi(config.url)) {
     const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-  return config;
   }
+  return config;
 });
 
 // 응답 인터셉터
@@ -31,23 +35,19 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    const publicApi = originalRequest.url?.includes('/public/') || 
-                      originalRequest.url?.startsWith('/api/auth/') ||
-                      originalRequest.url?.startsWith('/api/actuator/');
-
-    if (status === 401 && !originalRequest._retry && !publicApi) {
+    if (status === 401 && !originalRequest._retry && !isPublicApi(originalRequest.url)) {
       originalRequest._retry = true;
 
       try {
         const refreshToken = getRefreshToken();
-        const res = await axios.post(`${API_ENDPOINTS.AUTH}/refresh-token`, null, {
+        // 인터셉터 없는 인스턴스로 요청
+        const res = await rawAxios.post(`${API_ENDPOINTS.AUTH}/refresh-token`, null, {
           headers: { Authorization: `Bearer ${refreshToken}` },
         });
 
         const { accessToken: newAccessToken } = res.data;
         setTokens(newAccessToken, refreshToken);
 
-        // 새 토큰으로 다시 요청
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
 
