@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styles from "./CreateDiaryModal.module.css";
 
-export default function PostInfoStep({setPostInfo, title, publicStatus}) {
+export default function PostInfoStep({setPostInfo, title, publicStatus, errorMessage}) {
     const {userId} = useParams();
 
     const [countries, setCountries] = useState();
@@ -77,7 +77,7 @@ export default function PostInfoStep({setPostInfo, title, publicStatus}) {
                 </div>
             </div>
             <div className={styles.formGroup}>
-                <label>도시</label>
+                <label>도시 *</label>
                 <div className={styles.inputWrapper}>
                     <select
                         value={selectedCity || ""}
@@ -92,32 +92,34 @@ export default function PostInfoStep({setPostInfo, title, publicStatus}) {
                 </div>
             </div>
             <div className={styles.formGroup}>
-            <div className={styles.row}>
-                <div className={styles.column}>
-                    <label>시작일</label>
-                    <div className={styles.inputWrapper}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                value={startDate}
-                                onChange={(newStartDate) => setStartDate(newStartDate)}
-                            />
-                        </LocalizationProvider>
+                <div className={styles.row}>
+                    <div className={styles.column}>
+                        <label>시작일</label>
+                        <div className={styles.inputWrapper}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    value={startDate}
+                                    onChange={(newStartDate) => setStartDate(newStartDate)}
+                                />
+                            </LocalizationProvider>
+                        </div>
                     </div>
-                </div>
-                <div className={styles.column}>
-                    <label>종료일</label>
-                    <div className={styles.inputWrapper}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                value={endDate}
-                                onChange={(newEndDate) => setEndDate(newEndDate)}
-                            />
-                        </LocalizationProvider>
+                    <div className={styles.column}>
+                        <label>종료일</label>
+                        <div className={styles.inputWrapper}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    value={endDate}
+                                    onChange={(newEndDate) => setEndDate(newEndDate)}
+                                />
+                            </LocalizationProvider>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+            {errorMessage && (
+                <p className={styles.errorMessage}>{errorMessage}</p>
+            )}
         </>
     );
 }

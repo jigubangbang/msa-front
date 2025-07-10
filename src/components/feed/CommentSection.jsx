@@ -5,11 +5,15 @@ import API_ENDPOINTS from '../../utils/constants';
 import FeedComment from './FeedComment';
 import moreIcon from '../../assets/feed/more_black.svg';
 
-export default function CommentSection({feedId}) {
+export default function CommentSection({feedId, newComment}) {
     const limit = 4;
     const [currentPage, setCurrentPage] = useState(0);
     const [comments, setComments] = useState([]);
     const hasMore = useRef(true);
+
+    const onCommentDelete = (id) => {
+        setComments((prev) => prev.filter(c => c.id !== id));
+    }
 
     useEffect(() => {
         const fetchComments = async() => {
@@ -38,6 +42,10 @@ export default function CommentSection({feedId}) {
     }, [currentPage]);
 
     useEffect(() => {
+        setComments(prev => [newComment, ...prev]);
+    }, [newComment])
+
+    useEffect(() => {
         setComments([]);
         setCurrentPage(0);
         hasMore.current = true;
@@ -47,7 +55,7 @@ export default function CommentSection({feedId}) {
     return (
         <div className={styles.comments}>
             {comments.map((comment) => (
-                <FeedComment key={comment.id} comment={comment} feedId={feedId}/>
+                <FeedComment key={comment.id} comment={comment} feedId={feedId} onCommentDelete={onCommentDelete}/>
             ))}
             {hasMore.current && (
                 <div className={styles.loadMoreWrapper}>

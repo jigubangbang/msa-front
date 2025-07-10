@@ -159,3 +159,10 @@
 .btnSecondary:hover {
     opacity: 80%;
 }
+
+
+.blindedContent {
+    white-space: pre-wrap;
+    color: #666;
+    font-style: italic;
+}

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Routes, Route } from "react-router-dom";
 import AppRouter from "./routes/AppRouter";
 import { ThemeContext } from "./utils/themeContext";
 import Header from "./components/main/Header";
 import ChatModal from "./pages/Chat/ChatModal";
+import FeedDetail from "./components/feed/FeedDetail";
 import './App.css';
 
 function ScrollToTop() {
@@ -25,13 +26,27 @@ function App() {
   const openChatModal = () => setIsChatModal(true);
   const closeChatModal = () => setIsChatModal(false);
 
+  const location = useLocation();
+  const state = location.state && location.state.backgroundLocation;
+
   return (
     <ThemeContext.Provider value={{isDark, setIsDark}}>
       <div className="app-container">
         <Header onOpenChat={openChatModal} ></Header>
         <main className="main-container">
         <ScrollToTop />
-        <AppRouter/>
+        
+        <Routes location={state || location}>
+          <Route path="/*" element={<AppRouter />} />
+        </Routes>
+
+        
+        {state && (
+          <Routes>
+            <Route path="/feed/:feedId" element={<FeedDetail />} />
+          </Routes>
+        )}
+
         <ChatModal
           isOpen={isChatModal}
           onClose={closeChatModal}
