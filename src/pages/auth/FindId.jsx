@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from '../../apis/api';
+import axios from "axios";
 import API_ENDPOINTS from "../../utils/constants";
 import FindContainer from "../../components/auth/FindContainer";
 import FindResult from "../../components/auth/FindResult";
@@ -60,7 +60,7 @@ const FindId = () => {
     setIsLoading(true);
     
     try {
-      const response = await api.post(`${API_ENDPOINTS.AUTH}/find-id`, {
+      const response = await axios.post(`${API_ENDPOINTS.AUTH}/find-id`, {
         name: name.trim(),
         email: email.trim(),
       });

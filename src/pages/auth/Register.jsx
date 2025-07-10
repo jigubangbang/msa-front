@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import api from '../../apis/api';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./Register.module.css";
@@ -213,7 +213,7 @@ const Register = () => {
     setErrors((prev) => ({ ...prev, userId: "" }));
 
     try {
-      const res = await api.get(`${API_ENDPOINTS.AUTH}/check-id/${value}`);
+      const res = await axios.get(`${API_ENDPOINTS.AUTH}/check-id/${value}`);
       const isDuplicate = res.data;
 
       if (isDuplicate) {
@@ -254,7 +254,7 @@ const Register = () => {
     setErrors((prev) => ({ ...prev, email: "" }));
 
     try {
-      const res = await api.get(`${API_ENDPOINTS.AUTH}/check-email/${email}`);
+      const res = await axios.get(`${API_ENDPOINTS.AUTH}/check-email/${email}`);
       const isDuplicate = res.data;
 
       if (isDuplicate) {
@@ -276,7 +276,7 @@ const Register = () => {
     setEmailVerifyError("");
     setEmailCodeStatus("sending");
     try {
-      await api.post(`${API_ENDPOINTS.AUTH}/email/send`, { email: form.email });
+      await axios.post(`${API_ENDPOINTS.AUTH}/email/send`, { email: form.email });
       setEmailCodeStatus("sent");
       setEmailTimer(180); // 3분 타이머
       const interval = setInterval(() => {
@@ -298,7 +298,7 @@ const Register = () => {
 
   const verifyCode = async () => {
     try {
-      const res = await api.post(`${API_ENDPOINTS.AUTH}/email/verify`, {
+      const res = await axios.post(`${API_ENDPOINTS.AUTH}/email/verify`, {
         email: form.email,
         code: emailCode,
       });
@@ -357,7 +357,7 @@ const Register = () => {
 
     // 5. 회원가입 요청
     try {
-      await api.post(`${API_ENDPOINTS.AUTH}/register`, form);
+      await axios.post(`${API_ENDPOINTS.AUTH}/register`, form);
       setShowSuccessModal(true);
     } catch (err) {
       console.error("회원가입 실패:", err);

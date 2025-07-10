@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../apis/api";
+import axios from 'axios';
 import { useNavigate, useLocation } from "react-router-dom";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./Login.module.css";
@@ -34,7 +34,7 @@ const Login = () => {
     if (location.state?.errorMessage) {
       setMessage(location.state.errorMessage);
       setMessageType("error");
-      window.history.replaceState({}, document.title);
+      navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location]);
 
@@ -62,7 +62,7 @@ const Login = () => {
     }
 
     try {
-      const response = await api.post(`${API_ENDPOINTS.AUTH}/login`, {
+      const response = await axios.post(`${API_ENDPOINTS.AUTH}/login`, {
         userId,
         password,
       });
