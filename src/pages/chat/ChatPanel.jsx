@@ -8,7 +8,7 @@ import exit_white from '../../assets/chat/exit_white.svg';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
-export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose, showAlert }) {
+export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, onClose, onForceClose, showAlert }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
@@ -18,6 +18,17 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
   const {info} = useChatRoomInfo(chatId);
+
+  // **디버깅용 로그 추가**
+  useEffect(() => {
+    console.log('[ChatPanel] Debug Info:', {
+      chatId,
+      senderId,
+      nickname,
+      messagesCount: messages?.length || 0,
+      latestMessage: messages?.[messages.length - 1]
+    });
+  }, [chatId, senderId, nickname, messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -99,8 +110,8 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
           onScroll={handleScroll}
         >
           {Array.isArray(messages) && messages.map((msg, index) => {
-            const isMine = msg.senderId === senderId;
-            const isSystem = msg.senderId === 'System';
+            const isMine = msg.nickname === nickname;
+            const isSystem = msg.senderId === 'System' || msg.nickname === 'System';
 
             return (
               <div 
@@ -121,7 +132,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
                           <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                         </svg>
                       </div>
-                      <span className="nickname">{msg.senderId || 'Unknown'}</span>
+                      <span className="nickname">{msg.nickname || msg.senderId}</span>
                     </div>
                   )}
                 <div
@@ -170,6 +181,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
       <ChatSidebar
         chatId={chatId}
         senderId={senderId}
+        nickname={nickname}
         onClose={handleSidebar}
         chatInfo={info}
         onForceClose={onForceClose}
