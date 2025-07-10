@@ -17,6 +17,7 @@ import { jwtDecode } from "jwt-decode";
 import FeedMenu from "./FeedMenu";
 import ReportModal from "../common/Modal/ReportModal";
 import Modal from "../common/Modal/Modal";
+import parseHashtags from "../../utils/parseHashtags";
 
 
 
@@ -242,7 +243,7 @@ export default function FeedDetail() {
                                     <Link to={`/profile/${data.userId}`}>
                                         <span className={styles.username}>{data.nickname}</span>
                                     </Link>
-                                    {newTitle}
+                                    {parseHashtags(newTitle)}
                                 </div>
                             </div>
                             <div className={styles.comments}>

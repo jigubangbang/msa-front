@@ -198,7 +198,7 @@ export const ADMIN_SIDEBAR = [
 
 export const FEED_SIDEBAR = [
   {
-    label: '홈',
+    label: '피드 홈',
     icon: '/icons/sidebar/home.svg',
     path: '/feed'
   },
@@ -208,7 +208,7 @@ export const FEED_SIDEBAR = [
     path: '/feed/following'
   },
   {
-    label: '내 북마크',
+    label: '북마크',
     icon: '/icons/sidebar/bookmark.svg',
     path: '/feed/bookmark'
   },
