@@ -12,6 +12,7 @@ import premiumIcon from "../../assets/admin/premium_black.svg";
 import kakaoIcon from "../../assets/admin/kakao.svg";
 import naverIcon from "../../assets/admin/naver.svg";
 import googleIcon from "../../assets/admin/google.svg";
+import refreshIcon from "../../assets/admin/refresh.svg";
 
 export default function UserManage() {
   const [users, setUsers] = useState([]);
@@ -26,6 +27,7 @@ export default function UserManage() {
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [dropdownResetKey, setDropdownResetKey] = useState(0);
 
   const pageSize = 10;
   const navigate = useNavigate();
@@ -111,11 +113,21 @@ export default function UserManage() {
     }
   };
 
+  // 필터 리셋
+  const resetFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("ALL");
+    setRoleFilter("ALL");
+    setCurrentPage(1);
+    setDropdownResetKey(prev => prev + 1); // 🔄 force re-render
+    fetchUsers();
+  };
+
   // 검색 및 필터링
   const applyFilters = () => {
     let filtered = users;
 
-    // ID, 이름, 닉네임
+    // 사용자 ID, 이름, 닉네임
     if (searchTerm) {
       filtered = filtered.filter(
         (user) =>
@@ -136,13 +148,43 @@ export default function UserManage() {
     }
 
     setFilteredUsers(filtered);
-    setCurrentPage(1); // 필터 변경 시 첫 페이지로 이동
+    setCurrentPage(1); // 첫 페이지로 이동
   };
 
-  // 검색어나 필터 변경 시 필터링 적용
+  // 검색어나 필터 변경 시 필터링 적용 (1페이지로 이동)
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, statusFilter, roleFilter, users]);
+  }, [searchTerm, statusFilter, roleFilter]);
+
+  // 데이터 업데이트 시 필터링만 적용 (페이지 유지)
+  useEffect(() => {
+    if (users.length > 0) {
+      let filtered = users;
+
+      // 사용자 ID, 이름, 닉네임
+      if (searchTerm) {
+        filtered = filtered.filter(
+          (user) =>
+            user.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      // 상태 필터링
+      if (statusFilter !== "ALL") {
+        filtered = filtered.filter((user) => user.status === statusFilter);
+      }
+
+      // 권한 필터링
+      if (roleFilter !== "ALL") {
+        filtered = filtered.filter((user) => user.role === roleFilter);
+      }
+
+      setFilteredUsers(filtered);
+      // setCurrentPage(1) 없음 - 현재 페이지 유지
+    }
+  }, [users]);
 
   // 페이지네이션
   const getCurrentPageData = () => {
@@ -235,20 +277,29 @@ export default function UserManage() {
       {/* 검색 및 필터 영역 */}
       <div className={styles.filterContainer}>
         <SearchBar
-          placeholder="ID, 이름, 닉네임으로 검색"
+          placeholder="아이디, 이름, 닉네임으로 검색"
           onSearchChange={setSearchTerm}
-          barWidth="230px"
+          value={searchTerm}
+          barWidth="250px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown
+            key={`status-${dropdownResetKey}`}
             defaultOption="전체 상태"
             options={statusOptions}
             onSelect={(option) => setStatusFilter(option.value)}
           />
           <Dropdown
+            key={`role-${dropdownResetKey}`}
             defaultOption="전체 권한"
             options={roleOptions}
             onSelect={(option) => setRoleFilter(option.value)}
+          />
+          <img 
+            src={refreshIcon}
+            alt="필터 초기화" 
+            className={styles.resetIcon}
+            onClick={resetFilters}
           />
         </div>
       </div>
@@ -280,7 +331,7 @@ export default function UserManage() {
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    <th>사용자 ID</th>
                     <th>이름</th>
                     <th>닉네임</th>
                     <th>연락처</th>
@@ -353,7 +404,7 @@ export default function UserManage() {
                       </td>
                       <td
                         className={
-                          user.blindCount >= 5 ? styles.highBlindCount : ""
+                          user.blindCount >= 3 ? styles.highBlindCount : ""
                         }
                       >
                         {user.blindCount}
