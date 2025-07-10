@@ -10,11 +10,18 @@ const api = axios.create({
 
 // 요청 인터셉터
 api.interceptors.request.use((config) => {
-  const token = getAccessToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  const publicApi = config.url?.includes('/public/') || 
+                    config.url?.startsWith('/api/auth/') ||
+                    config.url?.startsWith('/api/actuator/');
+  
+  // Public API가 아닌 경우에만 토큰 추가
+  if (!publicApi) {
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   return config;
+  }
 });
 
 // 응답 인터셉터
@@ -24,7 +31,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    if (status === 401 && !originalRequest._retry) {
+    const publicApi = originalRequest.url?.includes('/public/') || 
+                      originalRequest.url?.startsWith('/api/auth/') ||
+                      originalRequest.url?.startsWith('/api/actuator/');
+
+    if (status === 401 && !originalRequest._retry && !publicApi) {
       originalRequest._retry = true;
 
       try {

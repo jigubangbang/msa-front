@@ -7,27 +7,31 @@
 }
 
 .content {
-  flex: 1;
+  display: flex;
   margin-left: 180px; /* sidebar 때문에 필수 */
   padding: 20px 40px;
   transition: margin-left 0.3s ease;
   min-height: 100vh;
-
-  display: flex;
+  max-width: 1100px;
+  
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
 }
 
-.contentWrapper {
-  max-width: 1200px;
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
 
+.contentWrapper {
+  max-width: 1100px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
   flex-direction: column;
+  font-family: Pretendard, sans-serif;
+  padding: 10px;
+  box-sizing: border-box;
 }
+
+
 
 .loading {
   display: flex;

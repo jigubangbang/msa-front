@@ -27,9 +27,9 @@ export default function ChatDescriptionEditor({ description, setDescription, cha
         <div className="sidebar-header">
             <h3>채팅방 정보</h3>
             {isManager && (
-                <button className="edit-button" onClick={() => setIsEditing(true)}>
-                 <img src={edit_grey}/>
-                </button>
+              <button className="edit-button" onClick={() => setIsEditing(true)}>
+                <img src={edit_grey}/>
+              </button>
             )}
         </div>
         <div className="sidebar-section chat-info-section">
