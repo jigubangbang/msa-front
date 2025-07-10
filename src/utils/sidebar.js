@@ -89,9 +89,74 @@ export const USER_SIDEBAR = [
   }
 ];
 
+export const TRAVELER_SIDEBAR = [
+  {
+    label: '여행자 동행 모집',
+    icon: '/icons/sidebar/travelmate.svg',
+    path: '/traveler/mate',
+  },
+  {
+    label: '모집 글쓰기',
+    path: '/traveler/mate/new',
+    submenu: true
+  },
+  {
+    label: '여행 정보 공유방',
+    icon: '/icons/sidebar/travelinfo.svg',
+    path: '/traveler/info',
+  },
+  {
+    label: '공유방 만들기',
+    path: '/traveler/info/new',
+    submenu: true
+  },
+  {
+    label: '내 여행자 모임',
+    icon: '/icons/sidebar/my_traveler.svg',
+    path: '/traveler/my'
+  },
+  {
+    label: '게시판',
+    icon: '/icons/sidebar/board.svg',
+    path: '/board',
+    submenu: [
+      {
+        label: '인기글',
+        path: '/board/popular'
+      },
+      {
+        label: '정보글',
+        path: '/board/info'
+      },
+      {
+        label: '추천글',
+        path: '/board/recommend'
+      },
+      {
+        label: '잡담글',
+        path: '/board/chat'
+      },
+      {
+        label: '질문글',
+        path: '/board/question'
+      }
+    ]
+  },
+  {
+    label: '내 게시판',
+    icon: '/icons/sidebar/my_board.svg',
+    path: '/board/my'
+  },
+  {
+    label: '글쓰기',
+    icon: '/icons/sidebar/write.svg',
+    path: '/board/new'
+  }
+];
+
 export const ADMIN_SIDEBAR = [
   {
-    label: '사용자 관리',
+    label: '회원 관리',
     icon: '/icons/sidebar/user.svg',
     path: '/admin/users'
   },

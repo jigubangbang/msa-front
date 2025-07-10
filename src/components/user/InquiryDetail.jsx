@@ -219,6 +219,7 @@ export default function InquiryDetail() {
     await fetchInquiryDetail(); 
     setIsEditMode(false);
     setSelectedFiles([]); 
+    window.scrollTo({ top: 0, behavior: "auto" });
     navigate(`/user/inquiry/${id}`);
   };
 

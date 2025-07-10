@@ -14,6 +14,8 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 15px;
+  padding-bottom: 8px; 
+  border-bottom: 2px solid #f8f9fa;
 }
 
 .sectionTitle {
@@ -21,8 +23,8 @@
   font-size: 20px;
   font-weight: 600;
   color: #000;
-  margin-bottom: 20px;
-  padding-bottom: 8px;
+  margin-bottom: 0;
+  padding-bottom: 0;
   border-bottom: 2px solid #f8f9fa;
 }
 
@@ -32,7 +34,7 @@
   background-color: #4CAF50; /* 활성 상태 색상 */
   color: white;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 14px;
 }
 
 .statusBadgeInactive {
@@ -60,7 +62,7 @@
 
 .value {
   font-family: 'Pretendard';
-  font-size: 1.1em;
+  font-size: 16px;
   color: #333;
-  font-weight: 600;
+  font-weight: bold;
 }

@@ -2,6 +2,15 @@ import React from 'react';
 import styles from './PremiumPaymentHistory.module.css';
 
 export default function PremiumPaymentHistory({ paymentHistory }) {
+  // 날짜 포맷 함수 추가
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}.${month}.${day}`;
+  };
+
   return (
     <div className={styles.section}>
       <h2 className={styles.sectionTitle} style={{ textAlign: 'left' }}>결제 내역</h2>
@@ -9,7 +18,7 @@ export default function PremiumPaymentHistory({ paymentHistory }) {
         paymentHistory.map((payment) => (
           <div key={payment.id} className={styles.paymentItem}>
             <div>
-              <div className={styles.paymentDate}>{new Date(payment.paidAt).toLocaleDateString('ko-KR')}</div>
+              <div className={styles.paymentDate}>{formatDate(payment.paidAt)}</div>
               {/* 결제 상태에 따라 상품명 변경 */}
               <div>{payment.payStatus === 'CARD_UPDATED' ? '결제 수단 변경' : '프리미엄 월간 구독'}</div>
             </div>
@@ -28,7 +37,7 @@ export default function PremiumPaymentHistory({ paymentHistory }) {
           </div>
         ))
       ) : (
-        <p className={styles.noHistoryText}>결제 내역이 없습니다.</p>
+        <p className={styles.noHistoryText}>결제 내역이 없습니다</p>
       )}
     </div>
   );

@@ -44,7 +44,7 @@ const SubscriptionStatus = ({ subscription, onCancel }) => {
         )}
         {!subscription.premiumHistory.isActive && (
           <p className="cancel-info">
-            프리미엄 혜택은 {formatDate(subscription.premiumHistory.endDate)}까지 유지됩니다.
+            프리미엄 혜택은 {formatDate(subscription.premiumHistory.endDate)}까지 유지됩니다
           </p>
         )}
       </div>

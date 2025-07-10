@@ -14,7 +14,7 @@
   font-size: 20px;
   font-weight: 600;
   color: #000;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   padding-bottom: 8px;
   border-bottom: 2px solid #f8f9fa;
 }
@@ -22,6 +22,7 @@
 .infoItem {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px dashed #eee;
 }
@@ -39,7 +40,7 @@
 
 .infoValue {
   font-family: 'Pretendard';
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
   font-weight: 500;
 }
