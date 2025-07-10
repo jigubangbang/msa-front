@@ -20,6 +20,7 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
 
   const {
     senderId,
+    nickname,
     messages,
     setMessages,
     sendMessage,
@@ -119,6 +120,7 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
             {!chatError && (
               <ChatPanel
                 chatId={chatId}
+                nickname={nickname}
                 senderId={senderId}
                 messages={messages}
                 setMessages={setMessages}

@@ -10,7 +10,7 @@ export function joinSock(isOpen, chatId, showAlert) {
   const { connect, disconnect, send, subscribe, unsubscribe } = useStomp();
   const [isJoining, setIsJoining] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // const [chatGroup, setChatGroup] = useState(null); // 채팅 그룹 정보 (UI 표시용)
+  const [nickname, setNickname] = useState(null);
   const [messages, setMessages] = useState([]); // 실시간 수신 메시지
   const [chatError, setChatError] = useState(null);
   const [isKicked, setIsKicked] = useState(false);
@@ -165,12 +165,15 @@ export function joinSock(isOpen, chatId, showAlert) {
     const initializeChatRoom = async () => {
         let restApiJoinSuccess = false;
         let userIdFromJoin = null;
+        let nicknameFromJoin = null;
 
         try {
             const joinResponse = await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/join`);
             restApiJoinSuccess = true;
             userIdFromJoin = joinResponse.data.userId;
+            nicknameFromJoin = joinResponse.data.nickname;
             setSenderId(joinResponse.data.userId);
+            setNickname(joinResponse.data.nickname);
             } catch (err) {
               console.error("[joinSock] REST API 입장 실패:", err);
               setChatError(new Error("REST 입장 실패: " + err.message));
@@ -218,6 +221,7 @@ export function joinSock(isOpen, chatId, showAlert) {
 
   return { 
     senderId,
+    nickname,
     messages,
     setMessages,
     sendMessage,

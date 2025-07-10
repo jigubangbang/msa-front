@@ -12,7 +12,7 @@ import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
 
-export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert }) {
+export default function ChatSidebar({ chatId, senderId, nickname, isOpen, onClose, chatInfo, onForceClose, showAlert }) {
   const { subscribe, unsubscribe } = useStomp();
   const {members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
@@ -24,6 +24,11 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const isManager = members.some(member => member.userId === senderId && member.isCreator === 1);
   const accessToken = getAccessToken();
   const subscriptionRef = useRef(null);
+
+  const getUserNickname = (userId) => {
+    const member = members.find(member => member.userId === userId);
+    return member?.nickname || userId; // 닉네임이 없으면 userId를 fallback으로 사용
+  };
 
   if (loading) {
     console.log( "그룹 멤버 조회 중" );
@@ -110,7 +115,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   };
 
   const kickUser = (userId) => {
-    showConfirmModal("멤버 내보내기", `정말 ${userId}님을 내보내시겠습니까?`, async () => {
+    const targetNickname = getUserNickname(userId);
+    showConfirmModal("멤버 내보내기", `정말 ${targetNickname}님을 내보내시겠습니까?`, async () => {
       try {
         const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/${userId}`, {
           method: "DELETE",
@@ -121,7 +127,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
           },
         });
         if (response.ok) {
-          showAlert("알림", `${userId}님을 성공적으로 강퇴했습니다.`);
+          showAlert("알림", `해당 유저를 성공적으로 강퇴했습니다.`);
           await refetch();
           setSelectedUserId(null);
         } else {
@@ -135,10 +141,11 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   };
 
   const demoteManager = (userId) => {
-    showConfirmModal("운영진 제외", `${userId}님을 운영진에서 제외하시겠습니까?`, async () => {
+    const targetNickname = getUserNickname(userId);
+    showConfirmModal("운영진 제외", `${targetNickname}님을 운영진에서 제외하시겠습니까?`, async () => {
       try {
         await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/demote/${userId}`);
-        showAlert("알림", `${userId}님을 운영진에서 제외했습니다.`);
+        showAlert("알림", `해당 유저를 운영진에서 제외했습니다.`);
         await refetch();
         setSelectedUserId(null);
       } catch (err) {
