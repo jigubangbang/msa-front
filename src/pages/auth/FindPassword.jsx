@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from '../../apis/api';
 import API_ENDPOINTS from "../../utils/constants";
 import FindContainer from "../../components/auth/FindContainer";
 import FindResult from "../../components/auth/FindResult";
@@ -74,7 +74,7 @@ const FindPassword = () => {
     setIsLoading(true);
     
     try {
-      const response = await axios.post(`${API_ENDPOINTS.AUTH}/find-password`, {
+      const response = await api.post(`${API_ENDPOINTS.AUTH}/find-password`, {
         name: name.trim(),
         userId: userId.trim(),
         email: email.trim(),

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useLocation, Routes, Route } from "react-router-dom";
+import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import AppRouter from "./routes/AppRouter";
 import { ThemeContext } from "./utils/themeContext";
 import Header from "./components/main/Header";
 import ChatModal from "./pages/Chat/ChatModal";
 import FeedDetail from "./components/feed/FeedDetail";
-import './App.css';
+import "./App.css";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -18,11 +18,22 @@ function ScrollToTop() {
 }
 
 function App() {
+  const [isDark, setIsDark] = useState(false); // 다크모드
+  const [isChatModal, setIsChatModal] = useState(false); // 채팅
 
-  // 다크모드 - useContext를 이용하여 prop 전달
-  const [isDark, setIsDark] = useState(false);
-  // 채팅
-  const [isChatModal, setIsChatModal] = useState(false);
+  const navigate = useNavigate(); 
+  const location = useLocation();
+
+  useEffect(() => {
+    const isLoginPage = location.pathname === "/login";
+    const sessionExpired = localStorage.getItem("sessionExpired") === "true";
+
+    if (sessionExpired && !isLoginPage) {
+      localStorage.removeItem("sessionExpired");
+      navigate("/login", { replace: true });
+    }
+  }, [location, navigate]);
+  
   const openChatModal = () => setIsChatModal(true);
   const closeChatModal = () => setIsChatModal(false);
 
@@ -30,9 +41,9 @@ function App() {
   const state = location.state && location.state.backgroundLocation;
 
   return (
-    <ThemeContext.Provider value={{isDark, setIsDark}}>
+    <ThemeContext.Provider value={{ isDark, setIsDark }}>
       <div className="app-container">
-        <Header onOpenChat={openChatModal} ></Header>
+        <Header onOpenChat={openChatModal} />
         <main className="main-container">
         <ScrollToTop />
         
@@ -50,7 +61,7 @@ function App() {
         <ChatModal
           isOpen={isChatModal}
           onClose={closeChatModal}
-          chatId={1} // 필요한 채팅방 ID
+          chatId={1}
         />
         </main>
       </div>
