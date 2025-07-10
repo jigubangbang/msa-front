@@ -8,7 +8,7 @@ import exit_white from '../../assets/chat/exit_white.svg';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
-export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose }) {
+export default function ChatPanel({ chatId, senderId, messages, setMessages, onSendMessage, onClose, onForceClose, showAlert }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
@@ -56,7 +56,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
     // 강제 퇴장 멤버 메세지 전송 차단
     const kickedStatus = localStorage.getItem(`kicked:${chatId}`) === 'true';
     if (kickedStatus) {
-      alert("강제 퇴장되셨습니다. 메시지를 전송할 수 없습니다.");
+      showAlert("알림", "강제 퇴장되셨습니다. 메시지를 전송할 수 없습니다.");
       return;
     }
     if(input.trim()) {
@@ -173,6 +173,7 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
         onClose={handleSidebar}
         chatInfo={info}
         onForceClose={onForceClose}
+        showAlert={showAlert}
       />
      )}
 

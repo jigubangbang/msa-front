@@ -4,7 +4,7 @@ import { useStomp, useStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 
-export function joinSock(isOpen, chatId) {
+export function joinSock(isOpen, chatId, showAlert) {
   const senderId = useStore(state => state.senderId);
   const setSenderId = useStore(state => state.setSenderId);
   const { connect, disconnect, send, subscribe, unsubscribe } = useStomp();
@@ -41,7 +41,15 @@ export function joinSock(isOpen, chatId) {
         // 구독 시작
         const subscription = subscribe(`/topic/chat/${chatId}`, (receivedMessage) => {
           console.log('[joinChat] 메시지 수신: ', receivedMessage);
-          setMessages(prevMessages => [...prevMessages, receivedMessage]);
+
+          // 백엔드에서 "강제 퇴장" 문구가 포함된 LEAVE 메시지를 보내므로, 이를 KICK으로 간주
+          if (receivedMessage.type === 'LEAVE' && receivedMessage.message.includes('강제 퇴장')) {
+            // 화면 표시를 위해 KICK 타입으로 변경하여 시스템 메시지처럼 보이게 함
+            const kickSystemMessage = { ...receivedMessage, type: 'KICK' };
+            setMessages(prevMessages => [...prevMessages, kickSystemMessage]);
+          } else {
+            setMessages(prevMessages => [...prevMessages, receivedMessage]);
+          }
         });
 
         // 2. 개별 강제 퇴장 알림 구독 추가
@@ -90,7 +98,7 @@ export function joinSock(isOpen, chatId) {
     // 현재 채팅방에서 강제 퇴장당한 경우
     if (kickMessage.chatId === chatId) {
       setIsKicked(true);
-      alert('관리자에 의해 채팅방에서 내보내졌습니다.');
+      showAlert('강제 퇴장', '관리자에 의해 채팅방에서 내보내졌습니다.');
       
       // 구독 해제
       unsubscribeChatRoom();
