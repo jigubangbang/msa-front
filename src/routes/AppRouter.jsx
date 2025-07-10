@@ -58,6 +58,10 @@ import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPag
 import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
 import FeedDetail from "../components/feed/FeedDetail";
 import TravelMateListPage from "../pages/community/traveler/travelmate/TravelMateListPage";
+import FeedFollowing from "../pages/feed/FeedFollowing";
+import FeedBookmark from "../pages/feed/FeedBookmark";
+import FeedSearch from "../pages/feed/FeedSearch";
+import FeedUserRecommendation from "../pages/feed/FeedUserRecommendation";
 import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
 
 const AppRouter = () => {
@@ -81,6 +85,10 @@ const AppRouter = () => {
           {/* Feed */}
           <Route path="/feed" element={<Feed/>}/>
           <Route path="/feed/:feedId" element={<FeedDetail/>}/>
+          <Route path="/feed/following" element={<FeedFollowing/>}/>
+          <Route path="/feed/bookmark" element={<FeedBookmark/>}/>
+          <Route path="/feed/search" element={<FeedSearch/>}/>
+          <Route path="/feed/recommendation" element={<FeedUserRecommendation/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>

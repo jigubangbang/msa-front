@@ -1,6 +1,6 @@
 import FeedTemplate from "./FeedTemplate";
 
-export default function Feed() {
+export default function FeedSearch() {
     return (
         <FeedTemplate>
             
