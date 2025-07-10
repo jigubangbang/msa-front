@@ -118,32 +118,29 @@ export const TRAVELER_SIDEBAR = [
   {
     label: '게시판',
     icon: '/icons/sidebar/board.svg',
-    path: '/board'
-  },
-  {
-    label: '인기글',
-    path: '/board/popular',
-    submenu: true
-  },
-  {
-    label: '정보글',
-    path: '/board/info',
-    submenu: true
-  },
-  {
-    label: '추천글',
-    path: '/board/recommend',
-    submenu: true
-  },
-  {
-    label: '잡담글',
-    path: '/board/chat',
-    submenu: true
-  },
-  {
-    label: '질문글',
-    path: '/board/question',
-    submenu: true
+    path: '/board',
+    submenu: [
+      {
+        label: '인기글',
+        path: '/board/popular'
+      },
+      {
+        label: '정보글',
+        path: '/board/info'
+      },
+      {
+        label: '추천글',
+        path: '/board/recommend'
+      },
+      {
+        label: '잡담글',
+        path: '/board/chat'
+      },
+      {
+        label: '질문글',
+        path: '/board/question'
+      }
+    ]
   },
   {
     label: '내 게시판',
