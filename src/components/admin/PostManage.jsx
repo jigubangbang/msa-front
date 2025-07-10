@@ -229,7 +229,7 @@ export default function PostManage() {
       {/* 검색 및 필터 영역 */}
       <div className={styles.filterContainer}>
         <SearchBar
-          placeholder="제목, 작성자로 검색"
+          placeholder="게시글 제목, 작성자로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
           barWidth="250px"
