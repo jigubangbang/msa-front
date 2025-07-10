@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './FeedComment.module.css';
 import api from '../../apis/api';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
@@ -9,10 +9,15 @@ import heartEmptyIcon from '../../assets/feed/heart_empty_small.svg';
 import menuIcon from '../../assets/feed/menu_black.svg';
 import { Link } from 'react-router-dom';
 import Reply from './Reply';
+import FeedMenu from './FeedMenu';
+import { jwtDecode } from 'jwt-decode';
+import ReportModal from '../common/Modal/ReportModal';
+import Modal from '../common/Modal/Modal';
 
-export default function FeedComment({comment, feedId}) {
+export default function FeedComment({comment, feedId, onCommentDelete}) {
     const [hasLiked, setHasLiked] = useState(comment.likeStatus);
     const [likeCount, setLikeCount] = useState(comment.likeCount);
+    const [sessionUserId, setSessionUserId] = useState();
 
     const [showReplies, setShowReplies] = useState(false);
     const [replies, setReplies] = useState([]);
@@ -22,6 +27,8 @@ export default function FeedComment({comment, feedId}) {
     const [replyText, setReplyText] = useState("");
 
     const [showMenu, setShowMenu] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const handleLikeClick = async() => {
         try {
@@ -69,6 +76,45 @@ export default function FeedComment({comment, feedId}) {
             console.error("Failed to post reply", err);
         }
     }
+
+    const handleReportSubmit = async(report) => {
+        try {
+            await api.post(`${API_ENDPOINTS.USER}/reports`, {
+                "reporterId": sessionUserId,
+                "targetUserId": comment.userId,
+                "contentType": "COMMENT",
+                "contentSubtype": "TRAVELFEED",
+                "contentId": comment.id,
+                "reasonCode": report.reasonCode,
+                "reasonText": report.reasonText
+            })
+        } catch (err) {
+            console.error("Failed to report", err);
+        }
+        setShowReportModal(false);
+    }
+
+    const handleDeleteSubmit = async() => {
+        try {
+            await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/comments/${comment.id}`);
+            setShowDeleteModal(false);
+            onCommentDelete(comment.id);
+        } catch(err) {
+            console.error("Failed to delete comment", err);
+        }
+    }
+
+    const onReplyDelete = (id) => {
+        setReplies((prev) => prev.filter(c => c.id !== id));
+    }
+
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setSessionUserId(decoded.sub);
+        }
+    }, [])
     
     return (
         <div className={styles.commentWrapper}>
@@ -79,7 +125,11 @@ export default function FeedComment({comment, feedId}) {
                         <Link to={`/profile/${comment.userId}`}>
                             <span className={styles.username}>{comment.nickname}</span>
                         </Link>
-                        <span className={styles.content}>{comment.content}</span>
+                        {comment.blindStatus == "VISIBLE" ? (
+                            <span className={styles.content}>{comment.content}</span>
+                        ) : (
+                            <span className={styles.blindedContent}>숨겨진 댓글입니다.</span>
+                        )}
                     </div>
                 </div>
                 <button className={styles.iconButton} onClick={handleLikeClick}>
@@ -96,12 +146,24 @@ export default function FeedComment({comment, feedId}) {
                 >
                     답글 작성
                 </button>
-                <button
-                    className={`${styles.iconButton} ${styles.menuButton}`}
-                    onClick={() => setShowMenu(true)}
-                >
-                    <img src={menuIcon} alt="메뉴" className={styles.icon} />
-                </button>
+                <div style={{ position: "relative" }}>
+                    <button
+                        className={`${styles.iconButton} ${styles.menuButton}`}
+                        onClick={() => setShowMenu((prev) => !prev)}
+                    >
+                        <img src={menuIcon} alt="메뉴" className={styles.icon} />
+                    </button>
+                    {showMenu && (
+                        <FeedMenu
+                            sessionUserId={sessionUserId}
+                            userId={comment.userId}
+                            onClose={() => setShowMenu(false)}
+                            type="comment"
+                            setShowReportModal={setShowReportModal}
+                            setShowDeleteModal={setShowDeleteModal}
+                        />
+                    )}
+                </div>
             </div>
 
             {showReplyInput && (
@@ -132,9 +194,33 @@ export default function FeedComment({comment, feedId}) {
 
             {showReplies && replies.map((reply) => (
                 <div key={reply.id}>
-                    <Reply key={reply.id} comment={reply} feedId={feedId}/>
+                    <Reply 
+                        key={reply.id}
+                        comment={reply}
+                        feedId={feedId}
+                        sessionUserId={sessionUserId}
+                        onReplyDelete={() => onReplyDelete(reply.id)}
+                    />
                 </div>
             ))}
+            {showReportModal && (
+                <ReportModal
+                    show={showReportModal}
+                    onClose={() => setShowReportModal(false)}
+                    onSubmit={handleReportSubmit}
+                />
+            )}
+            {showDeleteModal && (
+                <Modal
+                    show={showDeleteModal}
+                    onClose={() => setShowDeleteModal(false)}
+                    onSubmit={handleDeleteSubmit}
+                    firstLabel="삭제"
+                    secondLabel="취소"
+                >
+                    댓글을 삭제하시겠습니까?
+                </Modal>
+            )}
         </div>
         
     );

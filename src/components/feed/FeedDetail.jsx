@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./FeedDetail.module.css";
 import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
@@ -13,44 +13,48 @@ import menuIcon from "../../assets/feed/menu_black.svg";
 import prevIcon from "../../assets/feed/prev_black.svg";
 import nextIcon from "../../assets/feed/next_black.svg";
 import CommentSection from "./CommentSection";
+import { jwtDecode } from "jwt-decode";
+import FeedMenu from "./FeedMenu";
+import ReportModal from "../common/Modal/ReportModal";
+import Modal from "../common/Modal/Modal";
 
 
 
-export default function FeedDetail({post, onClose}) {
+export default function FeedDetail() {
+    const {feedId} = useParams();
+    const [sessionUserId, setSessionUserId] = useState();
+
+    const navigate = useNavigate();
+
     const [data, setData] = useState();
+    const [title, setTitle] = useState("");
+    const [newTitle, setNewTitle] = useState("");
+    const [publicStatus, setPublicStatus] = useState(true);
     const [hasLiked, setHasLiked] = useState(false);
     const [hasBookmarked, setHasBookmarked] = useState(false);
 
-    const [likeCount, setLikeCount] = useState(post.likeCount);
-    const [commentCount, setCommentCount] = useState(post.commentCount);
+    const [likeCount, setLikeCount] = useState();
+    const [commentCount, setCommentCount] = useState();
+    const [newComment, setNewComment] = useState();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [replyText, setReplyText] = useState("");
 
-    // TODO: add delete / report post option
-    // TODO: menu: edit privacy option
-    // TODO: edit content option
-    const [showMenu, setShowMenu] = useState(false);
-
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    const handlePrev = () => {
-        if (!data) return;
-        setCurrentImageIndex((prev) => prev - 1);
-    };
-
-    const handleNext = () => {
-        if (!data) return;
-        setCurrentImageIndex((prev) => prev + 1);
-    };
+    const [showMenu, setShowMenu] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
     const handleLikeClick = async() => {
         try {
             if (!hasLiked) {
-                await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${post.id}/like`);
+                await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/like`);
                 setLikeCount(likeCount + 1);
             } else {
-                await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${post.id}/like`);
+                await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/like`);
                 setLikeCount(likeCount - 1);
             }
             setHasLiked(!hasLiked);
@@ -62,9 +66,9 @@ export default function FeedDetail({post, onClose}) {
     const handleBookmarkClick = async() => {
         try {
             if (!hasBookmarked) {
-                await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${post.id}/bookmark`);
+                await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/bookmark`);
             } else {
-                await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${post.id}/bookmark`);
+                await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/bookmark`);
             }
             setHasBookmarked(!hasBookmarked);
         } catch (err) {
@@ -77,35 +81,99 @@ export default function FeedDetail({post, onClose}) {
         
         try {
             setIsSubmitting(true);
-            await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${post.id}/comments`, {
-                feedId: post.id,
+            const response = await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/comments`, {
+                feedId: feedId,
                 content: replyText.trim()
             });
             setReplyText("");
             setIsSubmitting(false);
             setCommentCount(prev => prev + 1);
+            setNewComment(response.data.comment);
         } catch (err) {
             console.error("Failed to post reply", err);
+        }
+    }
+
+    const handleReportSubmit = async (report) => {
+        try {
+            await api.post(`${API_ENDPOINTS.USER}/reports`, {
+                "reporterId": sessionUserId,
+                "targetUserId": data.userId,
+                "contentType": "POST",
+                "contentSubtype": "TRAVELFEED",
+                "contentId": feedId,
+                "reasonCode": report.reasonCode,
+                "reasonText": report.reasonText
+            })
+            
+        } catch (err) {
+            console.error("Failed to report", err);
+        }
+        setShowReportModal(false);
+    }
+
+    const handleDeletePostSubmit = async() => {
+        try {
+            await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}`);
+            setShowDeleteModal(false);
+        } catch (err) {
+            console.error("Failed to delete post", err)
+        }
+    }
+
+    const handleEditPostSubmit = async() => {
+        try {
+            await api.put(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}`, {
+                "id": feedId,
+                "title": title
+            });
+            setNewTitle(title);
+            setShowEditModal(false);
+        } catch (err) {
+            console.error("Failed to edit post", err);
+        }
+    }
+
+    const handleUpdatePrivacySubmit = async() => {
+        try {
+            await api.put(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/public?status=${publicStatus}`);
+            setShowPrivacyModal(false);
+        } catch (err) {
+            console.error("Failed to update privacy settings", err);
         }
     }
 
     useEffect(() => {
         const fetchData = async() => {
             try {
-                const response = await api.get(`${API_ENDPOINTS.FEED.PRIVATE}/${post.id}`);
+                const response = await api.get(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}`);
                 setData(response.data.post);
+                setTitle(response.data.post.title);
+                setNewTitle(response.data.post.title);
+                setPublicStatus(response.data.post.publicStatus);
                 setHasLiked(response.data.post.likeStatus);
                 setHasBookmarked(response.data.post.bookmarkStatus);
+                setLikeCount(response.data.post.likeCount);
+                setCommentCount(response.data.post.commentCount);
             } catch (err) {
                 console.error("Failed to fetch data", err);
             }
         }
         fetchData();
-    }, [post])
+    }, [feedId])
+
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setSessionUserId(decoded.sub);
+        }
+    }, []);
+
     return (
         <>
             {data && (
-                <div className={styles.overlay} onClick={onClose}>
+                <div className={styles.overlay} onClick={() => navigate(-1)}>
                     <div className={styles.modal} onClick={e => e.stopPropagation()}>
                         <div className={styles.imageSection}>
                             {(data && data.images.length > 0) && (
@@ -138,13 +206,29 @@ export default function FeedDetail({post, onClose}) {
                             <div className={styles.header}>
                                 <div>
                                     <div className={styles.location}>
-                                        {post.cityName}, {post.countryName}
+                                        {data.cityName}, {data.countryName}
                                     </div>
                                     <div className={styles.date}>{data.formattedStartDate} - {data.formattedEndDate}</div>
                                 </div>
-                                <button className={styles.iconButton} onClick={() => setShowMenu(true)}>
-                                    <img src={menuIcon} alt="메뉴"/>
-                                </button>
+                                <div style={{ position: "relative" }}>
+                                    <button
+                                        className={styles.iconButton}
+                                        onClick={() => setShowMenu((prev) => !prev)}
+                                    >
+                                        <img src={menuIcon} alt="메뉴" />
+                                    </button>
+                                    {showMenu && (
+                                        <FeedMenu
+                                            sessionUserId={sessionUserId}
+                                            userId={data.userId}
+                                            onClose={() => setShowMenu(false)}
+                                            setShowReportModal={setShowReportModal}
+                                            setShowEditModal={setShowEditModal}
+                                            setShowDeleteModal={setShowDeleteModal}
+                                            setShowPrivacyModal={setShowPrivacyModal}
+                                        />
+                                    )}
+                                </div>
                             </div>
                             <div className={styles.captionContainer}>
                                 <img
@@ -158,11 +242,11 @@ export default function FeedDetail({post, onClose}) {
                                     <Link to={`/profile/${data.userId}`}>
                                         <span className={styles.username}>{data.nickname}</span>
                                     </Link>
-                                    {data.title}
+                                    {newTitle}
                                 </div>
                             </div>
                             <div className={styles.comments}>
-                                <CommentSection feedId={post.id}/>
+                                <CommentSection feedId={feedId} newComment={newComment}/>
                             </div>
                             <div className={styles.footer}>
                                 <div className={styles.actionsLeft}>
@@ -202,6 +286,70 @@ export default function FeedDetail({post, onClose}) {
                             </div>
                         </div>
                     </div>
+                    {showReportModal && (
+                        <ReportModal
+                            show={showReportModal}
+                            onClose={() => setShowReportModal(false)}
+                            onSubmit={handleReportSubmit}
+                        />
+                    )}
+                    {showDeleteModal && (
+                        <Modal
+                            show={showDeleteModal}
+                            onClose={() => setShowDeleteModal(false)}
+                            onSubmit={handleDeletePostSubmit}
+                            firstLabel="삭제"
+                            secondLabel="취소"
+                        >
+                            게시물을 삭제하겠습니까?
+                        </Modal>
+                    )}
+                    {showEditModal && (
+                        <Modal
+                            show={showEditModal}
+                            onClose={() => setShowEditModal(false)}
+                            onSubmit={handleEditPostSubmit}
+                            firstLabel="저장"
+                            secondLabel="취소"
+                            heading="내용 수정"
+                        >
+                            <div className={styles.formGroup}>
+                                <div className={styles.inputWrapper}>
+                                    <textarea
+                                        className={styles.formInput}
+                                        value={title}
+                                        maxLength={120}
+                                        rows={6}
+                                        placeholder="내용을 입력하세요"
+                                        onChange={(e) => setTitle(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </Modal>
+                    )}
+                    {showPrivacyModal && (
+                        <Modal
+                            show={showPrivacyModal}
+                            onClose={() => setShowPrivacyModal(false)}
+                            onSubmit={handleUpdatePrivacySubmit}
+                            heading="공개 설정"
+                            firstLabel="저장"
+                            secondLabel="취소"
+                        >
+                            <div className={styles.formGroup}>
+                                <div className={styles.inputWrapper}>
+                                    <select
+                                        value={publicStatus}
+                                        onChange={(e) => setPublicStatus(e.target.value)}
+                                        className={styles.formInput}
+                                    >
+                                        <option value={true}>공개</option>
+                                        <option value={false}>비공개</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </Modal>
+                    )}
                 </div>
             )}
         </>

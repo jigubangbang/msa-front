@@ -56,6 +56,7 @@ import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPag
 import BadgeAdminDetail from "../components/quest-admin/BadgeAdminDetail";
 import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPage";
 import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
+import FeedDetail from "../components/feed/FeedDetail";
 
 const AppRouter = () => {
     return (
@@ -77,6 +78,7 @@ const AppRouter = () => {
 
           {/* Feed */}
           <Route path="/feed" element={<Feed/>}/>
+          <Route path="/feed/:feedId" element={<FeedDetail/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>
