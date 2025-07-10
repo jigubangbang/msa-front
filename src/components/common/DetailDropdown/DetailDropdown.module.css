@@ -1,0 +1,70 @@
+/* Container positions the dropdown nicely */
+.container {
+  position: relative;
+}
+
+.dropdownToggle {
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+  border-radius: 20px;
+
+  font-weight: 500;
+  color: black;
+  padding: 8px 16px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  
+  
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdownToggle:hover {
+  border-color: #ccc;
+  background-color: #f9f9f9;
+}
+
+.menuIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdownMenu {
+  margin-top: 0.5rem;
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 0.4rem 0;
+  min-width: 160px;
+  z-index: 100;
+  position: absolute;
+  right: 0;
+}
+
+.dropdownItem {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: #f4f4f4;
+  color: #222;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
