@@ -1,0 +1,340 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.travelmateDetailMain {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+}
+
+/* 헤더 섹션 */
+.headerSection {
+  position: relative;
+  height: 400px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.backgroundImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+}
+
+.headerContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: white;
+  z-index: 1;
+}
+
+.leftContent {
+  flex: 1;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.simpleDescription {
+  font-size: 18px;
+  margin: 0;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.rightContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 25px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.likeButton:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+}
+
+.likeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.likeButton.liked {
+  animation: likeAnimation 0.3s ease;
+}
+
+@keyframes likeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.joinButton {
+  padding: 16px 32px;
+  background: #007bff;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.joinButton:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+
+.joinButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.joinButton.disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* 작성자 섹션 */
+.creatorSection {
+  padding: 30px 40px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.creatorInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profileImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.creatorDetails {
+  flex: 1;
+}
+
+.creatorName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+}
+
+.style {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.nickname {
+  color: #333;
+  font-weight: 600;
+}
+
+.userId {
+  color: #666;
+  font-weight: 400;
+}
+
+/* 여행 정보 */
+.travelInfo {
+  padding: 0 40px;
+  margin-bottom: 40px;
+}
+
+.infoItem {
+  display: flex;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.label {
+  font-weight: 600;
+  color: #333;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.value {
+  color: #666;
+  flex: 1;
+}
+
+/* 모임 설명 */
+.descriptionSection {
+  padding: 0 40px;
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 20px 0;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+/* 여행자 스타일 */
+.stylesSection {
+  padding: 0 40px;
+  margin-bottom: 40px;
+}
+
+.stylesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.styleTag {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  color: #333;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
+}
+
+/* 공통 */
+.loading, .error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.dropdownContainer {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .headerSection {
+    height: 300px;
+    margin-bottom: 30px;
+  }
+  
+  .headerContent {
+    padding: 30px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .simpleDescription {
+    font-size: 16px;
+  }
+  
+  .actionButtons {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .creatorSection,
+  .travelInfo,
+  .descriptionSection,
+  .stylesSection {
+    padding: 0 20px;
+  }
+  
+  .infoItem {
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  
+  .label {
+    width: auto;
+    font-size: 14px;
+  }
+  
+  .value {
+    font-size: 16px;
+  }
+}

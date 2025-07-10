@@ -8,6 +8,7 @@ import SearchSection from "../../../../components/travelmate/SearchSection/Searc
 import TravelmateFilter from "../../../../components/travelmate/TravelmateFilter/TravelmateFilter";
 import TravelmateList from "../../../../components/travelmate/TravelmateList/TravelmateList";
 import CategoryBrowse from "../../../../components/travelmate/CategoryBrowse/CategoryBrowse";
+import TopTravelmateList from "../../../../components/travelmate/TopTravelmateList/TopTravelmateList";
 
 
 export default function TravelMateListPage() {
@@ -105,15 +106,20 @@ const handleSearchSectionSubmit = (searchData) => {
 };
 
 
-  const onOpenPost = (postId) => {
-    // 여행메이트 상세 페이지로 이동
-    // navigate(`/travelmate/${postId}`);
-    console.log("게시물로 이동 travel mate post id", postId);
-  }
 
   const handleSearchStart = () => {
     setCurrentPage(1);
     setSearchSectionData(null);
+  }
+
+  const handleViewAll = () => {
+    setIsSearching(true);
+    setCurrentPage(1);
+    setSearchTerm('');
+  }
+
+  const handlePostClick = (postId) => {
+    navigate(`/traveler/mate/${postId}`);
   }
 
 
@@ -152,13 +158,29 @@ const handleSearchSectionSubmit = (searchData) => {
             <>
               <SearchSection onSubmit={handleSearchSectionSubmit}/>
               <CategoryBrowse onCategorySelect={handleCategorySelect}/>
-              <p> 당신에게 잘 맞는 모임이에요 </p>
+              {/* 현재 인기 여행 동행 모임 */}
+              <TopTravelmateList
+                title="현재 인기 여행 동행 모임"
+                option="popular"
+                isLogin={isLogin}
+                onViewAll={handleViewAll}
+                onPostClick={handlePostClick}
+              />
+
+              {/* 최근 만들어진 여행 동행 모임 */}
+              <TopTravelmateList
+                title="최근 만들어진 여행 동행 모임"
+                option="recent"
+                isLogin={isLogin}
+                onViewAll={handleViewAll}
+                onPostClick={handlePostClick}
+              />
             </>
           ) : (<>
               <TravelmateFilter onSubmit={handleFilterSubmit}/>
               <TravelmateList
                 isLogin={isLogin}
-                onOpenPost={onOpenPost}
+                onOpenPost={handlePostClick}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 currentPage={currentPage}

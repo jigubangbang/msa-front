@@ -58,6 +58,7 @@ import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPag
 import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
 import FeedDetail from "../components/feed/FeedDetail";
 import TravelMateListPage from "../pages/community/traveler/travelmate/TravelMateListPage";
+import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
 
 const AppRouter = () => {
     return (
@@ -111,8 +112,9 @@ const AppRouter = () => {
 
           {/* Traveler */}
           <Route path="/traveler/mate" element={<TravelMateListPage/>}/>
+          <Route path="/traveler/mate/:postId" element={<TravelmateDetailPage/>}/>
           {/*<Route path="/traveler/mate/new" element={<TravelFormPage/>}/>
-          <Route path="/traveler/mate/:id" element={<MateDetailPage/>}/>
+          
           <Route path="/traveler/info" element={<InfoListPage/>}/>
           <Route path="/traveler/info/new" element={<InfoFormPage/>}/>
           <Route path="/traveler/info/:id" element={<InfoDetailPage/>}/>
