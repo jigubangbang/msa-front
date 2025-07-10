@@ -37,7 +37,6 @@ function App() {
   const openChatModal = () => setIsChatModal(true);
   const closeChatModal = () => setIsChatModal(false);
 
-  const location = useLocation();
   const state = location.state && location.state.backgroundLocation;
 
   return (
