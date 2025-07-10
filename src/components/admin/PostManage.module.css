@@ -105,15 +105,12 @@
   white-space: nowrap;
 }
 
-.table thead th:nth-child(1) { width: 120px; } /* 사용자ID */
-.table thead th:nth-child(2) { width: 100px; } /* 이름 */
-.table thead th:nth-child(3) { width: 100px; } /* 닉네임 */
-.table thead th:nth-child(4) { width: 180px; } /* 연락처 */
-.table thead th:nth-child(5) { width: 100px; }  /* 권한 */
+.table thead th:nth-child(1) { width: 100px; } /* 게시글ID */
+.table thead th:nth-child(2) { width: 100px; } /* 유형 */
+.table thead th:nth-child(3) { width: 150px; } /* 작성자 */
+.table thead th:nth-child(4) { width: 300px; } /* 제목 */
+.table thead th:nth-child(5) { width: 100px; } /* 작성일 */
 .table thead th:nth-child(6) { width: 100px; } /* 상태 */
-.table thead th:nth-child(7) { width: 80px; }  /* 신고횟수 */
-.table thead th:nth-child(8) { width: 100px; } /* 정지기간 */
-.table thead th:nth-child(9) { width: 100px; } /* 탈퇴사유 */
 
 .tableRow {
   cursor: default;
@@ -133,69 +130,32 @@
   text-align: center;
 }
 
-/* 연락처 셀 */
-.contactCell {
-  line-height: 1.4;
-  padding: 12px 8px !important;
+/* 제목 셀 */
+.titleCell {
   text-align: left !important;
-  padding-left: 20px !important;
+  padding-left: 16px !important;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.contactCell div:first-child {
-  margin-bottom: 4px;
-  color: #666;
-}
-
-.contactCell div:last-child {
-  font-size: 14px;
-  color: #000;
+.titleCell:hover {
+  color: #0056b3;
+  cursor: pointer;
 }
 
 /* 상태별 색상 */
-.statusActive button {
+.statusVisible button {
   background-color: #f8fff9 !important;
   color: #28a745 !important;
   border: 1px solid #c3e6cb !important;
 }
 
-.statusBanned button {
+.statusBlinded button {
   background-color: #fff5f5 !important;
   color: #dc3545 !important;
   border: 1px solid #f5c6cb !important;
-}
-
-.statusWithdrawn button {
-  background-color: #f8f9fa !important;
-  color: #6c757d !important;
-  border: 1px solid #dee2e6 !important;
-}
-
-/* 신고횟수 강조 */
-.highBlindCount {
-  color: #dc3545 !important;
-  font-weight: 500;
-}
-
-/* 탈퇴 사유 버튼 */
-.withdrawalButton {
-  font-family: 'Pretendard';
-  background-color: #f8f9fa;
-  color: #6c757d;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.withdrawalButton:hover,
-.withdrawalButton:focus,
-.withdrawalButton:active {
-  background-color: #e9ecef;
-  color: #495057;
-  outline: none !important;
-  border: 1px solid #dee2e6 !important; 
 }
 
 /* 빈 상태 */
@@ -212,60 +172,6 @@
   margin: 0;
 }
 
-/* 탈퇴 정보 모달 */
-.withdrawalInfo {
-  font-family: 'Pretendard';
-  line-height: 1.6;
-}
-
-.withdrawalInfo p {
-  margin-bottom: 12px;
-  font-size: 14px;
-  color: #555;
-}
-
-.withdrawalInfo strong {
-  font-weight: 500;
-  color: #000;
-}
-
-.reasonText {
-  background-color: #f8f9fa;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #e9ecef;
-  color: #495057;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-/* 아이콘 */
-.socialIcon {
-  width: 16px;
-  height: 16px;
-  margin-left: 4px;
-  vertical-align: text-bottom;
-}
-
-.premiumIcon {
-  width: 16px;
-  height: 16px;
-  margin-left: 1px;
-  vertical-align: -3px;
-}
-
-.socialIcon.kakao {
-  background-color: #FEE500; 
-  border-radius: 1px;
-  padding: 0.5px; 
-}
-
-/* 프로필 링크 */
-.userIdLink:hover {
-  color: #0056b3;
-  cursor: pointer;
-}
-
 /* 리셋 */
 .resetIcon {
   width: 20px;
@@ -279,4 +185,10 @@
 
 .resetIcon:hover {
   opacity: 0.5;
+}
+
+/* 프로필 링크 */
+.userIdLink:hover {
+  color: #0056b3;
+  cursor: pointer;
 }
