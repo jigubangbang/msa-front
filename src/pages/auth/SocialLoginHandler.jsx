@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from '../../apis/api';
 import API_ENDPOINTS from "../../utils/constants";
 import { Circles } from "react-loader-spinner";
 import styles from "./SocialLoginHandler.module.css";
@@ -33,7 +33,7 @@ const SocialLoginHandler = () => {
         console.log("요청 URL:", `${API_ENDPOINTS.AUTH}/${provider}`);
 
         // provider 추가
-        const response = await axios.post(`${API_ENDPOINTS.AUTH}/${provider}`, {
+        const response = await api.post(`${API_ENDPOINTS.AUTH}/${provider}`, {
           code: code,
           provider: provider,
         });

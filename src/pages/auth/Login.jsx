@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from '../../apis/api';
 import { useNavigate, useLocation } from "react-router-dom";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./Login.module.css";
@@ -56,7 +56,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${API_ENDPOINTS.AUTH}/login`, {
+      const response = await api.post(`${API_ENDPOINTS.AUTH}/login`, {
         userId,
         password,
       });
