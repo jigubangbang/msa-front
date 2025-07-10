@@ -54,7 +54,8 @@ api.interceptors.response.use(
       } catch (refreshErr) {
         console.error('RefreshToken 만료 → 자동 로그아웃');
         removeTokens();
-        window.location.href = '/login';
+        localStorage.setItem("sessionExpired", "true");
+        // window.location.href = "/login";
       }
     }
 

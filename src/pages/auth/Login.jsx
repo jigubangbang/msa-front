@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../apis/api";
 import { useNavigate, useLocation } from "react-router-dom";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./Login.module.css";
@@ -11,6 +11,7 @@ import KakaoIcon from "../../assets/auth/kakao.svg";
 import NaverIcon from "../../assets/auth/naver.svg";
 import GoogleIcon from "../../assets/auth/google.svg";
 import { Circles } from "react-loader-spinner";
+import SessionExpiredModal from "../../components/common/Modal/SessionExpiredModal";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
@@ -20,15 +21,20 @@ const Login = () => {
   const [messageType, setMessageType] = useState(""); // 'success' or 'error'
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
+  const [showSessionModal, setShowSessionModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    if (localStorage.getItem("sessionExpired") === "true") {
+      setShowSessionModal(true);
+      localStorage.removeItem("sessionExpired");
+    }
+
     if (location.state?.errorMessage) {
       setMessage(location.state.errorMessage);
       setMessageType("error");
-      window.history.replaceState({}, document.title); 
+      window.history.replaceState({}, document.title);
     }
   }, [location]);
 
@@ -56,7 +62,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${API_ENDPOINTS.AUTH}/login`, {
+      const response = await api.post(`${API_ENDPOINTS.AUTH}/login`, {
         userId,
         password,
       });
@@ -112,169 +118,178 @@ const Login = () => {
     }
   };
 
+  const handleSessionConfirm = () => {
+    setShowSessionModal(false);
+  };
+
   return (
-    <div className={styles.loginPage}>
-      <div className={styles.loginContainer}>
-        <div className={styles.loginHeader}>
-          <div className={styles.logo}>지구방방 로그인</div>
-        </div>
-
-        <form className={styles.loginForm} onSubmit={handleLogin}>
-          <div className={styles.formGroup}>
-            <div className={styles.inputWrapper}>
-              <img src={IdIcon} alt="id" className={styles.inputIcon} />
-              <input
-                type="text"
-                id="userId"
-                className={`${styles.formInput} ${
-                  errors.userId ? styles.inputError : ""
-                }`}
-                placeholder="아이디를 입력해 주세요"
-                value={userId}
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault(); // 스페이스바 입력 차단
-                  }
-                }}
-                onChange={(e) => {
-                  setUserId(e.target.value);
-                  if (errors.userId) {
-                    setErrors((prev) => ({ ...prev, userId: "" }));
-                  }
-                }}
-              />
-            </div>
-            {errors.userId && (
-              <div className={styles.errorText}>{errors.userId}</div>
-            )}
+    <>
+      {showSessionModal && (
+        <SessionExpiredModal show={true} onConfirm={handleSessionConfirm} />
+      )}
+      <div className={styles.loginPage}>
+        <div className={styles.loginContainer}>
+          <div className={styles.loginHeader}>
+            <div className={styles.logo}>지구방방 로그인</div>
           </div>
 
-          <div className={styles.formGroup}>
-            <div className={styles.inputWrapper}>
-              <img
-                src={PasswordIcon}
-                alt="password"
-                className={styles.inputIcon}
-              />
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className={`${styles.formInput} ${
-                  errors.password ? styles.inputError : ""
-                }`}
-                placeholder="비밀번호를 입력해 주세요"
-                value={password}
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault(); // 스페이스바 입력 차단
-                  }
-                }}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (errors.password) {
-                    setErrors((prev) => ({ ...prev, password: "" }));
-                  }
-                }}
-              />
-              <img
-                src={showPassword ? VisibleIcon : VisibleOffIcon}
-                alt="비밀번호 보기"
-                className={styles.toggleIcon}
-                onClick={() => setShowPassword(!showPassword)}
-              />
+          <form className={styles.loginForm} onSubmit={handleLogin}>
+            <div className={styles.formGroup}>
+              <div className={styles.inputWrapper}>
+                <img src={IdIcon} alt="id" className={styles.inputIcon} />
+                <input
+                  type="text"
+                  id="userId"
+                  className={`${styles.formInput} ${
+                    errors.userId ? styles.inputError : ""
+                  }`}
+                  placeholder="아이디를 입력해 주세요"
+                  value={userId}
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      e.preventDefault(); // 스페이스바 입력 차단
+                    }
+                  }}
+                  onChange={(e) => {
+                    setUserId(e.target.value);
+                    if (errors.userId) {
+                      setErrors((prev) => ({ ...prev, userId: "" }));
+                    }
+                  }}
+                />
+              </div>
+              {errors.userId && (
+                <div className={styles.errorText}>{errors.userId}</div>
+              )}
             </div>
-            {errors.password && (
-              <div className={styles.errorText}>{errors.password}</div>
+
+            <div className={styles.formGroup}>
+              <div className={styles.inputWrapper}>
+                <img
+                  src={PasswordIcon}
+                  alt="password"
+                  className={styles.inputIcon}
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className={`${styles.formInput} ${
+                    errors.password ? styles.inputError : ""
+                  }`}
+                  placeholder="비밀번호를 입력해 주세요"
+                  value={password}
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      e.preventDefault(); // 스페이스바 입력 차단
+                    }
+                  }}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) {
+                      setErrors((prev) => ({ ...prev, password: "" }));
+                    }
+                  }}
+                />
+                <img
+                  src={showPassword ? VisibleIcon : VisibleOffIcon}
+                  alt="비밀번호 보기"
+                  className={styles.toggleIcon}
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              </div>
+              {errors.password && (
+                <div className={styles.errorText}>{errors.password}</div>
+              )}
+            </div>
+
+            {/* 로그인 실패 메시지 */}
+            {message && messageType === "error" && (
+              <div className={styles.loginErrorMessage}>
+                <span className={styles.errorIcon}>!</span>
+                {message}
+              </div>
             )}
+
+            <button
+              type="submit"
+              className={styles.loginButton}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                "로그인"
+              )}
+            </button>
+          </form>
+
+          {/* 소셜 로그인 영역 */}
+          <div className={styles.divider}>
+            <span>또는 간편 로그인</span>
           </div>
 
-          {/* 로그인 실패 메시지 */}
-          {message && messageType === "error" && (
-            <div className={styles.loginErrorMessage}>
-              <span className={styles.errorIcon}>!</span>
-              {message}
-            </div>
-          )}
+          <div className={styles.socialLogin}>
+            <button
+              type="button"
+              className={`${styles.socialButton} ${styles.google}`}
+              onClick={() => handleSocialLogin("google")}
+            >
+              <img
+                src={GoogleIcon}
+                alt="구글 로그인"
+                className={styles.socialIcon}
+              />
+              <span className={styles.socialText}>구글 로그인</span>
+            </button>
 
-          <button
-            type="submit"
-            className={styles.loginButton}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Circles height="20" width="20" color="#fff" />
-            ) : (
-              "로그인"
-            )}
-          </button>
-        </form>
+            <button
+              type="button"
+              className={`${styles.socialButton} ${styles.naver}`}
+              onClick={() => handleSocialLogin("naver")}
+            >
+              <img
+                src={NaverIcon}
+                alt="네이버 로그인"
+                className={styles.socialIcon}
+              />
+              <span className={styles.socialText}>네이버 로그인</span>
+            </button>
 
-        {/* 소셜 로그인 영역 */}
-        <div className={styles.divider}>
-          <span>또는 간편 로그인</span>
-        </div>
+            <button
+              type="button"
+              className={`${styles.socialButton} ${styles.kakao}`}
+              onClick={() => handleSocialLogin("kakao")}
+            >
+              <img
+                src={KakaoIcon}
+                alt="카카오 로그인"
+                className={styles.socialIcon}
+              />
+              <span className={styles.socialText}>카카오 로그인</span>
+            </button>
+          </div>
 
-        <div className={styles.socialLogin}>
-          <button
-            type="button"
-            className={`${styles.socialButton} ${styles.google}`}
-            onClick={() => handleSocialLogin("google")}
-          >
-            <img
-              src={GoogleIcon}
-              alt="구글 로그인"
-              className={styles.socialIcon}
-            />
-            <span className={styles.socialText}>구글 로그인</span>
-          </button>
+          <div className={styles.divider}>
+            <span>계정 찾기 및 가입</span>
+          </div>
 
-          <button
-            type="button"
-            className={`${styles.socialButton} ${styles.naver}`}
-            onClick={() => handleSocialLogin("naver")}
-          >
-            <img
-              src={NaverIcon}
-              alt="네이버 로그인"
-              className={styles.socialIcon}
-            />
-            <span className={styles.socialText}>네이버 로그인</span>
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.socialButton} ${styles.kakao}`}
-            onClick={() => handleSocialLogin("kakao")}
-          >
-            <img
-              src={KakaoIcon}
-              alt="카카오 로그인"
-              className={styles.socialIcon}
-            />
-            <span className={styles.socialText}>카카오 로그인</span>
-          </button>
-        </div>
-
-        <div className={styles.divider}>
-          <span>계정 찾기 및 가입</span>
-        </div>
-
-        <div className={styles.findLinks}>
-          <a href="/find-id" className={styles.findLink}>
-            아이디 찾기
-          </a>
-          <a href="/find-password" className={styles.findLink}>
-            비밀번호 찾기
-          </a>
-          <a
-            href="/register"
-            className={`${styles.findLink} ${styles.primary}`}
-          >
-            회원가입
-          </a>
+          <div className={styles.findLinks}>
+            <a href="/find-id" className={styles.findLink}>
+              아이디 찾기
+            </a>
+            <a href="/find-password" className={styles.findLink}>
+              비밀번호 찾기
+            </a>
+            <a
+              href="/register"
+              className={`${styles.findLink} ${styles.primary}`}
+            >
+              회원가입
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
