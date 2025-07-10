@@ -15,6 +15,7 @@ export default function CreateDiaryModal({onClose}) {
     const lastStep = 4;
     const [step, setStep] = useState(firstStep);
     const [headerText, setHeaderText] = useState("");
+    const [errorMessage, setErrorMessage] = useState();
 
     const [images, setImages] = useState([]);
     const [orderedImages, setOrderedImages] = useState([]);
@@ -31,6 +32,11 @@ export default function CreateDiaryModal({onClose}) {
     });
 
     const handleSubmit = async() => {
+        if (!postInfo.countryId || !postInfo.cityId || postInfo.countryId == "" || postInfo.cityId == "") {
+            setErrorMessage("필수 항목을 입력하세요 *");
+            return;
+        }
+
         try {
             const postResponse = await api.post(`${API_ENDPOINTS.FEED.PRIVATE}`, {
                 countryId : postInfo.countryId,
@@ -91,7 +97,7 @@ export default function CreateDiaryModal({onClose}) {
                         <PostContentStep title={title} publicStatus={publicStatus} setTitle={setTitle} setPublicStatus={setPublicStatus}/>
                     )}
                     {step === 4 && (
-                        <PostInfoStep setPostInfo={setPostInfo} title={title} publicStatus={publicStatus}/>
+                        <PostInfoStep setPostInfo={setPostInfo} title={title} publicStatus={publicStatus} errorMessage={errorMessage}/>
                     )}
                 </div>
                 <div className={styles.btnContainer}>

@@ -119,8 +119,8 @@
     flex-direction: column;
     padding-top: 8px;
     font-size: 14px;
-    width: 100%;
-    margin-left: 40px;
+    width: 90%;
+    margin-left: 10%;
 }
 
 /* Reply form */
@@ -158,4 +158,11 @@
 
 .btnSecondary:hover {
     opacity: 80%;
+}
+
+
+.blindedContent {
+    white-space: pre-wrap;
+    color: #666;
+    font-style: italic;
 }
