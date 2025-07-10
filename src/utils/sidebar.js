@@ -195,3 +195,31 @@ export const ADMIN_SIDEBAR = [
     path: '/admin/inquiries'
   }
 ];
+
+export const FEED_SIDEBAR = [
+  {
+    label: '홈',
+    icon: '/icons/sidebar/home.svg',
+    path: '/feed'
+  },
+  {
+    label: '팔로우',
+    icon: '/icons/sidebar/my_traveler.svg',
+    path: '/feed/following'
+  },
+  {
+    label: '내 북마크',
+    icon: '/icons/sidebar/bookmark.svg',
+    path: '/feed/bookmark'
+  },
+  {
+    label: '탐색',
+    icon: '/icons/sidebar/search.svg',
+    path: '/feed/search'
+  },
+  {
+    label: '친구 추천',
+    icon: '/icons/sidebar/user_recommendation.svg',
+    path: '/feed/recommendation'
+  }
+];
