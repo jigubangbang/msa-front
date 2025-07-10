@@ -43,8 +43,8 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
 
   const handleScroll = () => {
     const { scrollTop, clientHeight, scrollHeight } = chatMessagesDisplayRef.current;
-    // 현재 스크롤 위치가 맨 아래로부터 1px 이내인지 확인 (오차 범위 설정)
-    if (scrollHeight - scrollTop <= clientHeight + 1) {
+    // 스크롤이 맨 아래에서 5px 이내에 있을 때를 '맨 아래'로 간주하여 오차 범위를 늘립니다.
+    if (scrollHeight - scrollTop <= clientHeight + 5) {
       setIsScrolledToBottom(true);
     } else {
       setIsScrolledToBottom(false);

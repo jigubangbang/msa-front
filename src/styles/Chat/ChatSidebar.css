@@ -24,6 +24,7 @@
   transform: translateX(0%); /* 기본적으로 보임 */
   transition: transform 0.3s ease-out; /* 슬라이드 애니메이션 */
   max-height: 100vh; /* 전체 높이 */
+  min-height: 10vh;
   overflow: hidden;
   padding-bottom: 80px;
 }
@@ -31,7 +32,7 @@
 .chat-sidebar .scrollable-content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 20px; /* 스크롤 시 footer가 내용 가리는 것 방지 */
+  padding-bottom: 80px; /* 스크롤 시 footer가 내용 가리는 것 방지 */
 }
 
 /* 사이드바 닫힐 때의 애니메이션 (ChatPanel.jsx에서 isOpen이 false면 렌더링 안하므로 이 트랜지션은 직접 제어하기 어렵습니다.
@@ -84,8 +85,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  height: 250px; /* 고정 높이 부여 */
-  overflow-y: auto; /* 내용이 많으면 스크롤 */
+  min-height: 150px; /* 최소 높이 설정 */
 }
 
 .member-item {
@@ -133,6 +133,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  z-index: 11; /* ChatReportTab의 z-index보다 높게 설정 */
 }
 
 .member-action-dots {

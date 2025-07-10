@@ -114,7 +114,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     showConfirmModal("운영진 제외", `${userId}님을 운영진에서 제외하시겠습니까?`, async () => {
       try {
         await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/demote/${userId}`);
-        showAlert("알림", `${userId}님을 운영진에서 제외했습니다.`);
+        showAlert("알림", `해당 유저를 운영진에서 제외했습니다.`);
         await refetch();
         setSelectedUserId(null);
       } catch (err) {
