@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './TravelerSearchBar.module.css';
 import search_icon_grey from '../../../assets/common/search_grey.svg';
+import search_icon_white from '../../../assets/common/search_white.svg';
+
 import search_clear_icon from '../../../assets/common/close.svg';
 
 export default function TravelerSearchBar({
@@ -8,7 +10,6 @@ export default function TravelerSearchBar({
   value = "",
   onSearchChange = () => {},
   onFocus = () => {},
-  barWidth = "100%",
   debounceMs = 300,
   isSearch,
   setIsSearch
@@ -49,44 +50,56 @@ export default function TravelerSearchBar({
     setIsSearch(prev => !prev);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && searchValue.trim() !== '') {
-      navigate(`/search?query=${encodeURIComponent(searchValue.trim())}`);
+
+  const handleBarClick = () => {
+    if (!isSearch) {
+      setIsSearch(true);
     }
+  };
+
+  const handleInputClick = (e) => {
+    e.stopPropagation();
   };
 
   return (
     <div className={styles.searchContainer}>
-      <div className={styles.searchBar} style={{ width: barWidth }}>
-        <img
-          src={isSearch ? search_icon_black : search_icon_grey}
-          onClick={toggleSearch}
-          className={styles.searchIcon}
-          alt="search toggle"
-        />
+      <div 
+        className={styles.searchBar} 
+        onClick={handleBarClick}
+      >
+        
+          <img
+            src={!isSearch ? search_icon_grey : search_icon_white}
+            onClick={toggleSearch}
+            className={`${styles.searchIcon} ${isSearch ? styles.isSearching : ''}`}
+            alt="search toggle"
+          />
+
+      {isSearch ? (<input
+          type="text"
+          placeholder={placeholder}
+          value={searchValue}
+          className={styles.searchInput}
+          onChange={handleInputChange}
+          onFocus={onFocus}
+          onClick={handleInputClick}
+          readOnly={!isSearch}
+        />) : (
+          <div className={styles.notSearchInput} onClick={toggleSearch}>
+            {placeholder}
+          </div>
+        )}
+        
 
         {isSearch && (
-          <>
-            <input
-              type="text"
-              placeholder={placeholder}
-              value={searchValue}
-              className={styles.searchInput}
-              onChange={handleInputChange}
-              onFocus={onFocus}
-              onKeyDown={handleKeyDown}
-            />
-            <img
-              src={search_clear_icon}
-              onClick={handleClear}
-              alt="clear"
-              className={styles.searchClearIcon}
-            />
-          </>
+          <img
+            src={search_clear_icon}
+            onClick={handleClear}
+            alt="clear"
+            className={styles.searchClearIcon}
+          />
         )}
       </div>
-
-      
     </div>
   );
 }

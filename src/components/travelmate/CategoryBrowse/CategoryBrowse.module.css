@@ -1,0 +1,198 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.categoryBrowse {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+
+/* 탭 메뉴 */
+.tabMenu {
+  display: flex;
+  gap: 0;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.tabButton {
+  position: relative;
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #a5a5a5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tabButton:hover {
+  color: #333;
+}
+
+.tabButton.active {
+  color: #000;
+  font-weight: 600;
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: 16px;
+  background: #ff4757;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 카테고리 그리드 */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 120px;
+  text-align: center;
+   width: 100%;       
+   aspect-ratio: 1 / 1;
+   box-sizing: border-box;
+}
+
+.categoryCard:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.categoryIcon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+}
+
+.categoryImage {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+.categoryName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.3;
+  word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .categoryBrowse {
+    padding: 30px 15px;
+  }
+  
+  .title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .tabMenu {
+    margin-bottom: 20px;
+  }
+  
+  .tabButton {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .categoryGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .categoryCard {
+    padding: 15px;
+    min-height: 100px;
+     width: 100%;       
+  }
+  
+  .categoryIcon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .categoryImage {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .categoryName {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .categoryCard {
+    padding: 12px;
+    min-height: 90px;
+  }
+  
+  .categoryIcon {
+    font-size: 24px;
+    width: 35px;
+    height: 35px;
+  }
+  
+  .categoryImage {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .categoryName {
+    font-size: 11px;
+  }
+}
