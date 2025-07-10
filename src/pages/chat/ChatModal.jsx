@@ -8,14 +8,14 @@ import ChatAlertModal from '../../components/chat/ChatAlertModal.jsx'; // 수정
 import '../../styles/chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId }) {
-  const [alertInfo, setAlertInfo] = useState({ show: false, title: '', message: '' });
+  const [alertInfo, setAlertInfo] = useState({ show: false, title: '', message: '', position: 'center' });
 
-  const showAlert = (title, message) => {
-    setAlertInfo({ show: true, title, message });
+  const showAlert = (title, message, position = 'center') => {
+    setAlertInfo({ show: true, title, message, position });
   };
 
   const hideAlert = () => {
-    setAlertInfo({ show: false, title: '', message: '' });
+    setAlertInfo({ show: false, title: '', message: '', position: 'center' });
   };
 
   const {
@@ -132,6 +132,7 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
               show={alertInfo.show}
               title={alertInfo.title}
               message={alertInfo.message}
+              position={alertInfo.position}
               onClose={() => {
                 hideAlert();
                 if (isKicked || chatError) {

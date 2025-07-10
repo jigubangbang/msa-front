@@ -6,9 +6,10 @@ export default function ChatAlertModal({ show, onClose, title, message, onConfir
   if (!show) return null;
 
   const handleCancel = onCancel || onClose;
+  const isResultModal = !onConfirm;
 
   return (
-    <div className={`${styles.overlay} ${position === 'center' ? styles.center : ''}`} onClick={handleCancel}>
+    <div className={`${styles.overlay} ${position === 'center' ? styles.center : ''} ${isResultModal ? styles.fixed : ''}`} onClick={handleCancel}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.heading}>{title || "알림"}</h2>
         <p className={styles.description}>{message}</p>

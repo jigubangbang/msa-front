@@ -173,7 +173,6 @@ export default function ChatPanel({ chatId, senderId, messages, setMessages, onS
         onClose={handleSidebar}
         chatInfo={info}
         onForceClose={onForceClose}
-        showAlert={showAlert}
       />
      )}
 
