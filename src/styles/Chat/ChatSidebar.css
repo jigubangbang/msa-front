@@ -24,7 +24,6 @@
   transform: translateX(0%); /* 기본적으로 보임 */
   transition: transform 0.3s ease-out; /* 슬라이드 애니메이션 */
   max-height: 100vh; /* 전체 높이 */
-  min-height: 10vh;
   overflow: hidden;
   padding-bottom: 80px;
 }
