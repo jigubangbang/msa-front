@@ -1,5 +1,19 @@
 // src/services/api/chatApi.js
-import API_ENDPOINTS from '../../utils/endpoints.js';
+import API_ENDPOINTS from '../../utils/constants.js';
+
+export const joinGroupChat = async(chatId) => {
+    try{
+        const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/join`)
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error( '채팅방 입장 실패', error );
+        throw error;
+    }
+}
 
 export async function fetchMessages(chatId) {
   const res = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/messages`);

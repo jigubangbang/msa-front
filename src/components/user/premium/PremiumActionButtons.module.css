@@ -1,0 +1,50 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #f8f9fa;
+}
+
+.btn {
+  font-family: 'Pretendard';
+  padding: 12px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+}
+
+.btnBlack {
+  background-color: #000;
+  color: white;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: #333;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.infoText {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #555;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}

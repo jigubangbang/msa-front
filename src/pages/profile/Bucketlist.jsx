@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import axios from "axios";
+import api from "../../apis/api";
 import BucketlistItem from '../../components/profile/bucketlist/BucketlistItem';
 import ProfileTemplate from '../../components/profile/ProfileTemplate';
-import Modal from '../../components/profile/Modal';
+import Modal from '../../components/common/Modal/Modal';
 import Dropdown from '../../components/common/Dropdown';
 import styles from './Bucketlist.module.css';
-import sortIcon from '../../assets/profile/sort_white.svg';
+import API_ENDPOINTS from '../../utils/constants';
+import { jwtDecode } from 'jwt-decode';
 
 import {
   DndContext, 
@@ -19,21 +20,24 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useParams } from 'react-router-dom';
 
 
-// TODO: get profile owner from link
-// TODO: handle dropdown toggle
-// TODO: "+" button onClickHandler
-// TODO: edit mode logic
+// TODO: get session user
 
 export default function Bucketlist() {
+    const [sessionUserId, setSessionUserId] = useState();
+    const {userId} = useParams();
     const [items, setItems] = useState([]);
     const [totalCount, setTotalCount] = useState();
     const [completeCount, setCompleteCount] = useState();
-    const [incompleteCount, setInompleteCount] = useState();
+    const [incompleteCount, setIncompleteCount] = useState();
+    
+    const [reloadData, setReloadData] = useState(false);
 
-    const [sortMode, setSortMode] = useState(false);
     const [showGoalModal, setShowGoalModal] = useState(false); // showing modal to create new bucket list item
+    const [title, setTitle] = useState();
+    const [description, setDescription] = useState();
 
     const sensors = useSensors(
         useSensor(PointerSensor)
@@ -43,7 +47,7 @@ export default function Bucketlist() {
     const dropdownOptions = [
         {
             label: "전체", 
-            value: "all"
+            value: ""
         },
         {
             label: "달성",
@@ -56,58 +60,115 @@ export default function Bucketlist() {
     ];
 
     function handleOptionClick(option) {
-        setActiveDropdownOption(option.value);
-        // TODO: when click on dropdown menu item get new sorted data
+        setActiveDropdownOption(option.label);
+        api
+            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist?status=${option.value}`)
+            .then((response) => {
+                setItems(response.data.items);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
     }
 
     function saveNewGoal() {
-        // TODO: save new goal
+        api
+            .post(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`, {
+                title,
+                description
+            })
+            .then((response) => {
+                setTitle("");
+                setDescription("");
+                setReloadData(!reloadData);
+                setShowGoalModal(false);
+            })
+            .catch((err) => {
+                console.error("Failed to save new goal", err);
+            })
     }
 
-    function saveSortedList() {
-        // TODO: save new order
-        setSortMode(false);
+    function handleDragEnd(event) {
+        const {active, over} = event;
+
+        if (active.id !== over.id) {
+            setItems((prevItems) => {
+                const oldIndex = prevItems.findIndex(item => item.id === active.id);
+                const newIndex = prevItems.findIndex(item => item.id === over.id);
+                const newItems = arrayMove(prevItems, oldIndex, newIndex);
+
+                saveNewOrder(newItems);
+                
+                return arrayMove(items, oldIndex, newIndex);
+            });
+        }
+    }
+
+    function saveNewOrder(items) {
+        const payload = items.map((item, index) => ({
+            id: item.id,
+            displayOrder: index + 1
+        }));
+        api
+            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist/reorder`, payload)
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }
+
+    function handleDeleteItem(deletedId, completionStatus) {
+        setItems(prevItems => prevItems.filter(item => item.id !== deletedId));
+        setTotalCount(prev => prev - 1);
+        if (completionStatus) {
+            setCompleteCount(prev => prev - 1);
+        } else {
+            setIncompleteCount(prev => prev - 1);
+        }
+    }
+
+    function handleCheckItem(completionStatus) {
+        if (completionStatus) {
+            setCompleteCount(prev => prev + 1);
+            setIncompleteCount(prev => prev - 1);
+        } else {
+            setIncompleteCount(prev => prev + 1);
+            setCompleteCount(prev => prev - 1);
+        }
     }
     
     useEffect(() => {
-        axios
-            .get(`https://d4f21666-0966-4b15-b291-99b17adce946.mock.pstmn.io/users/aaa/bucketlist`)
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setSessionUserId(decoded.sub);
+        }
+
+        api
+            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/bucketlist`)
             .then((response) => {
                 setItems(response.data.items);
                 setTotalCount(response.data.totalItems);
                 setCompleteCount(response.data.completeItems);
-                setInompleteCount(response.data.incompleteItems);
+                setIncompleteCount(response.data.incompleteItems);
             })
-    }, []);
+    }, [reloadData, userId]);
 
     return (
         <>
-        <ProfileTemplate heading="@username">
+        <ProfileTemplate heading={`@${userId}`}>
             <div className={styles.row}>
                 <div className={styles.columnLeft}>
                     <div className={styles.topControls}>
-                        <div>
-                            <button
-                                className={`${styles.btn} ${styles.btnPrimary}`}
-                                onClick={() => setShowGoalModal(true)}
-                            >
-                                +
-                            </button>
-                            <button 
-                                className={`${styles.btn} ${styles.btnSecondary}`}
-                                onClick={() => setSortMode(true)}
-                            >
-                                <img className={styles.sortIcon} src={sortIcon} styles={{padding: 'none'}}/>
-                            </button>
-                            {sortMode && (
+                        {sessionUserId === userId && (
+                            <div>
                                 <button
-                                    className={`${styles.btn} ${styles.btnOutline}`}
-                                    onClick={saveSortedList}
+                                    className={`${styles.btn} ${styles.btnPrimary}`}
+                                    onClick={() => setShowGoalModal(true)}
                                 >
-                                    저장
+                                    +
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                         <Dropdown 
                             options={dropdownOptions}
                             defaultOption={activeDropdownOption}
@@ -128,11 +189,16 @@ export default function Bucketlist() {
                                 <BucketlistItem 
                                     key={item.id}
                                     id={item.id}
-                                    index={item.index}
                                     title={item.title}
                                     description={item.description}
                                     completionStatus={item.completionStatus}
-                                    completedAt={item.completedAt}
+                                    completedAt={item.formattedDate}
+                                    displayOrder={item.displayOrder}
+                                    userId={userId}
+                                    sessionUserId={sessionUserId}
+                                    activeDropdownOption={activeDropdownOption}
+                                    onDelete={handleDeleteItem}
+                                    onCheck={handleCheckItem}
                                 />
                             ))}
                         </SortableContext>
@@ -156,36 +222,43 @@ export default function Bucketlist() {
                 </div>
             </div>
         </ProfileTemplate>
-        <Modal show={showGoalModal} onClose={() => setShowGoalModal(false)}>
-            <form onSubmit={saveNewGoal} className={styles.modal} >
-                <div>
-                    <label>목표</label>
-                    <input type="text" name="title" required maxLength={50}/>
+        <Modal 
+            show={showGoalModal}
+            onClose={() => setShowGoalModal(false)}
+            onSubmit={saveNewGoal}
+            heading='NEW BUCKETLIST'
+            firstLabel='추가'
+            secondLabel='취소'
+        >
+            <div className={styles.formGroup}>
+                <label>목표</label>
+                <div className={styles.inputWrapper}>
+                    <input
+                        className={styles.formInput}
+                        type="text"
+                        value={title}
+                        required
+                        maxLength={50}
+                        placeholder="목표를 입력하세요"
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
                 </div>
-                <div>
-                    <label>상세</label>
-                    <textarea name="description" maxLength={120} rows={6}/>
+            </div>
+            <div className={styles.formGroup}>
+                <label>상세</label>
+                <div className={styles.inputWrapper}>
+                    <textarea
+                        className={styles.formInput}
+                        value={description}
+                        maxLength={120}
+                        rows={6}
+                        placeholder="목표 상세를 입력하세요"
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
                 </div>
-                <div className={styles.btnContainer}>
-                    <button type="submit" className={`${styles.btn} ${styles.btnSecondary}`}>추가</button>
-                    <button className={`${styles.btn} ${styles.btnOutline}`} onClick={() => {setShowGoalModal(false)}}>취소</button>
-                </div>
-            </form>
+            </div>
         </Modal>
 
         </>
     );
-
-    function handleDragEnd(event) {
-        const {active, over} = event;
-
-        if (active.id !== over.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex(item => item.id === active.id);
-                const newIndex = items.findIndex(item => item.id === over.id);
-                
-                return arrayMove(items, oldIndex, newIndex);
-            });
-        }
-    }
 }

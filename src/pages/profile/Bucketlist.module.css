@@ -78,7 +78,7 @@
   flex-shrink: 0;
 }
 
-#customCheckboxText {
+.customCheckboxText {
   display: flex;
   flex-direction: column;
 }
@@ -101,6 +101,7 @@
   line-height: 1.4;
   max-width: 530px; /* limits width */
   transition: color 0.3s;
+  margin-bottom: 5px;
 }
 
 .completed {
@@ -108,11 +109,15 @@
   color: #BEBEBE;
 }
 
-.deleteIcon {
-  cursor: pointer;
-  display: flex;
-}
 /* Draggable */
+.iconWrapper {
+  display: flex;
+  gap: 8px; /* spacing between icons */
+  margin-left: auto; /* push it to the right if in flex container */
+  align-items: center;
+}
+
+
 .dragHandle {
   cursor: grab;
   width: 20px;
@@ -185,6 +190,16 @@
     color: white;
 }
 
+.deleteIcon {
+  cursor: pointer;
+  display: flex;
+  margin-left: 10px;
+  text-align: center;
+  background-color: transparent;
+  padding: 0px;
+  right: 0;
+}
+
 .topControls {
   display: flex;
   justify-content: space-between;
@@ -244,9 +259,32 @@
   font-size: 0.95rem;
 }
 
-.btnContainer {
-  margin: 0 20%;
-  display: inline-block;
-  text-align: center;
-  width: 60%;
+/* FORM STYLING */
+.formGroup {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.formInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  color: black;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
 }

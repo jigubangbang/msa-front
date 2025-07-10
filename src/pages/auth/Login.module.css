@@ -1,7 +1,8 @@
 /* Login.module.css */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .loginPage {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard';
   line-height: 1.6;
   background-color: #000;
   color: #fff;
@@ -33,7 +34,8 @@
 }
 
 .logo {
-  font-size: 28px;
+  font-family: 'Pretendard';
+  font-size: 24px;
   font-weight: bold;
   letter-spacing: 2px;
   margin-top: 10px;
@@ -69,6 +71,7 @@
 }
 
 .formInput {
+  font-family: 'Pretendard';
   width: 100%;
   padding: 12px 12px 12px 40px; 
   border: 1px solid #ccc;
@@ -77,6 +80,7 @@
   transition: border-color 0.3s;
   background-color: #fafafa;
   box-sizing: border-box;
+  color: #000;
 }
 
 .formInput:focus {
@@ -141,6 +145,8 @@
   font-size: 14px;
   font-weight: 400;
   text-align: center;
+  white-space: pre-line;
+  word-break: keep-all; 
 }
 
 .errorIcon {
@@ -151,6 +157,7 @@
 
 /* 로그인 버튼 */
 .loginButton {
+  font-family: 'Pretendard';
   width: 100%;
   padding: 12px 20px;
   background-color: #000;
@@ -164,6 +171,9 @@
   margin-top: 8px;
   outline: none !important;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loginButton:hover {
@@ -173,7 +183,6 @@
 
 .loginButton:focus {
   outline: none !important;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .loginButton:active {
@@ -324,7 +333,7 @@
 
 .findLink.primary:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 /* 회원가입 */

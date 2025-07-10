@@ -1,0 +1,70 @@
+/* src/styles/chat/ChatModal.css */
+
+.chat-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent; /* 로딩 중엔 밝은 배경 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* chat-modal-overlay보다 높게 */
+}
+
+.chat-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: flex-end; /* 가로 중앙 정렬 */
+  align-items: flex-end; /* 세로 중앙 정렬 */
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 1000; /* 다른 모든 콘텐츠 위에 표시되도록 */
+  animation: fadeIn 0.3s ease-out; /* 부드럽게 나타나는 애니메이션 */
+  pointer-events: none;
+}
+
+.chat-modal-content {
+  background-color: white; /* 모달 배경색 */
+  color: var(--color-text-primary, #242424);
+  border-radius: 8px; /* 모서리 둥글게 */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* 그림자 */
+  overflow: hidden; /* 자식 요소가 둥근 모서리 밖으로 나가지 않도록 */
+  position: relative; /* 닫기 버튼 위치 지정을 위해 */
+  width: 100%;
+  max-width: 400px;
+  height: 65vh;
+  animation: slideIn 0.3s ease-out; /* 부드럽게 위로 슬라이드하는 애니메이션 */
+  pointer-events: auto;
+}
+
+.chat-loading-text {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  color: #333;
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* 애니메이션 키프레임 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

@@ -1,0 +1,487 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@font-face{
+  font-family:'DNFBitBitv2';
+  font-style:normal;font-weight:400;
+  src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.questModal {
+  font-family: 'Pretendard', sans-serif;
+  background: #1a1a1a;
+  border-radius: 16px;
+  width: 95%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  pointer-events: auto;
+}
+
+.modalHeader {
+  min-height: 32px;
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  outline: none;
+  color: #fff;
+  font-size: 20px;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modalContent {
+  padding: 0 20px 20px;
+}
+
+.certificationContent {
+  padding: 10px 30px 30px;
+}
+
+.questTitle {
+  font-family: 'DNFBitBitv2', 'Pretendard';
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  color: #fafafa;
+  line-height: 1.3;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.questInfo {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+.questName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.questMeta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+}
+
+.difficulty {
+  font-weight: 600;
+  color: #333;
+}
+
+.separator {
+  color: #333;
+}
+
+.xp {
+  font-weight: 600;
+  color: #333;
+}
+
+.status {
+  font-weight: 600;
+  color: #4CAF50;
+}
+
+.questConditions {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+.questConditions h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.conditionText {
+  font-weight: 600;
+  color: #4CAF50;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.completionInfo {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+.dateInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dateItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dateLabel {
+  font-weight: 600;
+  color: #333;
+  min-width: 60px;
+}
+
+.dateValue {
+  color: #666;
+}
+
+.imageSection {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+.imageSection h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.imageItem {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.imageItem:hover {
+  transform: scale(1.05);
+}
+
+.certificationImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noImages {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin: 20px 0;
+    word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.descriptionSection {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+.descriptionSection h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.descriptionContent {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.buttonSection {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.closeButton, .retryButton {
+  padding: 12px 24px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  min-width: 140px;
+  outline: none;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.darkButton {
+  background: #000;
+  color: #fff;
+}
+
+.darkButton:hover:not(:disabled) {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.darkButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.darkButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.outlineButton {
+  background: transparent;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.outlineButton:hover:not(:disabled) {
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
+}
+
+.outlineButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.outlineButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 로딩 상태 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #fafafa;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #333;
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* 에러 상태 */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #fafafa;
+  text-align: center;
+}
+
+.error p {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+}
+
+/* 이미지 확대 모달 */
+.imageModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.imageModal {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imageCloseBtn {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.imageCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.enlargedImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.imageCounter {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .questModal {
+    width: 100%;
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .certificationContent {
+    padding: 10px 15px 20px;
+  }
+  
+  .questTitle {
+    font-size: 24px;
+  }
+  
+  .imageGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .imageItem {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .buttonSection {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .closeButton, .retryButton {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .dateInfo {
+    gap: 12px;
+  }
+  
+  .dateItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .dateLabel {
+    min-width: auto;
+  }
+  
+  .imageCloseBtn {
+    top: -40px;
+    font-size: 20px;
+  }
+  
+  .imageCounter {
+    bottom: -30px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
