@@ -13,7 +13,7 @@ export default function PremiumSubscriptionStatus({ isActive, monthlyFee, nextPa
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
         <h2 className={styles.sectionTitle} style={{ borderBottom: 'none', paddingBottom: '0', marginBottom: '0' }}>현재 구독 상태</h2>
-        <div className={`${styles.statusBadge} ${!isActive ? styles.statusBadgeInactive : ''}`}>{isActive ? '구독 중' : '구독 해지'}</div>
+        <div className={`${styles.statusBadge} ${!isActive ? styles.statusBadgeInactive : ''}`}>{isActive ? '구독 중' : '구독 취소'}</div>
       </div>
       <div className={styles.statusInfo}>
         <div className={styles.statusItem}>
