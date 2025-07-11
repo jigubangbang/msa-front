@@ -46,15 +46,16 @@ export default function EditNationalityModal({prevNationality="KOR", showNationa
         >
             <div className={styles.formGroup}>
                 <div className={styles.inputWrapper}>
-                    {countries && selectedCountry && (
+                    {countries && (
                         <select
-                            value={selectedCountry}
+                            value={selectedCountry || ""}
                             onChange={(e) => setSelectedCountry(e.target.value)}
                             className={styles.formInput}
                         >
+                            <option value="" disabled selected>국가를 선택하세요</option>
                             {countries.map((country) => (
                                 <option key={country.id} value={country.id}>{country.name}</option>
-                            ))}
+                            ))}?
                         </select>
                     )}
                 </div>

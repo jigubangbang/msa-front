@@ -15,8 +15,6 @@ import api from "../../apis/api";
 import EditNationalityModal from "./main/EditNationalityModal";
 
 // TODO: redirect travel style to details page
-// TODO: show modal only if is logged in user's profile
-// TODO: redirect follower/following stats -> network list page
 
 export default function ProfileSidebar() {
     const [sessionUserId, setSessionUserId] = useState();
