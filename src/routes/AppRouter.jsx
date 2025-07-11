@@ -63,6 +63,7 @@ import FeedBookmark from "../pages/feed/FeedBookmark";
 import FeedSearch from "../pages/feed/FeedSearch";
 import FeedUserRecommendation from "../pages/feed/FeedUserRecommendation";
 import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
+import TravelmateFormPage from "../pages/community/traveler/travelmate/TravelmateFormPage";
 
 const AppRouter = () => {
     return (
@@ -121,9 +122,10 @@ const AppRouter = () => {
           {/* Traveler */}
           <Route path="/traveler/mate" element={<TravelMateListPage/>}/>
           <Route path="/traveler/mate/:postId" element={<TravelmateDetailPage/>}/>
-          {/*<Route path="/traveler/mate/new" element={<TravelFormPage/>}/>
+          <Route path="/traveler/mate/new" element={<TravelmateFormPage/>}/>
+          <Route path="/traveler/mate/:postId/edit" element={<TravelmateFormPage />} />
           
-          <Route path="/traveler/info" element={<InfoListPage/>}/>
+          {/*<Route path="/traveler/info" element={<InfoListPage/>}/>
           <Route path="/traveler/info/new" element={<InfoFormPage/>}/>
           <Route path="/traveler/info/:id" element={<InfoDetailPage/>}/>
           <Route path="/traveler/my" element={<MyTravelerPage/>}/>

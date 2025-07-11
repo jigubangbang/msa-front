@@ -16,6 +16,8 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportTarget, setReportTarget] = useState(null); 
   
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState('');
 
   useEffect(() => {
     if (postId) {
@@ -137,23 +139,34 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     }
   };
 
-  const handleEdit = async (commentId, currentContent) => {
-  const newContent = prompt('댓글을 수정하세요:', currentContent);
-  if (!newContent || newContent.trim() === '') return;
-  
-  try {
-    await api.put(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`, {
-      content: newContent.trim()
-    });
+  const handleEdit = (commentId, currentContent) => {
+    setEditingId(commentId);
+    setEditingText(currentContent);
+  };
+
+  const handleEditSubmit = async (commentId) => {
+    if (!editingText.trim()) return;
     
-    fetchQuestions(); // 새로고침
-    alert('댓글이 수정되었습니다.');
-  } catch (error) {
-    console.error('Failed to update comment:', error);
-    const errorMessage = error.response?.data?.error || '댓글 수정에 실패했습니다.';
-    alert(errorMessage);
-  }
-};
+    try {
+      await api.put(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`, {
+        content: editingText.trim()
+      });
+      
+      setEditingId(null);
+      setEditingText('');
+      fetchQuestions();
+      alert('댓글이 수정되었습니다.');
+    } catch (error) {
+      console.error('Failed to update comment:', error);
+      const errorMessage = error.response?.data?.error || '댓글 수정에 실패했습니다.';
+      alert(errorMessage);
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditingId(null);
+    setEditingText('');
+  };
 
 const handleDelete = async (commentId) => {
   if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) return;
@@ -252,6 +265,31 @@ const handleDelete = async (commentId) => {
                     {question.blindStatus === 'BLINDED' ? '블라인드 된 글입니다.' : 
                     question.isDeleted ? '삭제된 댓글입니다.' : question.question}
                   </div>
+                  {editingId === question.id && (
+                      <div className={styles.editForm}>
+                        <textarea
+                          className={styles.editInput}
+                          value={editingText}
+                          onChange={(e) => setEditingText(e.target.value)}
+                          rows={3}
+                        />
+                        <div className={styles.editActions}>
+                          <button 
+                            className={styles.cancelButton}
+                            onClick={handleEditCancel}
+                          >
+                            취소
+                          </button>
+                          <button 
+                            className={styles.submitButton}
+                            onClick={() => handleEditSubmit(question.id)}
+                            disabled={!editingText.trim()}
+                          >
+                            수정 완료
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   <div className={styles.bubbleActions}>
                     <button 
                     className={styles.replyButton}
@@ -296,6 +334,31 @@ const handleDelete = async (commentId) => {
                           {reply.blindStatus === 'BLINDED' ? '블라인드 된 글입니다.' : 
                           reply.isDeleted ? '삭제된 댓글입니다.' : reply.answer}
                         </div>
+                        {editingId === reply.id && (
+                          <div className={styles.editForm}>
+                            <textarea
+                              className={styles.editInput}
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value)}
+                              rows={2}
+                            />
+                            <div className={styles.editActions}>
+                              <button 
+                                className={styles.cancelButton}
+                                onClick={handleEditCancel}
+                              >
+                                취소
+                              </button>
+                              <button 
+                                className={styles.submitButton}
+                                onClick={() => handleEditSubmit(reply.id)}
+                                disabled={!editingText.trim()}
+                              >
+                                수정 완료
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -304,7 +367,7 @@ const handleDelete = async (commentId) => {
 
               {/* 답변 작성 */}
               {activeReplyId === question.id && isLogin && 
- question.blindStatus !== 'BLINDED' && !question.isDeleted && (
+                question.blindStatus !== 'BLINDED' && !question.isDeleted && (
                 <div className={styles.replyForm}>
                   <div className={styles.profileImage}>
                     <img 

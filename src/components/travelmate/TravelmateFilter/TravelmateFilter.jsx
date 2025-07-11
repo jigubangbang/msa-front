@@ -175,6 +175,7 @@ export default function TravelmateFilter({ onSubmit }) {
         {/* 지역 토글 */}
         <div ref={filterRefs.location} className={styles.filterToggle}>
           <button 
+          type="button"
             className={`${styles.toggleButton} ${activeToggle === 'location' ? styles.active : ''}`}
             onClick={() => handleToggleClick('location')}
           >
@@ -186,6 +187,7 @@ export default function TravelmateFilter({ onSubmit }) {
         {/* 대상 토글 */}
         <div ref={filterRefs.target} className={styles.filterToggle}>
           <button 
+          type="button"
             className={`${styles.toggleButton} ${activeToggle === 'target' ? styles.active : ''}`}
             onClick={() => handleToggleClick('target')}
           >
@@ -197,6 +199,7 @@ export default function TravelmateFilter({ onSubmit }) {
         {/* 테마 토글 */}
         <div ref={filterRefs.theme} className={styles.filterToggle}>
           <button 
+          type="button"
             className={`${styles.toggleButton} ${activeToggle === 'theme' ? styles.active : ''}`}
             onClick={() => handleToggleClick('theme')}
           >
@@ -208,6 +211,7 @@ export default function TravelmateFilter({ onSubmit }) {
         {/* 여행 스타일 토글 */}
         <div ref={filterRefs.style} className={styles.filterToggle}>
           <button 
+          type="button"
             className={`${styles.toggleButton} ${activeToggle === 'style' ? styles.active : ''}`}
             onClick={() => handleToggleClick('style')}
           >
@@ -217,7 +221,7 @@ export default function TravelmateFilter({ onSubmit }) {
         </div>
 
         <div className={styles.buttonDiv}>
-        <button className={`${styles.button} ${styles.darkButton}`} onClick={handleApplyClick}>적용</button>
+        <button type="button" className={`${styles.button} ${styles.darkButton}`} onClick={handleApplyClick}>적용</button>
         </div>
       </div>
 
@@ -236,6 +240,7 @@ export default function TravelmateFilter({ onSubmit }) {
                     : item.label
                   }
                   <button 
+                    type="button"
                     className={styles.removeButton}
                     onClick={() => removeFilterItem(key, item.id)}
                   >
@@ -250,7 +255,7 @@ export default function TravelmateFilter({ onSubmit }) {
             selectedFilters.targets.length > 0 || 
             selectedFilters.themes.length > 0 || 
             selectedFilters.styles.length > 0) && (
-            <button className={styles.resetAllButton} onClick={resetAllFilters}>
+            <button type="button" className={styles.resetAllButton} onClick={resetAllFilters}>
               <img src="/icons/common/refresh.svg" alt="reset all"/>
             </button>
           )}
@@ -263,6 +268,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.panelHeader}>
             <span>지역 선택</span>
             <button 
+            type="button"
               className={styles.resetButton}
               onClick={() => resetFilter('locations')}
             >
@@ -280,6 +286,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.panelHeader}>
             <span>대상 선택</span>
             <button 
+            type="button"
               className={styles.resetButton}
               onClick={() => resetFilter('targets')}
             >
@@ -289,6 +296,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.optionGrid}>
             {targets.map(target => (
               <button
+              type="button"
                 key={target.id}
                 className={`${styles.optionButton} ${
                   selectedFilters.targets.some(t => t.id === target.id) ? styles.selected : ''
@@ -307,6 +315,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.panelHeader}>
             <span>테마 선택</span>
             <button 
+            type="button"
               className={styles.resetButton}
               onClick={() => resetFilter('themes')}
             >
@@ -316,6 +325,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.optionGrid}>
             {themes.map(theme => (
               <button
+              type="button"
                 key={theme.id}
                 className={`${styles.optionButton} ${
                   selectedFilters.themes.some(t => t.id === theme.id) ? styles.selected : ''
@@ -334,6 +344,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.panelHeader}>
             <span>여행 스타일 선택</span>
             <button 
+            type="button"
               className={styles.resetButton}
               onClick={() => resetFilter('styles')}
             >
@@ -343,6 +354,7 @@ export default function TravelmateFilter({ onSubmit }) {
           <div className={styles.optionGrid}>
             {travelStyles.map(style => (
               <button
+              type="button"
                 key={style.id}
                 className={`${styles.optionButton} ${
                   selectedFilters.styles.some(s => s.id === style.id) ? styles.selected : ''
