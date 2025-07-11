@@ -53,6 +53,7 @@ import TravelMateListPage from "../pages/community/traveler/travelmate/TravelMat
 import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
 import TravelmateFormPage from "../pages/community/traveler/travelmate/TravelmateFormPage";
 import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
+import InfoFormPage from "../pages/community/traveler/travelinfo/InfoFormPage";
 
 
 const AppRouter = () => {
@@ -111,8 +112,9 @@ const AppRouter = () => {
           <Route path="/traveler/mate/:postId/edit" element={<TravelmateFormPage />} />
           
           <Route path="/traveler/info" element={<InfoListPage/>}/>
-          {/*<Route path="/traveler/info/new" element={<InfoFormPage/>}/>
-          <Route path="/traveler/info/:id" element={<InfoDetailPage/>}/>
+          <Route path="/traveler/info/new" element={<InfoFormPage/>}/>
+          <Route path="/traveler/info/:infoId/edit" element={<InfoFormPage/>}/>
+          {/*
           <Route path="/traveler/my" element={<MyTravelerPage/>}/>
 
            Board 
