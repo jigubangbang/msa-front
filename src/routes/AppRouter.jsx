@@ -44,6 +44,8 @@ import CommentManage from "../components/admin/CommentManage";
 import GroupManage from "../components/admin/GroupManage";
 import AdminReport from "../pages/admin/AdminReport";
 import AdminInquiry from "../pages/admin/AdminInquiry";
+import InquiryManage from "../components/admin/InquiryManage";
+import InquiryReply from "../components/admin/InquiryReply";
 
 import ChatPanel from "../pages/Chat/ChatPanel";
 
@@ -172,7 +174,10 @@ const AppRouter = () => {
             <Route path="groups" element={<GroupManage/>}/>
           </Route>
           <Route path="/admin/reports" element={<AdminReport/>}/>
-          <Route path="/admin/inquiries" element={<AdminInquiry/>}/>
+          <Route path="/admin/inquiries" element={<AdminInquiry/>}>
+            <Route index element={<InquiryManage/>}/>
+            <Route path=":id" element={<InquiryReply/>}/>
+          </Route>
 
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>
