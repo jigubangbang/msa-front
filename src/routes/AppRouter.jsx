@@ -53,7 +53,6 @@ import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
 import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPage";
-import BadgeAdminDetail from "../components/quest-admin/BadgeAdminDetail";
 import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPage";
 import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
 import FeedDetail from "../components/feed/FeedDetail";
@@ -64,6 +63,8 @@ import FeedSearch from "../pages/feed/FeedSearch";
 import FeedUserRecommendation from "../pages/feed/FeedUserRecommendation";
 import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
 import TravelmateFormPage from "../pages/community/traveler/travelmate/TravelmateFormPage";
+import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
+
 
 const AppRouter = () => {
     return (
@@ -125,8 +126,8 @@ const AppRouter = () => {
           <Route path="/traveler/mate/new" element={<TravelmateFormPage/>}/>
           <Route path="/traveler/mate/:postId/edit" element={<TravelmateFormPage />} />
           
-          {/*<Route path="/traveler/info" element={<InfoListPage/>}/>
-          <Route path="/traveler/info/new" element={<InfoFormPage/>}/>
+          <Route path="/traveler/info" element={<InfoListPage/>}/>
+          {/*<Route path="/traveler/info/new" element={<InfoFormPage/>}/>
           <Route path="/traveler/info/:id" element={<InfoDetailPage/>}/>
           <Route path="/traveler/my" element={<MyTravelerPage/>}/>
 
