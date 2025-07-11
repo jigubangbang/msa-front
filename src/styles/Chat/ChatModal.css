@@ -33,6 +33,7 @@
 
 .chat-modal-content {
   background-color: white; /* 모달 배경색 */
+  color: var(--color-text-primary, #242424);
   border-radius: 8px; /* 모서리 둥글게 */
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* 그림자 */
   overflow: hidden; /* 자식 요소가 둥근 모서리 밖으로 나가지 않도록 */

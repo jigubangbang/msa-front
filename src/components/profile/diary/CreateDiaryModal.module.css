@@ -164,3 +164,9 @@ h2 {
     flex: 1; /* each takes 50% */
     min-width: 0; /* allow shrink on small screens */
 }
+
+.errorMessage {
+  font-size: 14px;
+  padding-top: 8px;
+  text-align: center;
+}

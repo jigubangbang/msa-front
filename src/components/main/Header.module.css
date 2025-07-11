@@ -97,6 +97,11 @@
   cursor: pointer;
 }
 
+.proBtn,
+.proBtn span {
+  color: white !important;
+}
+
 /* 링크 색상 통일 */
 .menu a,
 .menu span a,

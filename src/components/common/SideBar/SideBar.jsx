@@ -1,12 +1,11 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './Sidebar.module.css';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import styles from "./Sidebar.module.css";
 
 //menu에 어떤 요소들을 넣을 것인지 받아옴
-export default function Sidebar({ 
-  menuItems = []
-}) {
+export default function Sidebar({ menuItems = [] }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleMenuClick = (path) => {
     if (path) {
@@ -22,6 +21,25 @@ export default function Sidebar({
     }
   };
 
+  // 현재 경로와 메뉴 경로를 비교하여 active 상태 확인
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
+  // 메인 메뉴가 active인지 확인 (자신의 path나 서브메뉴 중 하나가 active인 경우)
+  const isMainMenuActive = (item) => {
+    if (isActive(item.path)) {
+      return true;
+    }
+
+    // 서브메뉴 중 하나가 active인지 확인
+    if (item.submenus && item.submenus.length > 0) {
+      return item.submenus.some((submenu) => isActive(submenu.path));
+    }
+
+    return false;
+  };
+
   return (
     <div className={styles.sidebar}>
       {/* Menu Items */}
@@ -29,8 +47,10 @@ export default function Sidebar({
         {menuItems.map((item, index) => (
           <div key={index} className={styles.menuGroup}>
             {/* 메인 메뉴 */}
-            <div 
-              className={`${styles.menuButton} ${item.active ? styles.active : ''}`}
+            <div
+              className={`${styles.menuButton} ${
+                isMainMenuActive(item) ? styles.active : ""
+              }`}
               onClick={() => handleMenuClick(item.path)}
             >
               <div className={styles.menuIcon}>
@@ -43,14 +63,16 @@ export default function Sidebar({
                 )}
               </div>
             </div>
-            
+
             {/* 서브메뉴 */}
             {item.submenus && item.submenus.length > 0 && (
               <div className={styles.submenuContainer}>
                 {item.submenus.map((submenu, subIndex) => (
-                  <div 
+                  <div
                     key={subIndex}
-                    className={`${styles.submenuItem} ${submenu.active ? styles.active : ''}`}
+                    className={`${styles.submenuItem} ${
+                      isActive(submenu.path) ? styles.active : ""
+                    }`}
                     onClick={() => handleSubmenuClick(submenu.path)}
                   >
                     <span>{submenu.label}</span>

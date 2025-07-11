@@ -8,8 +8,8 @@ import Modal from "../common/Modal/Modal";
 import backIcon from "../../assets/user/back.svg";
 import editIcon from "../../assets/user/edit.svg";
 import deleteIcon from "../../assets/user/delete.svg";
-import submitIcon from "../../assets/user/submit.svg";
-import cancelIcon from "../../assets/user/cancel.svg";
+import submitIcon from "../../assets/user/submit_green.svg";
+import cancelIcon from "../../assets/user/cancel_red.svg";
 
 export default function InquiryDetail() {
   const { id } = useParams();
@@ -52,7 +52,7 @@ export default function InquiryDetail() {
   };
 
   const getStatusLabel = (status) =>
-    status === "PENDING" ? "대기" : "답변완료";
+    status === "PENDING" ? "대기" : "답변 완료";
 
   // 날짜 포맷 (YYYY년 MM월 DD일 HH:mm)
   const formatDateTime = (dateString) => {
@@ -136,19 +136,19 @@ export default function InquiryDetail() {
   const handleSave = async () => {
     try {
       if (!editFormData.title.trim()) {
-        setMessage("제목을 입력해주세요");
+        setMessage("제목을 입력해 주세요");
         setMessageType("error");
         return;
       }
 
       if (!editFormData.content.trim()) {
-        setMessage("내용을 입력해주세요");
+        setMessage("내용을 입력해 주세요");
         setMessageType("error");
         return;
       }
 
       if (!editFormData.category) {
-        setMessage("카테고리를 선택해주세요");
+        setMessage("카테고리를 선택해 주세요");
         setMessageType("error");
         return;
       }
@@ -197,7 +197,7 @@ export default function InquiryDetail() {
         localStorage.removeItem("accessToken");
         navigate("/login");
       } else if (err.response?.status === 400) {
-        setMessage("입력 정보를 확인해주세요.");
+        setMessage("입력 정보를 확인해 주세요.");
         setMessageType("error");
       } else if (err.response?.status === 403) {
         setMessage("수정 권한이 없습니다.");
@@ -219,6 +219,7 @@ export default function InquiryDetail() {
     await fetchInquiryDetail(); 
     setIsEditMode(false);
     setSelectedFiles([]); 
+    window.scrollTo({ top: 0, behavior: "auto" });
     navigate(`/user/inquiry/${id}`);
   };
 
@@ -341,7 +342,7 @@ export default function InquiryDetail() {
                         onChange={(e) => setEditFormData(prev => ({ ...prev, category: e.target.value }))}
                         className={styles.selectInput}
                       >
-                        <option value="" disabled>카테고리를 선택해주세요</option>
+                        <option value="" disabled>카테고리를 선택해 주세요</option>
                         {categoryOptions.map((option) => (
                           <option key={option.value} value={option.value}>
                             {option.label}
@@ -371,7 +372,7 @@ export default function InquiryDetail() {
                     value={editFormData.title}
                     onChange={(e) => setEditFormData(prev => ({ ...prev, title: e.target.value }))}
                     className={styles.textInput}
-                    placeholder="문의 제목을 입력해주세요"
+                    placeholder="문의 제목을 입력해 주세요"
                     maxLength={100}
                   />
                 ) : (
@@ -384,10 +385,10 @@ export default function InquiryDetail() {
                       {isEditMode ? (
                         <>
                           <button className={styles.saveButton} onClick={handleSave}>
-                            <img src={submitIcon} alt="저장" className={styles.actionIcon} />
+                            <img src={submitIcon} alt="저장" className={styles.actionIcon2} />
                           </button>
                           <button className={styles.cancelEditButton} onClick={handleCancelEdit}>
-                            <img src={cancelIcon} alt="취소" className={styles.actionIcon} />
+                            <img src={cancelIcon} alt="취소" className={styles.actionIcon2} />
                           </button>
                         </>
                       ) : (
@@ -414,7 +415,7 @@ export default function InquiryDetail() {
                       value={editFormData.content}
                       onChange={(e) => setEditFormData(prev => ({ ...prev, content: e.target.value }))}
                       className={styles.textareaInput}
-                      placeholder="문의 내용을 입력해주세요"
+                      placeholder="문의 내용을 입력해 주세요"
                       rows={8}
                       maxLength={1000}
                     />

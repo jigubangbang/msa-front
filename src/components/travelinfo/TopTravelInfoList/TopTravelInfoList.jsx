@@ -140,10 +140,19 @@ const TopTravelInfoList = ({
     }
   };
 
-  const handleChatClick = (chatId) => {
-    // 채팅방으로 이동하는 로직
-    console.log('채팅방으로 이동:', chatId);
-    // 예: router.push(`/chat/${chatId}`);
+  const handleChatClick = async (groupId) => {
+    console.log('채팅방으로 이동:', groupId);
+    try {
+      const response = await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+        groupType: "TRAVELINFO",
+        groupId: groupId
+      });
+      
+      console.log('채팅방으로 이동:', response.data);
+    } catch (error) {
+      console.error('Failed to join chat:', error);
+      alert('참여에 실패했습니다.');
+    }
   };
 
   const handleJoinSubmit = async () => {

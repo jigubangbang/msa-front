@@ -22,7 +22,7 @@ export default function ProfileDropdown({ onLogout }) {
       if (token) {
           const decoded = jwtDecode(token);
           setUserId(decoded.sub);
-          setUserRole(decoded.role);
+          setUserRole(Array.isArray(decoded.role) ? decoded.role : [decoded.role]);
       }
     
     const handleClickOutside = (e) => {
@@ -34,49 +34,53 @@ export default function ProfileDropdown({ onLogout }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleCloseDropdown = () => {
+    setOpen(false);
+  };
+
   return (
     <div className={styles.profileDropdownWrapper} ref={dropdownRef}>
       <button className={styles.dropdownToggle} onClick={() => setOpen(!open)}>
-        프로필 ▾
+        {userId || '프로필'} ▾
       </button>
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to={`/profile/${userId}`}>
+          <Link to={`/profile/${userId}`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={profileIcon} alt="프로필" /> 프로필
             </div>
           </Link>
-          <Link to={`/profile/${userId}/countries`}>
+          <Link to={`/profile/${userId}/countries`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={globeIcon} alt="국가" /> 국가
             </div>
           </Link>
-          <Link to={`/profile/${userId}/badges`}>
+          <Link to={`/profile/${userId}/badges`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={badgeIcon} alt="뱃지함" /> 뱃지함
             </div>
           </Link>
-          <Link to={`/profile/${userId}/bucketlist`}>
+          <Link to={`/profile/${userId}/bucketlist`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={listIcon} alt="버킷리스트" /> 버킷리스트
             </div>
           </Link>
-          <Link to={`/profile/${userId}/diary`}>
+          <Link to={`/profile/${userId}/diary`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={inkpenIcon} alt="여행일지" /> 여행일지
             </div>
           </Link>
 
           <div className={styles.dropdownDivider}></div>
-          <Link to={`/user/manage`}>
+          <Link to={`/user/manage`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={manageIcon} alt="계정관리" /> 계정 관리
             </div>
           </Link>
 
-          {userRole === 'ROLE_ADMIN' && (
-            <Link to="/admin" onClick={() => setOpen(false)}>
+          {userRole?.includes('ROLE_ADMIN') && (
+            <Link to="/admin/users" onClick={handleCloseDropdown}>
               <div className={styles.dropdownItem}>
                 <img src={adminIcon} alt="관리자"/>
                 관리자

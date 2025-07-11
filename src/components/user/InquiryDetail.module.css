@@ -5,8 +5,8 @@
   background-color: #fff;
   border-radius: 8px;
   border: 1px solid #e9ecef;
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 25px 25px 35px 25px;
+  margin-bottom: 5px;
 }
 
 /* 헤더 */
@@ -168,14 +168,6 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.replySection {
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 20px 0;
-  border-bottom: 1px solid #e9ecef;
-}
-
 .contentTitle {
   font-family: 'Pretendard';
   font-size: 16px;
@@ -221,7 +213,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 600px;
+  max-width: 700px;
   cursor: pointer;
 }
 
@@ -234,7 +226,6 @@
   background-color: #f8fff9;
   border: 1px solid #c3e6cb;
   padding: 20px;
-  border-radius: 8px;
   margin-top: 20px;
 }
 
@@ -267,7 +258,7 @@
 /* 액션 버튼 */
 .actionButtons {
   display: flex;
-  gap: 5px;
+  gap: 10px;
 }
 
 .editButton,
@@ -285,8 +276,13 @@
 }
 
 .actionIcon {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
+}
+
+.actionIcon2 {
+  width: 25px;
+  height: 25px;
 }
 
 /* 수정 모드 */
@@ -443,7 +439,7 @@
   background: none;
   border: none;
   color: #dc3545;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
   padding: 0;

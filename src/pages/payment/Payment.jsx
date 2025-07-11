@@ -4,6 +4,7 @@ import api from '../../apis/api';
 import '../../styles/payment/Payment.css';
 import SubscriptionStatus from './SubscriptionStatus';
 import Modal from '../../components/common/Modal/Modal'; // 공통 모달 import
+import CirclesSpinner from '../../components/common/Spinner/CirclesSpinner';
 
 const Payment = () => {
   const [error, setError] = useState(null);
@@ -114,14 +115,22 @@ const Payment = () => {
   );
 
   if (isLoading) {
-    return <div className="loading-container">구독 정보를 확인하는 중입니다...</div>;
+    return <CirclesSpinner />;
   }
 
   if (error) {
     return <div className="payment-container error">{error}</div>;
   }
 
-  if (subscription && subscription.startDate) {
+  // 구독 정보가 있고, 유효한 시작일이 있으며, 만료되지 않았을 경우에만 상태 페이지를 보여줌
+  if (
+    subscription && 
+    subscription.premiumHistory && 
+    subscription.premiumHistory.startDate &&
+    // endDate가 있고, 그 시간이 현재보다 미래일 때 (아직 만료되지 않음)
+    // 또는 endDate가 없을 때 (해지하지 않은 활성 구독)
+    (!subscription.premiumHistory.endDate || new Date(subscription.premiumHistory.endDate) > new Date())
+  ) {
     return (
       <>
         <SubscriptionStatus subscription={subscription} onCancel={handleCancelSubscription} />
@@ -177,7 +186,8 @@ const Payment = () => {
           결제 버튼을 클릭함으로써 귀하는 서비스 약관 및 개인정보 보호정책에 동의하게 됩니다. 구독은 언제든지 해지할 수 있습니다.
         </p>
       </div>
-    </div>
+ </div>
+    
   );
 };
 

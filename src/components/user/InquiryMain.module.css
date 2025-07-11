@@ -5,8 +5,8 @@
   background-color: #fff;
   border-radius: 8px;
   border: 1px solid #e9ecef;
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 25px 25px 35px 25px;
+  margin-bottom: 5px;
 }
 
 .header {
@@ -65,6 +65,7 @@
   font-size: 14px;
   margin-bottom: 20px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .message.error {

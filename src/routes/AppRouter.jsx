@@ -37,7 +37,15 @@ import InquiryDetail from "../components/user/InquiryDetail";
 import UserPremium from "../pages/user/UserPremium";
 import UserWithdraw from "../pages/user/UserWithdraw";
 
-import Admin from "../components/admin/Admin";
+import AdminUser from "../pages/admin/AdminUser";
+import AdminContent from "../pages/admin/AdminContent";
+import PostManage from "../components/admin/PostManage";
+import CommentManage from "../components/admin/CommentManage";
+import GroupManage from "../components/admin/GroupManage";
+import AdminReport from "../pages/admin/AdminReport";
+import AdminInquiry from "../pages/admin/AdminInquiry";
+import InquiryManage from "../components/admin/InquiryManage";
+import InquiryReply from "../components/admin/InquiryReply";
 
 import ChatPanel from "../pages/Chat/ChatPanel";
 
@@ -49,7 +57,12 @@ import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
 import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPage";
 import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPage";
 import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
+import FeedDetail from "../components/feed/FeedDetail";
 import TravelMateListPage from "../pages/community/traveler/travelmate/TravelMateListPage";
+import FeedFollowing from "../pages/feed/FeedFollowing";
+import FeedBookmark from "../pages/feed/FeedBookmark";
+import FeedSearch from "../pages/feed/FeedSearch";
+import FeedUserRecommendation from "../pages/feed/FeedUserRecommendation";
 import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
 import TravelmateFormPage from "../pages/community/traveler/travelmate/TravelmateFormPage";
 import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
@@ -76,6 +89,11 @@ const AppRouter = () => {
 
           {/* Feed */}
           <Route path="/feed" element={<Feed/>}/>
+          <Route path="/feed/:feedId" element={<FeedDetail/>}/>
+          <Route path="/feed/following" element={<FeedFollowing/>}/>
+          <Route path="/feed/bookmark" element={<FeedBookmark/>}/>
+          <Route path="/feed/search" element={<FeedSearch/>}/>
+          <Route path="/feed/recommendation" element={<FeedUserRecommendation/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>
@@ -151,7 +169,17 @@ const AppRouter = () => {
           <Route path="/user/withdraw" element={<UserWithdraw/>}/> 
 
           {/* Admin */}
-          <Route path="/admin" element={<Admin />}/>
+          <Route path="/admin/users" element={<AdminUser/>}/>
+          <Route path="/admin/content" element={<AdminContent/>}>
+            <Route path="posts" element={<PostManage/>}/>
+            <Route path="comments" element={<CommentManage/>}/>
+            <Route path="groups" element={<GroupManage/>}/>
+          </Route>
+          <Route path="/admin/reports" element={<AdminReport/>}/>
+          <Route path="/admin/inquiries" element={<AdminInquiry/>}>
+            <Route index element={<InquiryManage/>}/>
+            <Route path=":id" element={<InquiryReply/>}/>
+          </Route>
 
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>

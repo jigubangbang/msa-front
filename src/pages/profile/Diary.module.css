@@ -4,11 +4,11 @@
 }
 
 .columnLeft {
-    width: 90%;
+    width: 85%;
 }
 
 .columnRight {
-    width: 10%;
+    width: 15%;
 }
 
 .btn {
@@ -21,7 +21,7 @@
   min-height: 30px;
   min-width: 40px;
   padding: 5px 10px;
-  margin-right: 5px;
+  margin-left: 20px;
 }
 
 .btnSecondary {

@@ -1,0 +1,168 @@
+.commentWrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    font-size: 14px;
+    width: 100%;
+}
+
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.leftSection {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.profileImage {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    color: #333;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.content {
+    white-space: pre-wrap;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+}
+
+.iconButton:hover .icon {
+  transform: scale(1.1);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.infoContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 40px; /* aligns with comment text */
+    margin-top: 4px;
+    color: #8e8e8e;
+    font-size: 12px;
+}
+/*
+.timestamp {
+}
+*/
+
+.likes {
+    font-weight: 500;
+}
+
+.replyButton {
+    background: none;
+    border: none;
+    color: #8e8e8e;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.menuButton {
+    margin-left: auto;
+}
+
+/* replies */
+.viewReplies {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8e8e8e;
+    font-size: 13px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: 5px 0 5px 40px;
+    padding: 0;
+    width: fit-content;
+    position: relative;
+    gap: 8px;
+}
+
+.viewReplies::before,
+.viewReplies::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #dbdbdb;
+}
+
+
+.replyWrapper {
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+    font-size: 14px;
+    width: 90%;
+    margin-left: 10%;
+}
+
+/* Reply form */
+.replyForm {
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+    margin-top: 8px;
+    gap: 8px;
+}
+
+.replyInput {
+    flex: 1;
+    border: 1px solid #dbdbdb;
+    border-radius: 16px;
+    padding: 6px 12px;
+    font-size: 14px;
+    outline: none;
+    background-color: white;
+    color: #333;
+}
+
+.btn {
+  padding: 5px 10px;
+  font-size: 13px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.btnSecondary {
+  background-color: #333;
+  color: white;
+}
+
+.btnSecondary:hover {
+    opacity: 80%;
+}
+
+
+.blindedContent {
+    white-space: pre-wrap;
+    color: #666;
+    font-style: italic;
+}

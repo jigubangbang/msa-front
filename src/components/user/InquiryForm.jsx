@@ -7,7 +7,7 @@ import { Circles } from "react-loader-spinner";
 import backIcon from "../../assets/user/back.svg";
 import Modal from "../common/Modal/Modal";
 
-const trimFileName = (name, maxLength = 15) => {
+const trimFileName = (name, maxLength = 30) => {
   return name.length > maxLength ? name.slice(0, maxLength) + "..." : name;
 };
 
@@ -57,7 +57,7 @@ export default function InquiryForm({ onBack, onSuccess }) {
     // 파일 크기 제한: 각 5MB 이하
     for (let file of newFiles) {
       if (file.size > 5 * 1024 * 1024) {
-        const trimmedFileName = trimFileName(file.name, 15);
+        const trimmedFileName = trimFileName(file.name, 30);
         setMessage(`${trimmedFileName}은(는) 5MB를 초과합니다`);
         setMessageType("error");
         return;
@@ -88,19 +88,19 @@ export default function InquiryForm({ onBack, onSuccess }) {
   // 폼 유효성 검사
   const validateForm = () => {
     if (!formData.category) {
-      setMessage("카테고리를 선택해주세요");
+      setMessage("카테고리를 선택해 주세요");
       setMessageType("error");
       return false;
     }
 
     if (!formData.title.trim()) {
-      setMessage("제목을 입력해주세요");
+      setMessage("제목을 입력해 주세요");
       setMessageType("error");
       return false;
     }
 
     if (!formData.content.trim()) {
-      setMessage("내용을 입력해주세요");
+      setMessage("내용을 입력해 주세요");
       setMessageType("error");
       return false;
     }
@@ -183,7 +183,7 @@ export default function InquiryForm({ onBack, onSuccess }) {
             className={styles.selectInput}
           >
             <option value="" disabled>
-              카테고리를 선택해주세요
+              카테고리를 선택해 주세요
             </option>
             {categoryOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -201,7 +201,7 @@ export default function InquiryForm({ onBack, onSuccess }) {
             name="title"
             value={formData.title}
             onChange={handleInputChange}
-            placeholder="문의 제목을 입력해주세요"
+            placeholder="문의 제목을 입력해 주세요"
             className={styles.textInput}
             maxLength={100}
           />
@@ -214,7 +214,7 @@ export default function InquiryForm({ onBack, onSuccess }) {
             name="content"
             value={formData.content}
             onChange={handleInputChange}
-            placeholder="문의 내용을 입력해주세요"
+            placeholder="문의 내용을 입력해 주세요"
             className={styles.textareaInput}
             rows={8}
             maxLength={1000}
