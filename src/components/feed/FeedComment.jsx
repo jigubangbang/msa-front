@@ -66,12 +66,15 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
         if (replyText === "") return;
         try {
             setIsSubmitting(true);
-            await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/comments`, {
+            const response = await api.post(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/comments`, {
                 feedId: feedId,
                 parentCommentId: comment.id,
                 content: replyText
             });
             setIsSubmitting(false);
+            setShowReplyInput(false);
+            setReplyText("");
+            setReplies((prev) => [response.data.comment, ...prev]);
         } catch (err) {
             console.error("Failed to post reply", err);
         }
@@ -167,7 +170,7 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
             </div>
 
             {showReplyInput && (
-                <form onSubmit={handleReplySubmit} className={styles.replyForm}>
+                <div className={styles.replyForm}>
                     <input
                         type="text"
                         className={styles.replyInput}
@@ -177,13 +180,13 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
                         disabled={isSubmitting}
                     />
                     <button 
-                        type="submit" 
+                        onClick={handleReplySubmit} 
                         disabled={isSubmitting || !replyText.trim()}
                         className={`${styles.btn} ${styles.btnSecondary}`}
                     >
                         게시
                     </button>
-                </form>
+                </div>
             )}
 
             {comment.replyCount > 0 ? (

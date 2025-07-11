@@ -109,10 +109,10 @@
 .table thead th:nth-child(2) { width: 100px; } /* 이름 */
 .table thead th:nth-child(3) { width: 100px; } /* 닉네임 */
 .table thead th:nth-child(4) { width: 180px; } /* 연락처 */
-.table thead th:nth-child(5) { width: 80px; }  /* 권한 */
+.table thead th:nth-child(5) { width: 100px; }  /* 권한 */
 .table thead th:nth-child(6) { width: 100px; } /* 상태 */
 .table thead th:nth-child(7) { width: 80px; }  /* 신고횟수 */
-.table thead th:nth-child(8) { width: 120px; } /* 정지기간 */
+.table thead th:nth-child(8) { width: 100px; } /* 정지기간 */
 .table thead th:nth-child(9) { width: 100px; } /* 탈퇴사유 */
 
 .tableRow {
@@ -138,7 +138,7 @@
   line-height: 1.4;
   padding: 12px 8px !important;
   text-align: left !important;
-  padding-left: 25px !important;
+  padding-left: 20px !important;
 }
 
 .contactCell div:first-child {
@@ -173,7 +173,7 @@
 /* 신고횟수 강조 */
 .highBlindCount {
   color: #dc3545 !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* 탈퇴 사유 버튼 */
@@ -264,5 +264,19 @@
 .userIdLink:hover {
   color: #0056b3;
   cursor: pointer;
-  font-weight: 500;
+}
+
+/* 리셋 */
+.resetIcon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  align-self: center;
+}
+
+.resetIcon:hover {
+  opacity: 0.5;
 }

@@ -5,9 +5,9 @@ import likeIcon from "../../assets/feed/like_white.svg";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function MasonryFeed({posts}) {
+export default function MasonryFeed({posts, numColumn=4}) {
     const breakpointColumnsObj = {
-        default: 4,
+        default: numColumn,
         1100: 3,
         700: 2,
         500: 1

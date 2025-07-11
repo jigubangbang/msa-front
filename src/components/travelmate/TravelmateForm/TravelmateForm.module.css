@@ -1,0 +1,460 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.travelmateForm {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #f8f9fa;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+/* 폼 */
+.form {
+  padding: 32px;
+}
+
+/* 배경 이미지 섹션 */
+.backgroundImageSection {
+  margin-bottom: 40px;
+}
+
+.backgroundImageUpload {
+  width: 100%;
+  height: 300px;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.backgroundImageUpload:hover {
+  border-color: #007bff;
+  background: #f8f9ff;
+}
+
+.backgroundImageUpload.invalidUpload {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.backgroundPreview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.backgroundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+}
+
+.backgroundPreview:hover .backgroundOverlay {
+  opacity: 1;
+}
+
+.changeText {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.changeSubtext {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.backgroundPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+}
+
+.placeholderText {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.placeholderSubtext {
+  font-size: 14px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+/* 기본 정보 섹션 */
+.basicInfoSection {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.leftColumn {
+  flex: 2;
+}
+
+.rightColumn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input.validInput {
+  border-color: #28a745;
+}
+
+.input.invalidInput {
+  border-color: #dc3545;
+}
+
+/* 썸네일 업로드 */
+.thumbnailUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.thumbnailImageUpload {
+  width: 200px;
+  height: 150px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.thumbnailImageUpload:hover {
+  border-color: #007bff;
+  background: #f8f9ff;
+}
+
+.thumbnailImageUpload.invalidUpload {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.thumbnailPreview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnailOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+}
+
+.thumbnailPreview:hover .thumbnailOverlay {
+  opacity: 1;
+}
+
+.thumbnailPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+}
+
+.changeText {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.placeholderText {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 필터 섹션 */
+.filterSection {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.filterSection:focus-within {
+  border-color: #007bff;
+}
+
+/* 섹션 제목 */
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* 섹션 헤더 - 새로 추가 */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 20px;
+}
+
+.sectionHeader .sectionLabel,
+.sectionHeader .sectionTitle {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* 현재 정보 표시 - 새로 추가 */
+.currentInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 60%;
+}
+
+.currentTag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #bbdefb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* 전체 너비 섹션 */
+.fullWidthSection {
+  margin-bottom: 40px;
+}
+
+.dateSection,
+.descriptionSection,
+.applicationSection {
+  margin-bottom: 40px;
+}
+
+/* 텍스트 에어리어 */
+.textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.textarea.validInput {
+  border-color: #28a745;
+}
+
+.textarea.invalidInput {
+  border-color: #dc3545;
+}
+
+/* 도움말 텍스트 */
+.helpText {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* 에러 메시지 */
+.errorMessage {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.errorMessage::before {
+  content: "⚠";
+  font-size: 12px;
+}
+
+/* 숨겨진 파일 입력 */
+.hiddenFileInput {
+  display: none;
+}
+
+/* 액션 버튼 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 40px;
+}
+
+.cancelButton {
+  padding: 12px 32px;
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #e9ecef;
+  border-color: #6c757d;
+}
+
+.saveButton {
+  padding: 12px 32px;
+  background: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.saveButton:disabled {
+  background: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
