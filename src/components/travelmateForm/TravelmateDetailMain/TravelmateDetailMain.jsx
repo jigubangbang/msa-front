@@ -5,7 +5,7 @@ import api from '../../../apis/api';
 import JoinApplicationModal from '../../modal/JoinApplicationModal/JoinApplicationModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
-
+import { useNavigate } from 'react-router-dom';
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,6 +13,10 @@ const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [memberStatus, setMemberStatus] = useState('NOT_MEMBER'); // NOT_MEMBER, PENDING, MEMBER ,creator
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+
+  const navigate = useNavigate();
+
+
 
 useEffect(() => {
   if (postId) {
@@ -132,15 +136,14 @@ useEffect(() => {
   };
 
   const handleEdit = () => {
-    console.log('수정하기 클릭');
-    // 수정 로직 구현
-    //#NeedToChange
+    navigate(`/traveler/mate/${postId}/edit`);
   };
 
   const handleDelete = () => {
     console.log('삭제하기 클릭');
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       // 삭제 API 호출
+      //#NeedToChange
     }
   };
 
@@ -192,7 +195,7 @@ useEffect(() => {
       <div className={styles.headerSection}>
         <div className={styles.backgroundImage}>
           <img 
-            src={isBlind ? '/icons/common/warning.png' : (detail.thumbnailImage || '/images/default-thumbnail.jpg')} 
+            src={isBlind ? '/icons/common/warning.png' : (detail.backgroundImage || '/images/default-thumbnail.jpg')} 
             alt="배경 이미지"
           />
           <div className={styles.overlay} />
