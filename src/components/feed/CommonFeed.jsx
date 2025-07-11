@@ -21,7 +21,6 @@ export default function CommonFeed({endpoint}) {
                 const response = await api.get(endpoint, {
                     params: {pageSize, offset}
                 });
-                console.log(response.data.posts);
                 const newPosts = response.data.posts;
 
                 setPosts((prev) => {
@@ -30,7 +29,7 @@ export default function CommonFeed({endpoint}) {
                     return [...prev, ...filteredNewPosts];
                 });
 
-                if (newPosts.length < pageSize) {
+                if (newPosts.length < pageSize || currentPage > 10) {
                     setHasMore(false);
                 }
             } catch (err) {
@@ -39,7 +38,7 @@ export default function CommonFeed({endpoint}) {
             setIsLoading(false);
         }
         fetchPosts(); 
-    }, [currentPage])
+    }, [currentPage]);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
@@ -58,7 +57,7 @@ export default function CommonFeed({endpoint}) {
 
     return (
         <div>
-            <MasonryFeed posts={posts}/>
+            <MasonryFeed posts={posts} numColumn={5}/>
             {hasMore && <div ref={loader} style={{ height: "50px" }}></div>}
         </div>
     );
