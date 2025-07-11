@@ -31,23 +31,31 @@ body {
 }
 
 .mainPoster {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 49px); /* 화면 전체 높이에서 헤더 높이(49px) 제외 */
   background-color: black;
   color: white;
-  text-align: center;
-  height: 500px;
-  padding: 20px;
+  background-image: url('/earth.jpg'); /* public 폴더의 earth.jpg 사용 */
+  background-size: cover; /* 이미지가 컨테이너를 꽉 채우도록 */
+  background-position: center; /* 중앙에 위치 */
+  background-repeat: no-repeat; /* 이미지 반복 없음 */
+  filter: sepia(30%) contrast(110%) brightness(90%); /* 필름 카메라 느낌 필터 */
 }
 
 
 .posterTitle {
   font-family: 'Pixelify Sans', sans-serif;
-  line-height: 400px;
   font-size: 100px;
+  margin: 0;
+  padding: 0;
 }
 
 .posterSubtitle {
-  margin-top: -100px;
-  margin-bottom: 40px;
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
   font-size: 25px;
 }
 
@@ -296,4 +304,85 @@ p.bodyPrimary {
   background-color: #fafafa;
   border-color: #000;
   color: #000;
+}
+
+/* === 자동 슬라이드 컨테이너 (피드) === */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* 컨텐츠의 절반만큼 이동 (이미지를 복제했기 때문) */
+  }
+}
+
+.marqueeContainer {
+  overflow: hidden; /* 컨테이너를 벗어나는 이미지 숨김 */
+  margin-top: 20px;
+}
+
+.horizontalScrollContainer {
+  display: flex;
+  gap: 20px; /* 아이템 간 간격 */
+  width: fit-content; /* 내부 컨텐츠 너비에 ���춤 */
+  animation: scroll-left 30s linear infinite; /* 30초 동안 무한 반복 */
+}
+
+.horizontalScrollContainer:hover {
+  animation-play-state: paused; /* 마우스 올리면 애니메이션 정지 */
+}
+
+/* 스크롤바 숨기기 (선택 사항) */
+.horizontalScrollContainer::-webkit-scrollbar {
+  display: none;
+}
+.horizontalScrollContainer {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollItem {
+  flex: 0 0 auto; /* 아이템이 줄바꿈되지 않고 고정 너비를 가지도록 */
+  width: 280px; /* 각 이미지 아이템의 너비 */
+  height: 350px; /* 각 이미지 아이템의 높이 */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  scroll-snap-align: start; /* 스크롤 스냅 시작점 */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.scrollItem:hover {
+  transform: translateY(-5px);
+}
+
+.scrollItem img {
+  width: 100%;
+  height: 70%; /* 이미지 영역 */
+  object-fit: cover;
+  display: block;
+}
+
+.imageInfo {
+  height: 30%; /* 정보 영역 */
+  background-color: white;
+  color: var(--color-text-primary);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box; /* 패딩을 높이에 포함하여 레이아웃 깨짐 방지 */
+}
+
+.imageInfo p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.imageInfo span {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
 }
