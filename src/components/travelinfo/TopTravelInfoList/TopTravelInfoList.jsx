@@ -8,8 +8,7 @@ const TopTravelInfoList = ({
   title, 
   option, // 'popular', 'recent', 'active'
   isLogin = false,
-  onViewAll,
-  onPostClick 
+  onViewAll
 }) => {
   const [travelinfos, setTravelinfos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -110,11 +109,6 @@ const TopTravelInfoList = ({
     }
   };
 
-  const handlePostClick = (travelinfo) => {
-    if (onPostClick && travelinfo.id) {
-      onPostClick(travelinfo.id);
-    }
-  };
 
   const handleViewAllClick = () => {
     if (onViewAll) {
@@ -218,7 +212,6 @@ const TopTravelInfoList = ({
             <div 
               key={travelinfo.id} 
               className={styles.card}
-              onClick={() => handlePostClick(travelinfo)}
             >
               <div className={styles.imageContainer}>
                 <img 
