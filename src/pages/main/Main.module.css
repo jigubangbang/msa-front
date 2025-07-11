@@ -20,14 +20,14 @@
 
 /* === Typography === */
 body {
-  /*font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-family: 'Pretendard', sans-serif; 
-  background-color: var(--color-background);
+  background-color: #f0f2f5; /* 전체 배경색 살짝 변경 */
   color: var(--color-text-primary);
 }
 
 .outerContainer {
   max-width: 100vw;
+  overflow-x: hidden;
 }
 
 .mainPoster {
@@ -35,28 +35,29 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 49px); /* 화면 전체 높이에서 헤더 높이(49px) 제외 */
+  height: calc(100vh - 49px);
   background-color: black;
   color: white;
-  background-image: url('/earth.jpg'); /* public 폴더의 earth.jpg 사용 */
-  background-size: cover; /* 이미지가 컨테이너를 꽉 채우도록 */
-  background-position: center; /* 중앙에 위치 */
-  background-repeat: no-repeat; /* 이미지 반복 없음 */
-  filter: sepia(30%) contrast(110%) brightness(90%); /* 필름 카메라 느낌 필터 */
+  background-image: url('/earth.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: sepia(30%) contrast(110%) brightness(90%);
 }
-
 
 .posterTitle {
   font-family: 'Pixelify Sans', sans-serif;
   font-size: 100px;
   margin: 0;
   padding: 0;
+  text-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 .posterSubtitle {
   margin-top: 1rem;
   margin-bottom: 2.5rem;
   font-size: 25px;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 .startButton {
@@ -67,11 +68,20 @@ body {
   border-radius: 5px;
   cursor: pointer;
   border: none;
+  transition: all 0.1s ease-in-out;
+  background-color: white;
+  color: black;
+}
+
+.startButton:hover {
+  transform: translateY(2px);
+  filter: brightness(0.9);
 }
 
 .container {
   max-width: 970px;
-  margin: 20px auto;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
 h1 {
@@ -84,13 +94,14 @@ h2 {
   font-family: 'Pretendard', sans-serif;
   font-size: 1.75rem;
   font-weight: bold;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }
 
 p.bodySecondary {
   font-size: 1rem;
   color: var(--color-text-secondary);
+  margin-top: 0;
 }
 
 p.bodyPrimary {
@@ -107,6 +118,7 @@ p.bodyPrimary {
   border-radius: 5px;
   cursor: pointer;
   border: none;
+  transition: opacity 0.2s ease;
 }
 
 .btnPrimary {
@@ -115,7 +127,7 @@ p.bodyPrimary {
 }
 
 .btnPrimary:hover {
-    opacity: 80%;
+    opacity: 0.8;
 }
 
 .btnSecondary {
@@ -124,13 +136,14 @@ p.bodyPrimary {
 }
 
 .btnSecondary:hover {
-    opacity: 80%;
+    opacity: 0.8;
 }
 
 .btnOutline {
-  border: 0.5px solid black;
+  border: 1px solid black;
   background: white;
   color: var(--color-text-primary);
+  transition: all 0.2s ease;
 }
 
 .btnOutline:hover {
@@ -155,155 +168,136 @@ p.bodyPrimary {
   background-color: transparent;
 }
 
-/* === Color Swatch Boxes === */
-.colorBox {
-  width: 4rem;
-  height: 4rem;
-  display: inline-block;
-  border: 1px solid #ccc;
-  margin-right: 1rem;
-  vertical-align: middle;
-}
-
 /* === Utility Classes === */
 .section {
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
 }
 
-.flexRow {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* Toggle Button */
-.toggleContainer {
-   position: relative;
-   display: grid;
-   grid-template-columns: repeat(2, 1fr);
-   width: fit-content;
-   border: 3px solid #343434;
-   border-radius: 20px;
-   background: #343434;
-   font-weight: bold;
-   color: #343434;
-   cursor: pointer;
- }
- .toggleContainer::before {
-   content: '';
-   position: absolute;
-   width: 50%;
-   height: 100%;
-   left: 0%;
-   border-radius:20px;
-   background: white;
-   transition: all 0.3s;
- }
- .toggleCheckbox:checked + .toggleContainer::before {
-    left: 50%;
- }
- .toggleContainer div {
-   padding: 6px;
-   text-align: center;
-   z-index: 1;
- }
- .toggleCheckbox {
-   display: none;
- }
- .toggleCheckbox:checked + .toggleContainer div:first-child{
-   color: white;
-   transition: color 0.3s;
- }
- .toggleCheckbox:checked + .toggleContainer div:last-child{
-   color: #343434;
-   transition: color 0.3s;
- }
- .toggleCheckbox + .toggleContainer div:first-child{
-   color: #343434;
-   transition: color 0.3s;
- }
- .toggleCheckbox + .toggleContainer div:last-child{
-   color: white;
-   transition: color 0.3s;
- }
-
-/* === 샘플 컨테이너 === */
-.sampleContainer {
-  background-color: #fff;
-  color: #000;
-  padding: 28px 36px;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-/* 입력 필드 */
-.formGroup {
-  margin-bottom: 16px;
-  text-align: left;
-}
-
-.inputWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.formInput {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  background-color: #fafafa;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-}
-
-.formInput:focus {
-  outline: none;
-  border-color: #000;
-  background-color: #fff;
-}
-
-/* === 버튼 공통 === */
-.button {
-  width: 100%;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-  outline: none !important;
-}
-
-/* === 다크 버튼 === */
-.darkButton {
-  background-color: #000;
-  color: #fff;
-  border: none;
-}
-
-.darkButton:hover {
-  background-color: #333;
-  transform: translateY(-1px);
-}
-
-/* === 외곽선 버튼 (findLink 기반) === */
-.outlineButton {
+.section.transparentBg {
   background-color: transparent;
-  color: #666;
-  border: 1px solid #ccc;
-  font-weight: 500;
+  box-shadow: none;
+  padding: 0;
 }
 
-.outlineButton:hover {
-  background-color: #fafafa;
-  border-color: #000;
-  color: #000;
+.section:last-child {
+  margin-bottom: 0;
+}
+
+/* === 로그인 상태 토글 (임시) === */
+.loginToggle {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* === 퀘스트 섹션 === */
+.questGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 1.5rem;
+}
+
+.questCard {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.questCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.questCard h3 {
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--color-text-primary);
+}
+
+.questCard p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 15px;
+}
+
+/* === 커뮤니티 섹션 === */
+.communityContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 1.5rem;
+}
+
+.postList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.postItem {
+  padding: 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
+}
+.postItem:last-child {
+  border-bottom: none;
+}
+
+.postItem:hover {
+  background-color: #f9f9f9;
+}
+
+.postItem h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+}
+
+.postMeta {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* === 마이페이지 섹션 === */
+.myPageSummary {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.myPageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.summaryItem {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.summaryItem .count {
+  font-size: 2rem;
+  font-weight: bold;
+  display: block;
+}
+
+.summaryItem .label {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
 }
 
 /* === 자동 슬라이드 컨테이너 (피드) === */
@@ -312,77 +306,136 @@ p.bodyPrimary {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%); /* 컨텐츠의 절반만큼 이동 (이미지를 복제했기 때문) */
+    transform: translateX(-50%);
   }
 }
 
 .marqueeContainer {
-  overflow: hidden; /* 컨테이너를 벗어나는 이미지 숨김 */
+  overflow: hidden;
   margin-top: 20px;
+  padding: 0;
 }
 
 .horizontalScrollContainer {
   display: flex;
-  gap: 20px; /* 아이템 간 간격 */
-  width: fit-content; /* 내부 컨텐츠 너비에 ���춤 */
-  animation: scroll-left 30s linear infinite; /* 30초 동안 무한 반복 */
+  gap: 20px;
+  width: fit-content;
+  animation: scroll-left 40s linear infinite;
 }
 
 .horizontalScrollContainer:hover {
-  animation-play-state: paused; /* 마우스 올리면 애니메이션 정지 */
-}
-
-/* 스크롤바 숨기기 (선택 사항) */
-.horizontalScrollContainer::-webkit-scrollbar {
-  display: none;
-}
-.horizontalScrollContainer {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  animation-play-state: paused;
 }
 
 .scrollItem {
-  flex: 0 0 auto; /* 아이템이 줄바꿈되지 않고 고정 너비를 가지도록 */
-  width: 280px; /* 각 이미지 아이템의 너비 */
-  height: 350px; /* 각 이미지 아이템의 높이 */
-  border-radius: 8px;
+  flex: 0 0 auto;
+  width: 280px;
+  height: 350px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
-  scroll-snap-align: start; /* 스크롤 스냅 시작점 */
   cursor: pointer;
   transition: transform 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 .scrollItem:hover {
   transform: translateY(-5px);
 }
 
-.scrollItem img {
+.scrollItem > img {
   width: 100%;
-  height: 70%; /* 이미지 영역 */
+  height: 100%;
   object-fit: cover;
   display: block;
 }
 
 .imageInfo {
-  height: 30%; /* 정보 영역 */
-  background-color: white;
-  color: var(--color-text-primary);
-  padding: 15px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  color: white;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box; /* 패딩을 높이에 포함하여 레이아웃 깨짐 방지 */
+  align-items: center;
+  gap: 10px;
 }
 
-.imageInfo p {
+.imageInfo .userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.userInfo p {
   margin: 0;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
-.imageInfo span {
-  font-size: 0.9rem;
+.userInfo span {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  display: block;
+}
+
+/* === 푸터 === */
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 30px 0;
   color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+}
+
+.footer p {
+  margin: 0 0 10px 0;
+}
+
+.footerLinks a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin: 0 10px;
+  font-size: 0.9rem;
+}
+
+.footerLinks a:hover {
+  text-decoration: underline;
+}
+
+/* === 반응형 디자인 === */
+@media (max-width: 970px) {
+  .communityContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .posterTitle {
+    font-size: 60px;
+  }
+  .posterSubtitle {
+    font-size: 18px;
+  }
+  .startButton {
+    font-size: 16px;
+  }
+  .container {
+    padding: 0 20px;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  .myPageGrid {
+    grid-template-columns: 1fr;
+  }
+  .questGrid {
+    grid-template-columns: 1fr;
+  }
 }
