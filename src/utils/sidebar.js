@@ -94,21 +94,23 @@ export const TRAVELER_SIDEBAR = [
     label: '여행자 동행 모집',
     icon: '/icons/sidebar/travelmate.svg',
     path: '/traveler/mate',
-  },
-  {
-    label: '모집 글쓰기',
-    path: '/traveler/mate/new',
-    submenu: true
+    submenus: [
+      {
+        label: '모집 글쓰기',
+        path: '/traveler/mate/new'
+      }
+    ]
   },
   {
     label: '여행 정보 공유방',
     icon: '/icons/sidebar/travelinfo.svg',
     path: '/traveler/info',
-  },
-  {
-    label: '공유방 만들기',
-    path: '/traveler/info/new',
-    submenu: true
+    submenus: [
+      {
+        label: '공유방 만들기',
+        path: '/traveler/info/new'
+      }
+    ]
   },
   {
     label: '내 여행자 모임',
@@ -119,7 +121,7 @@ export const TRAVELER_SIDEBAR = [
     label: '게시판',
     icon: '/icons/sidebar/board.svg',
     path: '/board',
-    submenu: [
+    submenus: [
       {
         label: '인기글',
         path: '/board/popular'

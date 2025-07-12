@@ -8,7 +8,7 @@ import API_ENDPOINTS from '../../../../utils/constants';
 import TravelInfoForm from '../../../../components/travelinfo/TravelInfoForm/TravelInfoForm';
 
 const InfoFormPage = () => {
-  const { postId } = useParams();
+  const { infoId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -47,16 +47,16 @@ const InfoFormPage = () => {
     setIsLogin(true);
     setCurrentUserId("aaa");
     
-    // 모드 결정: postId가 있으면 수정, 없으면 생성
-    console.log(postId);
-    if (postId) {
+    // 모드 결정: infoId가 있으면 수정, 없으면 생성
+    console.log(infoId);
+    if (infoId) {
       setMode('edit');
-      fetchTravelInfoData(postId);
+      fetchTravelInfoData(infoId);
     } else {
       setMode('create');
       setLoading(false);
     }
-  }, [postId]);
+  }, [infoId]);
 
   // 기존 정보방 데이터 조회 (수정 모드용)
   const fetchTravelInfoData = async (id) => {
@@ -106,7 +106,7 @@ const InfoFormPage = () => {
       } else {
         // 기존 정보방 수정
         const response = await api.put(
-          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${postId}`,
+          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${infoId}`,
           formData
         );
         

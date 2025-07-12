@@ -67,6 +67,7 @@ import TravelmateDetailPage from "../pages/community/traveler/travelmate/Travelm
 import TravelmateFormPage from "../pages/community/traveler/travelmate/TravelmateFormPage";
 import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
 import InfoFormPage from "../pages/community/traveler/travelinfo/InfoFormPage";
+import BoardListPage from "../pages/community/board/BoardListPage";
 
 
 const AppRouter = () => {
@@ -135,14 +136,14 @@ const AppRouter = () => {
           {/*
           <Route path="/traveler/my" element={<MyTravelerPage/>}/>
 
-           Board 
-          <Route path="/board" element={<BoardMainPage/>}/>
-          <Route path="/board/popular" element={<BoardListPage category="popular"/>}/>
-          <Route path="/board/info" element={<BoardListPage category="info"/>}/>
-          <Route path="/board/recommend" element={<BoardListPage category="recommend"/>}/>
-          <Route path="/board/chat" element={<BoardListPage category="chat"/>}/>
-          <Route path="/board/question" element={<BoardListPage category="question"/>}/>
-          <Route path="/board/my" element={<MyBoardPage/>}/>
+           Board */}
+          <Route path="/board" element={<BoardListPage/>}/>
+          <Route path="/board/popular" element={<BoardListPage page="popular"/>}/>
+          <Route path="/board/info" element={<BoardListPage page="info"/>}/>
+          <Route path="/board/recommend" element={<BoardListPage page="recommend"/>}/>
+          <Route path="/board/chat" element={<BoardListPage page="chat"/>}/>
+          <Route path="/board/question" element={<BoardListPage page="question"/>}/>
+          {/*<Route path="/board/my" element={<MyBoardPage/>}/>
           <Route path="/board/new" element={<BoardFormPage/>}/>
           <Route path="/board/:id" element={<BoardDetailPage/>}/>
           <Route path="/board/:id/edit" element={<BoardFormPage/>}/>*/}

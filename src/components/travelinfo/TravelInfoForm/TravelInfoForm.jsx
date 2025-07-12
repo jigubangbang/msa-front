@@ -284,7 +284,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       
       // 새로운 이미지가 있으면 업로드
       if (formData.thumbnailImage) {
-        thumbnailImageUrl = await uploadImage(formData.thumbnailImage, 'thumbnail');
+        thumbnailImageUrl = await uploadImage(formData.thumbnailImage, 'travelinfo');
       }
 
       // 제출 데이터 구성
