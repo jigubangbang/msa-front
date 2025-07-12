@@ -5,6 +5,7 @@ import styles from "./BoardListPage.module.css";
 import TravelerSearchBar from "../../../components/travelmate/TravelerSearchBar/TravelerSearchBar";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 import { jwtDecode } from 'jwt-decode';
+import BoardCategoryBrowse from "../../../components/board/BoardCategoryBrowse/BoardCategoryBrowse";
 
 
 export default function BoardListPage({page}) {
@@ -55,7 +56,6 @@ export default function BoardListPage({page}) {
             if (decoded.exp && decoded.exp < currentTime) {
                 localStorage.removeItem("accessToken");
                 setIsLogin(false);
-                setIsAdmin(false);
                 setCurrentUserId(null);
                 return;
             }
@@ -66,18 +66,15 @@ export default function BoardListPage({page}) {
             const userRole = decoded.role || decoded.authorities;
             const isAdminUser = userRole === 'ROLE_ADMIN' ||
                                 (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
-            setIsAdmin(isAdminUser);
             
         } catch (error) {
             console.error("토큰 디코딩 오류:", error);
             localStorage.removeItem("accessToken");
             setIsLogin(false);
-            setIsAdmin(false);
             setCurrentUserId(null);
         }
     } else {
         setIsLogin(false);
-        setIsAdmin(false);
         setCurrentUserId(null);
     }
     
@@ -114,27 +111,22 @@ export default function BoardListPage({page}) {
     setCurrentPage(1);
   }
 
-  const handleViewAll = () => {
-        setIsSearching(true);
-        setCurrentPage(1);
-        setSearchTerm('');
+    const handleCategorySelect = (categoryId) => {
+    console.log('선택된 카테고리 ID:', categoryId);
+    
+    // 같은 카테고리를 다시 클릭하면 전체보기로 변경
+    if (category && category.includes(categoryId)) {
+      setCategory([]);
+    } else {
+      // 단일 카테고리 선택
+      setCategory([categoryId]);
     }
 
-    const handleCategorySelect = (categoryId) => {
-      console.log('선택된 카테고리 ID:', categoryId);
-      
-      setCategory(prevCategory => {
-          if (prevCategory.includes(categoryId)) {
-          return prevCategory.filter(id => id !== categoryId);
-          } else {
-          return [...prevCategory, categoryId];
-          }
-      });
+    setIsSearching(false); // 카테고리 선택 시에는 검색 모드 해제
+    setCurrentPage(1);
+    setSearchTerm('');
+  };
 
-      setIsSearching(true);
-        setCurrentPage(1);
-        setSearchTerm('');
-    };
 
 
  if (loading) {
@@ -178,7 +170,11 @@ export default function BoardListPage({page}) {
 
           {!isSearching ? (
             <>
-
+              <BoardCategoryBrowse 
+                category={category}
+                onCategorySelect={handleCategorySelect}
+                isLogin={isLogin}
+              />
             </>
           ) : (
             <>

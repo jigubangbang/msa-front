@@ -139,7 +139,6 @@ const AppRouter = () => {
           <Route path="/traveler/my/travelmate" element={<MyTravelerPage page="travelmate"/>}/>
 
           {/*Board */}
-          <Route path="/board" element={<BoardListPage/>}/>
           <Route path="/board/popular" element={<BoardListPage page="popular"/>}/>
           <Route path="/board/info" element={<BoardListPage page="info"/>}/>
           <Route path="/board/recommend" element={<BoardListPage page="recommend"/>}/>
