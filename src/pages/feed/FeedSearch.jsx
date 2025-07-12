@@ -27,7 +27,6 @@ export default function FeedSearch() {
                     "limit": searchResultLimit
                 }
             });
-            console.log(response.data.tags);
             setMatchingTags(response.data.tags);
         } catch (err) {
             console.error("Failed to fetch matching tags", err);
