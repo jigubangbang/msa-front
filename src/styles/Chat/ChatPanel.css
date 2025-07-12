@@ -1,31 +1,15 @@
-:root {
-  --color-background: #ffffff;
-  --color-text-primary: #242424;
-  --color-text-secondary: #6b6b6b;
-  --color-accent-green: #1a8917;
-  --color-accent-blue: #83D9E0;
-  --color-border: #e5e5e5;
-  --color-tag-bg: #f2f2f2;
-}
-
-@font-face {
-    font-family: 'Pretendard';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-}
-
 body {
-  /*font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-family: 'Pretendard', sans-serif; 
   background-color: var(--color-background);
   color: var(--color-text-primary);
 }
 
+/* 전역 다크모드일 시
 body.dark-mode {
   background: #242424;
   color: #f9f9f9;
 }
+*/
 
 .chat-panel-container {
   position: relative;
@@ -34,41 +18,71 @@ body.dark-mode {
   width: 100%;
   height: 100%;
   margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.chat-panel-container.dark-mode {
+  background-color: var(--color-text-primary);
+  color: var(--color-background);
 }
 
 .chat-header {
-  background-color: #242424;
-  padding: 12px;
+  background-color: var(--color-text-primary);
+  padding: 0.75rem;
   text-align: center;
-  border-bottom: 1px solid #6b6b6b;
+  border-bottom: var(--color-text-secondary);
   display: flex;
   align-items: center;
-  justify-content: center; /* H2를 가운데 정렬 */
+  justify-content: center;
+  position: relative;
 }
 
 .chat-header h2 {
-  font-family: 'Pixelify Sans', sans-serif;
+  font-family: 'Pixelify Sans', 'sans-serif';
   font-size: 1.75rem;
   color: white;
   margin: 0;
 }
 
 .chat-header-menu {
-  position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
-  right: 17px;
+  position: absolute;
+  right: 1rem;
   cursor: pointer;
   color: white;
 }
 
-.chat-close-button {
-  position: absolute; /* 절대 위치로 오른쪽 상단에 배치 */
-  left: 20px;
+.chat-header-menu:hover {
+  transform: scale(1.05);
+}
+
+.chat-minimize-button {
+  position: absolute;
+  left: 1.05rem;
   cursor: pointer;
   color: white;
+}
+
+.chat-minimize-button:hover {
+  transform: scale(1.05);
+}
+
+.chat-minimize-button:active {
+  transform: scale(0.95);
 }
 
 .theme-button {
   cursor: pointer;
+  padding: 0 2px 0 8px;
+  transition: transform 0.3s ease;
+}
+
+.theme-button:hover {
+  transform: scale(1.05);
+}
+
+.theme-button:active {
+  transform: scale(0.95);
 }
 
 .chat-body-wrapper {
@@ -81,8 +95,8 @@ body.dark-mode {
 
 .chat-messages-display {
   flex: 1;
-  padding: 15px;
-  overflow-y: auto; /* Enable scrolling for messages */
+  padding: 1rem;
+  overflow-y: auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -91,21 +105,26 @@ body.dark-mode {
 .system-message-row {
   display: flex;
   justify-content: center;
-  margin: 10px 0;
+  margin: 0.625rem 0;
 }
 
 .system-message {
+  font-family: 'Pretendard', sans-serif;
   display: inline-block;
   background-color: transparent;
-  color: #6b6b6b;
-  padding: 5px 10px;
+  color: var(--color-text-secondary);
+  padding: 0.25rem 0.625rem;
   font-size: 1rem;
+}
+
+.chat-panel-container.dark-mode .system-message {
+  color: #dddddd;
 }
 
 /* 개별 메시지 행 컨테이너 (프로필 + 닉네임 + 메시지 버블을 감쌈) */
 .message-row {
   display: flex;
-  margin-bottom: 15px; /* 각 메시지 행 사이의 간격 */
+  margin-bottom: 1rem; /* 각 메시지 행 사이의 간격 */
   align-items: flex-start; /* 프로필과 메시지 버블이 상단 정렬 */
 }
 
@@ -119,95 +138,113 @@ body.dark-mode {
 
 .profile-area {
   display: flex;
-  flex-direction: column; /* 아바타와 닉네임을 세로로 정렬 */
-  align-items: center; /* 세로 정렬 시 가운데 정렬 */
-  margin-right: 8px; /* 메시지 버블과의 간격 */
-  flex-shrink: 0; /* 컨테이너가 줄어들어도 아바타 영역은 고정 */
-  width: 45px; /* 아바타 영역 너비 */
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  width: 40px;
 }
 
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ccc; /* 임시 배경색 */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5em; /* 아이콘 크기 */
-  color: #555;
-  margin-bottom: 4px; /* 닉네임과의 간격 */
-  overflow: hidden; /* 혹시 모를 이미지 넘침 방지 */
-  /* 실제 이미지 아바타를 사용할 경우:
-     background-image: url('path/to/avatar.jpg');
-     background-size: cover;
-     background-position: center;
-  */
+  overflow: hidden;
+  flex-shrink: 0;
+  padding: 2px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
+  border-radius: 50%;
 }
 
 .nickname {
   font-family: 'Pretendard', sans-serif; 
-  font-size: 13px;
-  color: #555;
+  font-size: 12px;
+  color: var(--color-text-secondary);
   white-space: nowrap; /* 닉네임이 줄바꿈되지 않도록 */
   overflow: hidden;
   text-overflow: ellipsis; /* 너무 길면 ... 처리 */
-  max-width: 45px; /* 닉네임 최대 너비 (profile-area width와 맞춤) */
+  max-width: 40px; /* 닉네임 최대 너비 (profile-area width와 맞춤) */
   text-align: center; /* 닉네임 중앙 정렬 */
 }
 
+.chat-panel-container.dark-mode .nickname {
+  color: #dddddd;
+}
 
 .chat-message-bubble {
   max-width: 75%;
-  padding: 10px 15px;
-  border-radius: 8px;
-  word-wrap: break-word; /* Ensure long words wrap */
-  /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); /* 약간의 그림자 추가 (선택 사항) */
+  padding: 0.425rem 0.925rem;
+  border-radius: 6px;
+  margin-left: 2px;
+  word-wrap: break-word;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   line-height: 1.4; /* 줄 간격 */
 }
 
 .my-message {
   align-self: flex-end;
   background-color: #F1DC81;
-  color: #333;
+  color: var(--color-text-primary);
   margin-left: auto; /* message-row가 flex-end로 정렬하지만, 버블 자체를 오른쪽 끝으로 밀어냄 */
+}
+
+.chat-panel-container.dark-mode .my-message {
+  background-color: #706435;
+  color: #f9f9f9;
 }
 
 .other-message {
   align-self: flex-start; /* Align other messages to the left */
   background-color: #e0e0e0; /* Grayish background for other messages */
-  color: #333;
+  color: var(--color-text-primary);
+}
+
+.chat-panel-container.dark-mode .other-message {
+  background-color: var(--color-text-secondary);
+  color: var(--color-background);
 }
 
 .message-text {
   font-family: 'Pretendard', sans-serif; 
-  font-size: 16px;
-  margin: 0; /* Remove default paragraph margin */
+  font-size: 14px;
+  margin: 0;
 }
 
 .timestamp {
   font-family: 'Pretendard', sans-serif; 
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .chat-input-area {
   display: flex;
-  padding: 15px;
-  border-top: 1px solid #ddd;
-  background-color: #fff;
+  padding: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-background);
   align-items: center; /* 인풋 필드와 버튼을 수직 중앙으로 정렬 */
+}
+
+.chat-panel-container.dark-mode .chat-input-area {
+  background-color: var(--color-text-primary);
+  border-top: 1px solid #555;
 }
 
 .chat-input {
   flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 0.7rem;
+  border: 0.5px solid var(--color-border);
   border-radius: 8px;
-  margin-right: 12px;
-  margin-left: 12px;
-  border-radius: 6px;
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
   font-family: 'Pretendard', sans-serif; 
-  font-size: 16px;
+  font-size: 1rem;
   background-color: #fafafa;
   color: var(--color-text-primary);
   transition: border-color 0.3s ease;
@@ -216,25 +253,88 @@ body.dark-mode {
 
 .chat-input:focus {
   outline: none;
-  border-color: #000;
-  background-color: #fff;
+  border-color: var(--color-text-primary);
+  background-color: var(--color-background);
   color: var(--color-text-primary);
 }
 
+.chat-panel-container.dark-mode .chat-input {
+  background-color: #363636;
+  border-color: #555;
+  color: #f9f9f9;
+}
+
+.chat-panel-container.dark-mode .chat-input:focus {
+  background-color: #404040;
+  border-color: #f9f9f9;
+  color: #f9f9f9;
+}
+
+.chat-panel-container.dark-mode .chat-input::placeholder {
+  color: #b0b0b0;
+}
+
 .chat-send-button {
-  background-color: #242424;
-  color: white;
-  border: 1px solid #ccc;
-  padding: 10px 20px;
+  background-color: var(--color-text-primary);
+  color: var(--color-background);
+  border: 0.5px solid var(--color-border);
+  padding: 0.7rem 1.2rem;
   font-family: 'Pretendard', sans-serif; 
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  border-radius: 8px;
-  margin-right: 12px;
+  border-radius: 6px;
+  margin-right: 0.75rem;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.3s ease;
 }
 
 .chat-send-button:hover {
   background-color: #363636;
+}
+
+.chat-panel-container.dark-mode .chat-send-button {
+  background-color: #4a4a4a;
+  border-color: #555;
+}
+
+.chat-panel-container.dark-mode .chat-send-button:hover {
+  background-color: #5a5a5a;
+}
+
+.chat-send-button:disabled {
+  background-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.chat-panel-container.dark-mode .chat-send-button:disabled {
+  background-color: #555;
+  color: #888;
+}
+
+/* ✅ 추가: ChatPanel 메시지 영역 스크롤바 스타일링 */
+.chat-messages-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages-display::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 6px;
+}
+
+.chat-messages-display::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ✅ 추가: 다크모드에서 스크롤바 스타일 */
+.chat-panel-container.dark-mode .chat-messages-display::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+.chat-panel-container.dark-mode .chat-messages-display::-webkit-scrollbar-thumb:hover {
+  background: #777;
 }
