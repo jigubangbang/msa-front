@@ -7,6 +7,7 @@ import cakeIcon from "../../assets/profile/cake_grey.svg";
 import planeIcon from "../../assets/profile/plane_grey.svg";
 import editIcon from "../../assets/profile/edit_grey.svg";
 import defaultProfile from "../../assets/default_profile.png";
+import premiumIcon from "../../assets/common/premium.svg";
 import API_ENDPOINTS from "../../utils/constants";
 import Modal from "../common/Modal/Modal";
 
@@ -197,11 +198,8 @@ export default function ProfileSidebar() {
 
                 <span className={styles.nickname}>
                     {data.nickname}
-                    {
-                        nationality && (
-                            <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>
-                        )
-                    }
+                    {nationality && <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>}
+                    {data.premium && <img className={styles.premiumIcon} src={premiumIcon}/>}
                 </span>
                 <p className={styles.userId}>@{data.userId}</p>
                 
