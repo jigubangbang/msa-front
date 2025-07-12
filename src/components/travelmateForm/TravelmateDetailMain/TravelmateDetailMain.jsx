@@ -56,7 +56,7 @@ useEffect(() => {
 
   const fetchLikeStatus = async () => {
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`,
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/likes`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -70,7 +70,7 @@ useEffect(() => {
 
   const fetchMemberStatus = async () => {
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/member-status`,
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/member-status`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -87,7 +87,7 @@ useEffect(() => {
 
     try {
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -96,7 +96,7 @@ useEffect(() => {
         setIsLiked(false);
         setDetail(prev => ({ ...prev, likeCount: prev.likeCount - 1 }));
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -118,7 +118,7 @@ useEffect(() => {
 
   const handleJoinSubmit = async (description) => {
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/join`, {
+      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/join`, {
         description: description
       }, {
         headers: {
@@ -166,7 +166,7 @@ useEffect(() => {
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`, {
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}`, {
           headers: {
             'User-Id': currentUserId,
           },
@@ -202,7 +202,7 @@ useEffect(() => {
       };
 
       await api.post(
-        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`,
+        `${API_ENDPOINTS.COMMUNITY.USER}/report`,
         payload,
         {
           headers: {

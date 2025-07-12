@@ -67,7 +67,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
 
     try {
       await api.post(
-        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments`,
+        `${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments`,
         { content: newQuestion },
         {
           headers: {
@@ -92,7 +92,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
 
     try {
       await api.post(
-        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${questionId}/replies`,
+        `${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${questionId}/replies`,
         { content: replyText },
         {
           headers: {
@@ -140,7 +140,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       };
 
       await api.post(
-        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`,
+        `${API_ENDPOINTS.COMMUNITY.USER}/report`,
         payload,
         {
           headers: {
@@ -169,7 +169,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     
     try {
       await api.put(
-        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`,
+        `${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${commentId}`,
         { content: editingText.trim() },
         {
           headers: {
@@ -198,7 +198,7 @@ const handleDelete = async (commentId) => {
   if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) return;
   
   try {
-    await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`, {
+    await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${commentId}`, {
       headers: {
         'User-Id': currentUserId,
       },

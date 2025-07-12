@@ -34,7 +34,7 @@ const TopTravelInfoList = ({
     
     try {
        const response = await api.get(
-      `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`,
+      `${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/likes`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -51,7 +51,7 @@ const TopTravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`,
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/joined-chats`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -101,7 +101,7 @@ const TopTravelInfoList = ({
       
       if (isLiked) {
         await api.delete(
-          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`,
+          `${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`,
           {
             headers: {
               'User-Id': currentUserId,
@@ -114,7 +114,7 @@ const TopTravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`,
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -184,7 +184,7 @@ const TopTravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`,
+      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
       {
         headers: {
           'User-Id': currentUserId,
