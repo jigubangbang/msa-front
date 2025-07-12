@@ -11,7 +11,7 @@ export default function SearchBar ({
     onFocus = () => {},
     recommended=[],
     barWidth="100%",
-    debounceMs = 300 //딜레이.. 이유: 한글 모음 치기 전에 자꾸 axios 불러버려서 ㅠㅠ
+    debounceMs = 300
 }) {
     const [searchValue, setSearchValue] = useState('');
     

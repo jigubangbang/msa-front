@@ -1,8 +1,8 @@
 // BadgeModifyForm.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from './BadgeModifyForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import api from '../../apis/api';
 
 const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
   const [badgeData, setBadgeData] = useState(null);
@@ -33,7 +33,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
   const fetchBadgeData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/admin-quests/badges/${badgeId}/modify`);
+      const response = await api.get(`http://localhost:8080/api/admin-quests/badges/${badgeId}/modify`);
       const data = response.data;
       setBadgeData(data);
       setFormData({
@@ -53,7 +53,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
 
   const fetchAvailableQuests = async () => {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/list`, {
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/list`, {
         params: {
           pageNum: 1,
           limit: 100,
@@ -113,7 +113,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
         const uploadFormData = new FormData();
         uploadFormData.append('file', formData.icon);
         
-        const uploadResponse = await axios.post(
+        const uploadResponse = await api.post(
           `${API_ENDPOINTS.QUEST.ADMIN}/upload-image/badge`,
           uploadFormData,
           {
@@ -135,7 +135,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
         quest_ids: questList.map(quest => quest.quest_id)
       };
 
-      const response = await axios.put(
+      const response = await api.put(
         `http://localhost:8080/api/admin-quests/badges/${badgeId}`, 
         updateData,
         {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './QuestList.module.css';
 import Dropdown from '../../common/Dropdown';
 import { useNavigate } from 'react-router-dom';
 import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
+import api from '../../../apis/api';
 
 
 const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
@@ -118,7 +118,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
   );
 };
 
-const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, } ) => {
+const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId} ) => {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -186,13 +186,19 @@ useEffect(() => {
       };
 
       
-      const endpoint = isLogin 
-      ? `${API_ENDPOINTS.QUEST.USER}/list`
-      : `${API_ENDPOINTS.QUEST.PUBLIC}/list`;
+      const endpoint = isLogin
+    ? `${API_ENDPOINTS.QUEST.USER}/list`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/list`;
 
-       console.log('Fetching from:', endpoint, 'isLogin:', isLogin);
+      const config = { params };
 
-      const response = await axios.get(endpoint, { params });
+      if (isLogin) {
+          config.headers = {
+              'User-Id': currentUserId
+          };
+      }
+
+      const response = await api.get(endpoint, config);
       const allQuests = response.data.quests || [];
       setQuests(allQuests);
       setTotalPages(Math.ceil(allQuests.length / questsPerPage));
@@ -391,6 +397,7 @@ useEffect(() => {
     {/* 액션 확인 모달 */}
     {actionModal.isOpen && selectedQuest && (
       <QuestActionModal
+       currentUserId={currentUserId}
         isOpen={actionModal.isOpen}
         onClose={handleActionModalClose}
         actionType={actionModal.type}

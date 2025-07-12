@@ -27,23 +27,24 @@ export default function UserPremium() {
       setLoading(true);
       setError(null);
       try {
-        // 1. 구독 상태를 직접 확인 (Payment.jsx 로직과 동일)
+        // 1. 구독 상태를 직접 확인
         const subResponse = await api.get('/api/payment/premium/status');
-        setSubscriptionStatus(subResponse.data);
+        const statusData = subResponse.data;
+        setSubscriptionStatus(statusData);
 
-        // 2. 구독 정보가 있다면, 결제 내역도 가져오기
-        const historyResponse = await api.get('/api/payment/history');
-        setPaymentHistory(historyResponse.data);
+        // 2. 구독 정보가 존재하면 (활성/비활성 관계없이) 결제 내역을 가져오기
+        if (statusData && statusData.premiumHistory) {
+          const historyResponse = await api.get('/api/payment/history');
+          setPaymentHistory(historyResponse.data);
+        } else {
+          // 구독 정보가 없으면 결제 내역을 가져올 필요 없음
+          setPaymentHistory([]);
+        }
 
       } catch (err) {
-        if (err.response?.status === 404) {
-          // 404는 구독하지 않은 상태로 간주. 오류가 아님.
-          setSubscriptionStatus(null);
-        } else {
-          // 그 외 다른 모든 오류
-          console.error("Failed to fetch premium data", err);
-          setError("데이터를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");
-        }
+        // 모든 종류의 오류를 동일하게 처리
+        console.error("Failed to fetch premium data", err);
+        setError("데이터를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");
       } finally {
         setLoading(false);
       }
@@ -88,8 +89,8 @@ export default function UserPremium() {
       return <p className={styles.errorText}>{error}</p>;
     }
 
-    // 구독 정보가 없는 경우 (API가 404를 반환하여 subscriptionStatus가 null)
-    if (!subscriptionStatus) {
+    // 구독 정보가 없거나, 있더라도 premiumHistory 객체가 없는 경우
+    if (!subscriptionStatus || !subscriptionStatus.premiumHistory) {
       return (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <p>프리미엄 회원이 아닙니다</p>
@@ -100,12 +101,24 @@ export default function UserPremium() {
       );
     }
 
-    // 구독 정보가 있는 경우 (활성/비활성 모두 포함)
     const { premiumHistory, customerUid } = subscriptionStatus;
     const { startDate, endDate, isActive } = premiumHistory;
     const monthlyFee = 990;
     const latestPayment = paymentHistory.length > 0 ? paymentHistory[0] : null;
 
+    // 구독이 비활성 상태이고, 만료일이 현재 시각보다 과거인 경우 (혜택이 완전히 종료된 경우)
+    if (!isActive && new Date(endDate) < new Date()) {
+      return (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <p>프리미엄 회원이 아닙니다</p>
+          <button onClick={() => navigate('/payment')} className={styles.btnPrimary}>
+            프리미엄 구독하러 가기
+          </button>
+        </div>
+      );
+    }
+
+    // 구독 정보가 있는 경우 (활성 또는 비활성이지만 만료일이 지나지 않은 경우)
     return (
       <>
         <PremiumSubscriptionStatus

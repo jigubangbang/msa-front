@@ -94,32 +94,44 @@ export const TRAVELER_SIDEBAR = [
     label: '여행자 동행 모집',
     icon: '/icons/sidebar/travelmate.svg',
     path: '/traveler/mate',
-  },
-  {
-    label: '모집 글쓰기',
-    path: '/traveler/mate/new',
-    submenu: true
+    submenus: [
+      {
+        label: '모집 글쓰기',
+        path: '/traveler/mate/new'
+      }
+    ]
   },
   {
     label: '여행 정보 공유방',
     icon: '/icons/sidebar/travelinfo.svg',
     path: '/traveler/info',
-  },
-  {
-    label: '공유방 만들기',
-    path: '/traveler/info/new',
-    submenu: true
+    submenus: [
+      {
+        label: '공유방 만들기',
+        path: '/traveler/info/new'
+      }
+    ]
   },
   {
     label: '내 여행자 모임',
     icon: '/icons/sidebar/my_traveler.svg',
-    path: '/traveler/my'
+    path: '/traveler/my',
+    submenus: [
+      {
+        label: '내 여행자 동행',
+        path: '/traveler/my/travelmate'
+      },
+      {
+        label: '내 여행 정보 공유방',
+        path: '/traveler/my/travelinfo'
+      }
+    ]
   },
   {
     label: '게시판',
     icon: '/icons/sidebar/board.svg',
     path: '/board',
-    submenu: [
+    submenus: [
       {
         label: '인기글',
         path: '/board/popular'
@@ -193,5 +205,33 @@ export const ADMIN_SIDEBAR = [
     label: '1:1 문의',
     icon: '/icons/sidebar/inquiry.svg',
     path: '/admin/inquiries'
+  }
+];
+
+export const FEED_SIDEBAR = [
+  {
+    label: '피드 홈',
+    icon: '/icons/sidebar/home.svg',
+    path: '/feed'
+  },
+  {
+    label: '팔로우',
+    icon: '/icons/sidebar/my_traveler.svg',
+    path: '/feed/following'
+  },
+  {
+    label: '북마크',
+    icon: '/icons/sidebar/bookmark.svg',
+    path: '/feed/bookmark'
+  },
+  {
+    label: '탐색',
+    icon: '/icons/sidebar/search.svg',
+    path: '/feed/search'
+  },
+  {
+    label: '친구 추천',
+    icon: '/icons/sidebar/user_recommendation.svg',
+    path: '/feed/recommendation'
   }
 ];

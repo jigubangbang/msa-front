@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import styles from './BadgeItem.module.css';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../../utils/constants';
+import api from '../../../../apis/api';
 
-const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge }) => {
+const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge, currentUserId }) => {
   const [hoveredBadge, setHoveredBadge] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
   const [actionModal, setActionModal] = useState({
@@ -44,7 +44,11 @@ const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge }) => 
     setIsPinning(true);
     
     try {
-      const response = await axios.post(`${API_ENDPOINTS.QUEST.USER}/badges/${badge.badge_id}/pin`);
+      const response = await api.post(`${API_ENDPOINTS.QUEST.USER}/badges/${badge.badge_id}/pin`, {}, {
+    headers: {
+        'User-Id': currentUserId
+    }
+});
       
       if (response.status === 200) {
         // 성공 모달 표시
@@ -147,6 +151,7 @@ const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge }) => 
           resultMessage={actionModal.resultMessage}
           isSuccessResult={actionModal.isSuccessResult}
           showResultDirectly={true}
+           currentUserId={currentUserId}
         />,
         document.body
       )}

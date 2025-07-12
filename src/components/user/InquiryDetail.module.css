@@ -168,14 +168,6 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.replySection {
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 20px 0;
-  border-bottom: 1px solid #e9ecef;
-}
-
 .contentTitle {
   font-family: 'Pretendard';
   font-size: 16px;
@@ -266,7 +258,7 @@
 /* 액션 버튼 */
 .actionButtons {
   display: flex;
-  gap: 5px;
+  gap: 10px;
 }
 
 .editButton,
@@ -284,8 +276,13 @@
 }
 
 .actionIcon {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
+}
+
+.actionIcon2 {
+  width: 25px;
+  height: 25px;
 }
 
 /* 수정 모드 */
@@ -442,7 +439,7 @@
   background: none;
   border: none;
   color: #dc3545;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
   padding: 0;

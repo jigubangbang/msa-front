@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {jwtDecode} from "jwt-decode";
 
 import styles from "./QuestAdminPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
@@ -67,10 +68,37 @@ export default function AdminFormPage({page}) {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    setIsAdmin(true);
-  }, []);
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setIsAdmin(false);
+                return;
+            }
+            
+            setIsLogin(true);
+            
+            const userRole = decoded.role || decoded.authorities;
+            const isAdminUser = userRole === 'ROLE_ADMIN' || 
+                               (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
+            setIsAdmin(isAdminUser);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setIsAdmin(false);
+        }
+    } else {
+        setIsLogin(false);
+        setIsAdmin(false);
+    }
+}, []);
 
   // 뱃지 관련 핸들러
   const handleBadgeClose = (badgeId) => {

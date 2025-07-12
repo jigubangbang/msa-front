@@ -158,7 +158,7 @@ export default function PremiumActionButtons({ subscriptionStatus, paymentHistor
     <>
       <div className={styles.buttonContainer}>
         <button className={`${styles.btn} ${styles.btnBlack}`} onClick={() => setShowPaymentMethodModal(true)}>결제 수단 변경</button>
-        <button className={`${styles.btn} ${styles.btnBlack}`} onClick={handleCancelSubscription}>구독 해지</button>
+        <button className={`${styles.btn} ${styles.btnBlack}`} onClick={handleCancelSubscription}>구독 취소</button>
         {showRefundButton && (
           <button className={`${styles.btn} ${styles.btnBlack}`} onClick={handleRefundRequest}>환불 요청</button>
         )}

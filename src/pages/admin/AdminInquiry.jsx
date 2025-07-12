@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import { ADMIN_SIDEBAR } from "../../utils/sidebar";
 import styles from "./AdminLayout.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
@@ -23,7 +23,7 @@ export default function AdminInquiry() {
       <Sidebar menuItems={finalMenuItems} />
       <div className={styles.content}>
         <div className={styles.formContainer}>
-          <p>1:1 문의 답변 페이지 내용</p>
+          <Outlet />
         </div>
       </div>
     </div>

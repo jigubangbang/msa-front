@@ -14,7 +14,9 @@ const rawAxios = axios.create();
 function isPublicApi(url = '') {
   return url.includes('/public/') ||
          url.startsWith('/api/auth/') ||
-         url.startsWith('/api/actuator/');
+         url.startsWith('/api/actuator/') ||
+         url.startsWith('/api/com') ||
+         url.startsWith('/api/quests');
 }
 
 // 요청 인터셉터

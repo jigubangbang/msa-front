@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
+import api from '../../../apis/api';
 
 const RankingList = ({ myUserId }) => {
   const [rankings, setRankings] = useState([]);
@@ -22,7 +22,7 @@ const RankingList = ({ myUserId }) => {
   const fetchRankings = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/rankings`, {
+      const response = await api.get(`${API_ENDPOINTS.QUEST.PUBLIC}/rankings`, {
         params: {
           page: currentPage,
           limit: itemsPerPage,

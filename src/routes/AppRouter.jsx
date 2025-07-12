@@ -44,6 +44,8 @@ import CommentManage from "../components/admin/CommentManage";
 import GroupManage from "../components/admin/GroupManage";
 import AdminReport from "../pages/admin/AdminReport";
 import AdminInquiry from "../pages/admin/AdminInquiry";
+import InquiryManage from "../components/admin/InquiryManage";
+import InquiryReply from "../components/admin/InquiryReply";
 
 import ChatPanel from "../pages/Chat/ChatPanel";
 
@@ -53,11 +55,21 @@ import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 import QuestAdminPage from "../pages/quest/quest-admin/QuestAdminPage";
 import QuestAdminDetailPage from "../pages/quest/quest-admin/QuestAdminDetailPage";
-import BadgeAdminDetail from "../components/quest-admin/BadgeAdminDetail";
 import BadgeAdminDetailPage from "../pages/quest/quest-admin/BadgeAdminDetailPage";
 import AdminFormPage from "../pages/quest/quest-admin/AdminFormPage";
 import FeedDetail from "../components/feed/FeedDetail";
 import TravelMateListPage from "../pages/community/traveler/travelmate/TravelMateListPage";
+import FeedFollowing from "../pages/feed/FeedFollowing";
+import FeedBookmark from "../pages/feed/FeedBookmark";
+import FeedSearch from "../pages/feed/FeedSearch";
+import FeedUserRecommendation from "../pages/feed/FeedUserRecommendation";
+import TravelmateDetailPage from "../pages/community/traveler/travelmate/TravelmateDetailPage";
+import TravelmateFormPage from "../pages/community/traveler/travelmate/TravelmateFormPage";
+import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
+import InfoFormPage from "../pages/community/traveler/travelinfo/InfoFormPage";
+import BoardListPage from "../pages/community/board/BoardListPage";
+import MyTravelerPage from "../pages/community/traveler/my/MyTravelerPage";
+
 
 const AppRouter = () => {
     return (
@@ -80,6 +92,10 @@ const AppRouter = () => {
           {/* Feed */}
           <Route path="/feed" element={<Feed/>}/>
           <Route path="/feed/:feedId" element={<FeedDetail/>}/>
+          <Route path="/feed/following" element={<FeedFollowing/>}/>
+          <Route path="/feed/bookmark" element={<FeedBookmark/>}/>
+          <Route path="/feed/search" element={<FeedSearch/>}/>
+          <Route path="/feed/recommendation" element={<FeedUserRecommendation/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>
@@ -111,21 +127,26 @@ const AppRouter = () => {
 
           {/* Traveler */}
           <Route path="/traveler/mate" element={<TravelMateListPage/>}/>
-          {/*<Route path="/traveler/mate/new" element={<TravelFormPage/>}/>
-          <Route path="/traveler/mate/:id" element={<MateDetailPage/>}/>
+          <Route path="/traveler/mate/:postId" element={<TravelmateDetailPage/>}/>
+          <Route path="/traveler/mate/new" element={<TravelmateFormPage/>}/>
+          <Route path="/traveler/mate/:postId/edit" element={<TravelmateFormPage />} />
+          
           <Route path="/traveler/info" element={<InfoListPage/>}/>
           <Route path="/traveler/info/new" element={<InfoFormPage/>}/>
-          <Route path="/traveler/info/:id" element={<InfoDetailPage/>}/>
+          <Route path="/traveler/info/:infoId/edit" element={<InfoFormPage/>}/>
           <Route path="/traveler/my" element={<MyTravelerPage/>}/>
+          <Route path="/traveler/my/travelinfo" element={<MyTravelerPage page="travelinfo"/>}/>
+          <Route path="/traveler/my/travelmate" element={<MyTravelerPage page="travelmate"/>}/>
 
-           Board 
-          <Route path="/board" element={<BoardMainPage/>}/>
-          <Route path="/board/popular" element={<BoardListPage category="popular"/>}/>
-          <Route path="/board/info" element={<BoardListPage category="info"/>}/>
-          <Route path="/board/recommend" element={<BoardListPage category="recommend"/>}/>
-          <Route path="/board/chat" element={<BoardListPage category="chat"/>}/>
-          <Route path="/board/question" element={<BoardListPage category="question"/>}/>
-          <Route path="/board/my" element={<MyBoardPage/>}/>
+          {/*Board */}
+          <Route path="/board" element={<BoardListPage/>}/>
+          <Route path="/board/popular" element={<BoardListPage page="popular"/>}/>
+          <Route path="/board/info" element={<BoardListPage page="info"/>}/>
+          <Route path="/board/recommend" element={<BoardListPage page="recommend"/>}/>
+          <Route path="/board/chat" element={<BoardListPage page="chat"/>}/>
+          <Route path="/board/question" element={<BoardListPage page="question"/>}/>
+          
+          {/*<Route path="/board/my" element={<MyBoardPage/>}/>
           <Route path="/board/new" element={<BoardFormPage/>}/>
           <Route path="/board/:id" element={<BoardDetailPage/>}/>
           <Route path="/board/:id/edit" element={<BoardFormPage/>}/>*/}
@@ -159,7 +180,10 @@ const AppRouter = () => {
             <Route path="groups" element={<GroupManage/>}/>
           </Route>
           <Route path="/admin/reports" element={<AdminReport/>}/>
-          <Route path="/admin/inquiries" element={<AdminInquiry/>}/>
+          <Route path="/admin/inquiries" element={<AdminInquiry/>}>
+            <Route index element={<InquiryManage/>}/>
+            <Route path=":id" element={<InquiryReply/>}/>
+          </Route>
 
           {/* Chat */}
           <Route path="/chat" element={<ChatPanel/>}/>

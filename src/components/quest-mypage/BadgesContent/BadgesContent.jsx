@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from 'axios';
 import ReactDOM from 'react-dom';
 
 import styles from "./BadgesContent.module.css";
@@ -8,6 +7,7 @@ import API_ENDPOINTS from "../../../utils/constants";
 import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 import BadgeItem from "./BadgeItem/BadgeItem";
+import api from "../../../apis/api";
 
 
 export default function BadgesContent({
@@ -15,7 +15,7 @@ export default function BadgesContent({
       isLogin,
       isMine,
       onUpdate,
-
+      currentUserId
     }) {
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +50,15 @@ const openQuestModal = useCallback( async (quest_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await axios.get(endpoint);
+    const config = {};
+
+    if (isLogin) {
+        config.headers = {
+            'User-Id': currentUserId
+        };
+    }
+
+    const response = await api.get(endpoint, config);
     setSelectedQuest(response.data);
     setShowQuestModal(true);
     console.log("Quest data fetched:", response.data);
@@ -69,12 +77,20 @@ const closeQuestModal = () => {
 // 모달
 const openBadgeModal = useCallback(async (badge_id) => {
   setLoading(true);
-  try {
-    const endpoint = isLogin 
-    ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
-    : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-    const response = await axios.get(endpoint);
+try {
+    const endpoint = isLogin 
+        ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
+        : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
+
+    const config = {};
+    if (isLogin) {
+        config.headers = {
+            'User-Id': currentUserId
+        };
+    }
+
+    const response = await api.get(endpoint, config);
     setSelectedBadge(response.data);
     setShowBadgeModal(true);
     console.log("Badge data fetched:", response.data);
@@ -131,7 +147,7 @@ const handleQuestClickFromBadge = (quest_id) => {
                     isMine={isMine}
                     onBadgeClick={handleBadgeClick}
                     onUpdate={handleUpdate}
-                    isPinnedBadge={badge.badge_id === userInfo.badge.pinned_badge.id}
+                     isPinnedBadge={badge.badge_id === userInfo.badge?.pinned_badge?.id}
                   />
                 ))}
             </div>
@@ -147,6 +163,7 @@ const handleQuestClickFromBadge = (quest_id) => {
           onBadgeClick={handleBadgeClickFromQuest}
           isLogin={isLogin} 
           onQuestUpdate={handleUpdate}
+          currentUserId={currentUserId}
         />,
         document.body
       )}

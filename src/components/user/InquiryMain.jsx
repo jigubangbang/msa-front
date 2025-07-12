@@ -37,7 +37,7 @@ export default function InquiryMain() {
     return map[category] || category;
   };
 
-  const getStatusLabel = (status) => (status === "PENDING" ? "대기" : "답변완료");
+  const getStatusLabel = (status) => (status === "PENDING" ? "대기" : "답변 완료");
 
   // 날짜 포맷 (YYYY.MM.DD)
   const formatDate = (dateString) => {

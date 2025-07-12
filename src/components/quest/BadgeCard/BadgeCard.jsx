@@ -17,9 +17,8 @@ const BadgeCard = ({userBadge, isLogin=false}) => {
 
   return (
     <div className={styles.badgeCard}>
-
-      <div className={styles.content}>
-        {(displayBadges.length > 0 || isLogin)? (
+       <div className={styles.content}>
+        {(displayBadges.length > 0 && isLogin) ? (
             displayBadges.map((badges, index) => (
                 <div key={badges.badge_id || index} className={styles.badgeItem}>
                     <img
@@ -28,14 +27,20 @@ const BadgeCard = ({userBadge, isLogin=false}) => {
                         className={styles.badgeIcon}/>
                 </div>
             ))
-        ):(
-            <div className={styles.title}>
-                획득한 뱃지가 아직 없습니다.
-            </div>
+        ) : (
+            // 뱃지가 없거나 로그아웃 상태일 때 unknown_badge 5개 표시
+            Array.from({ length: 5 }, (_, index) => (
+                <div key={`unknown-${index}`} className={styles.badgeItem}>
+                    <img
+                        src="/icons/common/unknwon_badge.png"
+                        alt="Unknown Badge"
+                        className={styles.badgeIcon}/>
+                </div>
+            ))
         )}
       </div>
 
-        <button className={`${styles.btn}`}
+      <button className={`${styles.btn}`}
           onClick={handleButtonClick}>View All Badges →</button>
     </div>
   );

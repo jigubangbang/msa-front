@@ -1,0 +1,226 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.topTravelmateList {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 40px 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+}
+
+.viewAllButton {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+}
+
+.viewAllButton:hover {
+  color: #333;
+}
+
+.cardContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #007bff;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.likeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.likeButton:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.likeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.likeButton.liked {
+  animation: likeAnimation 0.3s ease;
+}
+
+@keyframes likeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.content {
+  padding: 16px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.description {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+}
+
+.members,
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .topTravelmateList {
+    padding: 30px 15px;
+  }
+  
+  .cardContainer {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .cardContainer {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  
+  .imageContainer {
+    height: 120px;
+  }
+  
+  .content {
+    padding: 12px;
+  }
+  
+  .cardTitle {
+    font-size: 14px;
+  }
+  
+  .description {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .imageContainer {
+    height: 100px;
+  }
+  
+  .likeButton {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}

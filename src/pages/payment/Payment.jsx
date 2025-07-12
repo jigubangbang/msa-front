@@ -122,7 +122,15 @@ const Payment = () => {
     return <div className="payment-container error">{error}</div>;
   }
 
-  if (subscription && subscription.premiumHistory && subscription.premiumHistory.startDate) {
+  // 구독 정보가 있고, 유효한 시작일이 있으며, 만료되지 않았을 경우에만 상태 페이지를 보여줌
+  if (
+    subscription && 
+    subscription.premiumHistory && 
+    subscription.premiumHistory.startDate &&
+    // endDate가 있고, 그 시간이 현재보다 미래일 때 (아직 만료되지 않음)
+    // 또는 endDate가 없을 때 (해지하지 않은 활성 구독)
+    (!subscription.premiumHistory.endDate || new Date(subscription.premiumHistory.endDate) > new Date())
+  ) {
     return (
       <>
         <SubscriptionStatus subscription={subscription} onCancel={handleCancelSubscription} />

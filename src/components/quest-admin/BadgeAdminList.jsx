@@ -1,9 +1,9 @@
 // BadgeAdminList.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import styles from './BadgeAdminList.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import api from '../../apis/api';
 
 const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
   const [badges, setBadges] = useState([]);
@@ -35,7 +35,7 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
   const fetchBadges = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`);
       
       setBadges(response.data.badges || []);
       setTotalCount(response.data.totalCount || 0);
