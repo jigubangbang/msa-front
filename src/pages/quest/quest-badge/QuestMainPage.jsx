@@ -155,6 +155,7 @@ export default function QuestMainPage() {
   const [userQuest, setUserQuest] = useState(null);
   const [userRank, setUserRank] = useState(null);
   const [userBadge, setUserBadge] = useState(null);
+    const [currentUserId, setCurrentUserId] = useState(null);
   
 
   const [seasonalQuest, setSeasonalQuest] = useState(null);
@@ -206,6 +207,8 @@ useEffect(() => {
                 return;
             }
             setIsLogin(true);
+                        setCurrentUserId(decoded.sub || decoded.userId);
+
             
             const userRole = decoded.role || decoded.authorities;
             const isAdminUser = userRole === 'ROLE_ADMIN' || 
@@ -235,7 +238,12 @@ useEffect(() => {
   const fetchUserinfo = async () => {
     setLoading(true);
     try{
-      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`)
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`, {
+      headers: {
+        'User-Id': currentUserId
+      }
+    });
+
       setUserinfo(response.data || {});
     }catch(err){
       console.error("Failed to fetch user info", err);
@@ -247,7 +255,12 @@ useEffect(() => {
   const fetchUserRank = async () => {
     setLoading(true);
     try{
-      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/ranking/my`)
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/ranking/my`, {
+      headers: {
+        'User-Id': currentUserId
+      }
+    });
+
       setUserRank(response.data || {});
     }catch(err){
       console.error("Failed to fetch user rank", err);
@@ -262,8 +275,12 @@ useEffect(() => {
       const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
       params: {
         status: "IN_PROGRESS"
+      },
+      headers: {
+        'User-Id': currentUserId
       }
     });
+
       setUserQuest(response.data || {});
     }catch(err){
       console.error("Failed to fetch user quests", err);
@@ -276,7 +293,12 @@ useEffect(() => {
   const fetchUserBadge = async () => {
     setLoading(true);
     try{
-      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`, {
+      headers: {
+        'User-Id': currentUserId
+      }
+    });
+
       setUserBadge(response.data || {});
     }catch(err){
       console.error("Failed to fetch user badge", err);
@@ -312,22 +334,36 @@ const handleQuestUpdate = async (questId) => {
     // 1. 현재 퀘스트 모달 새로고침
     if (questId){
       const endpoint = isLogin 
-          ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
-          : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+  ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+  : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
 
-        const response = await api.get(endpoint);
+const response = await api.get(endpoint, {
+  headers: {
+    'User-Id': currentUserId  
+  }
+});
+
         setSelectedQuest(response.data); 
     }
     
     
     // 2. 사용자 퀘스트 목록 새로고침
     const userQuestsResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
-      params: { status: "IN_PROGRESS" }
-    });
+  params: { status: "IN_PROGRESS" },
+  headers: {
+    'User-Id': currentUserId  
+  }
+});
+
     setUserQuest(userQuestsResponse.data || []);
     
     // 3. 사용자 정보 새로고침
-    const userResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+    const userResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`, {
+  headers: {
+    'User-Id': currentUserId 
+  }
+});
+
     setUserinfo(userResponse.data);
     
   } catch (error) {
@@ -345,7 +381,14 @@ const handleQuestUpdate = async (questId) => {
       ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
       : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-      const response = await api.get(endpoint);
+    const config = isLogin ? {
+      headers: {
+        'User-Id': currentUserId
+      }
+    } : {};
+
+    const response = await api.get(endpoint, config);
+
       setSelectedQuest(response.data);
       setShowQuestModal(true);
       console.log("Quest data fetched:", response.data);
@@ -369,7 +412,14 @@ const handleQuestUpdate = async (questId) => {
       ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
       : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-      const response = await api.get(endpoint);
+    const config = isLogin ? {
+      headers: {
+        'User-Id': currentUserId
+      }
+    } : {};
+
+    const response = await api.get(endpoint, config);
+
       setSelectedBadge(response.data);
       setShowBadgeModal(true);
       console.log("Badge data fetched:", response.data);
@@ -410,6 +460,7 @@ const handleQuestUpdate = async (questId) => {
               <>
                 {userQuest && (
                   <QuestCarousel 
+                  currentUserId={currentUserId}
                     quests={userQuest} 
                     title="Ongoing Quests" 
                     onOpenModal={openQuestModal}
@@ -442,6 +493,7 @@ const handleQuestUpdate = async (questId) => {
                 level={isLogin && userinfo ? userinfo.level : 0}
                 nickname={isLogin && userinfo ? userinfo.nickname : "Guest"}
                 isLogin={isLogin}
+                currentUserId={currentUserId}
               />
             </div>
           
@@ -451,6 +503,7 @@ const handleQuestUpdate = async (questId) => {
                 count={isLogin && userRank ? userRank.count : null}
                 totalCount={isLogin && userRank ? userRank.totalCount : null}
                 isLogin={isLogin}
+                currentUserId={currentUserId}
               />
             </div>
 
@@ -458,6 +511,7 @@ const handleQuestUpdate = async (questId) => {
               <BadgeCard 
                 userBadge={isLogin ? userBadge : { badges: [], totalCount: 0 }}
                 isLogin={isLogin}
+                currentUserId={currentUserId}
               />
             </div>
           </div>
@@ -468,12 +522,12 @@ const handleQuestUpdate = async (questId) => {
         <div className={styles.questContent}>
         {seasonalQuest && (
             <div className={styles.seasonalQuestContainer}>
-                <QuestSlider quests={seasonalQuest} title="Seasonal Events" onOpenModal={openQuestModal}/>
+                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="Seasonal Events" onOpenModal={openQuestModal}/>
             </div>
           )}
             
           </div>
-        <QuestList isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}
+        <QuestList currentUserId={currentUserId} isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}
        />
         
       </div>
@@ -481,6 +535,7 @@ const handleQuestUpdate = async (questId) => {
       {/* 퀘스트 모달 */}
       {showQuestModal && ReactDOM.createPortal(
         <QuestModal 
+        currentUserId={currentUserId}
           questData={selectedQuest} 
           onClose={closeQuestModal}
           onBadgeClick={handleBadgeClickFromQuest}
@@ -493,6 +548,7 @@ const handleQuestUpdate = async (questId) => {
       {/* 배지 모달 */}
       {showBadgeModal && ReactDOM.createPortal(
         <BadgeModal 
+        currentUserId={currentUserId}
           badgeData={selectedBadge} 
           onClose={closeBadgeModal}
           onQuestClick={handleQuestClickFromBadge}

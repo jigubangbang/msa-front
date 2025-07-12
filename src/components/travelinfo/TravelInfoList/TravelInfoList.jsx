@@ -149,7 +149,7 @@ const TravelInfoList = ({
         groupId: groupId
       });
       
-      //#NeedToChange
+      //#NeedToDo채팅
       const chatRoomId = response.data.chatRoomId;
       console.log('채팅방으로 이동:', chatRoomId);
       

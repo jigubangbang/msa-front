@@ -31,7 +31,11 @@ const QuestCertificationViewModal = ({
   const fetchCertificationData = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/certificate/${questUserId}`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/certificate/${questUserId}`, {
+        headers: {
+            'User-Id': currentUserId
+        }
+    });
       setCertificationData(response.data);
       console.log('인증 데이터 조회 성공:', response.data);
     } catch (error) {

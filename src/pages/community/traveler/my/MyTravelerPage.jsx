@@ -3,11 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { TRAVELER_SIDEBAR } from "../../../../utils/sidebar";
 import styles from "./MyTravelerPage.module.css";
 import Sidebar from "../../../../components/common/SideBar/SideBar";
+import { jwtDecode } from 'jwt-decode';
+
 
 export default function MyTravelerPage({page}) {
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [activeTab, setActiveTab] = useState('travelmate'); // 'travelmate' 또는 'travelinfo'
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   //SideBar//
   const location = useLocation();
@@ -33,13 +36,33 @@ export default function MyTravelerPage({page}) {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-
-    // if (token) {
-    //   setIsLogin(true);
-    // }
-  }, []);
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setCurrentUserId(null);
+                return;
+            }
+            
+            setIsLogin(true);
+            setCurrentUserId(decoded.sub || decoded.userId);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setCurrentUserId(null);
+        }
+    } else {
+        setIsLogin(false);
+        setCurrentUserId(null);
+    }
+}, []);
 
   // page prop이 변경될 때마다 activeTab 설정
   useEffect(() => {

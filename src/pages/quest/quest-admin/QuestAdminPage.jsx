@@ -6,7 +6,7 @@ import Sidebar from "../../../components/common/SideBar/SideBar";
 import QuestAdminList from "../../../components/quest-admin/QuestAdminList";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import BadgeAdminList from "../../../components/quest-admin/BadgeAdminList";
-
+import {jwtDecode} from "jwt-decode";
 
 export default function QuestAdminPage({page}) {
   const [isLogin, setIsLogin] = useState(false);
@@ -50,16 +50,39 @@ export default function QuestAdminPage({page}) {
   }
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    setIsAdmin(true);
-
-    // if (token) {
-    //   setIsLogin(true);
-    // }
-  }, []);
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setIsAdmin(false);
+                return;
+            }
+            
+            setIsLogin(true);
+            
+            const userRole = decoded.role || decoded.authorities;
+            const isAdminUser = userRole === 'ROLE_ADMIN' || 
+                               (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
+            setIsAdmin(isAdminUser);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setIsAdmin(false);
+        }
+    } else {
+        setIsLogin(false);
+        setIsAdmin(false);
+    }
+}, []);
 
 
   if (!isAdmin) {

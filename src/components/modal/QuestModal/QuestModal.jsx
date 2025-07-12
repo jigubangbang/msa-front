@@ -12,7 +12,8 @@ const QuestModal = ({
   onClose, 
   isLogin=false, 
   onBadgeClick,
-  onQuestUpdate }) => {
+  onQuestUpdate,
+  currentUserId }) => {
   const [badgeHover, setBadgeHover] = useState(null);
 const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
   const [showUserList, setShowUserList] = useState(false);
@@ -429,6 +430,7 @@ const handleViewModalClose = () => {
 
       {/* 액션 확인 모달 */}
       <QuestActionModal
+       currentUserId={currentUserId}
         isOpen={actionModal.isOpen}
         onClose={handleActionModalClose}
         actionType={actionModal.type}
@@ -444,6 +446,7 @@ const handleViewModalClose = () => {
         questData={questData}
         questUserId={questData.quest_user_id}
         onSuccess={handleActionSuccess}
+         currentUserId={currentUserId}
       />
 
       <QuestCertificationViewModal

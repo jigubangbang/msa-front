@@ -13,6 +13,8 @@ import RankBadgeList from "../../../components/rank/RankBadgeList/RankBadgeList"
 import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 import api from "../../../apis/api";
+import { jwtDecode } from 'jwt-decode';
+
 
 
 
@@ -25,7 +27,7 @@ export default function BadgeListPage() {
 
   const [badgeSearchTerm, setBadgeSearchTerm] = useState('');
   const [badgeCurrentPage, setBadgeCurrentPage] = useState(1);
-
+const [currentUserId, setCurrentUserId] = useState(null);
 
 
 // Modal states 
@@ -58,27 +60,56 @@ const [selectedBadge, setSelectedBadge] = useState(null);
     //SideBar//
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    setIsAdmin(true);
-    fetchUser();
-    fetchUserQuests();
-    fectchUserBadges();
-
+    
     if (token) {
-      setIsLogin(true);
-      fetchUser();
-      fetchUserQuests();
-      fectchUserBadges();
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setIsAdmin(false);
+                setCurrentUserId(null);
+                return;
+            }
+            
+            setIsLogin(true);
+            setCurrentUserId(decoded.sub || decoded.userId);
+            
+            const userRole = decoded.role || decoded.authorities;
+            const isAdminUser = userRole === 'ROLE_ADMIN' || 
+                               (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
+            setIsAdmin(isAdminUser);
+            
+            fetchUser();
+            fetchUserQuests();
+            fectchUserBadges();
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setIsAdmin(false);
+            setCurrentUserId(null);
+        }
+    } else {
+        setIsLogin(false);
+        setIsAdmin(false);
+        setCurrentUserId(null);
     }
-  }, []);
+}, []);
 
   const fetchUser = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`, {
+    headers: {
+        'User-Id': currentUserId
+    }
+});
       setUser(response.data);
       console.log("User data fetched:", response.data);
     } catch (error) {
@@ -92,7 +123,11 @@ const [selectedBadge, setSelectedBadge] = useState(null);
   const fectchUserBadges = async() => {
     setLoading(true);
     try {
-      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`, {
+    headers: {
+        'User-Id': currentUserId
+    }
+});
       setUser(prev => ({
         ...prev,
         badge_totalCount: response.data.totalCount
@@ -109,10 +144,13 @@ const [selectedBadge, setSelectedBadge] = useState(null);
     setLoading(true);
     try {
       const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
-        params: {
+      params: {
           status: "IN_PROGRESS"
-        }
-      });
+      },
+      headers: {
+          'User-Id': currentUserId
+      }
+  });
       setUserQuests(response.data || []);
       console.log("User quests fetched:", response.data);
     } catch (error) {
@@ -140,7 +178,16 @@ const openQuestModal = useCallback(async (quest_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await api.get(endpoint);
+const config = {};
+
+// 로그인 상태일 때만 User-Id 헤더 추가
+if (isLogin) {
+    config.headers = {
+        'User-Id': currentUserId
+    };
+}
+
+const response = await api.get(endpoint, config);
     setSelectedQuest(response.data);
     setShowQuestModal(true);
     console.log("Quest data fetched:", response.data);
@@ -162,22 +209,38 @@ const handleQuestUpdate = async (questId) => {
   try {
     // 1. 현재 퀘스트 모달 새로고침
     const endpoint = isLogin 
-      ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
-      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+    ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
 
-    const response = await api.get(endpoint);
+const config = {};
+
+// 로그인 상태일 때만 User-Id 헤더 추가
+if (isLogin) {
+    config.headers = {
+        'User-Id': currentUserId
+    };
+}
+
+const response = await api.get(endpoint, config);
     setSelectedQuest(response.data); 
     
     // 2. 사용자 퀘스트 목록 새로고침
     const userQuestsResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
-      params: { status: "IN_PROGRESS" }
-    });
+    params: { status: "IN_PROGRESS" },
+    headers: {
+        'User-Id': currentUserId
+    }
+});
        setUserQuests(userQuestsResponse.data || []);
 
        
 
     // 3. 사용자 정보 새로고침
-    const userResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+    const userResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`, {
+  headers: {
+    'User-Id': currentUserId,
+  },
+});
     setUser(userResponse.data);
     
   } catch (error) {
@@ -192,10 +255,15 @@ const openBadgeModal = useCallback(async (badge_id) => {
   setLoading(true);
   try {
     const endpoint = isLogin 
-    ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
-    : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
+  ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
+  : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-    const response = await api.get(endpoint);
+const config = isLogin
+  ? { headers: { 'User-Id': currentUserId } }
+  : {};
+
+const response = await api.get(endpoint, config);
+
     setSelectedBadge(response.data);
     setShowBadgeModal(true);
     console.log("Badge data fetched:", response.data);
@@ -252,6 +320,7 @@ const handleQuestClickFromBadge = (quest_id) => {
           />
 
           <UserInfoPanel 
+            currentUserId={currentUserId}
             user={user}
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
@@ -263,7 +332,9 @@ const handleQuestClickFromBadge = (quest_id) => {
 
       {/* 모달들을 Portal로 body에 렌더링 */}
       {showQuestModal && ReactDOM.createPortal(
+        
         <QuestModal 
+        currentUserId={currentUserId}
           questData={selectedQuest} 
           onClose={closeQuestModal}
           onBadgeClick={handleBadgeClickFromQuest}
@@ -275,6 +346,7 @@ const handleQuestClickFromBadge = (quest_id) => {
 
       {showBadgeModal && ReactDOM.createPortal(
         <BadgeModal 
+        currentUserId={currentUserId}
           badgeData={selectedBadge} 
           onClose={closeBadgeModal}
           onQuestClick={handleQuestClickFromBadge}

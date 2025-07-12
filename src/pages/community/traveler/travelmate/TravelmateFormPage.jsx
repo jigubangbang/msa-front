@@ -6,6 +6,8 @@ import Sidebar from "../../../../components/common/SideBar/SideBar";
 import api from '../../../../apis/api';
 import API_ENDPOINTS from '../../../../utils/constants';
 import TravelmateForm from '../../../../components/travelmate/TravelmateForm/TravelmateForm';
+import { jwtDecode } from 'jwt-decode';
+
 
 const TravelmateFormPage = () => {
   const { postId } = useParams();
@@ -43,20 +45,43 @@ const TravelmateFormPage = () => {
   useEffect(() => {
     // 로그인 상태 확인
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    setCurrentUserId("aaa");
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setCurrentUserId(null);
+                return;
+            }
+            
+            setIsLogin(true);
+            setCurrentUserId(decoded.sub || decoded.userId);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setCurrentUserId(null);
+        }
+    } else {
+        setIsLogin(false);
+        setCurrentUserId(null);
+    }
     
     // 모드 결정: postId가 있으면 수정, 없으면 생성
     console.log(postId);
     if (postId) {
-      setMode('edit');
-      fetchTravelmateData(postId);
+        setMode('edit');
+        fetchTravelmateData(postId);
     } else {
-      setMode('create');
-      setLoading(false);
+        setMode('create');
+        setLoading(false);
     }
-  }, [postId]);
+}, [postId]);
 
   // 기존 모임 데이터 조회 (수정 모드용)
   const fetchTravelmateData = async (id) => {

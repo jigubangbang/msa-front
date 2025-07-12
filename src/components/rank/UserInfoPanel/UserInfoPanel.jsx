@@ -8,6 +8,7 @@ const UserInfoPanel = ({
   userQuests = [], 
   calculatePerformance,
   isLogin = false
+  
 }) => {
   return (
     <div className={styles.loginContent}>
@@ -35,7 +36,7 @@ const UserInfoPanel = ({
       <div className={styles.card}>
         <SimpleCard 
           title="XP" 
-          count={user?.xp || "?"}
+          count={isLogin ? user?.xp || 0 : "?"}
         />
       </div>
 
@@ -53,7 +54,7 @@ const UserInfoPanel = ({
       <div className={styles.card}>
         <SimpleCard 
           title="Badges" 
-          count={user?.badge_totalCount || "?"}
+          count={isLogin? user?.badge_totalCount || 0 :  "?"}
         />
       </div>
 

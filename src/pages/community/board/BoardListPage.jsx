@@ -4,6 +4,8 @@ import { TRAVELER_SIDEBAR } from "../../../utils/sidebar";
 import styles from "./BoardListPage.module.css";
 import TravelerSearchBar from "../../../components/travelmate/TravelerSearchBar/TravelerSearchBar";
 import Sidebar from "../../../components/common/SideBar/SideBar";
+import { jwtDecode } from 'jwt-decode';
+
 
 export default function BoardListPage({page}) {
   const navigate = useNavigate();
@@ -42,41 +44,70 @@ export default function BoardListPage({page}) {
     
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true); //느낌표2개 token으로 주면 됨
-    setCurrentUserId("aaa");
-
-
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setIsAdmin(false);
+                setCurrentUserId(null);
+                return;
+            }
+            
+            setIsLogin(true);
+            setCurrentUserId(decoded.sub || decoded.userId);
+            
+            const userRole = decoded.role || decoded.authorities;
+            const isAdminUser = userRole === 'ROLE_ADMIN' ||
+                                (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
+            setIsAdmin(isAdminUser);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setIsAdmin(false);
+            setCurrentUserId(null);
+        }
+    } else {
+        setIsLogin(false);
+        setIsAdmin(false);
+        setCurrentUserId(null);
+    }
+    
     if (page) {
         // page 값에 따라 category 설정
         switch (page) {
-        case "popular":
-            setCategory([0]);
-            break;
-        case "info":
-            setCategory([1]);
-            break;
-        case "recommend":
-            setCategory([2]);
-            break;
-        case "chat":
-            setCategory([3]);
-            break;
-        case "question":
-            setCategory([4]);
-            break;
-        default:
-            setCategory([]);
-            break;
+            case "popular":
+                setCategory([0]);
+                break;
+            case "info":
+                setCategory([1]);
+                break;
+            case "recommend":
+                setCategory([2]);
+                break;
+            case "chat":
+                setCategory([3]);
+                break;
+            case "question":
+                setCategory([4]);
+                break;
+            default:
+                setCategory([]);
+                break;
         }
     } else {
-        // /board 라면 전체 보기로 초기화
         setIsSearching(false);
         setCategory([]);
     }
-    }, [page]);
+}, [page]);
 
   const handleSearchStart = () => {
     setCategory([]);

@@ -92,7 +92,7 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionC
   );
 };
 
-const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false, onQuestUpdate }) => {
+const QuestCarousel = ({ quests = [], title= "", onOpenModal, isLogin = false, onQuestUpdate, currentUserId }) => {
   const [selectedQuestId, setSelectedQuestId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -419,6 +419,7 @@ const handleSignupClick = () => {
           quest_id={actionModal.quest?.quest_id || actionModal.quest?.id}
           quest_user_id={actionModal.quest?.id}
           onSuccess={handleActionSuccess}
+           currentUserId={currentUserId}
         />
       )}
 
@@ -428,6 +429,7 @@ const handleSignupClick = () => {
         questData={certiModal.questData}
         questUserId={certiModal.questUserId}
         onSuccess={handleCertiSuccess}
+         currentUserId={currentUserId}
       />
       </>
   );

@@ -11,7 +11,8 @@ const QuestCertificationModal = ({
   onClose, 
   questData,
   questUserId,
-  onSuccess 
+  onSuccess,
+  currentUserId
 }) => {
   const INITIAL_IMAGE_COUNT = 5;
   const MAX_IMAGE_COUNT = 10;
@@ -142,11 +143,11 @@ const QuestCertificationModal = ({
 
       // 퀘스트 완료 API 호출
       const response = await api.post(`${API_ENDPOINTS.QUEST.USER}/${questUserId}/complete`, questCerti, {
-        headers: {
+      headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${accessToken}` // 필요시 추가
-        }
-      });
+          'User-Id': currentUserId
+      }
+  });
 
       console.log('퀘스트 인증 성공:', response.data);
       
@@ -312,6 +313,7 @@ const QuestCertificationModal = ({
         isSuccessResult={true}
         showResultDirectly={true}
         onSuccess={handleSuccessConfirm}
+        currentUserId={currentUserId}
       />
 
       {/* 알림 모달 */}
