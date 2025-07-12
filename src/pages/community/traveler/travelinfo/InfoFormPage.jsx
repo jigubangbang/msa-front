@@ -138,7 +138,7 @@ const InfoFormPage = () => {
 
   // 폼 닫기/취소
   const handleFormClose = () => {
-    // 이전 페이지로 돌아가거나 목록으로 이동
+    // 이전 페이지로 돌아가거나 목록으로 이동 #NeedToChange 이거 이전 페이지 말고 내 거기 수정하는 거기로 마들면
       navigate(`/traveler/info`);
   };
 

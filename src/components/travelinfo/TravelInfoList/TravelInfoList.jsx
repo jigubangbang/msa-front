@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 import styles from './TravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
+import ReportModal from '../../common/Modal/ReportModal';
+import api from '../../../apis/api';
 
 const TravelInfoList = ({
   currentUserId,
@@ -22,6 +23,10 @@ const TravelInfoList = ({
   const [joinedChats, setJoinedChats] = useState(new Set());
   const [selectedInfo, setSelectedInfo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [reportInfo, setReportInfo] = useState(null);
+  
   
   // 내부에서 카테고리와 정렬 관리
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
@@ -89,14 +94,14 @@ const TravelInfoList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await axios.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`);
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(postId);
           return newSet;
         });
       } else {
-        await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`);
         setLikedPosts(prev => new Set(prev).add(postId));
       }
       
@@ -130,7 +135,7 @@ const TravelInfoList = ({
 
   const handleChatClick = async (groupId) => {
     try {
-      const response = await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELINFO",
         groupId: groupId
       });
@@ -149,7 +154,7 @@ const TravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`);
+      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`);
       
       setJoinedChats(prev => new Set(prev).add(selectedInfo.id));
       
@@ -173,11 +178,48 @@ const TravelInfoList = ({
     setSelectedInfo(null);
   };
 
-  const handleReport = (travelinfoId) => {
-    console.log('신고하기:', travelinfoId);
-    // 신고 로직 구현
-    alert('신고가 접수되었습니다.');
+  // ReportModal 닫기
+  const handleReportClose = () => {
+    setShowReportModal(false);
+    setReportInfo(null);
   };
+
+  const handleReport = (travelinfo) => {
+    console.log('신고하기:', travelinfo);
+    // 신고 로직 구현
+    if (!isLogin) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    setShowReportModal(true);
+    setReportInfo(travelinfo);
+  };
+
+  const handleReportSubmit = async (reportData) => {
+      try {
+        const payload = {
+          reporterId: currentUserId,
+          targetUserId: reportInfo.creatorId,
+          contentSubtype: 'TRAVELINFO',
+          contentType:'GROUP',
+          contentId: reportInfo.id,
+          reasonCode: reportData.reasonCode,
+          reasonText: reportData.reasonText
+        };
+
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`, payload);
+        
+        setShowReportModal(false);
+        setReportInfo(null);
+        alert('신고가 접수되었습니다.');
+        
+      } catch (error) {
+        console.error('Failed to submit report:', error);
+        const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
+        alert(errorMessage);
+      }
+    };
+
 
   const handleEdit = (travelinfoId) => {
     console.log('수정하기:', travelinfoId);
@@ -191,7 +233,7 @@ const TravelInfoList = ({
     }
 
     try {
-      await axios.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${travelinfoId}`);
+      await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${travelinfoId}`);
       alert('정보방이 삭제되었습니다.');
       // 목록 새로고침
       fetchTravelinfos();
@@ -217,7 +259,7 @@ const TravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`);
       setLikedPosts(new Set(response.data.likedTravelInfoIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);
@@ -228,7 +270,7 @@ const TravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`);
       setJoinedChats(new Set(response.data.joinedChatIds));
     } catch (error) {
       console.error('Failed to fetch joined chats:', error);
@@ -251,7 +293,7 @@ const TravelInfoList = ({
 
       console.log('최종 API 요청 파라미터:', params);
 
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/list`, {
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/list`, {
         params: params
       });
 
@@ -417,7 +459,7 @@ const TravelInfoList = ({
                 {!isBlind && (
                   <DetailDropdown
                     isCreator={currentUserId==travelinfo.creatorId}
-                    onReport={() => handleReport(travelinfo.id)}
+                    onReport={() => handleReport(travelinfo)}
                     onEdit={() => handleEdit(travelinfo.id)}
                     onDelete={() => handleDelete(travelinfo.id)}
                   />
@@ -445,6 +487,12 @@ const TravelInfoList = ({
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
+
+      <ReportModal
+              show={showReportModal}
+              onClose={handleReportClose}
+              onSubmit={handleReportSubmit}
+            />
     </div>
   );
 };

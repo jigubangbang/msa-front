@@ -139,11 +139,16 @@ useEffect(() => {
     navigate(`/traveler/mate/${postId}/edit`);
   };
 
-  const handleDelete = () => {
-    console.log('삭제하기 클릭');
+  const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
-      // 삭제 API 호출
-      //#NeedToChange
+      try {
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`);
+        alert('여행자모임이 삭제되었습니다.');
+        navigate('/traveler/mate'); // 목록 페이지로 이동
+      } catch (error) {
+        console.error('Failed to delete travelmate:', error);
+        alert('삭제에 실패했습니다.');
+      }
     }
   };
 

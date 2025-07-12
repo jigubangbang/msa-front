@@ -50,8 +50,6 @@ export default function BoardListPage({page}) {
 
 
     if (page) {
-        setIsSearching(true); // 검색 중으로 설정
-
         // page 값에 따라 category 설정
         switch (page) {
         case "popular":
