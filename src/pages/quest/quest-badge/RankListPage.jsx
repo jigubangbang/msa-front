@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
 
 import styles from "./RankListPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
@@ -8,6 +7,7 @@ import RankingList from "../../../components/rank/RankList/RankList";
 import UserInfoPanel from "../../../components/rank/UserInfoPanel/UserInfoPanel";
 import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
+import api from "../../../apis/api";
 
 export default function RankListPage() {
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ export default function RankListPage() {
   const fetchUser = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
       setUser(response.data);
       console.log("User data fetched:", response.data);
     } catch (error) {
@@ -65,7 +65,7 @@ export default function RankListPage() {
     const fectchUserBadges = async() => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
       setUser(prev => ({
         ...prev,
         badge_totalCount: response.data.totalCount
@@ -81,7 +81,7 @@ export default function RankListPage() {
   const fetchUserQuests = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
         params: {
           status: "IN_PROGRESS"
         }

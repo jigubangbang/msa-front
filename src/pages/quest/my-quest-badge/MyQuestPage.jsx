@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useParams} from 'react-router-dom';
-import axios from 'axios';
 import ReactDOM from 'react-dom';
 
 import styles from "./MyQuestPage.module.css";
@@ -15,6 +14,7 @@ import MyPageMenu from "../../../components/quest-mypage/MyPageMenu/MyPageMenu";
 import BadgesContent from "../../../components/quest-mypage/BadgesContent/BadgesContent";
 import QuestsContent from "../../../components/quest-mypage/QuestsContent/QuestsContent";
 import JourneyContent from "../../../components/quest-mypage/JourneyContent/JourneyContent";
+import api from "../../../apis/api";
 
 
 export default function MyQuestPage({page, isMine}) {
@@ -79,7 +79,7 @@ export default function MyQuestPage({page, isMine}) {
         config = { params: { user_id: userId } };
       }
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/my-page`, config);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.PUBLIC}/my-page`, config);
       setUserInfo(response.data);
       console.log("UserInfo data fetched:", response.data);
     } catch (error) {
@@ -119,7 +119,7 @@ const openQuestModal = useCallback( async (quest_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedQuest(response.data);
     setShowQuestModal(true);
     console.log("Quest data fetched:", response.data);
@@ -149,7 +149,7 @@ const openBadgeModal = useCallback(async (badge_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedBadge(response.data);
     setShowBadgeModal(true);
     console.log("Badge data fetched:", response.data);

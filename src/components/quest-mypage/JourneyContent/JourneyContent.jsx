@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from 'axios';
 import ReactDOM from 'react-dom';
 
 import styles from "./JourneyContent.module.css";
@@ -10,6 +9,7 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import CircleProgress from "../ProgressBar/CircleProgress";
 import UserTimeline from "../UserTimeline/UserTimeline";
 import CompactLevelChart from "../CompactLevelChart/CompactLevelChart";
+import api from "../../../apis/api";
 
 
 
@@ -51,7 +51,7 @@ const openQuestModal = useCallback( async (quest_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedQuest(response.data);
     setShowQuestModal(true);
     console.log("Quest data fetched:", response.data);
@@ -75,7 +75,7 @@ const openBadgeModal = useCallback(async (badge_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedBadge(response.data);
     setShowBadgeModal(true);
     console.log("Badge data fetched:", response.data);

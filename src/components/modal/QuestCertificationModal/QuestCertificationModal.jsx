@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import styles from './QuestCertificationModal.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
 import QuestActionModal from '../QuestActionModal/QuestActionModal';
 import AlertModal from '../QuestActionModal/AlertModal';
+import api from '../../../apis/api';
 
 
 const QuestCertificationModal = ({ 
@@ -110,7 +110,7 @@ const QuestCertificationModal = ({
           formData.append("file", images[i].file);
 
           try {
-            const response = await axios.post(`${API_ENDPOINTS.QUEST.USER}/${questUserId}/upload-image`, formData, {
+            const response = await api.post(`${API_ENDPOINTS.QUEST.USER}/${questUserId}/upload-image`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
@@ -141,7 +141,7 @@ const QuestCertificationModal = ({
       console.log("questCerti: ", questCerti);
 
       // 퀘스트 완료 API 호출
-      const response = await axios.post(`${API_ENDPOINTS.QUEST.USER}/${questUserId}/complete`, questCerti, {
+      const response = await api.post(`${API_ENDPOINTS.QUEST.USER}/${questUserId}/complete`, questCerti, {
         headers: {
           'Content-Type': 'application/json',
           // 'Authorization': `Bearer ${accessToken}` // 필요시 추가

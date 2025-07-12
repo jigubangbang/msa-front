@@ -1,8 +1,8 @@
 // QuestModifyForm.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from './QuestModifyForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import api from '../../apis/api';
 
 const QuestModifyForm = ({ questId, onClose, onSave }) => {
   const [questData, setQuestData] = useState(null);
@@ -144,11 +144,11 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     setLoading(true);
     try {
       // 퀘스트 상세 정보 가져오기
-      const questResponse = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}`);
+      const questResponse = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}`);
       const questDetail = questResponse.data.questDetail;
       
       // 퀘스트 뱃지 정보 가져오기
-      const badgesResponse = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/badges`);
+      const badgesResponse = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/badges`);
       const questBadges = badgesResponse.data.questBadges;
       
       setQuestData(questDetail);
@@ -321,7 +321,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
         status: status
       };
 
-      const response = await axios.put(
+      const response = await api.put(
         `${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`,
         updateData,
         {

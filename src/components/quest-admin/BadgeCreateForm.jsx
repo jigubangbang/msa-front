@@ -1,8 +1,8 @@
 // BadgeCreateForm.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from './BadgeCreateForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import api from '../../apis/api';
 
 const BadgeCreateForm = ({ onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -77,7 +77,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
 
   const fetchAvailableQuests = async () => {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/list`, {
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/list`, {
         params: {
           pageNum: 1,
           limit: 100,
@@ -98,7 +98,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
 
     setIdCheckStatus('checking');
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges/check-id/${formData.id}`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges/check-id/${formData.id}`);
       
       if (response.data.available) {
         setIdCheckStatus('available');
@@ -246,7 +246,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
       const uploadFormData = new FormData();
       uploadFormData.append('file', formData.icon);
       
-      const uploadResponse = await axios.post(
+      const uploadResponse = await api.post(
         `${API_ENDPOINTS.QUEST.ADMIN}/upload-image/badge`,
         uploadFormData,
         {
@@ -270,7 +270,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
         quest_ids: questList.map(quest => quest.quest_id)
       };
 
-      const response = await axios.post(
+      const response = await api.post(
         `http://localhost:8080/api/admin-quests/badges`,
         createData,
         {

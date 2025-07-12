@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TopTravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
+import api from '../../../apis/api';
 
 const TopTravelInfoList = ({ 
   title, 
@@ -32,7 +32,7 @@ const TopTravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`);
       setLikedPosts(new Set(response.data.likedTravelInfoIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);
@@ -43,7 +43,7 @@ const TopTravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`);
       setJoinedChats(new Set(response.data.joinedChatIds));
     } catch (error) {
       console.error('Failed to fetch joined chats:', error);
@@ -66,7 +66,7 @@ const TopTravelInfoList = ({
         params.sortOption = 'chat'; // 채팅 수 순 (활발한 정보 공유방)
       }
 
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/list`, {
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/list`, {
         params: params
       });
 
@@ -87,14 +87,14 @@ const TopTravelInfoList = ({
       const isLiked = likedPosts.has(chatId);
       
       if (isLiked) {
-        await axios.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`);
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(chatId);
           return newSet;
         });
       } else {
-        await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`);
         setLikedPosts(prev => new Set(prev).add(chatId));
       }
       
@@ -143,7 +143,7 @@ const TopTravelInfoList = ({
   const handleChatClick = async (groupId) => {
     console.log('채팅방으로 이동:', groupId);
     try {
-      const response = await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELINFO",
         groupId: groupId
       });
@@ -159,7 +159,7 @@ const TopTravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`);
+      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`);
       
       // 참여 성공 시 joinedChats에 추가
       setJoinedChats(prev => new Set(prev).add(selectedInfo.id));

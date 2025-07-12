@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankBadgeList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import ReactDOM from 'react-dom';
+import api from '../../../apis/api';
 
 
 
@@ -39,7 +39,7 @@ const RankBadgeList = ({
             };
 
         try {
-            const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/badges`, {params});
+            const response = await api.get(`${API_ENDPOINTS.QUEST.PUBLIC}/badges`, {params});
             
             setBadges(response.data.badges || []);
             setTotalCount(response.data.totalCount || 0);

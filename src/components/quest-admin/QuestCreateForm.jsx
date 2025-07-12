@@ -1,8 +1,8 @@
 // QuestCreateForm.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import styles from './QuestCreateForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import api from '../../apis/api';
 
 const QuestCreateForm = ({ onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -130,7 +130,7 @@ const QuestCreateForm = ({ onClose, onSave }) => {
 
     setIdCheckStatus('checking');
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/quests/check-quest-id/${formData.id}`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/quests/check-quest-id/${formData.id}`);
       
       if (response.data.available) {
         setIdCheckStatus('available');
@@ -303,7 +303,7 @@ const QuestCreateForm = ({ onClose, onSave }) => {
         status: status
       };
 
-      const response = await axios.post(
+      const response = await api.post(
         `${API_ENDPOINTS.QUEST.ADMIN}/quests`,
         createData,
         {

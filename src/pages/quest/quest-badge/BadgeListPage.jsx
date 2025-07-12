@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import ReactDOM from 'react-dom';
 
 
@@ -13,6 +12,7 @@ import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import RankBadgeList from "../../../components/rank/RankBadgeList/RankBadgeList";
 import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
+import api from "../../../apis/api";
 
 
 
@@ -78,7 +78,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
   const fetchUser = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
       setUser(response.data);
       console.log("User data fetched:", response.data);
     } catch (error) {
@@ -92,7 +92,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
   const fectchUserBadges = async() => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/badges/my`);
       setUser(prev => ({
         ...prev,
         badge_totalCount: response.data.totalCount
@@ -108,7 +108,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
   const fetchUserQuests = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
         params: {
           status: "IN_PROGRESS"
         }
@@ -140,7 +140,7 @@ const openQuestModal = useCallback(async (quest_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedQuest(response.data);
     setShowQuestModal(true);
     console.log("Quest data fetched:", response.data);
@@ -165,11 +165,11 @@ const handleQuestUpdate = async (questId) => {
       ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
       : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedQuest(response.data); 
     
     // 2. 사용자 퀘스트 목록 새로고침
-    const userQuestsResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
+    const userQuestsResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/detail`, {
       params: { status: "IN_PROGRESS" }
     });
        setUserQuests(userQuestsResponse.data || []);
@@ -177,7 +177,7 @@ const handleQuestUpdate = async (questId) => {
        
 
     // 3. 사용자 정보 새로고침
-    const userResponse = await axios.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
+    const userResponse = await api.get(`${API_ENDPOINTS.QUEST.USER}/journey`);
     setUser(userResponse.data);
     
   } catch (error) {
@@ -195,7 +195,7 @@ const openBadgeModal = useCallback(async (badge_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedBadge(response.data);
     setShowBadgeModal(true);
     console.log("Badge data fetched:", response.data);

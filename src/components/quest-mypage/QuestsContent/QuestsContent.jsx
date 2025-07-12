@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styles from './QuestsContent.module.css';
 import API_ENDPOINTS from "../../../utils/constants";
-import axios from "axios";
 import ReactDOM from 'react-dom';
 import BadgeModal from "../../modal/BadgeModal/BadgeModal";
 import QuestModal from "../../modal/QuestModal/QuestModal";
 import QuestCertificationViewModal from "../../modal/QuestCertificationViewModal/QuestCertificationViewModal";
+import api from "../../../apis/api";
 
 
 const QuestsContent = ({ userInfo, isLogin, onUpdate }) => {
@@ -36,7 +36,7 @@ const openQuestModal = useCallback( async (quest_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedQuest(response.data);
     setShowQuestModal(true);
     console.log("Quest data fetched:", response.data);
@@ -60,7 +60,7 @@ const openBadgeModal = useCallback(async (badge_id) => {
     ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
     : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-    const response = await axios.get(endpoint);
+    const response = await api.get(endpoint);
     setSelectedBadge(response.data);
     setShowBadgeModal(true);
     console.log("Badge data fetched:", response.data);

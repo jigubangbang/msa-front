@@ -115,7 +115,17 @@ export const TRAVELER_SIDEBAR = [
   {
     label: '내 여행자 모임',
     icon: '/icons/sidebar/my_traveler.svg',
-    path: '/traveler/my'
+    path: '/traveler/my',
+    submenus: [
+      {
+        label: '내 여행자 동행',
+        path: '/traveler/my/travelmate'
+      },
+      {
+        label: '내 여행 정보 공유방',
+        path: '/traveler/my/travelinfo'
+      }
+    ]
   },
   {
     label: '게시판',

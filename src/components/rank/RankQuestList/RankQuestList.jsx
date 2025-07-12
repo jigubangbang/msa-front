@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './RankQuestList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
+import api from '../../../apis/api';
 
 const RankQuestList = ({  
   onOpenModal,
@@ -106,7 +106,7 @@ const RankQuestList = ({
         search: searchTerm
       };
 
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, {params});
+      const response = await api.get(`${API_ENDPOINTS.QUEST.PUBLIC}/list`, {params});
       
       setQuests(response.data.quests || []);
       setTotalCount(response.data.totalCount || 0);

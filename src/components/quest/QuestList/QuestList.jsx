@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './QuestList.module.css';
 import Dropdown from '../../common/Dropdown';
 import { useNavigate } from 'react-router-dom';
 import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
+import api from '../../../apis/api';
 
 
 const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
@@ -192,7 +192,7 @@ useEffect(() => {
 
        console.log('Fetching from:', endpoint, 'isLogin:', isLogin);
 
-      const response = await axios.get(endpoint, { params });
+      const response = await api.get(endpoint, { params });
       const allQuests = response.data.quests || [];
       setQuests(allQuests);
       setTotalPages(Math.ceil(allQuests.length / questsPerPage));

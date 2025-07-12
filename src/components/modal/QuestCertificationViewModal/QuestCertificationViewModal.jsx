@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from './QuestCertificationViewModal.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
 import AlertModal from '../QuestActionModal/AlertModal';
+import api from '../../../apis/api';
 
 const QuestCertificationViewModal = ({ 
   isOpen, 
@@ -31,7 +31,7 @@ const QuestCertificationViewModal = ({
   const fetchCertificationData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.USER}/certificate/${questUserId}`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.USER}/certificate/${questUserId}`);
       setCertificationData(response.data);
       console.log('인증 데이터 조회 성공:', response.data);
     } catch (error) {

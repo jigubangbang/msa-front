@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TravelmateList.module.css';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
+import api from '../../../apis/api';
 
 const TravelmateList = ({
   onOpenPost,
@@ -103,14 +103,14 @@ const TravelmateList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await axios.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(postId);
           return newSet;
         });
       } else {
-        await axios.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
         setLikedPosts(prev => new Set(prev).add(postId));
       }
       
@@ -140,7 +140,7 @@ const TravelmateList = ({
     if (!isLogin) return;
     
     try {
-      const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`);
       setLikedPosts(new Set(response.data.likedPostIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);
@@ -219,7 +219,7 @@ const TravelmateList = ({
 
         console.log('최종 API 요청 파라미터:', params);
 
-        const response = await axios.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/list`, {
+        const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/list`, {
         params: params
         });
 

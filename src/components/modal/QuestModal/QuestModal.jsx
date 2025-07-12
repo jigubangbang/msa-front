@@ -5,7 +5,6 @@ import ModalUserList from '../ModalUserList/ModalUserList';
 import QuestActionModal from '../QuestActionModal/QuestActionModal';
 import QuestCertificationModal from '../QuestCertificationModal/QuestCertificationModal';
 import QuestCertificationViewModal from '../QuestCertificationViewModal/QuestCertificationViewModal';
-import axios from "axios";
 
 
 const QuestModal = ({ 

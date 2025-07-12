@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import axios from 'axios';
 import styles from './BadgeAdminDetail.module.css';
 import API_ENDPOINTS from '../../utils/constants';
+import api from '../../apis/api';
 
 const BadgeAdminDetail = ({ badgeId }) => {
   const [badgeDetail, setBadgeDetail] = useState(null);
@@ -33,7 +33,7 @@ const BadgeAdminDetail = ({ badgeId }) => {
   const fetchBadgeDetail = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}/modify`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}/modify`);
       setBadgeDetail(response.data);
     } catch (err) {
       console.error("Failed to fetch badge detail", err);
@@ -53,7 +53,7 @@ const BadgeAdminDetail = ({ badgeId }) => {
   }
 
   try {
-    await axios.delete(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}`);
+    await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}`);
     
     alert('뱃지가 성공적으로 삭제되었습니다.');
     navigate('/quest-admin/badge');

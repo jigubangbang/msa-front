@@ -68,6 +68,7 @@ import TravelmateFormPage from "../pages/community/traveler/travelmate/Travelmat
 import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
 import InfoFormPage from "../pages/community/traveler/travelinfo/InfoFormPage";
 import BoardListPage from "../pages/community/board/BoardListPage";
+import MyTravelerPage from "../pages/community/traveler/my/MyTravelerPage";
 
 
 const AppRouter = () => {
@@ -133,16 +134,18 @@ const AppRouter = () => {
           <Route path="/traveler/info" element={<InfoListPage/>}/>
           <Route path="/traveler/info/new" element={<InfoFormPage/>}/>
           <Route path="/traveler/info/:infoId/edit" element={<InfoFormPage/>}/>
-          {/*
           <Route path="/traveler/my" element={<MyTravelerPage/>}/>
+          <Route path="/traveler/my/travelinfo" element={<MyTravelerPage page="travelinfo"/>}/>
+          <Route path="/traveler/my/travelmate" element={<MyTravelerPage page="travelmate"/>}/>
 
-           Board */}
+          {/*Board */}
           <Route path="/board" element={<BoardListPage/>}/>
           <Route path="/board/popular" element={<BoardListPage page="popular"/>}/>
           <Route path="/board/info" element={<BoardListPage page="info"/>}/>
           <Route path="/board/recommend" element={<BoardListPage page="recommend"/>}/>
           <Route path="/board/chat" element={<BoardListPage page="chat"/>}/>
           <Route path="/board/question" element={<BoardListPage page="question"/>}/>
+          
           {/*<Route path="/board/my" element={<MyBoardPage/>}/>
           <Route path="/board/new" element={<BoardFormPage/>}/>
           <Route path="/board/:id" element={<BoardDetailPage/>}/>
