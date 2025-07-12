@@ -191,30 +191,46 @@ export default function QuestMainPage() {
   const finalMenuItems = getActiveMenuItems();
   //SideBar//
 
-  useEffect(()=>{
+useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    //admin도 잘 받아왔다고 가정..
-    setIsAdmin(true);
-
-    fetchUserinfo();
-    fetchUserQuest();
-    fetchUserBadge();
-    fetchUserRank();
-
+    
     if (token) {
-      setIsLogin(true);
-      //decoded
-      const decoded = jwtDecode(token);
-      fetchUserinfo();
-      fetchUserQuest();
-      fetchUserBadge();
-      fetchUserRank();
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setIsAdmin(false);
+                return;
+            }
+            setIsLogin(true);
+            
+            const userRole = decoded.role || decoded.authorities;
+            const isAdminUser = userRole === 'ROLE_ADMIN' || 
+                               (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
+            setIsAdmin(isAdminUser);
+            
+            fetchUserinfo();
+            fetchUserQuest();
+            fetchUserBadge();
+            fetchUserRank();
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setIsAdmin(false);
+        }
+    } else {
+        setIsLogin(false);
+        setIsAdmin(false);
     }
-
+    
     fetchSeasonalQuest();
-  }, [isAdmin]);
+    
+}, [isAdmin]); 
 
   const fetchUserinfo = async () => {
     setLoading(true);

@@ -7,6 +7,7 @@ import TravelerSearchBar from "../../../../components/travelmate/TravelerSearchB
 import InfoCategoryBrowse from "../../../../components/travelinfo/InfoCategoryBrowse/InfoCategoryBrowse";
 import TopTravelInfoList from "../../../../components/travelinfo/TopTravelInfoList/TopTravelInfoList";
 import TravelInfoList from "../../../../components/travelinfo/TravelInfoList/TravelInfoList";
+import { jwtDecode } from "jwt-decode";
 
 
 export default function InfoListPage() {
@@ -46,16 +47,38 @@ export default function InfoListPage() {
     
 
 
-  useEffect(()=>{
-    const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    setCurrentUserId("aaa");
 
-    // if (token) {
-    //   setIsLogin(true);
-    // }
-  }, []);
+useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    console.log("토큰", token);
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setCurrentUserId(null);
+                return;
+            }
+            
+            setIsLogin(true);
+            setCurrentUserId(decoded.sub || decoded.userId);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setCurrentUserId(null);
+        }
+    } else {
+        setIsLogin(false);
+        setCurrentUserId(null);
+    }
+}, []);
 
 
   const handleSearchStart = () => {
@@ -122,6 +145,7 @@ export default function InfoListPage() {
                 <InfoCategoryBrowse onCategorySelect={handleCategorySelect} />
 
                 <TopTravelInfoList
+                currentUserId={currentUserId}
                   title="인기 정보 공유방"
                   option="popular"
                   isLogin={isLogin}
@@ -129,6 +153,7 @@ export default function InfoListPage() {
                 />
 
                 <TopTravelInfoList
+                currentUserId={currentUserId}
                   title="최근 등록 정보 공유방"
                   option="recent"
                   isLogin={isLogin}
@@ -136,6 +161,7 @@ export default function InfoListPage() {
                 />
 
                 <TopTravelInfoList
+                currentUserId={currentUserId}
                   title="활발한 정보 공유방"
                   option="active"
                   isLogin={isLogin}

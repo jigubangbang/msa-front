@@ -94,7 +94,12 @@ const InfoFormPage = () => {
         // 새 정보방 생성
         const response = await api.post(
           `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo`,
-          formData
+          formData,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      }
         );
         
         console.log('정보방이 생성되었습니다:', response.data);
@@ -107,7 +112,12 @@ const InfoFormPage = () => {
         // 기존 정보방 수정
         const response = await api.put(
           `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${infoId}`,
-          formData
+          formData,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      }
         );
         
         console.log('정보방이 수정되었습니다:', response.data);

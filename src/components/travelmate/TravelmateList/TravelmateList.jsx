@@ -13,7 +13,8 @@ const TravelmateList = ({
   filters,
   setFilters,
   isLogin,
-  searchSectionData
+  searchSectionData,
+  currentUserId
 }) => {
   const [travelmates, setTravelmates] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -103,14 +104,24 @@ const TravelmateList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(postId);
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => new Set(prev).add(postId));
       }
       
@@ -140,7 +151,12 @@ const TravelmateList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setLikedPosts(new Set(response.data.likedPostIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);

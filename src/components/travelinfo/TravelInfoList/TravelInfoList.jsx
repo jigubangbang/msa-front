@@ -94,14 +94,23 @@ const TravelInfoList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`, {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(postId);
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => new Set(prev).add(postId));
       }
       
@@ -154,7 +163,12 @@ const TravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`);
+      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       
       setJoinedChats(prev => new Set(prev).add(selectedInfo.id));
       
@@ -207,7 +221,15 @@ const TravelInfoList = ({
           reasonText: reportData.reasonText
         };
 
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`, payload);
+        await api.post(
+          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`,
+          payload,
+          {
+            headers: {
+              'User-Id': currentUserId, 
+            },
+          }
+        );
         
         setShowReportModal(false);
         setReportInfo(null);
@@ -233,7 +255,12 @@ const TravelInfoList = ({
     }
 
     try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${travelinfoId}`);
+      await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${travelinfoId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       alert('정보방이 삭제되었습니다.');
       // 목록 새로고침
       fetchTravelinfos();
@@ -259,7 +286,12 @@ const TravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setLikedPosts(new Set(response.data.likedTravelInfoIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);
@@ -270,7 +302,12 @@ const TravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setJoinedChats(new Set(response.data.joinedChatIds));
     } catch (error) {
       console.error('Failed to fetch joined chats:', error);

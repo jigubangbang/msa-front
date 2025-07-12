@@ -170,8 +170,6 @@ const renderBadges = () => {
   };
 
   const handleViewCertificationClick = () => {
-    //#NeedToChange
-    console.log('인증 보러가기', questData.quest_user_id);
     setCertiViewModal({
       isOpen: true,
       questUserId: questData.quest_user_id

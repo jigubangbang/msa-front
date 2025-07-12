@@ -4,6 +4,7 @@ import styles from './TopTravelmateList.module.css';
 import api from '../../../apis/api';
 
 const TopTravelmateList = ({ 
+  currentUserId,
   title, 
   option, // 'popular' 또는 'recent'
   isLogin = false,
@@ -28,7 +29,12 @@ const TopTravelmateList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setLikedPosts(new Set(response.data.likedPostIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);
@@ -71,14 +77,24 @@ const TopTravelmateList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(postId);
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => new Set(prev).add(postId));
       }
       

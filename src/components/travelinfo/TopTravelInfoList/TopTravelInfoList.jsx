@@ -5,6 +5,7 @@ import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import api from '../../../apis/api';
 
 const TopTravelInfoList = ({ 
+  currentUserId,
   title, 
   option, // 'popular', 'recent', 'active'
   isLogin = false,
@@ -32,7 +33,14 @@ const TopTravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`);
+       const response = await api.get(
+      `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      }
+    );
       setLikedPosts(new Set(response.data.likedTravelInfoIds));
     } catch (error) {
       console.error('Failed to fetch liked posts:', error);
@@ -43,7 +51,12 @@ const TopTravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setJoinedChats(new Set(response.data.joinedChatIds));
     } catch (error) {
       console.error('Failed to fetch joined chats:', error);
@@ -87,14 +100,26 @@ const TopTravelInfoList = ({
       const isLiked = likedPosts.has(chatId);
       
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`);
+        await api.delete(
+          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`,
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          }
+        );
         setLikedPosts(prev => {
           const newSet = new Set(prev);
           newSet.delete(chatId);
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${chatId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setLikedPosts(prev => new Set(prev).add(chatId));
       }
       
@@ -159,7 +184,12 @@ const TopTravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`);
+      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       
       // 참여 성공 시 joinedChats에 추가
       setJoinedChats(prev => new Set(prev).add(selectedInfo.id));

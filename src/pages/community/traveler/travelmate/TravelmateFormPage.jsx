@@ -92,9 +92,14 @@ const TravelmateFormPage = () => {
         // 새 모임 생성
         const response = await api.post(
           `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate`,
-          formData
+          formData,
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          }
         );
-        
+                
         console.log('모임이 생성되었습니다:', response.data);
         alert('모임이 성공적으로 생성되었습니다!');
         
@@ -109,7 +114,12 @@ const TravelmateFormPage = () => {
         // 기존 모임 수정
         const response = await api.put(
           `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`,
-          formData
+          formData,
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          }
         );
         
         console.log('모임이 수정되었습니다:', response.data);

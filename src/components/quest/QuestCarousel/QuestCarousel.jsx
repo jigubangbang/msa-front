@@ -5,7 +5,6 @@ import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 import QuestCertificationModal from '../../modal/QuestCertificationModal/QuestCertificationModal';
 
 const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionClick, onCertiClick, onSeasonClick}) => {
-  //#NeedToChange
   const handleCertify = (e) => {
     e.stopPropagation();
     if (quest.quest_status=="INACTIVE"){

@@ -66,9 +66,15 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     if (!isLogin || !newQuestion.trim()) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments`, {
-        content: newQuestion
-      });
+      await api.post(
+        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments`,
+        { content: newQuestion },
+        {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        }
+      );
       
       setNewQuestion('');
       fetchQuestions(); 
@@ -85,10 +91,16 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     if (!isLogin || !replyText?.trim()) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${questionId}/replies`, {
-        content: replyText
-      });
-      
+      await api.post(
+        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${questionId}/replies`,
+        { content: replyText },
+        {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        }
+      );
+            
       setReplyTexts(prev => ({ ...prev, [questionId]: '' }));
       setActiveReplyId(null);
       fetchQuestions(); 
@@ -127,7 +139,15 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
         reasonText: reportData.reasonText
       };
 
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`, payload);
+      await api.post(
+        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`,
+        payload,
+        {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        }
+      );
       
       setShowReportModal(false);
       setReportTarget(null);
@@ -148,9 +168,15 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     if (!editingText.trim()) return;
     
     try {
-      await api.put(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`, {
-        content: editingText.trim()
-      });
+      await api.put(
+        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`,
+        { content: editingText.trim() },
+        {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        }
+      );
       
       setEditingId(null);
       setEditingText('');
@@ -172,7 +198,11 @@ const handleDelete = async (commentId) => {
   if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) return;
   
   try {
-    await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`);
+    await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments/${commentId}`, {
+      headers: {
+        'User-Id': currentUserId,
+      },
+    });
     
     fetchQuestions(); // 새로고침
     alert('댓글이 삭제되었습니다.');

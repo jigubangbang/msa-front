@@ -56,7 +56,12 @@ useEffect(() => {
 
   const fetchLikeStatus = async () => {
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setIsLiked(response.data.likedPostIds.includes(postId));
     } catch (error) {
       console.error('Failed to fetch like status:', error);
@@ -65,7 +70,12 @@ useEffect(() => {
 
   const fetchMemberStatus = async () => {
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/member-status`);
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/member-status`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
       setMemberStatus(response.data.status);
     } catch (error) {
       console.error('Failed to fetch member status:', error);
@@ -77,11 +87,21 @@ useEffect(() => {
 
     try {
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setIsLiked(false);
         setDetail(prev => ({ ...prev, likeCount: prev.likeCount - 1 }));
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`);
+        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+      {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
         setIsLiked(true);
         setDetail(prev => ({ ...prev, likeCount: prev.likeCount + 1 }));
       }
@@ -100,6 +120,10 @@ useEffect(() => {
     try {
       await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/join`, {
         description: description
+      }, {
+        headers: {
+          'User-Id': currentUserId
+        }
       });
       setMemberStatus('PENDING');
       alert('참여 신청이 완료되었습니다.');
@@ -142,7 +166,12 @@ useEffect(() => {
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`);
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`, {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        });
+
         alert('여행자모임이 삭제되었습니다.');
         navigate('/traveler/mate'); // 목록 페이지로 이동
       } catch (error) {
@@ -172,7 +201,15 @@ useEffect(() => {
         reasonText: reportData.reasonText
       };
 
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`, payload);
+      await api.post(
+        `${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`,
+        payload,
+        {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        }
+      );
       
       setShowReportModal(false);
       alert('신고가 접수되었습니다.');
