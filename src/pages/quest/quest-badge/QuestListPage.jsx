@@ -298,7 +298,7 @@ const handleQuestClickFromBadge = (quest_id) => {
  if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -308,7 +308,7 @@ const handleQuestClickFromBadge = (quest_id) => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
+      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin} isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>

@@ -1,0 +1,470 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.container {
+  width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 20px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* 헤더 */
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+/* 폼 스타일 */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 제목과 카테고리 섹션 */
+.titleSection {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.categoryColumn {
+  flex-shrink: 0;
+  width: 200px;
+}
+
+.titleColumn {
+  flex: 1;
+}
+
+/* 카테고리 드롭다운 */
+.categoryDropdown {
+  position: relative;
+  width: 100%;
+}
+
+.categoryToggle {
+  width: 100%;
+  background-color: #fff;
+  color: #333;
+  font-weight: 500;
+  padding: 12px 16px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.categoryToggle:hover {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}
+
+.categoryToggle:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.categoryMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.categoryItem {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.categoryItem:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.categoryItem.active {
+  background-color: #007bff;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.categoryItem.active:hover {
+  background-color: #0056b3;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+/* 입력 필드 공통 스타일 */
+.input, .textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input:focus, .textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 400px;
+  line-height: 1.6;
+}
+
+/* 유효성 검사 스타일 */
+.validInput {
+  border-color: #28a745;
+}
+
+.invalidInput {
+  border-color: #dc3545;
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* 이미지 업로드 섹션 */
+.imageSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imageUploadContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.imageSlotContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  max-width: 100%;
+}
+
+.imageSlot {
+  padding: 5px;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.imageSlot:hover {
+  border-color: #007bff;
+  background: #f0f8ff;
+}
+
+/* 빈 슬롯 스타일 */
+.emptySlot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+}
+
+.emptySlot:hover {
+  border-color: #007bff;
+  background: #f0f8ff;
+}
+
+.uploadIcon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  opacity: 0.6;
+}
+
+.uploadText {
+  font-size: 11px;
+  color: #6c757d;
+  margin: 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* 이미지 미리보기 */
+.imagePreview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.removeImageBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.removeImageBtn:hover {
+  background: rgba(220, 53, 69, 0.9);
+  transform: scale(1.1);
+}
+
+/* 이미지 업로드 도움말 */
+.imageHelp {
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.imageHelp p {
+  margin: 0;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.imageHelp p:last-child {
+  margin-bottom: 0;
+}
+
+/* 버튼 섹션 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+  margin-top: 20px;
+}
+
+.cancelButton, .submitButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.cancelButton {
+  background: #6c757d;
+  color: white;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.submitButton {
+  background: #007bff;
+  color: white;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.cancelButton:disabled, .submitButton:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 로딩 상태 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+  min-height: 300px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  /* 카테고리와 제목 반응형 */
+  .titleSection {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .categoryColumn {
+    width: 100%;
+  }
+
+  .imageSlotContainer {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .imageSlot {
+    width: 100px;
+    height: 100px;
+  }
+
+  .uploadIcon {
+    font-size: 20px;
+  }
+
+  .uploadText {
+    font-size: 10px;
+  }
+
+  .textarea {
+    min-height: 300px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .cancelButton, .submitButton {
+    width: 100%;
+  }
+
+  .imageHelp {
+    padding: 10px 12px;
+  }
+
+  .imageHelp p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .imageSlotContainer {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .imageSlot {
+    width: 80px;
+    height: 80px;
+  }
+
+  .uploadIcon {
+    font-size: 18px;
+  }
+
+  .uploadText {
+    font-size: 9px;
+  }
+
+  .input, .textarea {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .textarea {
+    min-height: 250px;
+  }
+
+  .label {
+    font-size: 14px;
+  }
+}

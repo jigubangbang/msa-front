@@ -112,7 +112,7 @@ useEffect(() => {
  if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -122,7 +122,7 @@ useEffect(() => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems}/>
+      <Sidebar menuItems={finalMenuItems}isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
