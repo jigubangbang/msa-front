@@ -26,6 +26,8 @@ export default function ReportManage() {
   const [showEtcReasonModal, setShowEtcReasonModal] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
   const [dropdownResetKey, setDropdownResetKey] = useState(0);
+  const [showWarningModal, setShowWarningModal] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState(null);
 
   const pageSize = 10;
   const navigate = useNavigate();
@@ -86,6 +88,7 @@ export default function ReportManage() {
     { label: "대기중", value: "PENDING" },
     { label: "기각", value: "KEPT" },
     { label: "승인", value: "BLINDED" },
+    { label: "철회", value: "RESCIND" },
   ];
 
   // 신고 목록 조회
@@ -122,13 +125,24 @@ export default function ReportManage() {
   const handleProfileClick = (userId) => {
     navigate(`/profile/${userId}`);
   };
-  const handleStatusChange = async (reportId, newStatus) => {
+  const handleStatusChange = async (reportId, newStatus, currentStatus) => {
+    if (currentStatus === "BLINDED" && newStatus === "RESCIND") {
+      setPendingStatusChange({ reportId, newStatus, currentStatus });
+      setShowWarningModal(true);
+      return;
+    }
+
     try {
       const token = localStorage.getItem("accessToken");
-      const endpoint =
-        newStatus === "KEPT"
-          ? `${API_ENDPOINTS.ADMIN}/reports/${reportId}/keep`
-          : `${API_ENDPOINTS.ADMIN}/reports/${reportId}/blind`;
+      let endpoint;
+
+      if (newStatus === "KEPT") {
+        endpoint = `${API_ENDPOINTS.ADMIN}/reports/${reportId}/keep`;
+      } else if (newStatus === "BLINDED") {
+        endpoint = `${API_ENDPOINTS.ADMIN}/reports/${reportId}/blind`;
+      } else if (newStatus === "RESCIND") {
+        endpoint = `${API_ENDPOINTS.ADMIN}/reports/${reportId}/unblind`;
+      }
 
       await api.put(
         endpoint,
@@ -145,6 +159,35 @@ export default function ReportManage() {
       setMessage("신고 처리에 실패했습니다");
       setMessageType("error");
     }
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (pendingStatusChange) {
+      const { reportId, newStatus, currentStatus } = pendingStatusChange;
+
+      try {
+        const token = localStorage.getItem("accessToken");
+        const endpoint = `${API_ENDPOINTS.ADMIN}/reports/${reportId}/unblind`;
+
+        await api.put(
+          endpoint,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        fetchReports();
+        setShowSuccessModal(true);
+      } catch (err) {
+        console.error("신고 처리 실패:", err);
+        setMessage("신고 처리에 실패했습니다");
+        setMessageType("error");
+      }
+    }
+
+    setShowWarningModal(false);
+    setPendingStatusChange(null);
   };
 
   // 컨텐츠 페이지로 이동
@@ -177,24 +220,23 @@ export default function ReportManage() {
   // 상태별 드롭다운 옵션 제한
   const getStatusOptions = (currentStatus) => {
     if (currentStatus === "PENDING") {
-      // 대기중 → 기각/승인 가능
       return [
         { label: "대기중", value: "PENDING" },
         { label: "기각", value: "KEPT" },
         { label: "승인", value: "BLINDED" },
       ];
     } else if (currentStatus === "KEPT") {
-      // 기각됨 → 승인 가능 
       return [
         { label: "기각", value: "KEPT" },
         { label: "승인", value: "BLINDED" },
       ];
     } else if (currentStatus === "BLINDED") {
-      // 승인됨 → 기각 가능 
       return [
-        { label: "기각", value: "KEPT" },
         { label: "승인", value: "BLINDED" },
+        { label: "철회", value: "RESCIND" },
       ];
+    } else if (currentStatus === "RESCIND") {
+      return [{ label: "철회", value: "RESCIND" }];
     }
   };
 
@@ -325,6 +367,7 @@ export default function ReportManage() {
       PENDING: "대기중",
       KEPT: "기각",
       BLINDED: "승인",
+      RESCIND: "철회",
     };
     return statusMap[status] || status;
   };
@@ -533,8 +576,18 @@ export default function ReportManage() {
                               ? styles.statusPending
                               : report.reportStatus === "KEPT"
                               ? styles.statusKept
-                              : styles.statusBlinded
+                              : report.reportStatus === "BLINDED"
+                              ? styles.statusBlinded
+                              : report.reportStatus === "RESCIND"
+                              ? styles.statusRescind
+                              : ""
                           }
+                          style={{
+                            pointerEvents:
+                              report.reportStatus === "RESCIND"
+                                ? "none"
+                                : "auto",
+                          }}
                         >
                           <Dropdown
                             defaultOption={getStatusLabel(report.reportStatus)}
@@ -544,7 +597,11 @@ export default function ReportManage() {
                                 option.value !== report.reportStatus &&
                                 option.value !== "PENDING"
                               ) {
-                                handleStatusChange(report.id, option.value);
+                                handleStatusChange(
+                                  report.id,
+                                  option.value,
+                                  report.reportStatus
+                                );
                               }
                             }}
                           />
@@ -598,6 +655,23 @@ export default function ReportManage() {
         firstLabel="확인"
       >
         신고가 성공적으로 처리되었습니다!
+      </Modal>
+
+      {/* 철회 경고 모달 */}
+      <Modal
+        show={showWarningModal}
+        onClose={() => {
+          setShowWarningModal(false);
+          setPendingStatusChange(null);
+        }}
+        onSubmit={handleConfirmStatusChange}
+        heading="신고 철회 확인"
+        firstLabel="확인"
+        secondLabel="취소"
+      >
+        신고 승인을 철회하시겠습니까?
+        <br/>
+        철회 후에는 더 이상 상태를 변경할 수 없습니다
       </Modal>
     </div>
   );

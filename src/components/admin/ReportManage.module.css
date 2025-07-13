@@ -179,6 +179,12 @@
   border: 1px solid #f5c6cb !important;
 }
 
+.statusRescind button {
+  background-color: #e6f3ff !important; 
+  color: #0066cc !important;            
+  border: 1px solid #b3d9ff !important;  
+}
+
 /* 빈 상태 */
 .emptyContainer {
   text-align: center;
