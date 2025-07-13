@@ -56,7 +56,7 @@ export default function ProfileCard({ user }) {
                     {user.premium && <img className={styles.premiumIcon} src={premiumIcon}/>}
                 </div>
                 <div className={styles.userId}>@{user.userId}</div>
-                {user.bio && <div className={styles.bio}>{user.bio}</div>}
+                <div className={styles.bio}>{user.bio || ""}</div>
             </div>
             {followStatus && (
                 <button className={styles.followButton} onClick={unfollowUser}>팔로우 취소</button>

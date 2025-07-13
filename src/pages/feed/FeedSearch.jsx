@@ -79,8 +79,7 @@ export default function FeedSearch() {
             <div className={styles.searchContainer}>
                 <div ref={wrapperRef} className={styles.wrapper}>
                     <SearchBar
-                        placeholder="검색어 입력..."
-                        title="키워드 검색"
+                        placeholder="키워드 입력..."
                         onSearchChange={setKeyword}
                     />
                     {showDropdown && matchingTags.length > 0 && (
