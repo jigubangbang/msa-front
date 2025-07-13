@@ -343,11 +343,11 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       
       // 새로운 이미지가 있으면 업로드
       if (formData.backgroundImage) {
-        backgroundImageUrl = await uploadImage(formData.backgroundImage, 'background');
+        backgroundImageUrl = await uploadImage(formData.backgroundImage, 'travelmate');
       }
       
       if (formData.thumbnailImage) {
-        thumbnailImageUrl = await uploadImage(formData.thumbnailImage, 'thumbnail');
+        thumbnailImageUrl = await uploadImage(formData.thumbnailImage, 'travelmate');
       }
 
       // 제출 데이터 구성
@@ -605,7 +605,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
             취소
           </button>
           <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '저장 중...' : '모임 생성'}
+            {loading ? '저장 중...' : (mode === 'create' ? '모임 생성' : '모임 수정')}
           </button>
         </div>
       </form>

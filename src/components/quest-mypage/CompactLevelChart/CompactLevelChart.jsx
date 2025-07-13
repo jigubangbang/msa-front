@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import styles from './CompactLevelChart.module.css';
-import axios from 'axios'; 
 import API_ENDPOINTS from '../../../utils/constants';
+import api from '../../../apis/api';
 
 const CompactLevelChart = ({ userId }) => {
   const [hoveredSegment, setHoveredSegment] = useState(null);
@@ -20,7 +20,7 @@ const [data, setData] = useState([]);
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.PUBLIC}/user-graph`, {
+      const response = await api.get(`${API_ENDPOINTS.QUEST.PUBLIC}/user-graph`, {
         params: { user_id: userId }
       });
       

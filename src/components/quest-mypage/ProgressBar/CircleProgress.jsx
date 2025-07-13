@@ -11,19 +11,18 @@ const CircleProgressItem = ({ title, subtitle, completed, total }) => {
     <div className={styles.circleItem}>
       <div className={styles.circleContainer}>
         <CircularProgressBar
-          percent={percentage}
-          size={100}
-          borderWidth={6}
-          colorCircle="#ededed"
-
-          borderBgColor="#e5e7eb"
-          borderColor="#1f2937"
-          fontColor="#1f2937"
-          fontSize="20px"
-          fontWeight="700"
-          round
-          transition
-        />
+    percent={percentage}
+    size={100}
+    borderWidth={6}
+    colorCircle="#ededed"
+    borderBgColor="#e5e7eb"
+    borderColor="#1f2937"
+    fontColor="#1f2937"
+    fontSize="20px"
+    fontWeight={700}
+    round
+    transition
+  />
       </div>
       
       <div className={styles.categoryInfo}>

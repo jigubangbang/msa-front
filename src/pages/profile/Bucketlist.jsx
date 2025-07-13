@@ -22,9 +22,6 @@ import {
 } from '@dnd-kit/sortable';
 import { useParams } from 'react-router-dom';
 
-
-// TODO: get session user
-
 export default function Bucketlist() {
     const [sessionUserId, setSessionUserId] = useState();
     const {userId} = useParams();

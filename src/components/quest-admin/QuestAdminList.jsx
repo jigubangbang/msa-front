@@ -1,12 +1,12 @@
 // QuestAdminList.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import styles from './QuestAdminList.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import SearchBar from '../common/SearchBar';
 import Dropdown from '../common/Dropdown';
 import Pagination from '../common/Pagination/Pagination';
+import api from '../../apis/api';
 
 
 const QuestAdminList = ({ onQuestClick}) => {
@@ -116,7 +116,7 @@ const QuestAdminList = ({ onQuestClick}) => {
         status: filters.status
       };
 
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/list`, { params });
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/list`, { params });
       
       setQuests(response.data.questList || []);
       setTotalCount(response.data.totalCount || 0);

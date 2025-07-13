@@ -6,6 +6,7 @@ import Sidebar from "../../../../components/common/SideBar/SideBar";
 import TravelmateDetailMain from '../../../../components/travelmateForm/TravelmateDetailMain/TravelmateDetailMain';
 import TravelmateMembers from '../../../../components/travelmateForm/TravelmateMembers/TravelmateMembers';
 import TravelmateQA from '../../../../components/travelmateForm/TravelmateQA/TravelmateQA';
+import { jwtDecode } from 'jwt-decode';
 
 
 const TravelmateDetailPage = () => {
@@ -40,23 +41,44 @@ const TravelmateDetailPage = () => {
   useEffect(() => {
     // 로그인 상태 확인
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-    setCurrentUserId("aaa");
-    // if (token) {
-    //   setIsLogin(true);
-    //   // 현재 사용자 ID 설정 (실제로는 토큰에서 추출)
-    //   setCurrentUserId("current_user_id");
-    // }
-
-  //   if (!token) {
-  //   // 토큰이 없으면 즉시 리다이렉트
-  //   alert("로그인이 필요한 서비스입니다.");
-  //   navigate('/login');
-  //   return;
-  // }
-  setLoading(false);
-  }, []);
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setCurrentUserId(null);
+                alert("로그인이 만료되었습니다.");
+                navigate('/login');
+                return;
+            }
+            
+            setIsLogin(true);
+            setCurrentUserId(decoded.sub || decoded.userId);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setCurrentUserId(null);
+            alert("로그인 정보가 유효하지 않습니다.");
+            navigate('/login');
+            return;
+        }
+    } else {
+        // 토큰이 없으면 즉시 리다이렉트
+        setIsLogin(false);
+        setCurrentUserId(null);
+        alert("로그인이 필요한 서비스입니다.");
+        navigate('/login');
+        return;
+    }
+    
+    setLoading(false);
+}, []);
 
   if (loading) {
     return (

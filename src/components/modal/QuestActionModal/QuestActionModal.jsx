@@ -10,6 +10,7 @@ const QuestActionModal = ({
   quest_id, 
   quest_user_id,
   onSuccess,
+  currentUserId,
   // success 모달 전용
   resultMessage: propResultMessage,
   isSuccessResult = false,
@@ -64,12 +65,13 @@ const QuestActionModal = ({
       setIsLoading(true);
       
       try {
-        const url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/season-end`;
+         const url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/season-end`;
         const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          }
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Id': currentUserId
+            }
         });
 
         const result = await response.json();
@@ -110,10 +112,11 @@ const QuestActionModal = ({
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
+            'User-Id': currentUserId
         },
         body: actionType === 'abandon' ? null : JSON.stringify({ quest_id: quest_id })
-      });
+    });
 
       const result = await response.json();
       

@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import axios from 'axios';
 import styles from './QuestAdminDetail.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import Pagination from '../common/Pagination/Pagination';
+import api from '../../apis/api';
 
 const QuestAdminDetail = ({ questId }) => {
   const [questDetail, setQuestDetail] = useState(null);
@@ -72,7 +72,7 @@ const QuestAdminDetail = ({ questId }) => {
   const fetchQuestDetail = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}`);
       setQuestDetail(response.data.questDetail);
     } catch (err) {
       console.error("Failed to fetch quest detail", err);
@@ -85,7 +85,7 @@ const QuestAdminDetail = ({ questId }) => {
   const fetchQuestBadges = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/badges`);
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/badges`);
       setQuestBadges(response.data.questBadges || []);
     } catch (err) {
       console.error("Failed to fetch quest detail", err);
@@ -103,7 +103,7 @@ const QuestAdminDetail = ({ questId }) => {
         limit: itemsPerPage
       };
 
-      const response = await axios.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/users`, { params });
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/users`, { params });
       
       setQuestUsers(response.data.questUsers || []);
       setTotalCount(response.data.totalCount || 0);
@@ -126,7 +126,7 @@ const QuestAdminDetail = ({ questId }) => {
   }
 
   try {
-    await axios.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
+    await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
     
     alert('퀘스트가 성공적으로 삭제되었습니다.');
     navigate('/quest-admin/quest');
@@ -155,7 +155,7 @@ const handleCancelUserQuest = async (user) => {
   }
   
   try {
-    const response = await axios.put(
+    const response = await api.put(
       `${API_ENDPOINTS.QUEST.ADMIN}/quests-certi/${user.quest_user_id}/reject`,
       {
         quest_id: questDetail.quest_id,

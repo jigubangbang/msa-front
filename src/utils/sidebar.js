@@ -4,14 +4,17 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       label: '퀘스트와 뱃지',
       icon: '/icons/sidebar/badge.svg',
       path: '/quest',
+      needLogin: false,
       submenus: [
         {
           label: '퀘스트 목록',
-          path: '/quest/list'
+          path: '/quest/list',
+          needLogin: false
         },
         {
           label: '뱃지 목록',
-          path: '/quest/badge'
+          path: '/quest/badge',
+          needLogin: false
         }
       ]
     },
@@ -19,21 +22,25 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       label: '내 퀘스트/뱃지',
       icon: '/icons/sidebar/record.svg',
       path: '/my-quest',
+      needLogin: true,
       submenus: [
         {
           label: '내 뱃지',
-          path: '/my-quest/badge'
+          path: '/my-quest/badge',
+          needLogin: true
         },
         {
           label: '내 퀘스트 기록',
-          path: '/my-quest/record'
+          path: '/my-quest/record',
+          needLogin: true
         }
       ]
     },
     {
       label: '유저들',
       icon: '/icons/sidebar/user_search.svg',
-      path: '/rank/list'
+      path: '/rank/list',
+      needLogin: false
     }
   ];
 
@@ -42,22 +49,27 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       label: '관리자 메뉴',
       icon: '/icons/sidebar/admin.svg',
       path: '/quest-admin/quest',
+      needLogin: true,
       submenus: [
         {
           label: '퀘스트 관리',
-          path: '/quest-admin/quest'
+          path: '/quest-admin/quest',
+          needLogin: true
         },
         {
           label: '뱃지 관리',
-          path: '/quest-admin/badge'
+          path: '/quest-admin/badge',
+          needLogin: true
         },
         {
           label: '퀘스트 생성',
-          path: '/quest-admin/quest/new'
+          path: '/quest-admin/quest/new',
+          needLogin: true
         },
         {
           label: '뱃지 생성',
-          path: '/quest-admin/badge/new'
+          path: '/quest-admin/badge/new',
+          needLogin: true
         }
       ]
     }
@@ -94,63 +106,90 @@ export const TRAVELER_SIDEBAR = [
     label: '여행자 동행 모집',
     icon: '/icons/sidebar/travelmate.svg',
     path: '/traveler/mate',
-  },
-  {
-    label: '모집 글쓰기',
-    path: '/traveler/mate/new',
-    submenu: true
+    needLogin: false,
+    submenus: [
+      {
+        label: '모집 글쓰기',
+        path: '/traveler/mate/new',
+        needLogin: true
+      }
+    ]
   },
   {
     label: '여행 정보 공유방',
     icon: '/icons/sidebar/travelinfo.svg',
     path: '/traveler/info',
-  },
-  {
-    label: '공유방 만들기',
-    path: '/traveler/info/new',
-    submenu: true
+    needLogin: false,
+    submenus: [
+      {
+        label: '공유방 만들기',
+        path: '/traveler/info/new',
+        needLogin: true
+      }
+    ]
   },
   {
     label: '내 여행자 모임',
     icon: '/icons/sidebar/my_traveler.svg',
-    path: '/traveler/my'
+    path: '/traveler/my',
+    needLogin: true,
+    submenus: [
+      {
+        label: '내 여행자 동행',
+        path: '/traveler/my/travelmate',
+        needLogin: true
+      },
+      {
+        label: '내 여행 정보 공유방',
+        path: '/traveler/my/travelinfo',
+        needLogin: true
+      }
+    ]
   },
   {
     label: '게시판',
     icon: '/icons/sidebar/board.svg',
-    path: '/board',
-    submenu: [
+    path: '/board/popular',
+    needLogin: false,
+    submenus: [
       {
         label: '인기글',
-        path: '/board/popular'
+        path: '/board/popular',
+        needLogin: false
       },
       {
         label: '정보글',
-        path: '/board/info'
+        path: '/board/info',
+        needLogin: false
       },
       {
         label: '추천글',
-        path: '/board/recommend'
+        path: '/board/recommend',
+        needLogin: false
       },
       {
         label: '잡담글',
-        path: '/board/chat'
+        path: '/board/chat',
+        needLogin: false
       },
       {
         label: '질문글',
-        path: '/board/question'
+        path: '/board/question',
+        needLogin: false
       }
     ]
   },
   {
     label: '내 게시판',
     icon: '/icons/sidebar/my_board.svg',
-    path: '/board/my'
+    path: '/board/my',
+    needLogin: true
   },
   {
     label: '글쓰기',
     icon: '/icons/sidebar/write.svg',
-    path: '/board/new'
+    path: '/board/new',
+    needLogin: true
   }
 ];
 

@@ -24,11 +24,13 @@ export default function Header({onOpenChat}) {
           const decoded = jwtDecode(token);
           setUserId(decoded.sub);
       }
+
   }, [isLoggedIn])
 
   const handleLogout = () => {
     navigate('/logout'); 
   };
+
 
   return (
     <div className={styles.headerWrapper}>
@@ -68,6 +70,7 @@ export default function Header({onOpenChat}) {
           <span><Link to="/traveler/mate">커뮤니티</Link><span className={styles.badge}>New</span></span>
           <span><Link to="/feed">여행기록</Link><span className={styles.badge}>New</span></span>
           <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
+          <span onClick={() => {console.log(localStorage.getItem("accessToken"))}}>JWT 토큰</span>
         </nav>
         <div className={styles.authButtons}>
           {isLoggedIn ? (

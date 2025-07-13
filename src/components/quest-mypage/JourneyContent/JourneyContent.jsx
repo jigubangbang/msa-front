@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from 'axios';
 import ReactDOM from 'react-dom';
 
 import styles from "./JourneyContent.module.css";
@@ -10,16 +9,14 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import CircleProgress from "../ProgressBar/CircleProgress";
 import UserTimeline from "../UserTimeline/UserTimeline";
 import CompactLevelChart from "../CompactLevelChart/CompactLevelChart";
-
-
-
+import api from "../../../apis/api";
 
 export default function JourneyContent({
       userInfo,
       isLogin,
       isMine,
       onUpdate,
-
+      currentUserId
     }) {
   const [loading, setLoading] = useState(false);
 
@@ -28,14 +25,10 @@ export default function JourneyContent({
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const [selectedBadge, setSelectedBadge] = useState(null);
-    //const { userId } = useParams();
-
 
   useEffect(()=>{
 
   }, []);
-
-
 
   const handleUpdate = () => {
     if(onUpdate){
@@ -44,124 +37,135 @@ export default function JourneyContent({
   }
 
   //quest modal
-const openQuestModal = useCallback( async (quest_id) => {
-  setLoading(true);
-  try {
-    const endpoint = isLogin 
-    ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
-    : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
+  const openQuestModal = useCallback( async (quest_id) => {
+    setLoading(true);
+    try {
+      const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
 
-    const response = await axios.get(endpoint);
-    setSelectedQuest(response.data);
-    setShowQuestModal(true);
-    console.log("Quest data fetched:", response.data);
-  } catch (error) {
-    console.error("Failed to fetch quest data:", error);
-  } finally {
-    setLoading(false);
-  }
-}, [isLogin]);
+    const config = {};
 
-const closeQuestModal = () => {
-  setShowQuestModal(false);
-  setSelectedQuest(null);
-};
+    if (isLogin) {
+        config.headers = {
+            'User-Id': currentUserId
+        };
+    }
 
-// 모달
-const openBadgeModal = useCallback(async (badge_id) => {
-  setLoading(true);
-  try {
-    const endpoint = isLogin 
-    ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
-    : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
+    const response = await api.get(endpoint, config);
+      setSelectedQuest(response.data);
+      setShowQuestModal(true);
+      console.log("Quest data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch quest data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [isLogin, currentUserId]);
 
-    const response = await axios.get(endpoint);
-    setSelectedBadge(response.data);
-    setShowBadgeModal(true);
-    console.log("Badge data fetched:", response.data);
-  } catch (error) {
-    console.error("Failed to fetch badge data:", error);
-  } finally {
-    setLoading(false);
-  }
-},[isLogin]);
-
-const closeBadgeModal = () => {
-  setShowBadgeModal(false);
-  setSelectedBadge(null);
-};
-
-const handleBadgeClick = (badge_id) => {
-    openBadgeModal(badge_id);
+  const closeQuestModal = () => {
+    setShowQuestModal(false);
+    setSelectedQuest(null);
   };
 
-  const handleQuestClick = (quest_id)=>{
-    openQuestModal(quest_id);
-  }
+  // 모달
+  const openBadgeModal = useCallback(async (badge_id) => {
+    setLoading(true);
+    try {
+      const endpoint = isLogin 
+      ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
+      : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
 
-// 퀘스트에서 배지 클릭 핸들러
-const handleBadgeClickFromQuest = (badge_id) => {
-  closeQuestModal(); // 퀘스트 모달 닫기
-  openBadgeModal(badge_id); // 배지 모달 열기
-};
+      const config = {};
 
-// 배지에서 퀘스트 클릭 핸들러
-const handleQuestClickFromBadge = (quest_id) => {
-  closeBadgeModal(); // 배지 모달 닫기
-  openQuestModal(quest_id); // 퀘스트 모달 열기
-};
+      if (isLogin) {
+          config.headers = {
+              'User-Id': currentUserId
+          };
+      }
 
+      const response = await api.get(endpoint, config);
+          setSelectedBadge(response.data);
+      setShowBadgeModal(true);
+      console.log("Badge data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch badge data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [isLogin, currentUserId]);
 
+  const closeBadgeModal = () => {
+    setShowBadgeModal(false);
+    setSelectedBadge(null);
+  };
 
- if (loading) {
+  const handleBadgeClick = (badge_id) => {
+      openBadgeModal(badge_id);
+    };
+
+    const handleQuestClick = (quest_id)=>{
+      openQuestModal(quest_id);
+    }
+
+  // 퀘스트에서 배지 클릭 핸들러
+  const handleBadgeClickFromQuest = (badge_id) => {
+    closeQuestModal(); // 퀘스트 모달 닫기
+    openBadgeModal(badge_id); // 배지 모달 열기
+  };
+
+  // 배지에서 퀘스트 클릭 핸들러
+  const handleQuestClickFromBadge = (quest_id) => {
+    closeBadgeModal(); // 배지 모달 닫기
+    openQuestModal(quest_id); // 퀘스트 모달 열기
+  };
+
+  // userInfo가 없으면 로딩 표시
+  if (!userInfo || loading) {
+      return (
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <div className={styles.loading}>로딩 중...</div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
-        </div>
+          <div className={styles.content}>
+              <div className={styles.Container}>
+                  <div className={styles.top}>
+                    <CompactLevelChart userId={userInfo?.user?.user_id}/>
+                    <ProgressBar data={userInfo} />
+                  </div>
+                  <CircleProgress questData={userInfo?.quest} />
+                  <UserTimeline data={userInfo} onBadgeClick={handleBadgeClick} onQuestClick={handleQuestClick}/>
+              </div>
+          </div>
+        
+        {/* 모달들을 Portal로 body에 렌더링 */}
+        {showQuestModal && ReactDOM.createPortal(
+          <QuestModal 
+            questData={selectedQuest} 
+            onClose={closeQuestModal}
+            onBadgeClick={handleBadgeClickFromQuest}
+            isLogin={isLogin} 
+            onQuestUpdate={handleUpdate}
+             currentUserId={currentUserId}
+          />,
+          document.body
+        )}
+
+        {showBadgeModal && ReactDOM.createPortal(
+          <BadgeModal 
+            badgeData={selectedBadge} 
+            onClose={closeBadgeModal}
+            onQuestClick={handleQuestClickFromBadge}
+            isLogin={isLogin} 
+          />,
+          document.body
+        )}
       </div>
     );
-  }
-
-  return (
-    <div className={styles.container}>
-        <div className={styles.content}>
-
-            
-            <div className={styles.Container}>
-                <div className={styles.top}>
-                  <CompactLevelChart userId={userInfo.user.user_id}/>
-                  <ProgressBar data={userInfo} />
-                </div>
-                <CircleProgress questData={userInfo.quest} />
-                <UserTimeline data={userInfo} onBadgeClick={handleBadgeClick} onQuestClick={handleQuestClick}/>
-            </div>
-
-            
-        </div>
-      
-
-      {/* 모달들을 Portal로 body에 렌더링 */}
-      {showQuestModal && ReactDOM.createPortal(
-        <QuestModal 
-          questData={selectedQuest} 
-          onClose={closeQuestModal}
-          onBadgeClick={handleBadgeClickFromQuest}
-          isLogin={isLogin} 
-          onQuestUpdate={handleUpdate}
-        />,
-        document.body
-      )}
-
-      {showBadgeModal && ReactDOM.createPortal(
-        <BadgeModal 
-          badgeData={selectedBadge} 
-          onClose={closeBadgeModal}
-          onQuestClick={handleQuestClickFromBadge}
-          isLogin={isLogin} 
-        />,
-        document.body
-      )}
-    </div>
-  );
 }

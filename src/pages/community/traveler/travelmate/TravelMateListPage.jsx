@@ -9,6 +9,7 @@ import TravelmateFilter from "../../../../components/travelmate/TravelmateFilter
 import TravelmateList from "../../../../components/travelmate/TravelmateList/TravelmateList";
 import CategoryBrowse from "../../../../components/travelmate/CategoryBrowse/CategoryBrowse";
 import TopTravelmateList from "../../../../components/travelmate/TopTravelmateList/TopTravelmateList";
+import { jwtDecode } from "jwt-decode";
 
 
 export default function TravelMateListPage() {
@@ -16,6 +17,7 @@ export default function TravelMateListPage() {
     const [loading, setLoading] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -57,15 +59,40 @@ export default function TravelMateListPage() {
     
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    //#NeedToChange 토큰에서 잘 뽑아왔다고 가정
-    setIsLogin(true);
-
-    // if (token) {
-    //   setIsLogin(true);
-    // }
-  }, []);
+    
+    if (token) {
+        try {
+            // JWT 토큰 디코딩
+            const decoded = jwtDecode(token);
+            
+            // 토큰 만료 확인
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                // 토큰 만료됨
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                return;
+            }
+            
+            // 로그인 상태 설정
+            setIsLogin(true);
+            
+            setCurrentUserId(decoded.sub || decoded.userId);
+            // setUserRole(decoded.role);
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            // 토큰이 유효하지 않으면 제거하고 로그아웃 처리
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+        }
+    } else {
+        // 토큰이 없으면 로그아웃 상태
+        setIsLogin(false);
+    }
+}, []);
 
   const handleFilterSubmit = (filterData) => {
     setFilters(prev => {
@@ -160,6 +187,7 @@ const handleSearchSectionSubmit = (searchData) => {
               <CategoryBrowse onCategorySelect={handleCategorySelect}/>
               {/* 현재 인기 여행 동행 모임 */}
               <TopTravelmateList
+                currentUserId={currentUserId}
                 title="현재 인기 여행 동행 모임"
                 option="popular"
                 isLogin={isLogin}
@@ -169,6 +197,7 @@ const handleSearchSectionSubmit = (searchData) => {
 
               {/* 최근 만들어진 여행 동행 모임 */}
               <TopTravelmateList
+              currentUserId={currentUserId}
                 title="최근 만들어진 여행 동행 모임"
                 option="recent"
                 isLogin={isLogin}
@@ -189,6 +218,7 @@ const handleSearchSectionSubmit = (searchData) => {
                 setFilters={setFilters}
                 showCompleted={showCompleted}
                 searchSectionData={searchSectionData}
+                currentUserId={currentUserId}
               />
             
           </>)}

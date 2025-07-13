@@ -5,7 +5,6 @@ import ModalUserList from '../ModalUserList/ModalUserList';
 import QuestActionModal from '../QuestActionModal/QuestActionModal';
 import QuestCertificationModal from '../QuestCertificationModal/QuestCertificationModal';
 import QuestCertificationViewModal from '../QuestCertificationViewModal/QuestCertificationViewModal';
-import axios from "axios";
 
 
 const QuestModal = ({ 
@@ -13,7 +12,8 @@ const QuestModal = ({
   onClose, 
   isLogin=false, 
   onBadgeClick,
-  onQuestUpdate }) => {
+  onQuestUpdate,
+  currentUserId }) => {
   const [badgeHover, setBadgeHover] = useState(null);
 const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
   const [showUserList, setShowUserList] = useState(false);
@@ -171,8 +171,6 @@ const renderBadges = () => {
   };
 
   const handleViewCertificationClick = () => {
-    //#NeedToChange
-    console.log('인증 보러가기', questData.quest_user_id);
     setCertiViewModal({
       isOpen: true,
       questUserId: questData.quest_user_id
@@ -432,6 +430,7 @@ const handleViewModalClose = () => {
 
       {/* 액션 확인 모달 */}
       <QuestActionModal
+       currentUserId={currentUserId}
         isOpen={actionModal.isOpen}
         onClose={handleActionModalClose}
         actionType={actionModal.type}
@@ -447,6 +446,7 @@ const handleViewModalClose = () => {
         questData={questData}
         questUserId={questData.quest_user_id}
         onSuccess={handleActionSuccess}
+         currentUserId={currentUserId}
       />
 
       <QuestCertificationViewModal
