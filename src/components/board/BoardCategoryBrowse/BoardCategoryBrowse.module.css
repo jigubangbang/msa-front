@@ -9,7 +9,7 @@
   padding: 20px;
     background-color: transparent;
   border-radius: 12px;
-  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .categoryButtons {

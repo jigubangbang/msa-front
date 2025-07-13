@@ -120,7 +120,7 @@ const fetchTravelerData = async () => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -131,8 +131,8 @@ const fetchTravelerData = async () => {
   
   if (!isLogin) {
     return (
-      <div className={styles.container}>
-        <Sidebar menuItems={finalMenuItems} />
+      <div className={styles.Container}>
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loginRequired}>로그인이 필요합니다.</div>
         </div>
@@ -141,8 +141,8 @@ const fetchTravelerData = async () => {
   }
 
    return (
-    <div className={styles.container}>
-      <Sidebar menuItems={finalMenuItems} />
+    <div className={styles.Container}>
+      <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>

@@ -450,7 +450,7 @@ const response = await api.get(endpoint, {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
+      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin} isLogin={isLogin}/>
       <div className={styles.content}>
         <Rankings/>
         
