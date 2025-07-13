@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import StyleGuidePage from "../pages/temp/StyleGuidePage";
-import TravelTypeTest from "../pages/temp/TravelTypeTest";
+import TravelTypeTest from "../pages/feed/travel-style/TravelStyleTest";
 import TestPage from "../pages/temp/TestPage";
 
 import Main from "../pages/main/Main";
@@ -69,6 +69,7 @@ import InfoListPage from "../pages/community/traveler/travelinfo/InfoListPage";
 import InfoFormPage from "../pages/community/traveler/travelinfo/InfoFormPage";
 import BoardListPage from "../pages/community/board/BoardListPage";
 import MyTravelerPage from "../pages/community/traveler/my/MyTravelerPage";
+import TravelStyle from "../pages/feed/travel-style/TravelStyle";
 
 
 const AppRouter = () => {
@@ -96,6 +97,8 @@ const AppRouter = () => {
           <Route path="/feed/bookmark" element={<FeedBookmark/>}/>
           <Route path="/feed/search" element={<FeedSearch/>}/>
           <Route path="/feed/recommendation" element={<FeedUserRecommendation/>}/>
+          <Route path="/feed/travel-style/:id" element={<TravelStyle/>}/>
+          <Route path="/feed/travel-style-test" element={<TravelTypeTest/>}/>
 
           {/* Quest */}
           <Route path="/quest" element={<QuestMainPage/>}/>

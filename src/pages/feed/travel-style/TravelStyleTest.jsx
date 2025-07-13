@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './TravelTypeTest.module.css';
+import styles from './TravelStyleTest.module.css';
+import api from '../../../apis/api';
+import API_ENDPOINTS from '../../../utils/constants';
+import { Link } from 'react-router-dom';
 
 const QUESTIONS = [
   {
@@ -174,15 +177,15 @@ const SCORES = {
 };
 
 const RESULT_TYPES = {
-  A: '열정폭발러',
-  B: '휴식중심러',
-  C: '계획왕여행자',
-  D: '로컬러버',
-  E: '기록러버',
+  A: '열정트래블러',
+  B: '느긋한여행가',
+  C: '디테일플래너',
+  D: '슬로우로컬러',
+  E: '감성기록가',
   F: '혼행마스터',
   G: '맛집헌터',
   H: '문화수집러',
-  I: '자연러버',
+  I: '자연힐링러',
   J: '실속낭만러',
 };
 
@@ -190,6 +193,7 @@ const TravelTypeTest = () => {
   const [answers, setAnswers] = useState({});
   const [showResult, setShowResult] = useState(false);
   const [result, setResult] = useState(null);
+  const [styleDetail, setStyleDetail] = useState();
 
   const handleSelect = (qIdx, optionIdx) => {
     const newAnswers = { ...answers, [qIdx + 1]: optionIdx + 1 };
@@ -215,24 +219,54 @@ const TravelTypeTest = () => {
     const bestType = Object.entries(finalScore).sort((a, b) => b[1] - a[1])[0][0];
     setResult(bestType);
     setShowResult(true);
-
-    axios.post('/api/result', {
-      type: bestType,
-      score: finalScore
-    }).catch(err => console.error(err));
   };
+
+  const fetchStyleDetail = async (id) => {
+    try {
+      const response = await api.get(`${API_ENDPOINTS.STYLE.PUBLIC}/styles/${id}`);
+      setStyleDetail(response.data.style);
+    } catch (err) {
+      console.error("Failed to fetch detail", err);
+    }
+  }
+
+  const updateUserStyle = async (id) => {
+    try {
+      const response = await api.put(`${API_ENDPOINTS.STYLE.PRIVATE}/${id}`);
+    } catch (err) {
+      console.error("Failed to update style", err);
+    }
+  }
+
+  useEffect(() => {
+    if (result) {
+      updateUserStyle(result);
+      fetchStyleDetail(result);
+    }
+  }, [result]);
 
   if (showResult) {
     return (
         <div className={styles.resultContainer}>
-        <h2 className={styles.resultTitle}>당신의 여행자 유형은?</h2>
-        <p className={styles.resultType}>{RESULT_TYPES[result]} ({result})</p>
+          <h2 className={styles.resultTitle}>당신의 여행자 유형은?</h2>
+          <p className={styles.resultType}>{RESULT_TYPES[result]} ({result})</p>
+          {styleDetail && (
+            <>
+              <p className={styles.description}>{styleDetail.description}</p>
+              <img src={styleDetail.image} className={styles.image}/>
+            </>
+          )}
+          <Link to={`/feed/travel-style/${result}`}>
+            <button className={`${styles.btn} ${styles.btnSecondary}`}>
+              상세 보기 →
+            </button>
+          </Link>
         </div>
     );
     }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.wrapper}>
         {QUESTIONS.map((q, idx) => (
             <div key={idx} className={styles.questionBlock}>
             <h3 className={styles.questionTitle}>{q.question}</h3>
