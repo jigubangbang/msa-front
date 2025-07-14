@@ -230,7 +230,7 @@
   overflow: hidden; /* 자식 요소가 둥근 모서리 밖으로 나가지 않도록 */
   position: relative; /* 닫기 버튼 위치 지정을 위해 */
   width: 100%;
-  max-width: 42vh;
+  max-width: 380px;
   height: 63vh;
   animation: slideIn 0.3s ease-out;
   pointer-events: auto;
