@@ -10,7 +10,7 @@ import defaultProfile from '../../assets/default_profile.png';
 import exit from '../../assets/chat/logout.svg';
 import '../../styles/chat/ChatModal.css'
 
-export default function ChatModal({ isOpen, onClose, chatId }) {
+export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
   const [alertInfo, setAlertInfo] = useState({ show: false, title: '', message: '' });
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -23,7 +23,7 @@ export default function ChatModal({ isOpen, onClose, chatId }) {
   };
 
   const {senderId, nickname, messages, setMessages, sendMessage, isLoading, chatError, isJoining, isKicked, unsubscribeChatRoom} 
-    = joinSock(isOpen, chatId, showAlert);
+    = joinSock(isOpen, chatId, showAlert, currentUserId);
 
   const {info, members} = useChatRoomInfo(chatId);
 

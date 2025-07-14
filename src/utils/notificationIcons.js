@@ -39,6 +39,9 @@ export const getNotificationIcon = (type) => {
     case 'INQUIRY_ANSWERED':
       return admin;
     
+    case 'BLIND_NOTIFICATION':
+      return admin;
+      
     default:
       return earth;
   }

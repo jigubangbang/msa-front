@@ -61,12 +61,29 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     setShowReportModal(true);
   };
 
+  // 최초 생성자 조회
+  const getOriginalCreator = async () => {
+  try {
+    const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/original-creator`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("[ChatSidebar] 최초 생성자 조회 실패:", error);
+    throw error;
+  }
+};
+
   // 신고 제출 핸들러
   const handleReportSubmit = async (reportData) => {
+    const originalCreatorId = await getOriginalCreator();
+    
     try {
       const reportPayload = {
         reporterId: senderId,
-        targetUserId: senderId, // 최초 생성자 받아와서 넣기?
+        targetUserId: originalCreatorId, // 최초 생성자 받아와서 넣기?
         contentType: "GROUP",
         contentSubtype: info?.groupType,
         contentId: parseInt(info?.groupId),

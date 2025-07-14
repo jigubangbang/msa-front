@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TopTravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
+import ChatModal from '../../../pages/chat/ChatModal';
 import api from '../../../apis/api';
 
 const TopTravelInfoList = ({ 
@@ -17,6 +18,10 @@ const TopTravelInfoList = ({
   const [joinedChats, setJoinedChats] = useState(new Set());
   const [selectedInfo, setSelectedInfo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // 채팅방 입장
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
 
   useEffect(() => {
     fetchTopTravelinfos();
@@ -167,17 +172,30 @@ const TopTravelInfoList = ({
 
   const handleChatClick = async (groupId) => {
     console.log('채팅방으로 이동:', groupId);
+    // chat_room.id 또는 chat_message.chat_id 
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELINFO",
         groupId: groupId
       });
       
-      console.log('채팅방으로 이동:', response.data);
+      console.log('채팅방 조회/생성 성공:', response.data);
+    if (response.data.success && response.data.chatRoomId) {
+        setSelectedChatId(response.data.chatRoomId);
+        setChatModalOpen(true);
+      } else {
+        alert('채팅방 정보를 가져오는데 실패했습니다.');
+      }
+      
     } catch (error) {
-      console.error('Failed to join chat:', error);
-      alert('참여에 실패했습니다.');
+      console.error('Failed to get chat room:', error);
+      alert('채팅방에 접속할 수 없습니다.');
     }
+  };
+
+  const handleChatModalClose = () => {
+    setChatModalOpen(false);
+    setSelectedChatId(null);
   };
 
   const handleJoinSubmit = async () => {
@@ -302,6 +320,16 @@ const TopTravelInfoList = ({
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
+
+      {chatModalOpen && selectedChatId && (
+        <ChatModal
+          isOpen={chatModalOpen}
+          onClose={handleChatModalClose}
+          chatId={selectedChatId}
+          currentUserId={currentUserId}
+        />
+      )}
+
     </div>
   );
 };
