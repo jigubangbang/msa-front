@@ -72,6 +72,7 @@ import MyTravelerPage from "../pages/community/traveler/my/MyTravelerPage";
 import TravelStyle from "../pages/feed/travel-style/TravelStyle";
 import BoardDetailPage from "../pages/community/board/BoardDetailPage";
 import BoardFormPage from "../pages/community/board/BoardFormPage";
+import MyBoardPage from "../pages/community/board/MyBoardPage";
 
 
 const AppRouter = () => {
@@ -152,10 +153,7 @@ const AppRouter = () => {
           <Route path="/board/:postId" element={<BoardDetailPage/>}/>
           <Route path="/board/new" element={<BoardFormPage/>}/>
           <Route path="/board/:postId/edit" element={<BoardFormPage/>}/>
-          
-          {/*<Route path="/board/my" element={<MyBoardPage/>}/>
-          */}
-          
+          <Route path="/board/my" element={<MyBoardPage/>}/>
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
