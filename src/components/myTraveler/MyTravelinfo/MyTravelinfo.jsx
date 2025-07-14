@@ -68,14 +68,16 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
 
   const handleJoinSubmit = async () => {
     if (!selectedInfo) return;
-
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
+      await api.post(
+      `${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
+      {},
       {
         headers: {
           'User-Id': currentUserId,
         },
-      });
+      }
+    );
 
       if (fetchTravelinfos) {
             fetchTravelinfos();
