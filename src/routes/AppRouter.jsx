@@ -9,7 +9,6 @@ import Main from "../pages/main/Main";
 import Profile from "../pages/profile/Profile";
 import MapPage from "../pages/profile/MapPage";
 import Countries from "../pages/profile/Countries";
-import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 import Network from "../pages/profile/Network";
@@ -72,6 +71,7 @@ import MyTravelerPage from "../pages/community/traveler/my/MyTravelerPage";
 import TravelStyle from "../pages/feed/travel-style/TravelStyle";
 import BoardDetailPage from "../pages/community/board/BoardDetailPage";
 import BoardFormPage from "../pages/community/board/BoardFormPage";
+import MyBoardPage from "../pages/community/board/MyBoardPage";
 
 
 const AppRouter = () => {
@@ -85,7 +85,6 @@ const AppRouter = () => {
           {/* Profile */}
           <Route path="/profile/:userId" element={<Profile/>}/>
           <Route path="/profile/:userId/countries" element={<Countries/>}/>
-          <Route path="/profile/:userId/badges" element={<Badges/>}/>
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
@@ -152,10 +151,7 @@ const AppRouter = () => {
           <Route path="/board/:postId" element={<BoardDetailPage/>}/>
           <Route path="/board/new" element={<BoardFormPage/>}/>
           <Route path="/board/:postId/edit" element={<BoardFormPage/>}/>
-          
-          {/*<Route path="/board/my" element={<MyBoardPage/>}/>
-          */}
-          
+          <Route path="/board/my" element={<MyBoardPage/>}/>
 
           {/* Auth */}
           <Route path="/register" element={<Register/>}/>
