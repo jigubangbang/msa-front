@@ -4,6 +4,7 @@ import api from "../../../apis/api";
 import API_ENDPOINTS from "../../../utils/constants";
 import refreshIcon from "../../../assets/feed/refresh_grey.svg";
 import ProfileCard from "./ProfileCard";
+import PremiumModal from "../../common/Modal/PremiumModal";
 
 export default function UserRecommendation() {
     const [membershipStatus, setMembershipStatus] = useState(false);
@@ -13,6 +14,8 @@ export default function UserRecommendation() {
     const [recommendationList, setRecommendationList] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [showPremiumModal, setShowPremiumModal] = useState(false);
 
     const fetchRecommendationList = async() => {
         if (!hasMore) return;
@@ -28,6 +31,14 @@ export default function UserRecommendation() {
             console.error("Failed to fetch recommended users", err);
         }
         setIsLoading(false);
+    }
+
+    const handleRefreshBtnClick = () => {
+        if (!membershipStatus) {
+            setShowPremiumModal(true);
+            return;
+        }
+        setCurrentPage(prev => prev + 1);
     }
 
     useEffect(() => {
@@ -47,27 +58,35 @@ export default function UserRecommendation() {
     }, [])
 
     return (
-        <div className={styles.recommendationWrapper}>
-            <button
-                onClick={() => setCurrentPage(prev => prev + 1)}
-                disabled={!hasMore || !membershipStatus}
-                className={styles.refreshButton}
-            >
-                <img src={refreshIcon} alt="새로 고침"/>
-            </button>
-            {isLoading ? (
-                <div className={styles.cardGrid}>
-                    {Array.from({ length: 5 }).map((_, idx) => (
-                        <div key={idx} className={styles.skeletonCard}></div>
-                    ))}
-                </div>
-            ) : recommendationList.length > 0 && (
-                <div className={styles.cardGrid}>
-                    {recommendationList.map(user => (
-                        <ProfileCard key={user.userId} user={user} />
-                    ))}
-                </div>
+        <>
+            <div className={styles.recommendationWrapper}>
+                <button
+                    onClick={handleRefreshBtnClick}
+                    disabled={!hasMore}
+                    className={styles.refreshButton}
+                >
+                    <img src={refreshIcon} alt="새로 고침"/>
+                </button>
+                {isLoading ? (
+                    <div className={styles.cardGrid}>
+                        {Array.from({ length: 5 }).map((_, idx) => (
+                            <div key={idx} className={styles.skeletonCard}></div>
+                        ))}
+                    </div>
+                ) : recommendationList.length > 0 && (
+                    <div className={styles.cardGrid}>
+                        {recommendationList.map(user => (
+                            <ProfileCard key={user.userId} user={user} />
+                        ))}
+                    </div>
+                )}
+            </div>
+            {showPremiumModal && (
+                <PremiumModal
+                    showPremiumModal={showPremiumModal}
+                    setShowPremiumModal={setShowPremiumModal}
+                />
             )}
-        </div>
+        </>
     );
 }
