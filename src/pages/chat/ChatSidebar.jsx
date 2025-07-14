@@ -25,6 +25,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const [sidebarTopOffset, setSidebarTopOffset] = useState(66); // 기본값 66px (4.125rem)
   const sidebarRef = useRef(null);
   const {info} = useChatRoomInfo(chatId);
+  const groupType = chatInfo?.groupType || info?.groupType;
   const navigate = useNavigate();
 
   const isManager = members.some(member => member.userId === senderId && member.isCreator === 1);
@@ -78,9 +79,11 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
 
   // 신고 제출 핸들러
   const handleReportSubmit = async (reportData) => {
-    const originalCreatorId = await getOriginalCreator();
-    
     try {
+      console.log("[ChatSidebar] 최초 생성자 조회 시작");
+      const originalCreatorId = await getOriginalCreator();
+      console.log("[ChatSidebar] 최초 생성자 ID:", originalCreatorId);
+
       const reportPayload = {
         reporterId: senderId,
         targetUserId: originalCreatorId, // 최초 생성자 받아와서 넣기?
@@ -95,12 +98,13 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       console.log("[ChatSidebar] Access Token:", accessToken);
 
       const response = await api.post(`${API_ENDPOINTS.USER}/reports`, reportPayload, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        'User-Id': senderId
-      }
-    });
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'User-Id': senderId
+        }
+     });
+     
       if (response.status === 200 || response.status === 201) {
         showAlert("알림", "신고가 접수되었습니다.");
         setShowReportModal(false);
@@ -113,8 +117,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     if (error.response) {
       console.error("응답 데이터:", error.response.data);
       console.error("응답 상태:", error.response.status);
-      
-      // ✅ 더 구체적인 오류 메시지
+    
       if (error.response.status === 404) {
         showAlert("오류", "신고 API를 찾을 수 없습니다. 관리자에게 문의하세요.");
       } else if (error.response.status === 400) {
@@ -205,6 +208,21 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       }
     });
   };
+
+  const getButtonTexts = () => {
+    if (groupType === 'TRAVELMATE') {
+      return {
+        report: '그룹 신고',
+        leave: '그룹 탈퇴'
+      };
+    } 
+      return {
+        report: '채팅방 신고',
+        leave: '채팅 탈퇴'
+      };
+  };
+
+  const buttonTexts = getButtonTexts();
 
   // 새 멤버 감지
   useEffect(() => {
@@ -301,8 +319,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         </div>
       </div>
         <div className="sidebar-footer">
-          <button className="report-button" onClick={handleReport}>그룹 신고</button>
-          <button className="leave-button" onClick={handleLeaveGroup}>그룹 탈퇴</button>
+          <button className="report-button" onClick={handleReport}>{buttonTexts.report}</button>
+          <button className="leave-button" onClick={handleLeaveGroup}>{buttonTexts.leave}</button>
         </div>
       </div>
 
