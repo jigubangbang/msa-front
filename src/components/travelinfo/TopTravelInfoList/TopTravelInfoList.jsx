@@ -172,7 +172,6 @@ const TopTravelInfoList = ({
 
   const handleChatClick = async (groupId) => {
     console.log('채팅방으로 이동:', groupId);
-    // chat_room.id 또는 chat_message.chat_id 
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELINFO",

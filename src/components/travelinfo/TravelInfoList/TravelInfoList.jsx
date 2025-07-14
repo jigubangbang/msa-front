@@ -6,6 +6,7 @@ import styles from './TravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
+import ChatModal from '../../../pages/chat/ChatModal';
 import api from '../../../apis/api';
 
 const TravelInfoList = ({
@@ -26,6 +27,10 @@ const TravelInfoList = ({
 
     const [showReportModal, setShowReportModal] = useState(false);
     const [reportInfo, setReportInfo] = useState(null);
+
+  // 채팅방 입장
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
   
   
   // 내부에서 카테고리와 정렬 관리
@@ -149,9 +154,16 @@ const TravelInfoList = ({
         groupId: groupId
       });
       
-      //#NeedToDo채팅
       const chatRoomId = response.data.chatRoomId;
       console.log('채팅방으로 이동:', chatRoomId);
+
+      if (response.data.success && response.data.chatRoomId) {
+        setSelectedChatId(response.data.chatRoomId);
+        setChatModalOpen(true);
+      } else {
+        alert('채팅방 정보를 가져오는데 실패했습니다.');
+      }
+      
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
@@ -524,6 +536,15 @@ const TravelInfoList = ({
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
+
+      {chatModalOpen && selectedChatId && (
+          <ChatModal
+            isOpen={chatModalOpen}
+            chatId={selectedChatId}
+            currentUserId={currentUserId}
+          />
+        )}
+      
 
       <ReportModal
               show={showReportModal}

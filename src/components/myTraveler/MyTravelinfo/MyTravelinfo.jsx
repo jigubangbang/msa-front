@@ -5,6 +5,7 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import { useNavigate } from 'react-router-dom';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import ReportModal from '../../common/Modal/ReportModal';
+import ChatModal from '../../../pages/chat/ChatModal';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
@@ -12,10 +13,14 @@ import API_ENDPOINTS from '../../../utils/constants';
 export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
   const navigate = useNavigate();
 
-   const [selectedInfo, setSelectedInfo] = useState(null);
+  const [selectedInfo, setSelectedInfo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
+
+  // 채팅방 입장
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
 
   const themeMap = {
       1: '후기/팁',
@@ -59,6 +64,13 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
       //#NeedToDo채팅
       const chatRoomId = response.data.chatRoomId;
       console.log('채팅방으로 이동:', chatRoomId);
+
+      if (response.data.success && response.data.chatRoomId) {
+        setSelectedChatId(response.data.chatRoomId);
+        setChatModalOpen(true);
+      } else {
+        alert('채팅방 정보를 가져오는데 실패했습니다.');
+      }
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
@@ -315,6 +327,14 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
+
+    {chatModalOpen && selectedChatId && (
+        <ChatModal
+          isOpen={chatModalOpen}
+          chatId={selectedChatId}
+          currentUserId={currentUserId}
+        />
+      )}
 
       <ReportModal
               show={showReportModal}
