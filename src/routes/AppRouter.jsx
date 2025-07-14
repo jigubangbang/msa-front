@@ -9,7 +9,6 @@ import Main from "../pages/main/Main";
 import Profile from "../pages/profile/Profile";
 import MapPage from "../pages/profile/MapPage";
 import Countries from "../pages/profile/Countries";
-import Badges from "../pages/profile/Badges";
 import Diary from "../pages/profile/Diary";
 import Bucketlist from "../pages/profile/Bucketlist";
 import Network from "../pages/profile/Network";
@@ -85,7 +84,6 @@ const AppRouter = () => {
           {/* Profile */}
           <Route path="/profile/:userId" element={<Profile/>}/>
           <Route path="/profile/:userId/countries" element={<Countries/>}/>
-          <Route path="/profile/:userId/badges" element={<Badges/>}/>
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
