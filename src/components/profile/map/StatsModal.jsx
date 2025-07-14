@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./StatsModal.module.css";
 import api from "../../../apis/api";
 import API_ENDPOINTS from "../../../utils/constants";
+import CirclesSpinner from "../../common/Spinner/CirclesSpinner";
 
 export default function StatsModal({ onClose, userId, mapColor="white" }) {
     const [stats, setStats] = useState();
@@ -9,7 +10,7 @@ export default function StatsModal({ onClose, userId, mapColor="white" }) {
 
     useEffect(() => {
         api
-            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/stats`)
+            .get(`${API_ENDPOINTS.MYPAGE.PUBLIC}/${userId}/countries/stats`)
             .then((response) => {
                 setStats(response.data);
                 setIsLoading(false);
@@ -21,8 +22,7 @@ export default function StatsModal({ onClose, userId, mapColor="white" }) {
 
     if (isLoading) {
         return (
-            <div className={styles.overlay}>
-            </div>
+            <div className={styles.overlay}/>
         );
     }
     return (

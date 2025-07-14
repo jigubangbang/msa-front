@@ -72,6 +72,7 @@ import TravelStyle from "../pages/feed/travel-style/TravelStyle";
 import BoardDetailPage from "../pages/community/board/BoardDetailPage";
 import BoardFormPage from "../pages/community/board/BoardFormPage";
 import MyBoardPage from "../pages/community/board/MyBoardPage";
+import PublicMapPage from "../pages/profile/PublicMapPage";
 
 import About from '../pages/footer/About';
 import Terms from '../pages/footer/Terms';
@@ -92,6 +93,7 @@ const AppRouter = () => {
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
+          <Route path="/map/:userId" element={<PublicMapPage/>}/>
           <Route path="/profile/:userId/following" element={<Network type="following"/>}/>
           <Route path="/profile/:userId/followers" element={<Network type="followers"/>}/>
 

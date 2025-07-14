@@ -62,7 +62,7 @@ export default function Countries() {
                 console.error("Failed to load countries", err.message);
             });
         api
-            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/stats`)
+            .get(`${API_ENDPOINTS.MYPAGE.PUBLIC}/${userId}/countries/stats`)
             .then((response) => {
                 setStats(response.data);
             })

@@ -19,6 +19,7 @@ import StatsModal from "../../components/profile/map/StatsModal";
 import Modal from "../../components/common/Modal/Modal";
 import MapSettingsContent from "../../components/profile/map/MapSettingsContent";
 import PremiumModal from "../../components/common/Modal/PremiumModal";
+import { jwtDecode } from "jwt-decode";
 
 
 export default function MapPage() {
@@ -38,6 +39,10 @@ export default function MapPage() {
     const [selectedColor, setSelectedColor] = useState();
     const [originalColor, setOriginalColor] = useState();
 
+    const [showShareModal, setShowShareModal] = useState(false);
+
+    const navigate = useNavigate();
+
     const handleRandomCountry = () => {
         if (!isPremium) {
             setShowPremiumConfirmModal(true);
@@ -55,6 +60,12 @@ export default function MapPage() {
             setIsLoading(false);
         }, 3000);
     }; 
+
+    const handleShareBtnClick = async() => {
+        const shareUrl = `${window.location.origin}/map/${userId}`;
+        await navigator.clipboard.writeText(shareUrl);
+        setShowShareModal(true);
+    }
 
     const handleStatsClick = () => {
         setShowStats(!showStats);
@@ -110,7 +121,7 @@ export default function MapPage() {
 
     function handleColorSubmit() {
         api
-            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/settings?color=${selectedColor}`)
+            .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/map/settings?color=${selectedColor}`)
             .then((response) => {
                 setOriginalColor(response.data.color);
                 const color = getHexCode(response.data.color);
@@ -140,6 +151,14 @@ export default function MapPage() {
     }, [mapType, userId]);
 
     useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            if (decoded.sub != userId) navigate("/");
+        } else {
+            navigate("/");
+        }
+
         fetchUserData();
     }, [userId])
 
@@ -171,7 +190,7 @@ export default function MapPage() {
                 </div>
                 <div className={styles.btnBottomContainer}>
                     <button className={styles.btnOutline} onClick={handleStatsClick}>통계</button>
-                    <button className={styles.btnOutline}>
+                    <button className={styles.btnOutline} onClick={handleShareBtnClick}>
                         공유 <img src={shareIcon} className={styles.icon}/>
                     </button>
                 </div>
@@ -179,7 +198,7 @@ export default function MapPage() {
                     <button className={styles.btnOutline} onClick={handleRandomCountry}>랜덤 추천</button>
                 </div>
                 <div className={styles.mapWrapper}>
-                    <Map key={mapColor} ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries} fillColor={mapColor}/>
+                    <Map key={mapColor} ref={mapRef} selectedCountry={selectedCountry} filledCountries={filledCountries} fillColor={mapColor} isOwner={true}/>
                 </div>
             </div>
             {isLoading && (
@@ -217,6 +236,15 @@ export default function MapPage() {
                     showPremiumModal={showPremiumConfirmModal}
                     setShowPremiumModal={setShowPremiumConfirmModal}
                 />
+            )}
+            {showShareModal && (
+                <Modal
+                    show={showShareModal}
+                    onClose={() => setShowShareModal(false)}
+                    onSubmit={() => setShowShareModal(false)}
+                >
+                    링크가 복사 되었습니다!
+                </Modal>
             )}
         </>
     );

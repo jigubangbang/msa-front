@@ -4,9 +4,7 @@ import { ComposableMap, Geographies, Geography, Sphere, Graticule, ZoomableGroup
 import geography from "../../../src/assets/features.json";
 import styles from "./Map.module.css";
 import API_ENDPOINTS from "../../utils/constants";
-import { useParams } from "react-router-dom";
-
-// TODO: Add onClick function (show sidebar linking travel entries)
+import { useNavigate, useParams } from "react-router-dom";
 
 const Map = forwardRef((props, ref) => {
     const {userId} = useParams();
@@ -21,12 +19,17 @@ const Map = forwardRef((props, ref) => {
         geographyStrokeWidth=0.5,
         selectedCountry="",
         filledCountries=[],
-        fillColor
+        fillColor="#F3F3F3",
+        isOwner=false
     } = props;
     const [mapColor, setMapColor] = useState(fillColor);
     const [tooltipContent, setTooltipContent] = useState("");
     const [tooltipPos, setTooltipPos] = useState({x: 0, y: 0}); 
     const [showTooltip, setShowTooltip] = useState(false); 
+
+    const [showFeed, setShowFeed] = useState(false);
+    const [posts, setPosts] = useState([]);
+    const navigate = useNavigate();
 
     const [position, setPosition] = useState({coordinates: [0, 0], zoom: 1});
     useImperativeHandle(ref, () => ({
@@ -35,9 +38,22 @@ const Map = forwardRef((props, ref) => {
         }
     }));
 
+
+    const handleCountryClick = async (id) => {
+        if (!isOwner) return;
+        try {
+            const response = await api.get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/${id}`);
+            setPosts(response.data.posts);
+            setShowFeed(true);
+        } catch (err) {
+            console.error("Failed to fetch posts", err);
+        }
+    }
+
+
     useEffect(() => {
         api
-            .get(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}`)
+            .get(`${API_ENDPOINTS.MYPAGE.PUBLIC}/${userId}/map/settings`)
             .then((response) => {
                 switch (response.data.mapColor) {
                     case 'GREEN':
@@ -87,6 +103,7 @@ const Map = forwardRef((props, ref) => {
                                     onMouseLeave={() => {
                                         setShowTooltip(false);
                                     }}
+                                    onClick={() => handleCountryClick(geo.id)}
                                 />
                             ))
                         }
@@ -112,6 +129,29 @@ const Map = forwardRef((props, ref) => {
             {showTooltip && (
                 <div className={styles.tooltip} style={{left: tooltipPos.x, top: tooltipPos.y}}>
                     {tooltipContent}
+                </div>
+            )}
+            {showFeed && (
+                <div className={styles.sidebar}>
+                    <div className={styles.sidebarHeader}>
+                        <h3>여행 기록</h3>
+                        <button onClick={() => setShowFeed(false)} className={styles.closeButton}>✕</button>
+                    </div>
+                    {posts.length > 0 ? (
+                        <div className={styles.postList}>
+                            {posts.map((post) => (
+                                <div key={post.id} className={styles.postCard} onClick={() => navigate(`/feed/${post.id}`)}>
+                                    <img src={post.thumbnail || "/default-thumbnail.png"} alt={post.title} className={styles.thumbnail}/>
+                                    <div className={styles.postInfo}>
+                                        <p className={styles.postTitle}>{post.title}</p>
+                                        <p className={styles.postDate}>{post.createdAt?.slice(0,10)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className={styles.emptyMessage}>이 국가에 등록된 게시물이 없습니다.</p>
+                    )}
                 </div>
             )}
         </div>
