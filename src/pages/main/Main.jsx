@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"; // 데이터를 가져오기 위해 useEffect를 import합니다.
 import { scroller } from 'react-scroll';
-import Header from '../../components/main/Header';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
 
@@ -139,7 +138,7 @@ export default function Main() {
             </div>
 
             <div className={styles.mainPoster}>
-                <div className={styles.posterTitle}>JIGU PROJECT</div>
+                <div className={styles.posterTitle}>JIGU BANGBANG</div>
                 <div className={styles.posterSubtitle}>여행, 그 이상의 여정을 기록하다</div>
                 <button className={styles.startButton} onClick={scrollToContent}>
                     START NOW
@@ -238,15 +237,6 @@ export default function Main() {
                         </div>
                     </div>
                 )}
-
-                <footer className={styles.footer}>
-                    <p>&copy; 2025 JIGU PROJECT. All rights reserved.</p>
-                    <div className={styles.footerLinks}>
-                        <a href="#">이용약관</a>
-                        <a href="#">개인정보처리방침</a>
-                        <a href="#">고객센터</a>
-                    </div>
-                </footer>
             </div>
         </div>
     );
