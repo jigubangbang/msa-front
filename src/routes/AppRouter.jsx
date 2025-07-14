@@ -73,6 +73,10 @@ import BoardDetailPage from "../pages/community/board/BoardDetailPage";
 import BoardFormPage from "../pages/community/board/BoardFormPage";
 import MyBoardPage from "../pages/community/board/MyBoardPage";
 
+import About from '../pages/footer/About';
+import Terms from '../pages/footer/Terms';
+import Privacy from '../pages/footer/Privacy';
+import Credits from '../pages/footer/Credits';
 
 const AppRouter = () => {
     return (
@@ -193,6 +197,12 @@ const AppRouter = () => {
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment/fail" element={<PaymentFail />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />
+
+          {/* Footer */}
+          <Route path="/about" element={<About/>}/>
+          <Route path="/terms" element={<Terms/>}/>
+          <Route path="/privacy" element={<Privacy/>}/>
+          <Route path="/credits" element={<Credits/>}/>
         </Routes>
     );
 }
