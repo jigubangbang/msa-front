@@ -154,7 +154,7 @@ const handleSearchSectionSubmit = (searchData) => {
  if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -164,7 +164,7 @@ const handleSearchSectionSubmit = (searchData) => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems}/>
+      <Sidebar menuItems={finalMenuItems}isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>

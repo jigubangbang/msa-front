@@ -183,13 +183,18 @@ const TopTravelInfoList = ({
   const handleJoinSubmit = async () => {
     if (!selectedInfo) return;
 
+    console.log(currentUserId);
+
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
+      await api.post(
+      `${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
+      {},
       {
         headers: {
           'User-Id': currentUserId,
         },
-      });
+      }
+    );
       
       // 참여 성공 시 joinedChats에 추가
       setJoinedChats(prev => new Set(prev).add(selectedInfo.id));

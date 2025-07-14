@@ -81,7 +81,7 @@ export default function BadgeAdminDetailPage() {
  if (!isAdmin) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>접근 권한이 없습니다</div>
         </div>
@@ -91,7 +91,7 @@ export default function BadgeAdminDetailPage() {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin}/>
+      <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin} isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>

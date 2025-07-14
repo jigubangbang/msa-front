@@ -180,7 +180,7 @@ const InfoFormPage = () => {
   if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -194,7 +194,7 @@ const InfoFormPage = () => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} />
+      <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
       
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
