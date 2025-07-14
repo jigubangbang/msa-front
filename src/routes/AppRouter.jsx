@@ -84,7 +84,6 @@ const AppRouter = () => {
         <Routes>
           <Route path="/" element={<Main/>} />
           <Route path="/style-guide" element={<StyleGuidePage/>}/>
-          <Route path="/travel-test" element={<TravelTypeTest/>} />
           <Route path="/test-page" element={<TestPage/>}/>
 
           {/* Profile */}
