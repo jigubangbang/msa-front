@@ -116,7 +116,7 @@ const TravelmateFormPage = () => {
       if (mode === 'create') {
         // 새 모임 생성
         const response = await api.post(
-          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate`,
+          `${API_ENDPOINTS.COMMUNITY.USER}/travelmate`,
           formData,
           {
             headers: {
@@ -138,7 +138,7 @@ const TravelmateFormPage = () => {
       } else {
         // 기존 모임 수정
         const response = await api.put(
-          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`,
+          `${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}`,
           formData,
           {
             headers: {
@@ -185,7 +185,7 @@ const TravelmateFormPage = () => {
   if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -199,7 +199,7 @@ const TravelmateFormPage = () => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems} />
+      <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
       
       <div className={styles.content}>
         <div className={styles.contentWrapper}>

@@ -1,0 +1,242 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.container {
+  width: 100%;
+  font-family: Pretendard, sans-serif;
+  background: #ffffff;
+}
+
+.filters{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* 필터 섹션 */
+.filterSection {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 0 4px;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #f8f9fa;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.filterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+/* 정렬 섹션 */
+.sortSection {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+/* 게시글 리스트 */
+.postList {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+}
+
+.postItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f3f5;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.postItem:hover {
+  background-color: #f8f9fa;
+}
+
+.postItem:last-child {
+  border-bottom: none;
+}
+
+.postNumber {
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+  margin-right: 16px;
+  min-width: 30px;
+  flex-shrink: 0;
+}
+
+.postContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center; /* 세로 중앙 정렬 */
+  flex: 1;
+  min-width: 0;
+}
+
+.postTitle {
+  flex: 1; /* 왼쪽 공간 차지 */
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0; /* 기존 margin-bottom 제거 */
+}
+
+.postMeta {
+  flex-shrink: 0; /* 오른쪽 고정 */
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #6c757d;
+  gap: 4px;
+}
+
+.travelStyle {
+  font-size: 12px;
+  font-weight: 500;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+
+.author {
+  font-weight: 500;
+  color: #495057;
+}
+
+.date {
+  color: #868e96;
+}
+
+.separator {
+  color: #dee2e6;
+  margin: 0 6px;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+
+.statItem span {
+  font-size: 13px;
+  color: #868e96;
+}
+
+/* 로딩 및 빈 상태 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.emptyState p {
+  margin: 0;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
+  
+  .filterSection {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .filterButton {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  
+  .postItem {
+    padding: 12px 16px;
+  }
+  
+  .postNumber {
+    font-size: 14px;
+    margin-right: 12px;
+    min-width: 25px;
+  }
+  
+  .postTitle {
+    font-size: 15px;
+  }
+  
+  .postMeta {
+    font-size: 13px;
+  }
+  
+  .travelStyle {
+    font-size: 11px;
+    margin-left: 4px;
+  }
+  
+  .stats {
+    margin-left: 4px;
+  }
+  
+  .icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .statItem span {
+    font-size: 12px;
+  }
+}

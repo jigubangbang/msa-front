@@ -605,7 +605,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
             취소
           </button>
           <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '저장 중...' : '모임 생성'}
+            {loading ? '저장 중...' : (mode === 'create' ? '모임 생성' : '모임 수정')}
           </button>
         </div>
       </form>

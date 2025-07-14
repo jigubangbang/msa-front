@@ -5,7 +5,7 @@ const reasonOptions = [
   { label: "음란/선정적 내용", value: "SEX" },
   { label: "욕설/비방", value: "ABU" },
   { label: "스팸/광고", value: "SPM" },
-  { label: "불법 행위/개인정보 노출", value: "ILG" },
+  { label: "불법/개인정보 노출", value: "ILG" },
   { label: "기타", value: "ETC" },
 ];
 

@@ -29,7 +29,7 @@ const TopTravelmateList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/likes`,
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/likes`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -77,7 +77,7 @@ const TopTravelmateList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -89,7 +89,7 @@ const TopTravelmateList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/like/${postId}`,
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`,
       {
         headers: {
           'User-Id': currentUserId,

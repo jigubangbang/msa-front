@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { ADMIN_SIDEBAR } from "../../utils/sidebar";
 import styles from "./AdminLayout.module.css";
 import Sidebar from "../../components/common/SideBar/SideBar";
+import ReportManage from "../../components/admin/ReportManage";
 
 export default function AdminReport() {
   // 사이드바
@@ -23,7 +24,7 @@ export default function AdminReport() {
       <Sidebar menuItems={finalMenuItems} />
       <div className={styles.content}>
         <div className={styles.formContainer}>
-          <p>신고 처리 페이지 내용</p>
+          <ReportManage />
         </div>
       </div>
     </div>

@@ -94,7 +94,7 @@ const TravelInfoList = ({
       const isLiked = likedPosts.has(postId);
       
       if (isLiked) {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`, {
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${postId}`, {
         headers: {
           'User-Id': currentUserId,
         },
@@ -105,7 +105,7 @@ const TravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/like/${postId}`,
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${postId}`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -163,7 +163,7 @@ const TravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${selectedInfo.id}/join`,
+      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -222,7 +222,7 @@ const TravelInfoList = ({
         };
 
         await api.post(
-          `${API_ENDPOINTS.COMMUNITY.PUBLIC}/report`,
+          `${API_ENDPOINTS.COMMUNITY.USER}/report`,
           payload,
           {
             headers: {
@@ -255,7 +255,7 @@ const TravelInfoList = ({
     }
 
     try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/${travelinfoId}`,
+      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -286,7 +286,7 @@ const TravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/likes`,
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/likes`,
       {
         headers: {
           'User-Id': currentUserId,
@@ -302,7 +302,7 @@ const TravelInfoList = ({
     if (!isLogin) return;
     
     try {
-      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelinfo/joined-chats`,
+      const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/joined-chats`,
       {
         headers: {
           'User-Id': currentUserId,

@@ -5,6 +5,12 @@ import styles from "./BoardListPage.module.css";
 import TravelerSearchBar from "../../../components/travelmate/TravelerSearchBar/TravelerSearchBar";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 import { jwtDecode } from 'jwt-decode';
+import BoardCategoryBrowse from "../../../components/board/BoardCategoryBrowse/BoardCategoryBrowse";
+import BoardCard from "../../../components/board/BoardCard/BoardCard";
+import BoardMainList from "../../../components/board/BoardMainList/BoardMainList";
+import UserActivityBoard from "../../../components/board/UserActivityBoard/UserActivityBoard";
+import BoardTravelStyleList from "../../../components/board/BoardTravelStyleList/BoardTravelStyleList";
+import BoardSearchList from "../../../components/board/BoardSearchList/BoardSearchList";
 
 
 export default function BoardListPage({page}) {
@@ -19,6 +25,7 @@ export default function BoardListPage({page}) {
 
     const [currentUserId, setCurrentUserId] = useState('');
 
+    const [isMain, setIsMain] = useState(false);
 
     //SideBar//
     const location = useLocation();
@@ -55,7 +62,6 @@ export default function BoardListPage({page}) {
             if (decoded.exp && decoded.exp < currentTime) {
                 localStorage.removeItem("accessToken");
                 setIsLogin(false);
-                setIsAdmin(false);
                 setCurrentUserId(null);
                 return;
             }
@@ -66,18 +72,15 @@ export default function BoardListPage({page}) {
             const userRole = decoded.role || decoded.authorities;
             const isAdminUser = userRole === 'ROLE_ADMIN' ||
                                 (Array.isArray(userRole) && userRole.includes('ROLE_ADMIN'));
-            setIsAdmin(isAdminUser);
             
         } catch (error) {
             console.error("토큰 디코딩 오류:", error);
             localStorage.removeItem("accessToken");
             setIsLogin(false);
-            setIsAdmin(false);
             setCurrentUserId(null);
         }
     } else {
         setIsLogin(false);
-        setIsAdmin(false);
         setCurrentUserId(null);
     }
     
@@ -86,21 +89,27 @@ export default function BoardListPage({page}) {
         switch (page) {
             case "popular":
                 setCategory([0]);
+                setIsMain(true);
                 break;
             case "info":
                 setCategory([1]);
+                setIsMain(false);
                 break;
             case "recommend":
                 setCategory([2]);
+                setIsMain(false);
                 break;
             case "chat":
                 setCategory([3]);
+                setIsMain(false);
                 break;
             case "question":
                 setCategory([4]);
+                setIsMain(false);
                 break;
             default:
                 setCategory([]);
+                setIsMain(false);
                 break;
         }
     } else {
@@ -114,33 +123,26 @@ export default function BoardListPage({page}) {
     setCurrentPage(1);
   }
 
-  const handleViewAll = () => {
-        setIsSearching(true);
-        setCurrentPage(1);
-        setSearchTerm('');
+    const handleCategorySelect = (categoryId) => {
+    console.log('선택된 카테고리 ID:', categoryId);
+    
+    if (category && category.includes(categoryId)) {
+      setCategory([]);
+    } else {
+      setCategory([categoryId]);
     }
 
-    const handleCategorySelect = (categoryId) => {
-      console.log('선택된 카테고리 ID:', categoryId);
-      
-      setCategory(prevCategory => {
-          if (prevCategory.includes(categoryId)) {
-          return prevCategory.filter(id => id !== categoryId);
-          } else {
-          return [...prevCategory, categoryId];
-          }
-      });
+    setIsSearching(false); // 카테고리 선택 시에는 검색 모드 해제
+    setCurrentPage(1);
+    setSearchTerm('');
+  };
 
-      setIsSearching(true);
-        setCurrentPage(1);
-        setSearchTerm('');
-    };
 
 
  if (loading) {
     return (
       <div className={styles.Container}>
-        <Sidebar menuItems={finalMenuItems} />
+        <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
           <div className={styles.loading}>로딩 중...</div>
         </div>
@@ -148,17 +150,9 @@ export default function BoardListPage({page}) {
     );
   }
 
-            //   <TravelInfoList
-            // currentUserId={currentUserId}
-            //   searchTerm={searchTerm}
-            //   currentPage={currentPage}
-            //   setCurrentPage={setCurrentPage}
-            //   isLogin={isLogin}
-            //   initialCategory={category} 
-            // />
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems}/>
+      <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
@@ -178,11 +172,30 @@ export default function BoardListPage({page}) {
 
           {!isSearching ? (
             <>
+              <BoardCategoryBrowse 
+                category={category}
+                onCategorySelect={handleCategorySelect}
+                isLogin={isLogin}
+              />
 
+              <BoardCard
+                category={category}
+                isLogin={isLogin}
+                currentUserId={currentUserId}
+              />
+
+              {isMain && <BoardMainList isLogin={isLogin}/>}
+              {( isLogin && isMain )&& <UserActivityBoard isLogin={isLogin} currentUserId={currentUserId}/>}
+
+              {!isMain && <BoardTravelStyleList 
+                category={category}
+                isLogin={isLogin}
+                currentUserId={currentUserId}
+              />}
             </>
           ) : (
             <>
-            
+              <BoardSearchList searchKeyword={searchTerm} isLogin={isLogin}/>
             </>
           )}
         </div>
