@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react"; // 데이터를 가져오기
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
+import api from "../../apis/api";
+import API_ENDPOINTS from "../../utils/constants";
+import defaultProfile from "../../assets/default_profile.png";
+import { useNavigate } from "react-router-dom";
+import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
 
 // ==================================================================================
 // 목업 데이터 (Mock Data)
@@ -42,6 +47,8 @@ export default function Main() {
     // - 각 팀원은 자신의 데이터를 담을 state를 관리하게 됩니다.
     // ==================================================================================
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
+    const navigate = useNavigate();
     
     // 각 서비스 데이터를 위한 state
     const [feeds, setFeeds] = useState(mockPopularFeeds); // 피드 서비스 데이터
@@ -76,16 +83,15 @@ export default function Main() {
             setError(null);   // 이전 에러가 있었다면 초기화합니다.
 
             try {
+                const feedResponse = await api.get(`${API_ENDPOINTS.FEED.PUBLIC}/posts/top`);
+                const feedData = await feedResponse.data.posts;
+                setFeeds(feedData);
+
                 // Promise.all을 사용하면 여러 API를 동시에 호출하여 더 빠르게 데이터를 가져올 수 있습니다.
                 // 각 팀원은 자신의 API 호출 함수를 만들어 아래처럼 추가하면 됩니다.
                 
                 /*
                 // --- 주석 해제 후 실제 API 호출 코드로 변경하세요 ---
-
-                // 1. 피드 서비스 API 호출
-                const feedResponse = await fetch('/api/feeds/popular'); // 예시 URL
-                const feedData = await feedResponse.json();
-                setFeeds(feedData); // 받아온 실제 데이터로 state 업데이트
 
                 // 2. 퀘스트 서비스 API 호출
                 const questResponse = await fetch('/api/quests/popular'); // 예시 URL
@@ -115,7 +121,7 @@ export default function Main() {
             }
         };
 
-        // fetchAllData(); // <<-- 실제 API 연동 시 이 줄의 주석을 해제하세요.
+        fetchAllData(); // <<-- 실제 API 연동 시 이 줄의 주석을 해제하세요.
 
     }, [isLoggedIn]); // isLoggedIn 상태가 바뀔 때마다 (로그인/로그아웃 시) 다시 데이터를 가져올 수 있습니다.
 
@@ -128,6 +134,11 @@ export default function Main() {
             offset: -49
         });
     };
+
+    const handleLoginClick = () => {
+        setShowLoginConfirmModal(false);
+        navigate("/login");
+    }
 
     // ==================================================================================
     // UI 렌더링 (Rendering)
@@ -158,15 +169,20 @@ export default function Main() {
                     <p className={styles.bodySecondary}>전 세계 여행자들의 아름다운 순간을 만나보세요.</p>
                     <div className={styles.marqueeContainer}>
                         <div className={styles.horizontalScrollContainer}>
-                            {/* feeds state의 데이터를 사용하여 UI를 렌더링합니다. */}
                             {[...feeds, ...feeds].map((feed, index) => (
-                                <div key={index} className={styles.scrollItem}>
-                                    <img src={feed.image} alt={`${feed.location} 이미지`} />
+                                <div key={index} className={styles.scrollItem} onClick={() => {
+                                    if (isLoggedIn) {
+                                        navigate(`/feed/${feed.id}`);
+                                    } else {
+                                        setShowLoginConfirmModal(true);
+                                    }
+                                }}>
+                                    <img src={feed.photoUrl} alt={`${feed.countryName} 이미지`} />
                                     <div className={styles.imageInfo}>
-                                        <img src={feed.avatar} alt={`${feed.user} 프로필`} className={styles.userAvatar} />
+                                        <img src={feed.profileImage || defaultProfile} alt={`${feed.userId} 프로필`} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
-                                            <p>{feed.location}</p>
-                                            <span>by {feed.user}</span>
+                                            <p>{feed.cityName}, {feed.countryName}</p>
+                                            <span>by {feed.nickname}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -244,6 +260,13 @@ export default function Main() {
                     </div>
                 )}
             </div>
+            {showLoginConfirmModal && (
+                <LoginConfirmModal
+                    isOpen={showLoginConfirmModal}
+                    onClose={() => setShowLoginConfirmModal(false)}
+                    onConfirm={handleLoginClick}
+                />
+            )}
         </div>
     );
 }
