@@ -4,7 +4,7 @@ import { useStomp, useStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 
-export function joinSock(isOpen, chatId, showAlert) {
+export function joinSock(isOpen, chatId, showAlert, currentUserId) {
   const senderId = useStore(state => state.senderId);
   const setSenderId = useStore(state => state.setSenderId);
   const { connect, disconnect, send, subscribe, unsubscribe } = useStomp();
@@ -174,28 +174,33 @@ export function joinSock(isOpen, chatId, showAlert) {
             nicknameFromJoin = joinResponse.data.nickname;
             setSenderId(joinResponse.data.userId);
             setNickname(joinResponse.data.nickname);
-            } catch (err) {
-              console.error("[joinSock] REST API 입장 실패:", err);
-              setChatError(new Error("REST 입장 실패: " + err.message));
-            }
-        if (restApiJoinSuccess) {
-          // 과거 메세지 조회
-          try {
-            const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/messages`);
-            const history = response.data;
-            setMessages(Array.isArray(history) ? history : []);
-            console.log(`[joinSock] 과거 메시지 ${history.length}개 로드됨`);
+            
+            console.log(`[joinSock] 입장 성공 - currentUserId: ${currentUserId}, serverUserId: ${userIdFromJoin}`);
+            
           } catch (err) {
-            console.error('[joinSock] 과거 메시지 조회 실패:', err);
-            setChatError(new Error("과거 메시지 조회 실패: " + (err.message || "알 수 없는 에러")));
+            console.error("[joinSock] REST API 입장 실패:", err);
+            setChatError(new Error("REST 입장 실패: " + err.message));
           }
-          // 그 후 STOMP 활성화
-          activateStompClient(userIdFromJoin);
-        } else {
-          setIsLoading(false); // REST API 실패 시 로딩 해제
-        }
-        setIsJoining(false);
-      };
+
+          if (restApiJoinSuccess) {
+            // 과거 메시지 조회
+            try {
+              const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/messages`);
+              const history = response.data;
+              setMessages(Array.isArray(history) ? history : []);
+              console.log(`[joinSock] 과거 메시지 ${history.length}개 로드됨`);
+            } catch (err) {
+              console.error('[joinSock] 과거 메시지 조회 실패:', err);
+              setChatError(new Error("과거 메시지 조회 실패: " + (err.message || "알 수 없는 에러")));
+            }
+            
+            // STOMP 활성화 시 백엔드에서 받은 userId 사용 (실제로는 currentUserId와 같아야 함)
+            activateStompClient(userIdFromJoin || currentUserId);
+          } else {
+            setIsLoading(false);
+          }
+          setIsJoining(false);
+        };
 
       initializeChatRoom();
 

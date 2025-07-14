@@ -1,4 +1,5 @@
 .card {
+    width: 12vw;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -4,6 +4,7 @@ import styles from './NotificationDropdown.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import { Circles } from 'react-loader-spinner';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
+import { getNotificationIcon } from '../../utils/NotificationIcons';
 import bell from '../../assets/chat/notification_bell_26.svg';
 
 const NotificationDropdown = ({ userId }) => {
@@ -44,8 +45,6 @@ const NotificationDropdown = ({ userId }) => {
       }
     } catch (error) {
       console.error('읽지 않은 알림 개수 조회 실패:', error);
-      // 개발용 더미 데이터
-      setUnreadCount(3);
     }
   };
 
@@ -62,6 +61,7 @@ const NotificationDropdown = ({ userId }) => {
       
       if (response.ok) {
         const data = await response.json();
+
         if (append) {
           setNotifications(prev => [...prev, ...data]);
         } else {
@@ -96,7 +96,7 @@ const NotificationDropdown = ({ userId }) => {
             notif.id === notificationId ? { ...notif, isRead: true } : notif
           )
         );
-        setUnreadCount(prev => Math.max(0, prev - 1));
+        fetchUnreadCount();
       }
     } catch (error) {
       console.error('읽음 처리 실패:', error);
@@ -186,20 +186,6 @@ const NotificationDropdown = ({ userId }) => {
     }
   };
 
-  // 알림 타입별 아이콘
-  const getNotificationIcon = (type) => {
-    switch (type) {
-      case 'CHAT_MESSAGE':
-        return '💬';
-      case 'FRIEND_REQUEST':
-        return '👥';
-      case 'SYSTEM':
-        return '⚙️';
-      default:
-        return '📢';
-    }
-  };
-
   // 컴포넌트 마운트 시 읽지 않은 알림 개수 조회
   useEffect(() => {
     if (userId) {
@@ -209,6 +195,90 @@ const NotificationDropdown = ({ userId }) => {
       return () => clearInterval(interval);
     }
   }, [userId]);
+
+  // 알림을 시간별로 그룹화하는 함수
+  const groupNotificationsByTime = (notifications) => {
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const groups = {
+      today: [],
+      week: [],
+      older: []
+    };
+
+    notifications.forEach(notification => {
+      const notificationDate = new Date(notification.createdAt);
+      
+      if (notificationDate >= oneDayAgo) {
+        groups.today.push(notification);
+      } else if (notificationDate >= sevenDaysAgo) {
+        groups.week.push(notification);
+      } else {
+        groups.older.push(notification);
+      }
+    });
+
+    return groups;
+  };
+
+  const renderNotificationImage = (notification) => {
+    if (notification.senderProfileImage) {
+      return <img src={notification.senderProfileImage} alt="프로필 이미지" className={styles.profileImage} />;
+    }
+    return <img src={getNotificationIcon(notification.type)} alt="알림 아이콘" className={styles.typeIcon} />;
+  };
+
+  const renderNotificationGroup = (notifications, groupTitle) => {
+  if (notifications.length === 0) return null;
+    return (
+      <div key={groupTitle}>
+        <div className={styles.groupHeader}>
+          <span className={styles.groupTitle}>{groupTitle}</span>
+        </div>
+        {notifications.map((notification) => (
+          <div
+            key={notification.id}
+            className={`${styles.notificationItem} ${
+              !notification.isRead ? styles.unread : ''
+            }`}
+          >
+            {/* 왼쪽: 프로필 이미지 또는 타입 아이콘 */}
+            <div className={styles.notificationImage}>
+              {renderNotificationImage(notification)}
+            </div>
+            
+            {/* 오른쪽: 기존 컨텐츠 구조 유지 */}
+            <div className={styles.notificationContent}>
+              <div className={styles.notificationHeader}>
+                <span className={styles.time}>
+                  {formatRelativeTime(notification.createdAt)}
+                </span>
+                {!notification.isRead && (
+                  <span className={styles.unreadDot}></span>
+                )}
+              </div>
+              <p 
+                className={styles.message}
+                onClick={() => handleNotificationClick(notification)}
+              >
+                {notification.message}
+              </p>
+            </div>
+            
+            {/* 삭제 버튼 */}
+            <button
+              className={styles.deleteButton}
+              onClick={() => deleteNotification(notification.id)}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className={styles.notificationContainer} ref={dropdownRef}>
@@ -243,40 +313,16 @@ const NotificationDropdown = ({ userId }) => {
               <div className={styles.empty}>알림이 없습니다</div>
             ) : (
               <>
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`${styles.notificationItem} ${
-                      !notification.isRead ? styles.unread : ''
-                    }`}
-                  >
-                    <div className={styles.notificationContent}>
-                      <div className={styles.notificationHeader}>
-                        <span className={styles.icon}>
-                          {getNotificationIcon(notification.type)}
-                        </span>
-                        <span className={styles.time}>
-                          {formatRelativeTime(notification.createdAt)}
-                        </span>
-                        {!notification.isRead && (
-                          <span className={styles.unreadDot}></span>
-                        )}
-                      </div>
-                      <p 
-                        className={styles.message}
-                        onClick={() => handleNotificationClick(notification)}
-                      >
-                        {notification.message}
-                      </p>
-                    </div>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => deleteNotification(notification.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                {(() => {
+                  const groupedNotifications = groupNotificationsByTime(notifications);
+                  return (
+                    <>
+                      {renderNotificationGroup(groupedNotifications.today, "1일 이내")}
+                      {renderNotificationGroup(groupedNotifications.week, "7일 이내")}
+                      {renderNotificationGroup(groupedNotifications.older, "이전 알림")}
+                    </>
+                  );
+                })()}
                 
                 {hasMore && (
                   <button 
