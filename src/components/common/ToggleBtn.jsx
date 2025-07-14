@@ -1,12 +1,14 @@
 import { useState } from "react";
-import styles from "../../pages/main/Main.module.css";
+import styles from "./ToggleBtn.module.css";
 
-export default function ToggleBtn({firstOption, secondOption, firstValue, secondValue, onToggle}) {
+export default function ToggleBtn({firstOption, secondOption, firstValue, secondValue, onToggle, isMap=false, isPremium=true}) {
     const [isChecked, setIsChecked] = useState(false);
 
     const handleChange = (e) => {
         const checked = e.target.checked;
-        setIsChecked(checked);
+        if (!isMap || (isMap && isPremium)) {
+            setIsChecked(checked);
+        }
 
         if (onToggle) {
             onToggle(checked ? secondValue : firstValue);
