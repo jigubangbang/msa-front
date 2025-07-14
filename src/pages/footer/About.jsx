@@ -28,7 +28,7 @@ export default function About() {
           즐거운 경험을 제공합니다!
         </p>
 
-        <h1 className={styles.title}>지구방방으로 여행을 시작해보세요!</h1>
+        <h1 className={styles.title}>지구방방과 함께 여행을 시작해보세요!</h1>
         <p className={styles.paragraph}>
           "지구방방"은 지구 방방곡곡을 돌아다니며 전 세계 어디에서든 자유롭게 여행하고, 그 모든 순간을 기록하자는 마음을 담아 만든 플랫폼입니다.
         </p>
