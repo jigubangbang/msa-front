@@ -44,7 +44,7 @@ export default function Privacy() {
         <p className={styles.paragraph}>① 서비스 제공자는 원활한 개인정보 업무처리를 위하여 다음과 같이 개인정보 처리업무를 위탁하고 있습니다:</p>
         <ul className={styles.list}>
           <li><strong>• 이메일 인증</strong> {'\u00A0'}Google SMTP 서비스</li>
-          <li><strong>• 결제 서비스</strong> {'\u00A0'}아임포트(Iamport)</li>
+          <li><strong>• 결제 서비스</strong> {'\u00A0'}Portone(Iamport)</li>
           <li><strong>• 클라우드 서비스</strong> {'\u00A0'}AWS (데이터 저장 및 서버 운영)</li>
         </ul>
         <p className={styles.paragraphSpaced}>② 위탁 및 제3자 제공은 사전 고지 및 동의를 거쳐 진행되며, 위탁계약 체결시 개인정보 보호를 위한 관리·감독을 실시합니다.</p>
