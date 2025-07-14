@@ -15,8 +15,6 @@ import { jwtDecode } from "jwt-decode";
 import api from "../../apis/api";
 import EditNationalityModal from "./main/EditNationalityModal";
 
-// TODO: redirect travel style to details page
-
 export default function ProfileSidebar() {
     const [sessionUserId, setSessionUserId] = useState();
     const {userId} = useParams();
@@ -312,7 +310,9 @@ export default function ProfileSidebar() {
                         <h4><img src={planeIcon}/>여행성향</h4>
                         <p>
                             {data.travelStyleName ? (
-                                <span className={styles.travelBadge}>{data.travelStyleName}</span>
+                                <Link to={`/feed/travel-style/${data.travelStyleId}`}>
+                                    <span className={styles.travelBadge}>{data.travelStyleName}</span>
+                                </Link>
                             ) : (
                                 <span>-</span>
                             )
@@ -331,7 +331,20 @@ export default function ProfileSidebar() {
                         <p>{data.xp}</p>
                     </div>
                 </div>
-            </div>
+                {data.badge && (
+                    <div className={styles.inlineRow}>
+                        <div className={styles.badgeBlock}>
+                            <h4>대표 뱃지</h4>
+                            <Link to={`/my-quest/profile/${userId}/badges`}>
+                            <div className={styles.tooltipWrapper}>
+                                <img src={data.badge.icon} className={styles.pinnedBadgeIcon} alt={data.badge.title}/>
+                                <span className={styles.tooltip}>{data.badge.title}</span>
+                            </div>
+                            </Link>
+                        </div>
+                    </div>
+                )}
+                </div>
         </div>
     );
 }
