@@ -19,6 +19,8 @@ function ScrollToTop() {
 
 function App() {
   const [isDark, setIsDark] = useState(false); // 다크모드
+
+  // 이제 지워야 할 부분
   const [isChatModal, setIsChatModal] = useState(false); // 채팅
 
   const navigate = useNavigate(); 
@@ -34,8 +36,11 @@ function App() {
     }
   }, [location, navigate]);
   
+  // 이제 지워야 할 부분
   const openChatModal = () => setIsChatModal(true);
   const closeChatModal = () => setIsChatModal(false);
+  // 아래 <ChatModal/>을 아예 제거해야 함.
+
 
   const state = location.state && location.state.backgroundLocation;
 

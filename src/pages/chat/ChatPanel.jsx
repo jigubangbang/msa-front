@@ -4,11 +4,13 @@ import { ThemeContext } from '../../utils/themeContext';
 import ChatSidebar from './ChatSideBar';
 import menu_vert_white from '../../assets/common/more_vert_white.svg';
 import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
-import exit_white from '../../assets/chat/exit_white.svg';
+import minimize from '../../assets/chat/hide.svg';
+import defaultProfile from '../../assets/default_profile.png';
 import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
-export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, onClose, onForceClose, showAlert }) {
+export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, 
+    onClose, onMinimize, onForceClose, showAlert, members }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
@@ -19,21 +21,8 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
   const [isSidebar, setIsSidebar] = useState(false);
   const {info} = useChatRoomInfo(chatId);
 
-  // **디버깅용 로그 추가**
-  useEffect(() => {
-    console.log('[ChatPanel] Debug Info:', {
-      chatId,
-      senderId,
-      nickname,
-      messagesCount: messages?.length || 0,
-      latestMessage: messages?.[messages.length - 1]
-    });
-  }, [chatId, senderId, nickname, messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  /*
+  // 전체 화면 다크모드 할 시
   useEffect(() => {
     if (isDark) {
       document.body.classList.add('dark-mode');
@@ -41,6 +30,11 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
       document.body.classList.remove('dark-mode');
     }
   }, [isDark]);
+  */
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   
   useEffect(() => {
     if (isScrolledToBottom) {
@@ -80,15 +74,17 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
     setIsDark(!isDark);
   }
 
+  const handleMinimize = () => {
+    onMinimize();
+  };
+
   const isKicked = localStorage.getItem(`kicked:${chatId}`) === 'true';
+  
   return (
-    <div className="chat-panel-container" style={{
-          backgroundColor: isDark ? '#242424' : '#f9f9f9',
-          color: isDark ? '#f9f9f9' : '#242424'
-      }}>
+    <div className={`chat-panel-container ${isDark ? 'dark-mode' : ''}`}>
       <div className="chat-header">
-        <div className="chat-close-button" onClick={onClose}>
-          <img src={exit_white}/>
+        <div className="chat-minimize-button" onClick={handleMinimize}>
+          <img src={minimize} alt="화면축소"/>
         </div>
         <h2>{info?.groupType || `Room ${chatId}`}</h2>
         <div 
@@ -96,10 +92,9 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
           onClick={handleSidebar}
         >
          {isSidebar ? (
-            // 사이드바 열려 있을때
-            <img src={menu_horiz_white}/>
+            <img src={menu_horiz_white} alt="사이드바"/>
           ) : (
-            <img src={menu_vert_white}/>
+            <img src={menu_vert_white} alt="사이드바"/>
           )}
         </div>
       </div>
@@ -128,9 +123,18 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
                     <div className="profile-area">
                       {/* 실제 아바타 이미지 대신 임시 아이콘 사용 */}
                       <div className="avatar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill" viewBox="0 0 16 16">
-                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                        </svg>
+                        <img 
+                          src={
+                            members?.find(member => 
+                              member.userId === msg.senderId || 
+                              member.nickname === msg.nickname
+                            )?.profileImage || defaultProfile
+                          } 
+                          alt="프로필"
+                          onError={(e) => {
+                            e.target.src = defaultProfile;
+                          }}
+                        />
                       </div>
                       <span className="nickname">{msg.nickname || msg.senderId}</span>
                     </div>
@@ -148,10 +152,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
           })}
           <div ref={messagesEndRef} />
         </div>
-        <form onSubmit={handleSubmit} className="chat-input-area" style={{
-          backgroundColor: isDark ? '#242424' : '#f9f9f9',
-          color: isDark ? '#f9f9f9' : '#242424'
-        }}>
+        <form onSubmit={handleSubmit} className="chat-input-area">
           <div onClick={handleTheme} className='theme-button'>
           { !isDark && (
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-brightness-low-fill" viewBox="0 0 16 16">
@@ -186,6 +187,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         chatInfo={info}
         onForceClose={onForceClose}
         showAlert={showAlert}
+        isDark={isDark}
       />
      )}
 
