@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"; // 데이터를 가져오기 위해 useEffect를 import합니다.
 import { scroller } from 'react-scroll';
-import Header from '../../components/main/Header';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
 
@@ -54,6 +53,14 @@ export default function Main() {
     const [loading, setLoading] = useState(false); // 초기에는 false, API 호출 시 true로 변경
     const [error, setError] = useState(null);
 
+    
+    useEffect(() => {
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken != null) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
 
     // ==================================================================================
     // 데이터 연동 (Data Fetching)
@@ -64,6 +71,7 @@ export default function Main() {
     useEffect(() => {
         // --- 아래 함수는 실제 API를 호출하기 위한 예시입니다. ---
         const fetchAllData = async () => {
+
             setLoading(true); // 데이터 요청 시작! 로딩 스피너 등을 보여줄 수 있습니다.
             setError(null);   // 이전 에러가 있었다면 초기화합니다.
 
@@ -134,12 +142,9 @@ export default function Main() {
 
     return (
         <div className={styles.outerContainer}>
-            <div className={`${styles.btn} ${styles.loginToggle}`} onClick={() => setIsLoggedIn(!isLoggedIn)}>
-                {isLoggedIn ? 'Logout' : 'Login'} (임시)
-            </div>
-
+            
             <div className={styles.mainPoster}>
-                <div className={styles.posterTitle}>JIGU PROJECT</div>
+                <div className={styles.posterTitle}>JIGU BANGBANG</div>
                 <div className={styles.posterSubtitle}>여행, 그 이상의 여정을 기록하다</div>
                 <button className={styles.startButton} onClick={scrollToContent}>
                     START NOW
@@ -238,15 +243,6 @@ export default function Main() {
                         </div>
                     </div>
                 )}
-
-                <footer className={styles.footer}>
-                    <p>&copy; 2025 JIGU PROJECT. All rights reserved.</p>
-                    <div className={styles.footerLinks}>
-                        <a href="#">이용약관</a>
-                        <a href="#">개인정보처리방침</a>
-                        <a href="#">고객센터</a>
-                    </div>
-                </footer>
             </div>
         </div>
     );

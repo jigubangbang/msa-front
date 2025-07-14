@@ -235,30 +235,49 @@ export const ADMIN_SIDEBAR = [
   }
 ];
 
-export const FEED_SIDEBAR = [
-  {
-    label: '피드 홈',
-    icon: '/icons/sidebar/home.svg',
-    path: '/feed'
-  },
-  {
-    label: '팔로우',
-    icon: '/icons/sidebar/my_traveler.svg',
-    path: '/feed/following'
-  },
-  {
-    label: '북마크',
-    icon: '/icons/sidebar/bookmark.svg',
-    path: '/feed/bookmark'
-  },
-  {
-    label: '탐색',
-    icon: '/icons/sidebar/search.svg',
-    path: '/feed/search'
-  },
-  {
-    label: '친구 추천',
-    icon: '/icons/sidebar/user_recommendation.svg',
-    path: '/feed/recommendation'
-  }
-];
+export const FEED_SIDEBAR = (isLoggedIn = false) => {
+  const basicMenus = [
+    {
+      label: '피드 홈',
+      icon: '/icons/sidebar/home.svg',
+      path: '/feed', 
+      needLogin: false
+    },
+    {
+      label: '탐색',
+      icon: '/icons/sidebar/search.svg',
+      path: '/feed/search', 
+      needLogin: false
+    }
+  ]
+  const userMenus = [
+    {
+      label: '피드 홈',
+      icon: '/icons/sidebar/home.svg',
+      path: '/feed', 
+      needLogin: false
+    },
+    {
+      label: '팔로우',
+      icon: '/icons/sidebar/my_traveler.svg',
+      path: '/feed/following'
+    },
+    {
+      label: '북마크',
+      icon: '/icons/sidebar/bookmark.svg',
+      path: '/feed/bookmark'
+    },
+    {
+      label: '탐색',
+      icon: '/icons/sidebar/search.svg',
+      path: '/feed/search', 
+      needLogin: false
+    },
+    {
+      label: '친구 추천',
+      icon: '/icons/sidebar/user_recommendation.svg',
+      path: '/feed/recommendation'
+    }
+  ]
+  return !isLoggedIn ? basicMenus : userMenus;
+}
