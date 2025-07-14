@@ -5,6 +5,7 @@ import API_ENDPOINTS from '../../../utils/constants';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
 import styles from './BoardDetail.module.css';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 
 const BoardDetail = ({ isLogin, currentUserId }) => {
   const { postId } = useParams();
@@ -34,6 +35,12 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   // 모달 상태
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportTarget, setReportTarget] = useState(null);
+  
+  // ConfirmModal 관련 상태
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert'); // 'alert' | 'confirm'
+  const [confirmAction, setConfirmAction] = useState(null);
 
   useEffect(() => {
     if (postId) {
@@ -45,6 +52,34 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       }
     }
   }, [postId, isLogin, currentUserId]);
+
+  // ConfirmModal 관련 유틸리티 함수
+  const showAlert = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const showConfirm = (message, action) => {
+    setConfirmMessage(message);
+    setConfirmType('confirm');
+    setConfirmAction(() => action);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
 
   const fetchPost = async () => {
     setLoading(true);
@@ -181,11 +216,11 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       
       setNewComment('');
       fetchComments(); 
-      alert('댓글이 등록되었습니다.');
+      showAlert('댓글이 등록되었습니다.');
     } catch (error) {
       console.error('Failed to submit comment:', error);
       const errorMessage = error.response?.data?.error || '댓글 등록에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -207,11 +242,11 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       setReplyTexts(prev => ({ ...prev, [commentId]: '' }));
       setActiveReplyId(null);
       fetchComments(); 
-      alert('답변이 등록되었습니다.');
+      showAlert('답변이 등록되었습니다.');
     } catch (error) {
       console.error('Failed to submit reply:', error);
       const errorMessage = error.response?.data?.error || '답변 등록에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -252,11 +287,11 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       setEditingId(null);
       setEditingText('');
       fetchComments();
-      alert('댓글이 수정되었습니다.');
+      showAlert('댓글이 수정되었습니다.');
     } catch (error) {
       console.error('Failed to update comment:', error);
       const errorMessage = error.response?.data?.error || '댓글 수정에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -266,31 +301,33 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const handleDelete = async (commentId) => {
-    if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) return;
-    
-    try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/board/${postId}/comments/${commentId}`, {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
-      
-      fetchComments();
-      alert('댓글이 삭제되었습니다.');
-    } catch (error) {
-      console.error('Failed to delete comment:', error);
-      const errorMessage = error.response?.data?.error || '댓글 삭제에 실패했습니다.';
-      alert(errorMessage);
-    }
+    const deleteComment = async () => {
+      try {
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/board/${postId}/comments/${commentId}`, {
+          headers: {
+            'User-Id': currentUserId,
+          },
+        });
+        
+        fetchComments();
+        showAlert('댓글이 삭제되었습니다.');
+      } catch (error) {
+        console.error('Failed to delete comment:', error);
+        const errorMessage = error.response?.data?.error || '댓글 삭제에 실패했습니다.';
+        showAlert(errorMessage);
+      }
+    };
+
+    showConfirm('정말로 댓글을 삭제하시겠습니까?', deleteComment);
   };
 
   const handleReport = (id, userId) => {
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      showAlert('로그인이 필요합니다.');
       return;
     }
     if (userId == currentUserId ){
-      alert('자기 자신을 신고할 수 없습니다');
+      showAlert('자기 자신을 신고할 수 없습니다');
       return;
     }
     setReportTarget({ id, userId });
@@ -315,10 +352,10 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       
       setShowReportModal(false);
       setReportTarget(null);
-      alert('신고가 접수되었습니다.');
+      showAlert('신고가 접수되었습니다.');
     } catch (error) {
       console.error('Failed to submit report:', error);
-      alert('신고 접수에 실패했습니다.');
+      showAlert('신고 접수에 실패했습니다.');
     }
   };
 
@@ -343,7 +380,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   // 기존 함수들 (좋아요, 북마크, 이미지 모달 등)
   const handleLikeToggle = async () => {
     if (!isLogin) {
-      alert('로그인이 필요한 서비스입니다.');
+      showAlert('로그인이 필요한 서비스입니다.');
       return;
     }
 
@@ -363,13 +400,13 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       }
     } catch (error) {
       console.error('Failed to toggle like:', error);
-      alert('좋아요 처리 중 오류가 발생했습니다.');
+      showAlert('좋아요 처리 중 오류가 발생했습니다.');
     }
   };
 
   const handleBookmarkToggle = async () => {
     if (!isLogin) {
-      alert('로그인이 필요한 서비스입니다.');
+      showAlert('로그인이 필요한 서비스입니다.');
       return;
     }
 
@@ -389,7 +426,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       }
     } catch (error) {
       console.error('Failed to toggle bookmark:', error);
-      alert('북마크 처리 중 오류가 발생했습니다.');
+      showAlert('북마크 처리 중 오류가 발생했습니다.');
     }
   };
 
@@ -416,19 +453,23 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const handlePostDelete = async () => {
-    if (!window.confirm('정말로 게시글을 삭제하시겠습니까?')) return;
-    
-    try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/board/${postId}`, {
-        headers: { 'User-Id': currentUserId }
-      });
-      
-      alert('게시글이 삭제되었습니다.');
-      handleGoBack();
-    } catch (error) {
-      console.error('Failed to delete post:', error);
-      alert('게시글 삭제에 실패했습니다.');
-    }
+    const deletePost = async () => {
+      try {
+        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/board/${postId}`, {
+          headers: { 'User-Id': currentUserId }
+        });
+        
+        showAlert('게시글이 삭제되었습니다.');
+        setTimeout(() => {
+          navigate(`/board/popular`);
+        }, 1000);
+      } catch (error) {
+        console.error('Failed to delete post:', error);
+        showAlert('게시글 삭제에 실패했습니다.');
+      }
+    };
+
+    showConfirm('정말로 게시글을 삭제하시겠습니까?', deletePost);
   };
 
   const handleImageClick = (index) => {
@@ -814,6 +855,15 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         onSubmit={handleReportSubmit}
+      />
+
+      {/* ConfirmModal */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
       />
     </div>
   );

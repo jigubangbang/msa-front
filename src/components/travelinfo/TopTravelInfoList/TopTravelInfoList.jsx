@@ -119,12 +119,14 @@ const TopTravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`,
-      {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`, 
+          {},
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          }
+        );
         setLikedPosts(prev => new Set(prev).add(chatId));
       }
       

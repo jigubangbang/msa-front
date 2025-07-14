@@ -4,11 +4,19 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import {useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
+import ChatModal from '../../../pages/chat/ChatModal';
+import ReportModal from '../../common/Modal/ReportModal';
 
 export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }) {
   const [expandedApplications, setExpandedApplications] = useState({});
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
+
+  
+
+    // 채팅방 입장
+    const [chatModalOpen, setChatModalOpen] = useState(false);
+    const [selectedChatId, setSelectedChatId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -18,6 +26,23 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       [id]: !prev[id]
     }));
   };
+
+  const handleApplicationDelete = async (travelId, applicationId) => {
+    try {
+      const response = await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${travelId}/application/${applicationId}`, {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
+
+      if (fetchTravelerData) {
+        fetchTravelerData();
+      }
+    } catch (error) {
+      console.error('Failed to process application:', error);
+      alert('처리 중 오류가 발생했습니다.');
+    }
+  }
 
    const handleApplicationAction = async (travelId, applicationId, action) => {
     try {
@@ -103,6 +128,36 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
+    const handleChatClick = async (groupId) => {
+    try {
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+        groupType: "TRAVELINFO",
+        groupId: groupId
+      });
+      
+      //#NeedToDo채팅
+      const chatRoomId = response.data.chatRoomId;
+      console.log('채팅방으로 이동:', chatRoomId);
+
+      if (response.data.success && response.data.chatRoomId) {
+        setSelectedChatId(response.data.chatRoomId);
+        setChatModalOpen(true);
+      } else {
+        alert('채팅방 정보를 가져오는데 실패했습니다.');
+      }
+      
+    } catch (error) {
+      console.error('Failed to get chat room:', error);
+      alert('채팅방을 불러오는데 실패했습니다.');
+    }
+  };
+
+  const handleExitClick = async (groupId) => {
+    console.log(groupId,"그룹 나가기");
+    //나가기
+    //TODO 나가기 버튼 구현
+  }
+
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ko-KR', {
@@ -166,6 +221,30 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       onEdit={() => handleEdit(travel.id)}
                       onDelete={() => handleDelete(travel.id)}
                     />
+                    {(sectionType==='hosted' || sectionType==='joined') && (
+                      <button 
+                        className={styles.chatButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleChatClick(travel.id);
+                        }}
+                      >
+                        채팅하기
+                      </button>
+                      
+                    )}
+                    {(sectionType==='hosted' || sectionType==='joined') && (
+                      <button 
+                        className={styles.chatButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleExitClick(travel.id);
+                        }}
+                      >
+                        나가기
+                      </button>
+                      
+                    )}
                 </div>
               </div>
 
@@ -196,8 +275,17 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         <div key={application.id} className={styles.applicationCard}>
                           <div className={styles.applicationInfo}>
                             <div className={styles.applicantInfo}>
-                              <span className={styles.nickname}>{application.userNickname}</span>
-                              <span className={styles.userId}>({application.userId})</span>
+                              <div className={styles.applicantUser}>
+                                <span className={styles.nickname}>{application.userNickname}</span>
+                                <span className={styles.userId}>({application.userId})</span>
+                              </div>
+                              {application.status !== 'PENDING' && (
+                                <img src={"/icons/common/delete.svg"} alt="지우기" className={styles.bin}
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleApplicationDelete(travel.id, application.id);
+                                }}/>
+                              )}
                             </div>
                             <div className={styles.applicationComment}>
                               {application.applicationComment || '신청 메시지가 없습니다.'}
@@ -205,7 +293,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                             <div className={styles.applicationDate}>
                               신청일: {formatDate(application.appliedAt)}
 
-                                                        {application.status === 'PENDING' && (
+                            {application.status === 'PENDING' && (
                             <div className={styles.actionButtons}>
                               <button
                                 className={`${styles.actionButton} ${styles.accept}`}
@@ -289,6 +377,22 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
       {/* 완료된 여행 */}
       {data.completedTravelmates && renderTravelList(data.completedTravelmates, '완료된 여행', 'completed')}
+
+      {chatModalOpen && selectedChatId && (
+              <ChatModal
+                isOpen={chatModalOpen}
+                chatId={selectedChatId}
+                currentUserId={currentUserId}
+              />
+            )}
+      
+            <ReportModal
+                    show={showReportModal}
+                    onClose={handleReportClose}
+                    onSubmit={handleReportSubmit}
+                  />
     </div>
+
+    
   );
 }
