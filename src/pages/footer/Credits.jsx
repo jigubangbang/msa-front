@@ -35,12 +35,12 @@ const Credits = () => {
         <h1 className={styles.title}>기술 스택</h1>
         <ul className={styles.list}>
           <li><strong>• Frontend</strong> {'\u00A0'}React 18, Vite, React Router DOM, Zustand, Axios, MUI Material, Emotion, Bootstrap Icons, D3.js</li>
-          <li><strong>• Backend</strong> {'\u00A0'}Spring Boot 3.4.6, Spring Web, MyBatis, Spring Security, Spring Mail, JWT, WebSocket(STOMP, SockJS)</li>
+          <li><strong>• Backend</strong> {'\u00A0'}Spring Boot 3.4.6, Spring Web, MyBatis, Spring Security, Spring Mail, JWT, WebSocket(STOMP, SockJS), Lombok</li>
           <li><strong>• Database</strong> {'\u00A0'}MySQL, AWS RDS</li>
           <li><strong>• Cloud & Infrastructure</strong> {'\u00A0'}AWS(EKS, ECR, S3), Docker, Kubernetes</li>
           <li><strong>• Microservices</strong> {'\u00A0'}Spring Cloud(Eureka, Config Server, API Gateway, OpenFeign)</li>
           <li><strong>• CI/CD</strong> {'\u00A0'}Jenkins, GitHub</li>
-          <li><strong>• Payment</strong> {'\u00A0'}Iamport</li>
+          <li><strong>• Payment</strong> {'\u00A0'}Portone(Iamport)</li>
           <li><strong>• Environment</strong> {'\u00A0'}Maven, Java 17, VS Code, Git, GitHub, Notion</li>
         </ul>
 
