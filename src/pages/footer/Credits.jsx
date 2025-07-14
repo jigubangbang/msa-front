@@ -41,7 +41,7 @@ const Credits = () => {
           <li><strong>• Microservices</strong> {'\u00A0'}Spring Cloud(Eureka, Config Server, API Gateway, OpenFeign)</li>
           <li><strong>• CI/CD</strong> {'\u00A0'}Jenkins, GitHub</li>
           <li><strong>• Payment</strong> {'\u00A0'}Iamport</li>
-          <li><strong>• Environment</strong> {'\u00A0'}Maven, Java 17, Git, VS Code</li>
+          <li><strong>• Environment</strong> {'\u00A0'}Maven, Java 17, VS Code, Git, GitHub, Notion</li>
         </ul>
 
         <h1 className={styles.title}>버전 정보 및 문의</h1>
