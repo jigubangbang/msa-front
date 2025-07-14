@@ -14,12 +14,12 @@ import { feature } from "topojson-client";
 import MutatingLoadingSpinner from "../../components/common/MutatingLoadingSpinner";
 import CountrySearchSection from "../../components/profile/CountrySearchSection/CountrySearchSection";
 import API_ENDPOINTS from "../../utils/constants";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import StatsModal from "../../components/profile/map/StatsModal";
 import Modal from "../../components/common/Modal/Modal";
 import MapSettingsContent from "../../components/profile/map/MapSettingsContent";
+import PremiumModal from "../../components/common/Modal/PremiumModal";
 
-// TODO: Condition lock icon on premium membership
 
 export default function MapPage() {
     const {userId} = useParams();
@@ -32,12 +32,18 @@ export default function MapPage() {
 
     const [mapColor, setMapColor] = useState("white");
     const [isPremium, setIsPremium] = useState(false);
+    const [showPremiumConfirmModal, setShowPremiumConfirmModal] = useState(false);
 
     const [showSettingsModal, setShowSettingsModal] = useState(false);
     const [selectedColor, setSelectedColor] = useState();
     const [originalColor, setOriginalColor] = useState();
 
     const handleRandomCountry = () => {
+        if (!isPremium) {
+            setShowPremiumConfirmModal(true);
+            return;
+        }
+
         const countries = feature(geography, geography.objects.world).features;
         const random = countries[Math.floor(Math.random() * countries.length)];
         const centroid = geoCentroid(random);
@@ -94,6 +100,14 @@ export default function MapPage() {
         fetchFilledCountries();
     }
 
+    const handleSettingsBtnClick = () => {
+        if (!isPremium) {
+            setShowPremiumConfirmModal(true);
+            return;
+        }
+        setShowSettingsModal(true);
+    };
+
     function handleColorSubmit() {
         api
             .put(`${API_ENDPOINTS.MYPAGE.PROFILE}/${userId}/countries/settings?color=${selectedColor}`)
@@ -113,6 +127,14 @@ export default function MapPage() {
         setShowSettingsModal(false);
     }
 
+    const onToggle= (selectedOption) => {
+        if (!isPremium) {
+            setShowPremiumConfirmModal(true);
+            return;
+        }
+        setMapType(selectedOption);
+    }
+
     useEffect(() => {
         fetchFilledCountries();
     }, [mapType, userId]);
@@ -128,7 +150,7 @@ export default function MapPage() {
                     <CountrySearchSection mapType={mapType} handleMapUpdate={handleMapUpdate}/>
                 </div>
                 <div className={styles.btnTopRightContainer}>
-                    <button className={styles.settingsBtn} onClick={() => setShowSettingsModal(true)}>
+                    <button className={styles.settingsBtn} onClick={handleSettingsBtnClick}>
                         <img src={settingsIcon} alt="설정"/>
                     </button>
                 </div>
@@ -142,9 +164,9 @@ export default function MapPage() {
                         }
                         firstValue = "visited"
                         secondValue = "wishlist"
-                        onToggle={(selectedOption) => {
-                            setMapType(selectedOption);
-                        }}
+                        onToggle={onToggle}
+                        isMap={true}
+                        isPremium={isPremium}
                     />
                 </div>
                 <div className={styles.btnBottomContainer}>
@@ -189,6 +211,12 @@ export default function MapPage() {
                         setSelectedColor={setSelectedColor}
                     />
                 </Modal>
+            )}
+            {showPremiumConfirmModal && (
+                <PremiumModal
+                    showPremiumModal={showPremiumConfirmModal}
+                    setShowPremiumModal={setShowPremiumConfirmModal}
+                />
             )}
         </>
     );

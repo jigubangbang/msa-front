@@ -30,8 +30,10 @@ export default function Feed() {
 
     return (
         <FeedTemplate>
-            <FeedFilter onSubmit={handleFilterSubmit} setFilter={setFilter} onReset={handleResetClick}/>
             <div className={styles.feedContainer}>
+                <div className={styles.filterContainer}>
+                    <FeedFilter onSubmit={handleFilterSubmit} setFilter={setFilter} onReset={handleResetClick}/>
+                </div>
                 <CommonFeed key={endpoint} endpoint={endpoint}/>
             </div>
         </FeedTemplate>
