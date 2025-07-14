@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import AppRouter from "./routes/AppRouter";
 import { ThemeContext } from "./utils/themeContext";
 import Header from "./components/main/Header";
+import Footer from "./components/main/Footer";
 import ChatModal from "./pages/Chat/ChatModal";
 import FeedDetail from "./components/feed/FeedDetail";
 import "./App.css";
@@ -21,7 +22,7 @@ function App() {
   const [isDark, setIsDark] = useState(false); // 다크모드
   const [isChatModal, setIsChatModal] = useState(false); // 채팅
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -33,7 +34,7 @@ function App() {
       navigate("/login", { replace: true });
     }
   }, [location, navigate]);
-  
+
   const openChatModal = () => setIsChatModal(true);
   const closeChatModal = () => setIsChatModal(false);
 
@@ -44,25 +45,21 @@ function App() {
       <div className="app-container">
         <Header onOpenChat={openChatModal} />
         <main className="main-container">
-        <ScrollToTop />
-        
-        <Routes location={state || location}>
-          <Route path="/*" element={<AppRouter />} />
-        </Routes>
+          <ScrollToTop />
 
-        
-        {state && (
-          <Routes>
-            <Route path="/feed/:feedId" element={<FeedDetail />} />
+          <Routes location={state || location}>
+            <Route path="/*" element={<AppRouter />} />
           </Routes>
-        )}
 
-        <ChatModal
-          isOpen={isChatModal}
-          onClose={closeChatModal}
-          chatId={1}
-        />
+          {state && (
+            <Routes>
+              <Route path="/feed/:feedId" element={<FeedDetail />} />
+            </Routes>
+          )}
+
+          <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />
         </main>
+        <Footer />
       </div>
     </ThemeContext.Provider>
   );
