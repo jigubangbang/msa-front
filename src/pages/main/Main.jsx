@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"; // 데이터를 가져오기 위해 useEffect를 import합니다.
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
