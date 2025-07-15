@@ -47,12 +47,10 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
   }, [isOpen, info, members, messages, nickname, senderId, chatId, updateChatRoom]);
 
   const handleMinimize = () => {
-    console.log("[ChatModal] 최소화");
     setIsMinimized(true);
   };
 
   const handleRestore = () => {
-    console.log("[ChatModal] 복원");
     setIsMinimized(false);
   };
 

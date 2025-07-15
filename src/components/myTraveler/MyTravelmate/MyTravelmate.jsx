@@ -154,34 +154,27 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
   // 채팅방 나가기
   const handleLeaveGroup = async (travelinfoId) => {
-    if (!isLogin) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
     try {
-      // 1. 먼저 채팅방 ID를 가져와야 함
+      // chatId 불러오기
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELINFO",
         groupId: travelinfoId
-      });
-      
+      });     
       const chatRoomId = response.data.chatRoomId;
       
       if (chatRoomId) {
-        // 2. 채팅방 나가기 실행 (확인 모달 포함)
+        // 모임 나가기
         const success = await leaveChatRoom(chatRoomId, {
           skipConfirmation: false, // 확인 모달 표시
           showAlert: (title, message) => alert(message),
           onSuccess: () => {
-            // 3. 성공시 joinedChats에서 제거
+            // 성공시 joinedChats에서 제거
             setJoinedChats(prev => {
               const newSet = new Set(prev);
               newSet.delete(travelinfoId);
               return newSet;
             });
-            
-            // 4. 멤버 수 감소
+            // 멤버 수 감소
             setTravelinfos(prev => prev.map(info => 
               info.id === travelinfoId 
                 ? { ...info, memberCount: info.memberCount - 1 }
