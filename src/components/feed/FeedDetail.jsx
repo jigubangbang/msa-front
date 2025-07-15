@@ -180,10 +180,22 @@ export default function FeedDetail() {
                         <div className={styles.imageSection}>
                             {(data && data.images.length > 0) && (
                                 <div className={styles.imageCarousel}>
-                                    <img
-                                        src={data.images[currentImageIndex].photoUrl}
-                                        className={styles.postImage}
-                                    />
+                                    <div 
+                                        className={styles.sliderTrack}
+                                        style={{transform: `translateX(-${currentImageIndex * 100}%)`, 
+                                        width: `${data.images.length * 100}%`}}
+                                    >
+                                        {data.images.map((img, index) => (
+                                            <div key={index} className={styles.imageSlide}>
+                                            <img
+                                                key={index}
+                                                src={img.photoUrl}
+                                                className={styles.postImage}
+                                                alt={`Image ${index}`}
+                                            />
+                                            </div>
+                                        ))}
+                                    </div>
                                     {data.images.length > 1 && (
                                         <>  
                                             {currentImageIndex > 0 && (

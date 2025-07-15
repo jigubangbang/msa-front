@@ -226,6 +226,10 @@ body {
   transition: opacity 0.2s ease;
 }
 
+.disabled {
+  cursor: auto;
+}
+
 .bio {
   white-space: pre-line;
   font-size: 0.9rem;

@@ -170,7 +170,7 @@ export default function ProfileSidebar() {
                         onMouseEnter={() => setShowModal(true)}
                         onClick={() => setShowModal(!showModal)}
                     >
-                        <button className={`${styles.travelStatus} ${statusClasses[travelStatus]}`}>
+                        <button className={`${styles.travelStatus} ${statusClasses[travelStatus]} ${(sessionUserId == userId) ? "" : styles.disabled}`}>
                             {travelStatus}
                         </button>
                         {sessionUserId === userId && showModal && (
@@ -225,8 +225,9 @@ export default function ProfileSidebar() {
 
                 <div className={styles.location}>
                     <button 
-                        className={styles.editButton}
+                        className={`${styles.editButton} ${(sessionUserId == userId) ? "" : styles.disabled}`}
                         onClick={() => setShowNationalityModal(true)}
+                        disabled={!(sessionUserId == userId)}
                     >
                         <img src={locationIcon} alt="국적 수정"/>
                     </button>
