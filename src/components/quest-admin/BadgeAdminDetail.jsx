@@ -225,7 +225,7 @@ const BadgeAdminDetail = ({ badgeId }) => {
                 onClick={(user)=>{handleUserClick(user)}}>
                 <div className={styles.userProfile}>
                   <img 
-                    src={user.profile_image || '/icons/common/user_profile.svg'} 
+                    src={user.profile_image || '/icons/common/default_profile.png'} 
                     alt={user.nickname}
                     className={styles.userAvatar}
                   />

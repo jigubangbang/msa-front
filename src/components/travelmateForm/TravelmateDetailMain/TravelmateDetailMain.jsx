@@ -329,7 +329,7 @@ useEffect(() => {
         <div className={styles.creatorInfo}>
           <div className={styles.profileImage}>
             <img 
-              src={isBlind ? '/icons/common/warning.png' : (detail.creatorProfileImage || '/icons/common/user_profile.svg')} 
+              src={isBlind ? '/icons/common/warning.png' : (detail.creatorProfileImage || '/icons/common/default_profile.png')} 
               alt="프로필"
             />
           </div>

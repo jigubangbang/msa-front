@@ -72,6 +72,12 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
           needLogin: true
         }
       ]
+    },
+    {
+      label: '관리자 페이지로 이동하기 →',
+      icon: '/icons/sidebar/admin.svg',
+      path: '/admin/users',
+      needLogin: true
     }
   ];
 

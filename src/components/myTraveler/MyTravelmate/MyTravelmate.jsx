@@ -170,10 +170,6 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   };
 
   const handleTravelmateRowClick = (travelmate) => {
-    if (travelmate.blindStatus === "BLINDED"){
-        alert("블라인드된 게시글입니다");
-        return;
-    }
     navigate(`/traveler/mate/${travelmate.id}`);
   };
 

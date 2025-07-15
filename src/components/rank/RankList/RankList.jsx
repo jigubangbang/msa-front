@@ -99,7 +99,7 @@ const RankingList = ({ myUserId }) => {
               <div className={styles.cell}>{rank}</div>
               <div className={styles.cell}>
                 <div className={styles.profileImage}>
-                  <img src={user.icon || user.profile_image || '/icons/common/user_profile.svg'} alt="profile" />
+                  <img src={user.icon || user.profile_image || '/icons/common/default_profile.png'} alt="profile" />
                 </div>
               </div>
               <div className={styles.cell}>

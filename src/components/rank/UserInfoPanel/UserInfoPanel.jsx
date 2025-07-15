@@ -16,7 +16,7 @@ const UserInfoPanel = ({
       <div className={styles.myInfo}>
         <div className={styles.myProfile}>
           <img 
-            src={user?.profile_image || "/icons/common/user_profile.svg"} 
+            src={user?.profile_image || "/icons/common/default_profile.png"} 
             alt="user_profile_image" 
             className={styles.profileImage}
           />
