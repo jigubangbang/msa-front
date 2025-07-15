@@ -8,6 +8,7 @@ import API_ENDPOINTS from "../../utils/constants";
 import defaultProfile from "../../assets/default_profile.png";
 import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
 import Modal from "../../components/common/Modal/Modal";
+import CirclesSpinner from "../../components/common/Spinner/CirclesSpinner";
 
 const mockPopularFeeds = [
     { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
@@ -122,7 +123,7 @@ export default function Main() {
     // - 각 팀원은 자신의 데이터가 어떤 UI 컴포넌트와 연결되는지 확인할 수 있습니다.
     // ==================================================================================
     
-    if (loading) return <div>로딩 중...</div>;
+    if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
 
     return (
