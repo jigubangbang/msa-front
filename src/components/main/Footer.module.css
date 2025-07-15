@@ -1,0 +1,24 @@
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px 0;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+}
+
+.footer p {
+  margin: 10px 0 10px 0;
+  font-size: 14px;
+}
+
+.footerLinks a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin: 0 10px;
+  font-size: 14px;
+}
+
+.footerLinks a:hover {
+  color: #0056b3;
+  cursor: pointer;
+}

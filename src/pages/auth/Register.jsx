@@ -15,6 +15,9 @@ import TelIcon from "../../assets/auth/tel.svg";
 import EmailIcon from "../../assets/auth/email.svg";
 import { Circles } from "react-loader-spinner";
 import debounce from "lodash.debounce";
+import requiredTerms from "../../assets/text/terms-required.txt?raw";
+import optionalTerms from "../../assets/text/terms-optional.txt?raw";
+import Modal from "../../components/common/Modal/Modal";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -32,25 +35,29 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [validationStatus, setValidationStatus] = useState({ userId: "neutral" });
+  const [fieldStatus, setFieldStatus] = useState({ userId: "idle" });
+  const [emailStatus, setEmailStatus] = useState("idle"); // 이메일 중복검사만
+  const [emailCodeStatus, setEmailCodeStatus] = useState("idle"); // 인증코드만
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
-  const [emailStatus, setEmailStatus] = useState("idle"); 
-  // 'idle' | 'format-error' | 'checking' | 'valid' | 'duplicate' | 'sending' | 'sent' | 'verified' | 'expired'
   const [emailCode, setEmailCode] = useState("");
   const [emailTimer, setEmailTimer] = useState(0);
   const [emailInterval, setEmailInterval] = useState(null);
+  const [emailVerifyError, setEmailVerifyError] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
-    const cleanedValue = value.replace(/\s/g, "");
+    const cleanedValue = e.target.value.replace(/\s/g, "");
 
     setForm((prev) => ({ ...prev, [name]: cleanedValue }));
 
     if (name === "userId") {
       if (cleanedValue === "") {
-        setValidationStatus((prev) => ({ ...prev, userId: "neutral" }));
+        setFieldStatus((prev) => ({ ...prev, userId: "idle" }));
         setErrors((prev) => ({ ...prev, userId: "" }));
       } else {
         validateUserId(cleanedValue);
@@ -58,11 +65,18 @@ const Register = () => {
     }
 
     if (name === "password") {
-      const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/;
+      if (cleanedValue === "") {
+        setErrors((prev) => ({ ...prev, password: "" }));
+        return;
+      }
+
+      const passwordPattern =
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*]).{8,20}$/;
       if (!passwordPattern.test(cleanedValue)) {
         setErrors((prev) => ({
           ...prev,
-          password: "비밀번호는 8~20자의 영문, 숫자, 특수문자를 모두 포함해야 합니다",
+          password:
+            "비밀번호는 8~20자의 영문, 숫자, 특수문자(~!@#$%^&*)를 모두 포함해야 합니다",
         }));
       } else {
         setErrors((prev) => ({ ...prev, password: "" }));
@@ -79,6 +93,10 @@ const Register = () => {
     }
 
     if (name === "confirmPassword") {
+      if (cleanedValue === "") {
+        setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+        return;
+      }
       if (cleanedValue !== form.password) {
         setErrors((prev) => ({
           ...prev,
@@ -90,6 +108,10 @@ const Register = () => {
     }
 
     if (name === "name") {
+      if (cleanedValue === "") {
+        setErrors((prev) => ({ ...prev, name: "" }));
+        return;
+      }
       const namePattern = /^[가-힣]{2,6}$/;
       if (!namePattern.test(cleanedValue)) {
         setErrors((prev) => ({
@@ -102,6 +124,10 @@ const Register = () => {
     }
 
     if (name === "nickname") {
+      if (cleanedValue === "") {
+        setErrors((prev) => ({ ...prev, nickname: "" }));
+        return;
+      }
       const nicknamePattern = /^[가-힣a-zA-Z0-9]{1,10}$/;
       if (!nicknamePattern.test(cleanedValue)) {
         setErrors((prev) => ({
@@ -114,7 +140,12 @@ const Register = () => {
     }
 
     if (name === "tel") {
-      const onlyDigits = value.replace(/\D/g, ""); 
+      if (cleanedValue === "") {
+        setForm((prev) => ({ ...prev, tel: "" }));
+        setErrors((prev) => ({ ...prev, tel: "" }));
+        return;
+      }
+      const onlyDigits = value.replace(/\D/g, "");
 
       let formatted = onlyDigits;
       if (onlyDigits.length <= 3) {
@@ -122,7 +153,10 @@ const Register = () => {
       } else if (onlyDigits.length <= 7) {
         formatted = `${onlyDigits.slice(0, 3)}-${onlyDigits.slice(3)}`;
       } else {
-        formatted = `${onlyDigits.slice(0, 3)}-${onlyDigits.slice(3, 7)}-${onlyDigits.slice(7, 11)}`;
+        formatted = `${onlyDigits.slice(0, 3)}-${onlyDigits.slice(
+          3,
+          7
+        )}-${onlyDigits.slice(7, 11)}`;
       }
 
       setForm((prev) => ({ ...prev, [name]: formatted }));
@@ -139,8 +173,11 @@ const Register = () => {
     }
 
     if (name === "email") {
-      const cleanedValue = value.replace(/\s/g, "");
-      setForm((prev) => ({ ...prev, [name]: cleanedValue }));
+      if (cleanedValue === "") {
+        setEmailStatus("idle");
+        setErrors((prev) => ({ ...prev, email: "" }));
+        return;
+      }
 
       setEmailStatus("checking");
       setErrors((prev) => ({ ...prev, email: "" }));
@@ -157,15 +194,12 @@ const Register = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      emailStatus === "verified" ||
-      emailStatus === "sent" ||
-      emailStatus === "expired"
-    ) {
-      setEmailStatus("idle");
-      setEmailCode("");
-      clearInterval(emailInterval);
-    }
+    // 이메일이 변경되면 무조건 초기화
+    clearInterval(emailInterval);
+    setEmailStatus("idle");
+    setEmailCodeStatus("idle");
+    setEmailCode("");
+    setEmailTimer(0);
   }, [form.email]);
 
   const validateUserId = async (value) => {
@@ -175,11 +209,11 @@ const Register = () => {
         ...prev,
         userId: "아이디는 6~12자의 영문, 숫자만 입력 가능합니다",
       }));
-      setValidationStatus((prev) => ({ ...prev, userId: "invalid" }));
+      setFieldStatus((prev) => ({ ...prev, userId: "invalid" }));
       return;
     }
 
-    setValidationStatus((prev) => ({ ...prev, userId: "checking" }));
+    setFieldStatus((prev) => ({ ...prev, userId: "checking" }));
     setErrors((prev) => ({ ...prev, userId: "" }));
 
     try {
@@ -191,9 +225,9 @@ const Register = () => {
           ...prev,
           userId: "이미 사용 중인 아이디입니다",
         }));
-        setValidationStatus((prev) => ({ ...prev, userId: "invalid" }));
+        setFieldStatus((prev) => ({ ...prev, userId: "invalid" }));
       } else {
-        setValidationStatus((prev) => ({ ...prev, userId: "valid" }));
+        setFieldStatus((prev) => ({ ...prev, userId: "valid" }));
       }
     } catch (err) {
       console.error("중복 검사 오류:", err);
@@ -201,7 +235,7 @@ const Register = () => {
         ...prev,
         userId: "중복 검사 중 오류가 발생했습니다",
       }));
-      setValidationStatus((prev) => ({ ...prev, userId: "invalid" }));
+      setFieldStatus((prev) => ({ ...prev, userId: "invalid" }));
     }
   };
 
@@ -210,8 +244,16 @@ const Register = () => {
     const isValidFormat = emailRegex.test(email);
 
     if (!isValidFormat) {
-      setEmailStatus("format-error");
-      setErrors((prev) => ({ ...prev, email: "올바른 이메일 형식으로 입력해 주세요" }));
+      if (email === "") {
+        setEmailStatus("idle");
+        setErrors((prev) => ({ ...prev, email: "" }));
+      } else {
+        setEmailStatus("invalid");
+        setErrors((prev) => ({
+          ...prev,
+          email: "올바른 이메일 형식으로 입력해 주세요",
+        }));
+      }
       return;
     }
 
@@ -223,35 +265,43 @@ const Register = () => {
       const isDuplicate = res.data;
 
       if (isDuplicate) {
-        setEmailStatus("duplicate");
-        setErrors((prev) => ({ ...prev, email: "이미 사용 중인 이메일입니다" }));
+        setEmailStatus("invalid");
+        setErrors((prev) => ({
+          ...prev,
+          email: "이미 사용 중인 이메일입니다",
+        }));
       } else {
         setEmailStatus("valid");
         setErrors((prev) => ({ ...prev, email: "" }));
       }
     } catch (err) {
-      setEmailStatus("format-error");
-      setErrors((prev) => ({ ...prev, email: "중복 검사 중 오류가 발생했습니다" }));
-    }
-
-    if (emailStatus === "verified") {
-      setEmailStatus("valid");
+      setEmailStatus("invalid");
+      setErrors((prev) => ({
+        ...prev,
+        email: "중복 검사 중 오류가 발생했습니다",
+      }));
     }
   };
 
-  const debouncedCheckEmail = useMemo(() => debounce(checkEmailDuplicate, 200), []);
+  const debouncedCheckEmail = useMemo(
+    () => debounce(checkEmailDuplicate, 400),
+    []
+  );
 
   const sendVerificationCode = async () => {
-    setEmailStatus("sending");
+    setEmailVerifyError("");
+    setEmailCodeStatus("sending");
     try {
-      await axios.post(`${API_ENDPOINTS.AUTH}/email/send`, { email: form.email });
-      setEmailStatus("sent");
+      await axios.post(`${API_ENDPOINTS.AUTH}/email/send`, {
+        email: form.email,
+      });
+      setEmailCodeStatus("sent");
       setEmailTimer(180); // 3분 타이머
       const interval = setInterval(() => {
         setEmailTimer((prev) => {
           if (prev <= 1) {
             clearInterval(interval);
-            setEmailStatus("expired");
+            setEmailCodeStatus("expired");
             return 0;
           }
           return prev - 1;
@@ -259,8 +309,9 @@ const Register = () => {
       }, 1000);
       setEmailInterval(interval);
     } catch {
-      setEmailStatus("valid");
-      alert("인증코드 전송에 실패했습니다.");
+      setEmailCodeStatus("idle");
+      setMessage("인증코드 전송에 실패했습니다. 다시 시도해주세요.");
+      setMessageType("error");
     }
   };
 
@@ -270,29 +321,135 @@ const Register = () => {
         email: form.email,
         code: emailCode,
       });
+
       if (res.status === 200) {
-        setEmailStatus("verified");
+        setEmailCodeStatus("verified");
+        setEmailVerifyError("");
         clearInterval(emailInterval);
       } else {
-        alert("인증코드가 올바르지 않습니다.");
+        setEmailCodeStatus("error");
+        setEmailCode("");
+        setEmailVerifyError("인증코드가 올바르지 않습니다");
       }
     } catch {
-      alert("인증코드 확인에 실패했습니다.");
+      setEmailCodeStatus("error");
+      setEmailCode("");
+      setEmailVerifyError(
+        "인증코드가 올바르지 않거나 만료되었습니다. 다시 시도해 주세요."
+      );
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setMessageType("");
+
+    // 1. 필수 입력값 누락
+    const requiredFields = [
+      "userId",
+      "password",
+      "confirmPassword",
+      "name",
+      "nickname",
+      "tel",
+      "email",
+    ];
+    const missing = requiredFields.filter((key) => !form[key].trim());
+    if (missing.length > 0) {
+      setMessage("모든 항목을 입력해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 2. 유효성 검사 실패 항목 존재
+    const hasError = Object.values(errors).some((err) => err);
+    if (hasError) {
+      setMessage("조건에 맞게 입력해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 3. 이메일 인증 확인
+    if (emailCodeStatus !== "verified") {
+      setMessage("이메일 인증을 완료해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 4. 필수 약관 동의 여부
+    if (!form.agreedRequired) {
+      setMessage("필수 약관에 동의해 주세요");
+      setMessageType("error");
+      return;
+    }
+
+    // 5. 회원가입 요청
+    try {
+      await axios.post(`${API_ENDPOINTS.AUTH}/register`, form);
+      setShowSuccessModal(true);
+    } catch (err) {
+      console.error("회원가입 실패:", err);
+      setMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
+      setMessageType("error");
+    }
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    navigate("/login");
   };
 
   return (
     <div className={styles.registerPage}>
       <div className={styles.registerContainer}>
         <div className={styles.registerHeader}>
-          <div className={styles.logo}>Join JIGUBB and Share your Journey!</div>
+          <div className={styles.logo}>지구방방 회원가입</div>
         </div>
 
-        <form className={styles.registerForm}>
+        <form className={styles.registerForm} onSubmit={handleSubmit}>
           <div className={styles.formContent}>
             {/* 왼쪽 */}
             <div className={styles.leftColumn}>
-              {/* 약관 필수/선택 항목 이후 추가 */}
+              {/* 필수 약관 */}
+              <div className={styles.termsBox}>
+                <div className={styles.termsTitle}>이용약관 (필수)</div>
+                <div className={styles.termsContent}>{requiredTerms}</div>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    name="agreedRequired"
+                    checked={form.agreedRequired}
+                    onChange={(e) => {
+                      setForm((prev) => ({
+                        ...prev,
+                        agreedRequired: e.target.checked,
+                      }));
+                      setMessage("");
+                    }}
+                  />
+                  동의합니다
+                </label>
+              </div>
+              {/* 선택 약관 */}
+              <div className={styles.termsBox}>
+                <div className={styles.termsTitle}>이용약관 (선택)</div>
+                <div className={styles.termsContent}>{optionalTerms}</div>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    name="agreedOptional"
+                    checked={form.agreedOptional}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        agreedOptional: e.target.checked,
+                      }))
+                    }
+                  />
+                  동의합니다
+                </label>
+              </div>
             </div>
 
             {/* 오른쪽 */}
@@ -304,7 +461,10 @@ const Register = () => {
                   <input
                     type="text"
                     name="userId"
-                    onFocus={() => setFocusedField("userId")}
+                    onFocus={() => {
+                      setFocusedField("userId");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     placeholder="아이디를 입력해 주세요"
                     value={form.userId}
@@ -315,35 +475,54 @@ const Register = () => {
                         ? ""
                         : errors.userId
                         ? styles.inputError
-                        : validationStatus.userId === "valid"
+                        : fieldStatus.userId === "valid"
                         ? styles.inputValid
                         : ""
                     }`}
                   />
-                  {form.userId && validationStatus.userId === "valid" && (
-                    <img src={CheckIcon} alt="사용 가능" className={styles.statusIcon} />
+                  {form.userId && fieldStatus.userId === "valid" && (
+                    <img
+                      src={CheckIcon}
+                      alt="사용 가능"
+                      className={styles.statusIcon}
+                    />
                   )}
-                  {form.userId && validationStatus.userId === "invalid" && (
-                    <img src={CancelIcon} alt="사용 불가" className={styles.statusIcon} />
+                  {form.userId && fieldStatus.userId === "invalid" && (
+                    <img
+                      src={CancelIcon}
+                      alt="사용 불가"
+                      className={styles.statusIcon}
+                    />
                   )}
                 </div>
                 {focusedField === "userId" && errors.userId && (
                   <div className={styles.errorText}>{errors.userId}</div>
                 )}
-                {focusedField === "userId" && validationStatus.userId === "valid" && !errors.userId && (
-                  <div className={styles.successText}>사용 가능한 아이디입니다</div>
-                )}
+                {focusedField === "userId" &&
+                  fieldStatus.userId === "valid" &&
+                  !errors.userId && (
+                    <div className={styles.successText}>
+                      사용 가능한 아이디입니다
+                    </div>
+                  )}
               </div>
-              
+
               {/* 비밀번호 */}
               <div className={styles.formGroup}>
                 <div className={styles.inputWrapper}>
-                  <img src={PasswordIcon} alt="비밀번호" className={styles.inputIcon} />
+                  <img
+                    src={PasswordIcon}
+                    alt="비밀번호"
+                    className={styles.inputIcon}
+                  />
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    onFocus={() => setFocusedField("password")}
-                    onBlur={() => setFocusedField(null)}    
+                    onFocus={() => {
+                      setFocusedField("password");
+                      setMessage("");
+                    }}
+                    onBlur={() => setFocusedField(null)}
                     placeholder="비밀번호를 입력해 주세요"
                     value={form.password}
                     onChange={handleChange}
@@ -363,19 +542,28 @@ const Register = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 </div>
-                {focusedField === "password" && errors.password && (
-                  <div className={styles.errorText}>{errors.password}</div>
-                )}
+                {focusedField === "password" &&
+                  errors.password &&
+                  form.password && (
+                    <div className={styles.errorText}>{errors.password}</div>
+                  )}
               </div>
 
               {/* 비밀번호 확인 */}
               <div className={styles.formGroup}>
                 <div className={styles.inputWrapper}>
-                  <img src={PasswordIcon} alt="비밀번호 확인" className={styles.inputIcon} />
+                  <img
+                    src={PasswordIcon}
+                    alt="비밀번호 확인"
+                    className={styles.inputIcon}
+                  />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
-                    onFocus={() => setFocusedField("confirmPassword")}
+                    onFocus={() => {
+                      setFocusedField("confirmPassword");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     placeholder="비밀번호를 확인해 주세요"
                     value={form.confirmPassword}
@@ -396,9 +584,13 @@ const Register = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   />
                 </div>
-                {focusedField === "confirmPassword" && errors.confirmPassword && (
-                  <div className={styles.errorText}>{errors.confirmPassword}</div>
-                )}
+                {focusedField === "confirmPassword" &&
+                  errors.confirmPassword &&
+                  form.confirmPassword && (
+                    <div className={styles.errorText}>
+                      {errors.confirmPassword}
+                    </div>
+                  )}
               </div>
 
               {/* 이름 */}
@@ -411,7 +603,10 @@ const Register = () => {
                     placeholder="이름을 입력해 주세요"
                     value={form.name}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("name")}
+                    onFocus={() => {
+                      setFocusedField("name");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     onKeyDown={(e) => e.key === " " && e.preventDefault()}
                     className={`${styles.formInput} ${
@@ -423,7 +618,7 @@ const Register = () => {
                     }`}
                   />
                 </div>
-                {focusedField === "name" && errors.name && (
+                {focusedField === "name" && errors.name && form.name && (
                   <div className={styles.errorText}>{errors.name}</div>
                 )}
               </div>
@@ -431,14 +626,21 @@ const Register = () => {
               {/* 닉네임 */}
               <div className={styles.formGroup}>
                 <div className={styles.inputWrapper}>
-                  <img src={NicknameIcon} alt="닉네임" className={styles.inputIcon} />
+                  <img
+                    src={NicknameIcon}
+                    alt="닉네임"
+                    className={styles.inputIcon}
+                  />
                   <input
                     type="text"
                     name="nickname"
                     placeholder="닉네임을 입력해 주세요"
                     value={form.nickname}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("nickname")}
+                    onFocus={() => {
+                      setFocusedField("nickname");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     onKeyDown={(e) => e.key === " " && e.preventDefault()}
                     className={`${styles.formInput} ${
@@ -450,22 +652,31 @@ const Register = () => {
                     }`}
                   />
                 </div>
-                {focusedField === "nickname" && errors.nickname && (
-                  <div className={styles.errorText}>{errors.nickname}</div>
-                )}
+                {focusedField === "nickname" &&
+                  errors.nickname &&
+                  form.nickname && (
+                    <div className={styles.errorText}>{errors.nickname}</div>
+                  )}
               </div>
 
               {/* 전화번호 */}
               <div className={styles.formGroup}>
                 <div className={styles.inputWrapper}>
-                  <img src={TelIcon} alt="전화번호" className={styles.inputIcon} />
+                  <img
+                    src={TelIcon}
+                    alt="전화번호"
+                    className={styles.inputIcon}
+                  />
                   <input
                     type="text"
                     name="tel"
                     placeholder="전화번호를 입력해 주세요"
                     value={form.tel}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("tel")}
+                    onFocus={() => {
+                      setFocusedField("tel");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     onKeyDown={(e) => e.key === " " && e.preventDefault()}
                     className={`${styles.formInput} ${
@@ -485,36 +696,51 @@ const Register = () => {
               {/* 이메일 */}
               <div className={styles.formGroup}>
                 <div className={styles.inputWrapper}>
-                  <img src={EmailIcon} alt="이메일" className={styles.inputIcon} />
+                  <img
+                    src={EmailIcon}
+                    alt="이메일"
+                    className={styles.inputIcon}
+                  />
                   <input
                     type="text"
                     name="email"
                     placeholder="이메일을 입력해 주세요"
                     value={form.email}
                     onChange={handleChange}
-                    onFocus={() => setFocusedField("email")}
+                    onFocus={() => {
+                      setFocusedField("email");
+                      setMessage("");
+                    }}
                     onBlur={() => setFocusedField(null)}
                     className={`${styles.formInput} ${
                       form.email === ""
                         ? ""
                         : errors.email
                         ? styles.inputError
-                        : emailStatus === "valid" || emailStatus === "verified"
+                        : emailStatus === "valid"
                         ? styles.inputValid
                         : ""
                     }`}
                   />
-                  {emailStatus === "valid" || emailStatus === "verified" ? (
-                    <img src={CheckIcon} alt="사용 가능" className={styles.statusIcon} />
-                  ) : emailStatus === "duplicate" || emailStatus === "format-error" ? (
-                    <img src={CancelIcon} alt="사용 불가" className={styles.statusIcon} />
+                  {emailStatus === "valid" ? (
+                    <img
+                      src={CheckIcon}
+                      alt="사용 가능"
+                      className={styles.statusIcon}
+                    />
+                  ) : emailStatus === "invalid" ? (
+                    <img
+                      src={CancelIcon}
+                      alt="사용 불가"
+                      className={styles.statusIcon}
+                    />
                   ) : null}
                 </div>
-                {focusedField === "email" && errors.email && (
+                {focusedField === "email" && errors.email && form.email && (
                   <div className={styles.errorText}>{errors.email}</div>
                 )}
               </div>
-              
+
               {/* 이메일 인증코드 */}
               <div className={styles.formGroup}>
                 <div className={styles.emailCodeWrapper}>
@@ -524,52 +750,102 @@ const Register = () => {
                     placeholder="인증코드를 입력해 주세요"
                     value={emailCode}
                     onChange={(e) => setEmailCode(e.target.value.trim())}
-                    disabled={emailStatus !== "valid" && emailStatus !== "sent" && emailStatus !== "expired"}
-                    className={styles.emailCodeInput}
+                    onFocus={() => setMessage("")}
+                    disabled={emailCodeStatus !== "sent"}
+                    className={`${styles.emailCodeInput} ${
+                      emailCode === ""
+                        ? ""
+                        : emailCodeStatus === "verified"
+                        ? styles.inputValid
+                        : emailCodeStatus === "error" ||
+                          emailCodeStatus === "expired"
+                        ? styles.inputError
+                        : ""
+                    }`}
                   />
                   <button
                     type="button"
-                    disabled={emailStatus !== "valid" && emailStatus !== "sent" && emailStatus !== "expired"}
-                    onClick={
-                      emailStatus === "sent" || emailStatus === "expired"
-                        ? verifyCode
-                        : sendVerificationCode
+                    disabled={
+                      !(
+                        emailStatus === "valid" ||
+                        ["sent", "expired", "error"].includes(emailCodeStatus)
+                      ) || emailCodeStatus === "verified"
                     }
-                    className={styles.verifyButton}
+                    onClick={() => {
+                      setMessage("");
+                      if (emailCodeStatus === "sent") {
+                        verifyCode();
+                      } else {
+                        sendVerificationCode();
+                      }
+                    }}
+                    className={`${styles.verifyButton} ${
+                      emailCodeStatus === "verified" ? styles.buttonValid : ""
+                    }`}
                   >
-                    {emailStatus === "sending" ? (
+                    {emailCodeStatus === "sending" ? (
                       <Circles height="20" width="20" color="#888" />
-                    ) : emailStatus === "sent" ? (
-                      emailTimer > 0 ? `전송됨 (${emailTimer}s)` : "만료됨"
-                    ) : emailStatus === "verified" ? (
+                    ) : emailCodeStatus === "verified" ? (
                       "인증 완료"
+                    ) : emailCodeStatus === "sent" ? (
+                      emailCode ? (
+                        `인증 (${emailTimer}s)`
+                      ) : (
+                        `전송됨 (${emailTimer}s)`
+                      )
+                    ) : emailCodeStatus === "expired" ||
+                      emailCodeStatus === "error" ? (
+                      "재전송"
                     ) : (
                       "전송"
                     )}
                   </button>
                 </div>
-
-                {emailStatus === "expired" && (
+                {(emailVerifyError ||
+                  emailCodeStatus === "expired" ||
+                  emailCodeStatus === "error") && (
                   <div className={styles.errorText}>
-                    유효하지 않거나 만료된 인증코드입니다. 다시 시도해주세요.
+                    {emailVerifyError ||
+                      "인증코드가 올바르지 않거나 만료되었습니다. 다시 시도해주세요."}
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className={styles.loginLink}>
-            이미 계정이 있으신가요?{" "}
-            <button
-              type="button"
-              className={styles.linkButton}
-              onClick={() => navigate("/login")}
-            >
-              로그인
-            </button>
+          <div className={styles.buttonRow}>
+            <div className={styles.loginLink}>
+              이미 계정이 있으신가요?{" "}
+              <a href="/login" className={styles.linkAnchor}>
+                로그인
+              </a>
+            </div>
+            <div className={styles.rightSide}>
+              {message && messageType === "error" && (
+                <div className={styles.registerErrorMessage}>
+                  <span className={styles.errorIcon}>!</span>
+                  {message}
+                </div>
+              )}
+              <button type="submit" className={styles.submitButton}>
+                회원가입
+              </button>
+            </div>
           </div>
         </form>
       </div>
+      {/* 회원가입 성공 모달 */}
+      <Modal
+        show={showSuccessModal}
+        onClose={handleSuccessConfirm}
+        onSubmit={handleSuccessConfirm}
+        heading="회원가입 완료"
+        firstLabel="확인"
+        secondLabel={null}
+      >
+        지구방방에 오신 걸 환영합니다!
+        <br />
+      </Modal>
     </div>
   );
 };

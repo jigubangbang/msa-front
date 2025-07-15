@@ -1,0 +1,98 @@
+.outerContainer {
+    padding: 50px;
+}
+
+.headerWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.menuBtn {
+    background: #f7f7f7;
+    color: black;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.menuBtn:hover {
+    background: #e6e6e6;
+}
+
+.active {
+    background: #000;
+    color: #fff;
+}
+
+.menuBtn a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.contentWrapper {
+    max-width: 800px;
+    margin: 0rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.sectionHeader {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.summary {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.description, .keywords, .info {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+
+.image {
+    display: block;
+    max-height: 300px;
+    width: auto;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    margin: 1rem auto;
+}
+
+.compatibleStyleContainer {
+    background: #fafafa;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #eee;
+}
+
+.partnerLabel {
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 0.3rem;
+}

@@ -1,0 +1,28 @@
+/* src/styles/Chat/ChatReportTab.css */
+.chat-report-tab {
+  position: absolute;
+  top: 0; /* 점 아이콘 기준으로 정렬됨 */
+  right: 20px; /* 아이콘 바로 오른쪽에 나오게 조정 */
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+  border-radius: 6px;
+  z-index: 10;
+  padding: 4px 0;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+}
+.report-option {
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s;
+}
+.report-option:hover {
+  background-color: #f2f2f2;
+}

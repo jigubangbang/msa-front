@@ -1,0 +1,329 @@
+.container {
+  padding: 20px;
+  width: 1100px;
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.dropdownContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  width: fix-content;
+}
+
+.applicantUser{
+  display: flex;
+  gap: 10px;
+
+}
+
+.bin{
+  cursor: pointer;
+}
+
+
+
+.chatButton{
+  width: 100%;
+}
+
+.header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.travelList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.travelCard {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.travelCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.travelHeader {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.thumbnail {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.travelInfo {
+  flex: 1;
+}
+
+.travelTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.travelDescription {
+  color: #666;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.travelMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.locations, .themes {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.themes {
+  color: #7c4dff;
+}
+
+/* 동행 신청 관련 스타일 */
+.applicationsSection {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.applicationsHeader {
+  margin-bottom: 12px;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2196f3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+}
+
+.toggleButton:hover {
+  color: #1976d2;
+}
+
+.toggleButton span {
+  transition: transform 0.2s ease;
+}
+
+.toggleButton span.expanded {
+  transform: rotate(180deg);
+}
+
+.applicationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.applicationCard {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.applicationInfo {
+  flex: 1;
+}
+
+.applicantInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.nickname {
+  font-weight: 600;
+  color: #333;
+}
+
+.userId {
+  color: #666;
+  font-size: 14px;
+}
+
+.applicationComment {
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  border-left: 3px solid #2196f3;
+}
+
+.applicationDate {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+  align-items: center;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actionButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actionButton.accept {
+  background-color: #4caf50;
+  color: white;
+}
+
+.actionButton.accept:hover {
+  background-color: #45a049;
+}
+
+.actionButton.reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.actionButton.reject:hover {
+  background-color: #da190b;
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusBadge span {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.accepted {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.rejected {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.pending {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+/* 내 신청 상태 */
+.myApplicationStatus {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 12px;
+}
+
+.appliedDate {
+  font-size: 12px;
+  color: #888;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .travelHeader {
+    flex-direction: column;
+  }
+  
+  .thumbnail {
+    width: 100%;
+    height: 160px;
+  }
+  
+  .travelMeta {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .applicationCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .actionButtons {
+    justify-content: flex-end;
+  }
+}

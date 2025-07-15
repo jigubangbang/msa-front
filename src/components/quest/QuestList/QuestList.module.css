@@ -1,0 +1,365 @@
+@font-face{
+font-family:'DNFBitBitv2';
+font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.questList {
+  width: 100%;
+  font-family: Pretendard, sans-serif;
+  padding: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.title {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: left;
+  color: #000;
+  margin-left: 10px;
+}
+
+/* 필터 */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.filterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.filterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+/* 퀘스트 그리드 */
+.questGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 200px;
+}
+
+/* 퀘스트 카드 */
+.questCard {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.questCard:hover {
+  transform: translateY(-4px);
+  border-color: #dee2e6;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.starDecoration {
+  display: flex;
+  justify-content: flex-start;
+  gap: 2px;
+  margin-bottom: 5px;
+}
+
+.star {
+  color: #ddd;
+  font-size: 14px;
+}
+
+.questIcon {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.questIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.questTitle {
+  font-family: 'DNFBitBitv2', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  padding-right: 70px;
+}
+
+.questMeta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 400; 
+  color: #495057;
+}
+
+.value {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #495057;
+}
+
+.questContent{
+  display:flex;
+  justify-content: space-between;
+}
+
+.questStats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.statText {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+  text-align: left;
+}
+
+.questButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+}
+
+.joinButton, 
+.joiningButton, 
+.endButton {
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.endButton {
+  background: #cccccc;
+  color: #8a8a8a;
+}
+
+.joinButton:hover, 
+.joiningButton:hover{
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.endButton:hover{
+  background: #aaaaaa;
+  transform: translateY(-1px);
+}
+
+.joinButton:active, 
+.joiningButton:active, 
+.endButton:active {
+  transform: translateY(0);
+}
+
+.inactiveButton {
+  padding: 10px 20px;
+  background: #e9ecef;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  outline: none;
+  opacity: 0.7;
+}
+
+.inactiveButton:hover {
+  background: #e9ecef;
+  color: #6c757d;
+  transform: none;
+}
+
+.inactiveButton:active {
+  transform: none;
+}
+
+.buttonIcon{
+  width: 10px;
+  height: 10px;
+  filter: brightness(0) invert(1); 
+  margin-right: 6px; 
+}
+
+.buttonEndIcon{
+  width: 10px;
+  height: 10px;
+  margin-right: 6px; 
+}
+
+/* 로딩  */
+.loading,
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+  grid-column: 1 / -1;
+}
+
+.emptyState {
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #e0e0e0;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+/* Carousel Controls  */
+.carouselControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.navBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #000;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: #fafafa;
+  border-color: #000;
+  transform: translateY(-1px);
+}
+
+.navBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.navBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+.pageIndicators {
+  display: flex;
+  gap: 8px;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #ccc;
+}
+
+.indicator.active {
+  background: #000;
+  border-color: #000;
+}
+
+.indicator:hover {
+  background: #666;
+  border-color: #666;
+}

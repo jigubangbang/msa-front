@@ -1,0 +1,193 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  width: 100%;
+  margin: 10px 0;
+  font-family: Pretendard, sans-serif;
+}
+
+.boardSection {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+}
+
+.boardHeader {
+  background: #f8f9fa;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.boardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.boardTitle:hover {
+  color: #007bff;
+}
+
+.postList {
+  padding: 0;
+}
+
+.postItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f3f5;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.postItem:hover {
+  background-color: #f8f9fa;
+}
+
+.postItem:last-child {
+  border-bottom: none;
+}
+
+.postNumber {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  margin-right: 12px;
+  min-width: 20px;
+  flex-shrink: 0;
+}
+
+.postContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.postTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.postMeta {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #666;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.author {
+  font-weight: 500;
+  color: #495057;
+}
+
+.date {
+  color: #868e96;
+}
+
+.separator {
+  color: #dee2e6;
+  margin: 0 4px;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+
+.statItem span {
+  font-size: 13px;
+  color: #868e96;
+}
+
+/* 로딩 상태 */
+.loadingContainer {
+  padding: 60px 20px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+  font-size: 16px;
+}
+
+/* 빈 상태 */
+.emptyState {
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  background: #f8f9fa;
+}
+
+.emptyState p {
+  margin: 0;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .boardSection {
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 20px 0;
+    gap: 16px;
+  }
+  
+  .postItem {
+    padding: 12px 16px;
+  }
+  
+  .postTitle {
+    font-size: 15px;
+  }
+  
+  .postMeta {
+    font-size: 12px;
+  }
+  
+  .boardTitle {
+    font-size: 16px;
+  }
+  
+  .boardHeader {
+    padding: 12px 16px;
+  }
+}
