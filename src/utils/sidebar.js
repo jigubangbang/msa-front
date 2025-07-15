@@ -46,8 +46,8 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
 
   const adminMenus = [
     {
-      label: '관리자 메뉴',
-      icon: '/icons/sidebar/admin.svg',
+      label: '퀘스트/뱃지 관리',
+      icon: '/icons/sidebar/quest_manage.svg',
       path: '/quest-admin/quest',
       needLogin: true,
       submenus: [
@@ -72,6 +72,12 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
           needLogin: true
         }
       ]
+    },
+    {
+      label: '관리자 메뉴로',
+      icon: '/icons/sidebar/back_admin.svg',
+      path: '/admin/users',
+      needLogin: true
     }
   ];
 
@@ -220,7 +226,7 @@ export const ADMIN_SIDEBAR = [
   },
   {
     label: '퀘스트/뱃지 관리',
-    icon: '/icons/sidebar/quest.svg',
+    icon: '/icons/sidebar/quest_manage.svg',
     path: '/quest-admin/quest'
   },
   {
@@ -229,7 +235,7 @@ export const ADMIN_SIDEBAR = [
     path: '/admin/reports'
   },
   {
-    label: '1:1 문의',
+    label: '1:1 문의 내역',
     icon: '/icons/sidebar/inquiry.svg',
     path: '/admin/inquiries'
   }

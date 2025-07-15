@@ -89,7 +89,7 @@ export default function Reply({comment, feedId, sessionUserId, onReplyDelete}) {
                 <div style={{ position: "relative" }}>
                     <button
                         className={`${styles.iconButton} ${styles.menuButton}`}
-                        onClick={() => setShowMenu(true)}
+                        onClick={() => setShowMenu(prev => !prev)}
                     >
                         <img src={menuIcon} alt="메뉴" className={styles.icon} />
                     </button>

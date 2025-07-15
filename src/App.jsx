@@ -68,12 +68,6 @@ function App() {
               <Route path="/*" element={<AppRouter />} />
             </Routes>
 
-            {state && (
-              <Routes>
-                <Route path="/feed/:feedId" element={<FeedDetail />} />
-              </Routes>
-            )}
-
             {isChatModal && ( 
               <ChatModal 
                 isOpen={isChatModal} 

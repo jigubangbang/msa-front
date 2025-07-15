@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"; // 데이터를 가져오기 위해 useEffect를 import합니다.
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import Vote from '../../components/community/Vote';
@@ -7,6 +7,8 @@ import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import defaultProfile from "../../assets/default_profile.png";
 import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
+import Modal from "../../components/common/Modal/Modal";
+import CirclesSpinner from "../../components/common/Spinner/CirclesSpinner";
 
 const mockPopularFeeds = [
     { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
@@ -17,9 +19,11 @@ const mockPopularFeeds = [
 
 export default function Main() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null);
     const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     
     const [feeds, setFeeds] = useState(mockPopularFeeds);
     const [quests, setQuests] = useState([]);
@@ -43,6 +47,13 @@ export default function Main() {
             setUserId(storedUserId);
         }
     }, []);
+
+    useEffect(() => {
+        if (location.state?.showIncompleteProfileModal) {
+            setShowProfileModal(true);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location]);
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -97,13 +108,22 @@ export default function Main() {
         navigate("/login");
     }
 
+    const handleProfileModalConfirm = () => {
+        setShowProfileModal(false);
+        navigate("/user/manage");
+    };
+
+    const handleProfileModalClose = () => {
+        setShowProfileModal(false);
+    };
+
     // ==================================================================================
     // UI 렌더링 (Rendering)
     // - 위에서 정의한 state(feeds, quests, posts 등)를 사용하여 화면을 그립니다.
     // - 각 팀원은 자신의 데이터가 어떤 UI 컴포넌트와 연결되는지 확인할 수 있습니다.
     // ==================================================================================
     
-    if (loading) return <div>로딩 중...</div>;
+    if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
 
     return (
@@ -245,6 +265,19 @@ export default function Main() {
                     onClose={() => setShowLoginConfirmModal(false)}
                     onConfirm={handleLoginClick}
                 />
+            )}
+
+            {showProfileModal && (
+                <Modal
+                    show={showProfileModal}
+                    onClose={handleProfileModalClose}
+                    onSubmit={handleProfileModalConfirm}
+                    heading="추가 정보 입력"
+                    firstLabel="확인"
+                    secondLabel="나중에"
+                >
+                    원활한 서비스 이용을 위해 추가 정보를 입력해 주세요.
+                </Modal>
             )}
         </div>
     );

@@ -213,7 +213,7 @@ export default function InquiryManage() {
     <div className={styles.section}>
       {/* 헤더 */}
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>1:1 문의 관리</h2>
+        <h2 className={styles.sectionTitle}>1:1 문의 내역</h2>
       </div>
 
       {/* 검색 및 필터 영역 */}

@@ -35,27 +35,29 @@ export default function Header({onOpenChat}) {
   return (
     <div className={styles.headerWrapper}>
       <div className={styles.scrollText}>
-        <div className={styles.promoBanner}>
-          <img src={diamond} />
-          <span>월 990원</span>
-          <b>프리미엄 구독권</b>
-          <img src={diamond} />
-          <span>Get membership for only ₩990/month</span>
-          <b>Premium Subscription</b>
-          <img src={diamond} />
-          <span>월 990원</span>
-          <b>프리미엄 구독권</b>
-          <img src={diamond} />
-          <span>Get membership for only ₩990/month</span>
-          <b>Premium Subscription</b>
-          <img src={diamond} />
-          <span>월 990원</span>
-          <b>프리미엄 구독권</b>
-          <img src={diamond} />
-          <span>Get membership for only ₩990/month</span>
-          <b>Premium Subscription</b>
-          <img src={diamond} />
-        </div>
+        <Link to="/payment">
+          <div className={styles.promoBanner}>
+            <img src={diamond} />
+            <span>월 990원</span>
+            <b>프리미엄 구독권</b>
+            <img src={diamond} />
+            <span>Get membership for only ₩990/month</span>
+            <b>Premium Subscription</b>
+            <img src={diamond} />
+            <span>월 990원</span>
+            <b>프리미엄 구독권</b>
+            <img src={diamond} />
+            <span>Get membership for only ₩990/month</span>
+            <b>Premium Subscription</b>
+            <img src={diamond} />
+            <span>월 990원</span>
+            <b>프리미엄 구독권</b>
+            <img src={diamond} />
+            <span>Get membership for only ₩990/month</span>
+            <b>Premium Subscription</b>
+            <img src={diamond} />
+          </div>
+        </Link>
       </div>
 
       <header className={styles.mainHeader}>
