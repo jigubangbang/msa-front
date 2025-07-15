@@ -3,6 +3,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import { MutatingDots } from 'react-loader-spinner';
 import ChatPanel from './ChatPanel.jsx';
+import { useChatContext } from '../../utils/ChatContext.jsx';
 import { joinSock } from '../../hooks/chat/joinSock.js';
 import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import ChatAlertModal from '../../components/chat/ChatAlertModal.jsx'; // 수정된 모달 임포트
@@ -10,7 +11,11 @@ import defaultProfile from '../../assets/default_profile.png';
 import exit from '../../assets/chat/logout.svg';
 import '../../styles/chat/ChatModal.css'
 
+
 export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
+  
+  const { chatRooms, minimizedChats, updateChatRoom, removeChatRoom, minimizeChat, restoreChat, getMinimizedPosition } = useChatContext();
+  const {info, members} = useChatRoomInfo(chatId);
   const [alertInfo, setAlertInfo] = useState({ show: false, title: '', message: '' });
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -25,7 +30,31 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
   const {senderId, nickname, messages, setMessages, sendMessage, isLoading, chatError, isJoining, isKicked, unsubscribeChatRoom} 
     = joinSock(isOpen, chatId, showAlert, currentUserId);
 
-  const {info, members} = useChatRoomInfo(chatId);
+  // const isMinimized = minimizedChats.includes(chatId);
+
+  // 채팅방 정보 업데이트
+  useEffect(() => {
+    if (isOpen && info) {
+      updateChatRoom(chatId, {
+        info,
+        members,
+        messages,
+        nickname,
+        senderId,
+        isOpen: true
+      });
+    }
+  }, [isOpen, info, members, messages, nickname, senderId, chatId, updateChatRoom]);
+
+  const handleMinimize = () => {
+    console.log("[ChatModal] 최소화");
+    setIsMinimized(true);
+  };
+
+  const handleRestore = () => {
+    console.log("[ChatModal] 복원");
+    setIsMinimized(false);
+  };
 
   // 최소화된 채팅창 컴포넌트
   const MinimizedChat = () => {
@@ -35,8 +64,14 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
         member.userId === lastMessage?.senderId || member.nickname === lastMessage?.nickname
       )?.profileImage;
 
+    const bottomPosition = getMinimizedPosition(chatId);
+
     return (
-      <div className="minimized-chat" onClick={() => setIsMinimized(false)}>
+      <div 
+        className="minimized-chat" 
+        style={{ bottom: `${70 + bottomPosition}px` }}
+        onClick={handleRestore}
+      >
         <div className="minimized-chat-content">
           <div className="minimized-chat-header">
             <h3 className="minimized-chat-header-title">
@@ -108,10 +143,16 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
   useEffect(() => {
     if (!isOpen) {
       console.log("[ChatModal] Modal is closing.");
-      unsubscribeChatRoom?.();
+     if (unsubscribeChatRoom) {
+        try {
+          unsubscribeChatRoom();
+        } catch (error) {
+          console.error("[ChatModal] unsubscribe 에러:", error);
+        }
+      }
       setIsMinimized(false);
     }
-  }, [isOpen]);
+  }, [isOpen, unsubscribeChatRoom]);
 
   if (!isOpen) return null;
 
@@ -134,7 +175,7 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
         <ChatAlertModal
           show={alertInfo.show}
           title={alertInfo.title}
-          message={alertInfo.message}s
+          message={alertInfo.message}
           onClose={() => {
             hideAlert();
             if (isKicked || chatError) {
@@ -144,7 +185,9 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
         />
       </>
     ) : (
-        <div className="chat-modal-overlay">
+        <div 
+          className="chat-modal-overlay"
+        >
           <div className="chat-modal-content">
             {chatError && (
               showAlert("오류", "채팅방 입장에 실패하였습니다.\n" + chatError.message)
@@ -158,8 +201,8 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
                 setMessages={setMessages}
                 onSendMessage={sendMessage}
                 onClose={onClose}
-                onMinimize={() => setIsMinimized(true)} // 최소화 콜백
-                onRestore={() => setIsMinimized(false)} // 복원 콜백
+                onMinimize={handleMinimize}
+                onRestore={handleRestore}
                 onForceClose={onClose}
                 showAlert={showAlert} // ChatPanel에 showAlert 전달
                 isMinimized={isMinimized}
