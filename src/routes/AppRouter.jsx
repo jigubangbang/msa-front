@@ -72,7 +72,12 @@ import TravelStyle from "../pages/feed/travel-style/TravelStyle";
 import BoardDetailPage from "../pages/community/board/BoardDetailPage";
 import BoardFormPage from "../pages/community/board/BoardFormPage";
 import MyBoardPage from "../pages/community/board/MyBoardPage";
+import PublicMapPage from "../pages/profile/PublicMapPage";
 
+import About from '../pages/footer/About';
+import Terms from '../pages/footer/Terms';
+import Privacy from '../pages/footer/Privacy';
+import Credits from '../pages/footer/Credits';
 
 const AppRouter = () => {
     return (
@@ -88,6 +93,7 @@ const AppRouter = () => {
           <Route path="/profile/:userId/bucketlist" element={<Bucketlist/>}/>
           <Route path="/profile/:userId/diary" element={<Diary/>}/>
           <Route path="/profile/:userId/map" element={<MapPage/>}/>
+          <Route path="/map/:userId" element={<PublicMapPage/>}/>
           <Route path="/profile/:userId/following" element={<Network type="following"/>}/>
           <Route path="/profile/:userId/followers" element={<Network type="followers"/>}/>
 
@@ -193,6 +199,12 @@ const AppRouter = () => {
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment/fail" element={<PaymentFail />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />
+
+          {/* Footer */}
+          <Route path="/about" element={<About/>}/>
+          <Route path="/terms" element={<Terms/>}/>
+          <Route path="/privacy" element={<Privacy/>}/>
+          <Route path="/credits" element={<Credits/>}/>
         </Routes>
     );
 }

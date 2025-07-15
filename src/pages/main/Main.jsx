@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react"; // 데이터를 가져오기
 import { Link, useNavigate } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
-import api from '../../apis/api'; // api.js import 추가
+import Vote from '../../components/community/Vote';
+import api from "../../apis/api";
+import API_ENDPOINTS from "../../utils/constants";
+import defaultProfile from "../../assets/default_profile.png";
+import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
 
 const mockPopularFeeds = [
     { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
@@ -15,6 +19,7 @@ export default function Main() {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
     
     const [feeds, setFeeds] = useState(mockPopularFeeds);
     const [quests, setQuests] = useState([]);
@@ -45,12 +50,14 @@ export default function Main() {
             setError(null);
 
             try {
-                const [questResponse, postResponse, rankingResponse] = await Promise.all([
+                const [questResponse, postResponse, rankingResponse, feedResponse] = await Promise.all([
                     api.get('/api/quests/list?sortOption=popular&limit=9'),
                     api.get('/api/com/board/list?sortOption=latest&limit=4'),
                     api.get('/api/quests/rankings?limit=5'),
+                    api.get(`${API_ENDPOINTS.FEED.PUBLIC}/posts/top`),
                 ]);
-
+                const feedData = await feedResponse.data.posts;
+                setFeeds(feedData);
                 setQuests(questResponse.data.quests);
                 setPosts(postResponse.data.posts);
                 setRankings(rankingResponse.data.rankings);
@@ -85,6 +92,16 @@ export default function Main() {
     const handlePostClick = (postId) => {
         navigate(`/board/${postId}`);
     };
+    const handleLoginClick = () => {
+        setShowLoginConfirmModal(false);
+        navigate("/login");
+    }
+
+    // ==================================================================================
+    // UI 렌더링 (Rendering)
+    // - 위에서 정의한 state(feeds, quests, posts 등)를 사용하여 화면을 그립니다.
+    // - 각 팀원은 자신의 데이터가 어떤 UI 컴포넌트와 연결되는지 확인할 수 있습니다.
+    // ==================================================================================
     
     if (loading) return <div>로딩 중...</div>;
     if (error) return <div>{error}</div>;
@@ -108,13 +125,19 @@ export default function Main() {
                     <div className={styles.marqueeContainer}>
                         <div className={styles.horizontalScrollContainer}>
                             {[...feeds, ...feeds].map((feed, index) => (
-                                <div key={index} className={styles.scrollItem}>
-                                    <img src={feed.image} alt={`${feed.location} 이미지`} />
+                                <div key={index} className={styles.scrollItem} onClick={() => {
+                                    if (isLoggedIn) {
+                                        navigate(`/feed/${feed.id}`);
+                                    } else {
+                                        setShowLoginConfirmModal(true);
+                                    }
+                                }}>
+                                    <img src={feed.photoUrl} alt={`${feed.countryName} 이미지`} />
                                     <div className={styles.imageInfo}>
-                                        <img src={feed.avatar} alt={`${feed.user} 프로필`} className={styles.userAvatar} />
+                                        <img src={feed.profileImage || defaultProfile} alt={`${feed.userId} 프로필`} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
-                                            <p>{feed.location}</p>
-                                            <span>by {feed.user}</span>
+                                            <p>{feed.cityName}, {feed.countryName}</p>
+                                            <span>by {feed.nickname}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -176,7 +199,7 @@ export default function Main() {
                             </div>
                             <ul className={styles.rankingList}>
                                 {rankings.map(user => (
-                                    <li key={user.rank} className={styles.rankingItem}>
+                                    <li key={user.rank} className={styles.rankingItem} onClick={() => navigate(`/profile/${user.userId}`)}>
                                         <span className={styles.rank}>{user.rank}</span>
                                         <img src={user.icon || user.profile_image || '/icons/common/user_profile.svg'} alt={user.nickname} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
@@ -216,6 +239,13 @@ export default function Main() {
                     </div>
                 )}
             </div>
+            {showLoginConfirmModal && (
+                <LoginConfirmModal
+                    isOpen={showLoginConfirmModal}
+                    onClose={() => setShowLoginConfirmModal(false)}
+                    onConfirm={handleLoginClick}
+                />
+            )}
         </div>
     );
 }

@@ -29,7 +29,7 @@ const API_ENDPOINTS = {
   // mypage-service
   MYPAGE: {
     // Public 경로 (인증 불필요)
-    PUBLIC: `${LOCAL}/api/public`,
+    PUBLIC: `${LOCAL}/api/profile/public`,
     // (User 권한 필요)
     PROFILE: `${LOCAL}/api/profile`,
     USERS: `${LOCAL}/api/users`,

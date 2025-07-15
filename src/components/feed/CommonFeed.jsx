@@ -5,7 +5,7 @@ import api from "../../apis/api";
 export default function CommonFeed({endpoint}) {
     const [posts, setPosts] = useState([]);
 
-    const pageSize = 8;
+    const pageSize = 10;
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
