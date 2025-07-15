@@ -331,6 +331,7 @@ const handleQuestClickFromBadge = (quest_id) => {
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
             isLogin={isLogin}
+            handleQuestClick={openQuestModal}
           />
 
         </div>

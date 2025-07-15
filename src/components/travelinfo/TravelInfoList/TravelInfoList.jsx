@@ -149,6 +149,7 @@ const TravelInfoList = ({
     }
   };
 
+  //채팅하기 버튼
   const handleChatClick = async (groupId) => {
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {

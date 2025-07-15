@@ -128,6 +128,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
+    //채팅하기 버튼
     const handleChatClick = async (groupId) => {
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
@@ -135,7 +136,6 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
         groupId: groupId
       });
       
-      //#NeedToDo채팅
       const chatRoomId = response.data.chatRoomId;
       console.log('채팅방으로 이동:', chatRoomId);
 
@@ -154,9 +154,9 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
   const handleExitClick = async (groupId) => {
     console.log(groupId,"그룹 나가기");
-    //나가기
-    //TODO 나가기 버튼 구현
+    //나가기 버튼
   }
+
 
 
   const formatDate = (dateString) => {
@@ -233,8 +233,19 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       </button>
                       
                     )}
-                    {(sectionType==='hosted' || sectionType==='joined') && (
-                      <button 
+                    {sectionType === 'hosted' && (
+                      <button
+                        className={styles.chatButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(travel.id);
+                        }}
+                      >
+                        그룹 삭제하기
+                      </button>                                           
+                    )}
+                    {sectionType === 'joined' && (
+                      <button
                         className={styles.chatButton}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -242,8 +253,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         }}
                       >
                         나가기
-                      </button>
-                      
+                      </button>                                           
                     )}
                 </div>
               </div>

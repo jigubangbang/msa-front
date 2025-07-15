@@ -61,7 +61,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
         groupId: groupId
       });
       
-      //#NeedToDo채팅
+      //채팅하기 버튼
       const chatRoomId = response.data.chatRoomId;
       console.log('채팅방으로 이동:', chatRoomId);
 
@@ -195,9 +195,10 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
   
   const handleExitClick = async (groupId) => {
     console.log(groupId,"그룹 나가기");
-    //나가기
+    //나가기 버튼
     //TODO 나가기 버튼 구현
   }
+
 
 
   const renderTravelInfoList = (travelInfos, title, sectionType) => (
@@ -217,38 +218,50 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
                       alt={info.title}
                       className={styles.thumbnail}
                     />
-                    {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (  // joinedChats.has(info.id) → info.isJoined
-                      <div className={styles.buttonContainer}>
-                        <button 
-                          className={styles.chatButton}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleChatClick(info.id);
-                          }}
-                        >
-                          채팅하기
-                        </button>
-                        <button 
-                          className={styles.chatButton}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleExitClick(info.id);
-                          }}
-                        >
-                          나가기
-                        </button>
-                      </div>
-                    ) : (
-                      <button 
-                        className={styles.joinButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleJoinClick(info, e);
-                        }}
-                      >
-                        참가하기
-                      </button>
-                    )}
+                    {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
+                          <div className={styles.buttonContainer}>
+                            <button
+                              className={styles.chatButton}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleChatClick(info.id);
+                              }}
+                            >
+                              채팅하기
+                            </button>
+                            {sectionType === 'hosted' ? (
+                              <button
+                                className={styles.chatButton}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(info.id);
+                                }}
+                              >
+                                채팅방 삭제하기
+                              </button>
+                            ) : (
+                              <button
+                                className={styles.chatButton}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleExitClick(info.id);
+                                }}
+                              >
+                                나가기
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <button
+                            className={styles.joinButton}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleJoinClick(info, e);
+                            }}
+                          >
+                            참가하기
+                          </button>
+                        )}
                   </div>
                 <div className={styles.travelInfoContent}>
                   <h4 className={styles.travelInfoTitle}>{info.title}</h4>

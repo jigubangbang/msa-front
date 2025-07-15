@@ -11,17 +11,27 @@
   overflow: visible;
   box-sizing: border-box;
   padding: 20px;
+  overflow: visible;
+  position: relative;
 }
 
 .selector{
   margin-top: 10px;
   padding: 12px 16px;
-  min-height: 350px;
-  max-height: 500px; /* 최대 높이 설정 */
-  overflow-y: auto;
+  max-height: 500px; 
+  overflow: visible;
+   z-index: auto;
 }
 
-/* 선택된 필터들 표시 섹션 */
+.selectorLocation {
+  margin-top: 10px;
+  padding: 12px 16px;
+  height: 350px;
+  overflow: visible; 
+  position: relative;
+}
+
+
 .selectedSection {
   display: flex;
   align-items: flex-start;
@@ -167,7 +177,7 @@
   max-height: 500px;
   overflow: visible;
   overflow-y: auto;
-  z-index: 1;
+  z-index: auto;
 }
 
 .panelHeader {
@@ -209,6 +219,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 8px;
+  max-height: 400px; 
+  overflow-y: auto; 
 }
 
 .optionButton {

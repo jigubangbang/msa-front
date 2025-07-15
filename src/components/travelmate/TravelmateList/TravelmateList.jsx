@@ -59,6 +59,42 @@ const TravelmateList = ({
     }
   };
 
+const formatSearchConditions = (searchSectionData) => {
+  if (!searchSectionData) return null;
+  
+  const conditions = [];
+  
+  if (searchSectionData.locations && searchSectionData.locations.length > 0) {
+    if (searchSectionData.locations[0] === 'ALL') {
+      conditions.push('전체 지역');
+    } else {
+      const locationNames = searchSectionData.locations.map(location => {
+        if (location.city && location.city.name) {
+          return `${location.country.name} ${location.city.name}`;
+        }
+        return location.country ? location.country.name : location;
+      });
+      conditions.push(`위치: ${locationNames.join(', ')}`);
+    }
+  }
+  
+  if (searchSectionData.dates) {
+    const { startDate, endDate } = searchSectionData.dates;
+    if (startDate && endDate) {
+      const formatDate = (dateObj) => {
+        if (typeof dateObj === 'string') return dateObj;
+        if (dateObj.dateString) return dateObj.dateString;
+        if (dateObj.year) return `${dateObj.year}-${String(dateObj.month).padStart(2, '0')}-${String(dateObj.day).padStart(2, '0')}`;
+        return dateObj;
+      };
+      
+      conditions.push(`기간: ${formatDate(startDate)} ~ ${formatDate(endDate)}`);
+    }
+  }
+  
+  return conditions;
+};
+
   const handleSortChange = (option) => {
     handleFilterChange('sortOption', option.value);
   };
@@ -139,6 +175,7 @@ const TravelmateList = ({
 
   useEffect(() => {
     fetchTravelmates();
+    console.log(searchSectionData);
   }, [currentPage, filters, searchTerm, showCompleted, searchSectionData]);
 
   useEffect(() => {
@@ -282,6 +319,20 @@ const TravelmateList = ({
         <p className={styles.totalCount}>
             현재 {totalCount}개의 여행메이트 모집글이 있습니다.
         </p>
+
+        {/* 검색 조건 표시 - 여기에 추가 */}
+      {searchSectionData && (
+        <div className={styles.searchConditions}>
+          <span className={styles.searchConditionsLabel}>검색 조건: </span>
+          {formatSearchConditions(searchSectionData).map((condition, index) => (
+            <span key={index} className={styles.searchCondition}>
+              {condition}
+              {index < formatSearchConditions(searchSectionData).length - 1 && ', '}
+            </span>
+          ))}
+        </div>
+      )}
+      
         <div className={styles.controlsContainer}>
             <label className={styles.checkboxContainer}>
             <input

@@ -122,12 +122,28 @@ const QuestActionModal = ({
     const result = response.data;
     
     if (result.success) {
-      setIsSuccess(true);
+  setIsSuccess(true);
+  // 액션 타입별 메시지 설정
+  switch(actionType) {
+    case 'challenge':
+      setResultMessage('도전이 시작되었습니다.');
+      break;
+    case 'retry':
+      setResultMessage('다시 도전이 시작되었습니다.');
+      break;
+    case 'abandon':
+      setResultMessage('도전이 포기되었습니다.');
+      break;
+    case 'success':
+      setResultMessage('도전을 완료했습니다.');
+      break;
+    default:
       setResultMessage(`${getActionText()}이 완료되었습니다.`);
-    } else {
-      setIsSuccess(false);
-      setResultMessage(result.message || '처리 중 오류가 발생했습니다.');
-    }
+  }
+} else {
+  setIsSuccess(false);
+  setResultMessage(result.message || '처리 중 오류가 발생했습니다.');
+}
     
     setShowResult(true);
     } catch (error) {

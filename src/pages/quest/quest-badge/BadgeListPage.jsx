@@ -100,7 +100,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
         setIsAdmin(false);
         setCurrentUserId(null);
     }
-}, []);
+}, [currentUserId]);
 
   const fetchUser = async () => {
     setLoading(true);
@@ -169,6 +169,8 @@ const [selectedBadge, setSelectedBadge] = useState(null);
     if (total === 0) return "0%";
     return Math.round((completedCount / total) * 100) + "%";
   };
+
+  
 
      //quest modal
 const openQuestModal = useCallback(async (quest_id) => {
@@ -325,6 +327,7 @@ const handleQuestClickFromBadge = (quest_id) => {
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
             isLogin={isLogin}
+            handleQuestClick={openQuestModal}
           />
 
         </div>

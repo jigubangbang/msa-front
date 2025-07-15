@@ -453,6 +453,7 @@ const handleViewModalClose = () => {
       isOpen={CertiViewModal.isOpen}
       onClose={handleViewModalClose}
       questUserId={CertiViewModal.questUserId}
+      currentUserId={currentUserId}
     />
     </div>
   );

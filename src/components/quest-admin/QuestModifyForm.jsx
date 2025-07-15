@@ -335,7 +335,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       alert('퀘스트가 성공적으로 수정되었습니다.');
       
       if (onSave) onSave();
-      if (onClose) onClose();
+      if (onClose) onClose(questId);
       
     } catch (error) {
       console.error('Failed to update quest:', error);
@@ -349,6 +349,10 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       setLoading(false);
     }
   };
+
+  const handleClose = () => {
+    if (onClose) onClose(questId);
+  }
 
   useEffect(() => {
     if (questId) {
@@ -376,7 +380,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     <div className={styles.questModifyForm}>
       <div className={styles.header}>
         <h2 className={styles.title}>퀘스트 수정</h2>
-        <button className={styles.closeButton} onClick={onClose}>✕</button>
+        <button className={styles.closeButton} onClick={handleClose}>✕</button>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -683,7 +687,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
 
         {/* 제출 버튼 */}
         <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
+          <button type="button" className={styles.cancelButton} onClick={handleClose}>
             취소
           </button>
           <button type="submit" className={styles.saveButton} disabled={loading}>

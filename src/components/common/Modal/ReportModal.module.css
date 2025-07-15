@@ -2,7 +2,7 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .overlay {
-  position: absolute; /* 변경: fixed -> absolute */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%; /* 변경: 100vw -> 100% */

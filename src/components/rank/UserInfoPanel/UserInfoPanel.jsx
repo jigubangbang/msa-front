@@ -7,9 +7,10 @@ const UserInfoPanel = ({
   user, 
   userQuests = [], 
   calculatePerformance,
-  isLogin = false
-  
+  isLogin = false,
+  handleQuestClick
 }) => {
+  
   return (
     <div className={styles.loginContent}>
       <div className={styles.myInfo}>
@@ -63,6 +64,7 @@ const UserInfoPanel = ({
           title="Ongoing Quests"
           quest={userQuests}
           isLogin={isLogin}
+          handleQuestClick={handleQuestClick}
         />
       </div>
     </div>
