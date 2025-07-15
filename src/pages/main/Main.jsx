@@ -5,8 +5,9 @@ import Vote from '../../components/community/Vote';
 import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import defaultProfile from "../../assets/default_profile.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
+import Modal from "../../components/common/Modal/Modal";
 
 // ==================================================================================
 // 목업 데이터 (Mock Data)
@@ -48,7 +49,9 @@ export default function Main() {
     // ==================================================================================
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     
     // 각 서비스 데이터를 위한 state
     const [feeds, setFeeds] = useState(mockPopularFeeds); // 피드 서비스 데이터
@@ -67,6 +70,13 @@ export default function Main() {
             setIsLoggedIn(true);
         }
     }, []);
+
+    useEffect(() => {
+        if (location.state?.showIncompleteProfileModal) {
+            setShowProfileModal(true);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location]);
 
 
     // ==================================================================================
@@ -139,6 +149,15 @@ export default function Main() {
         setShowLoginConfirmModal(false);
         navigate("/login");
     }
+
+    const handleProfileModalConfirm = () => {
+        setShowProfileModal(false);
+        navigate("/user/manage");
+    };
+
+    const handleProfileModalClose = () => {
+        setShowProfileModal(false);
+    };
 
     // ==================================================================================
     // UI 렌더링 (Rendering)
@@ -266,6 +285,19 @@ export default function Main() {
                     onClose={() => setShowLoginConfirmModal(false)}
                     onConfirm={handleLoginClick}
                 />
+            )}
+
+            {showProfileModal && (
+                <Modal
+                    show={showProfileModal}
+                    onClose={handleProfileModalClose}
+                    onSubmit={handleProfileModalConfirm}
+                    heading="추가 정보 입력"
+                    firstLabel="확인"
+                    secondLabel="나중에"
+                >
+                    원활한 서비스 이용을 위해 추가 정보를 입력해 주세요
+                </Modal>
             )}
         </div>
     );

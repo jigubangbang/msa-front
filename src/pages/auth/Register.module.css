@@ -113,6 +113,12 @@
   color: #000;
 }
 
+.emailCodeInput:disabled {
+  background-color: #fafafa; 
+  color: #000;
+  border-color: #ccc;
+}
+
 .emailCodeInput:focus {
   border-color: #000;
   background-color: #fff;

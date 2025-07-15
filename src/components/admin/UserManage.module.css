@@ -250,8 +250,7 @@
 .premiumIcon {
   width: 16px;
   height: 16px;
-  margin-left: 1px;
-  vertical-align: -3px;
+  vertical-align: -3.5px;
 }
 
 .socialIcon.kakao {

@@ -23,8 +23,12 @@ const SocialLoginHandler = () => {
       else if (path.includes("google")) provider = "google";
 
       if (!provider || !code) {
-        alert("잘못된 접근입니다. 다시 시도해 주세요.");
-        navigate("/login");
+        navigate("/login", {
+          state: {
+            errorMessage: "잘못된 접근입니다. 다시 시도해 주세요.",
+          },
+          replace: true,
+        });
         return;
       }
 
@@ -42,7 +46,20 @@ const SocialLoginHandler = () => {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
 
-        navigate("/", { replace: true });
+        // 사용자 정보 확인
+        const userResponse = await axios.get(`${API_ENDPOINTS.USER}/me`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const user = userResponse.data;
+
+        if (!user.name || !user.tel) {
+          navigate("/", {
+            replace: true,
+            state: { showIncompleteProfileModal: true },
+          });
+        } else {
+          navigate("/", { replace: true });
+        }
       } catch (error) {
         console.error("상세 에러 정보:", error.response?.data);
         console.error("에러 상태:", error.response?.status);
