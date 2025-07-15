@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./UserRecommendation.module.css";
 import api from "../../../apis/api";
 import API_ENDPOINTS from "../../../utils/constants";
@@ -7,7 +8,9 @@ import ProfileCard from "./ProfileCard";
 import PremiumModal from "../../common/Modal/PremiumModal";
 
 export default function UserRecommendation() {
+    const navigate = useNavigate();
     const [membershipStatus, setMembershipStatus] = useState(false);
+    const [travelStyleId, setTravelStyleId] = useState();
 
     const limit = 5;
     const [currentPage, setCurrentPage] = useState(0);
@@ -26,6 +29,7 @@ export default function UserRecommendation() {
                 params: { limit, offset }
             });
             setRecommendationList(response.data.users);
+            setTravelStyleId(response.data.travelStyleId);
             if (response.data.users.length < limit) setHasMore(false);
         } catch(err) {
             console.error("Failed to fetch recommended users", err);
@@ -41,6 +45,10 @@ export default function UserRecommendation() {
         setCurrentPage(prev => prev + 1);
     }
 
+    const handleTestClick = () => {
+        navigate("/feed/travel-style-test");
+    }
+
     useEffect(() => {
         fetchRecommendationList();
     }, [currentPage]);
@@ -53,9 +61,20 @@ export default function UserRecommendation() {
             } catch(err) {
                 console.error("Failed to fetch membership status", err);
             }
-        }
+        };
         fetchMembershipStatus();
-    }, [])
+    }, []);
+
+    if (!travelStyleId) {
+        return (
+            <div className={`${styles.boxItem} ${styles.centeredBox}`}>
+                <p className={styles.boxText}>친구 추천을 받으려면 먼저 나의 여행 스타일을 진단해보세요!</p>
+                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleTestClick}>
+                    나의 여행 스타일 찾기 →
+                </button>
+            </div>
+        );
+    }
 
     return (
         <>

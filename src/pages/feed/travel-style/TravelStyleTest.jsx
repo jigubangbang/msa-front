@@ -191,6 +191,7 @@ const RESULT_TYPES = {
 
 const TravelTypeTest = () => {
   const [answers, setAnswers] = useState({});
+  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [result, setResult] = useState(null);
   const [styleDetail, setStyleDetail] = useState();
@@ -199,7 +200,7 @@ const TravelTypeTest = () => {
     const newAnswers = { ...answers, [qIdx + 1]: optionIdx + 1 };
     setAnswers(newAnswers);
     if (Object.keys(newAnswers).length === QUESTIONS.length) {
-      calculateResult(newAnswers);
+      setAllQuestionsAnswered(true);
     }
   };
 
@@ -269,18 +270,25 @@ const TravelTypeTest = () => {
     <div className={styles.wrapper}>
         {QUESTIONS.map((q, idx) => (
             <div key={idx} className={styles.questionBlock}>
-            <h3 className={styles.questionTitle}>{q.question}</h3>
-            {q.options.map((opt, oIdx) => (
-                <button
-                key={oIdx}
-                className={`${styles.optionButton} ${answers[idx + 1] === oIdx + 1 ? styles.selected : ''}`}
-                onClick={() => handleSelect(idx, oIdx)}
-                >
-                {opt}
-                </button>
-            ))}
+              <h3 className={styles.questionTitle}>{q.question}</h3>
+              {q.options.map((opt, oIdx) => (
+                  <button
+                  key={oIdx}
+                  className={`${styles.optionButton} ${answers[idx + 1] === oIdx + 1 ? styles.selected : ''}`}
+                  onClick={() => handleSelect(idx, oIdx)}
+                  >
+                  {opt}
+                  </button>
+              ))}
             </div>
         ))}
+        <button 
+          onClick={() => calculateResult(answers)}
+          disabled={!allQuestionsAnswered}
+          className={`${styles.btn} ${styles.btnSecondary} ${styles.resultBtn}`}
+        >
+          결과 보기
+        </button>
     </div>
 
   );
