@@ -22,7 +22,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   // 채팅방 입장
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
-  // 채팅방 나가기
+  // 공유방 나가기
   const { leaveChatRoom, isLeaving } = useChatLeave();
 
   const themeMap = {
@@ -64,7 +64,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
         groupId: groupId
       });
       
-      //#NeedToDo채팅
       const chatRoomId = response.data.chatRoomId;
       console.log('채팅방으로 이동:', chatRoomId);
 
@@ -106,7 +105,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     }
   };
 
-  // 채팅방 나가기
+  // 공유방 나가기
   const handleLeaveGroup = async (travelinfoId) => {
     if (!isLogin) {
       alert('로그인이 필요합니다.');
@@ -228,14 +227,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     });
   };
 
-  
-  const handleExitClick = async (groupId) => {
-    console.log(groupId,"그룹 나가기");
-    //나가기
-    //TODO 나가기 버튼 구현
-  }
-
-
   const renderTravelInfoList = (travelInfos, title, sectionType) => (
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>{title}</h3>
@@ -265,13 +256,14 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                           채팅하기
                         </button>
                         <button 
-                          className={styles.chatButton}
+                          className={styles.leaveButton}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleExitClick(info.id);
+                            handleLeaveGroup(info.id);
                           }}
+                          disabled={isLeaving}
                         >
-                          나가기
+                          {isLeaving ? '나가는 중...' : '공유방 나가기'}
                         </button>
                       </div>
                     ) : (
@@ -283,18 +275,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                         }}
                       >
                         참가하기
-                      </button>
-                    )}
-                    {(sectionType === 'joined' || info.isJoined) && (
-                      <button 
-                        className={styles.leaveButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLeaveGroup(info.id);
-                        }}
-                        disabled={isLeaving}
-                      >
-                        {isLeaving ? '나가는 중...' : '채팅방 나가기'}
                       </button>
                     )}
                   </div>
@@ -398,6 +378,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     {chatModalOpen && selectedChatId && (
         <ChatModal
           isOpen={chatModalOpen}
+          onClose={() => setChatModalOpen(false)}
           chatId={selectedChatId}
           currentUserId={currentUserId}
         />

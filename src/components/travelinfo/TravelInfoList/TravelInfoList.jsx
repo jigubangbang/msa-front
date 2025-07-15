@@ -4,7 +4,6 @@ import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 import styles from './TravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
-import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
 import ChatModal from '../../../pages/chat/ChatModal';
@@ -32,8 +31,6 @@ const TravelInfoList = ({
   // 채팅방 입장
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
-  // 채팅방 나가기
-  const { leaveChatRoom, isLeaving } = useChatLeave();
   
   // 내부에서 카테고리와 정렬 관리
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
@@ -200,52 +197,6 @@ const TravelInfoList = ({
     } catch (error) {
       console.error('Failed to join chat:', error);
       alert('참여에 실패했습니다.');
-    }
-  };
-
-  // 채팅방 나가기
-  const handleLeaveGroup = async (travelinfoId) => {
-    if (!isLogin) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    try {
-      // 1. 먼저 채팅방 ID를 가져와야 함
-      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELINFO",
-        groupId: travelinfoId
-      });
-      
-      const chatRoomId = response.data.chatRoomId;
-      
-      if (chatRoomId) {
-        // 2. 채팅방 나가기 실행 (확인 모달 포함)
-        const success = await leaveChatRoom(chatRoomId, {
-          skipConfirmation: false, // 확인 모달 표시
-          showAlert: (title, message) => alert(message),
-          onSuccess: () => {
-            // 3. 성공시 joinedChats에서 제거
-            setJoinedChats(prev => {
-              const newSet = new Set(prev);
-              newSet.delete(travelinfoId);
-              return newSet;
-            });
-            
-            // 4. 멤버 수 감소
-            setTravelinfos(prev => prev.map(info => 
-              info.id === travelinfoId 
-                ? { ...info, memberCount: info.memberCount - 1 }
-                : info
-            ));
-          }
-        });
-      } else {
-        alert('채팅방 정보를 찾을 수 없습니다.');
-      }
-    } catch (error) {
-      console.error('Failed to get chat room info:', error);
-      alert('채팅방 정보를 가져오는데 실패했습니다.');
     }
   };
 
@@ -552,15 +503,6 @@ const TravelInfoList = ({
                     {isJoined ? '채팅하기' : '참여하기'}
                   </button>
                 )}
-               {isJoined && (
-                  <button 
-                    className={styles.leaveButton} 
-                    onClick={() => handleLeaveGroup(travelinfo.id)}
-                    disabled={isLeaving}
-                  >
-                    {isLeaving ? '나가는 중...' : '채팅 나가기'}
-                  </button>
-                )}
               </div>
 
               <div className={styles.cell}>
@@ -599,12 +541,12 @@ const TravelInfoList = ({
       {chatModalOpen && selectedChatId && (
           <ChatModal
             isOpen={chatModalOpen}
+            onClose={() => setChatModalOpen(false)}
             chatId={selectedChatId}
             currentUserId={currentUserId}
           />
         )}
       
-
       <ReportModal
               show={showReportModal}
               onClose={handleReportClose}
