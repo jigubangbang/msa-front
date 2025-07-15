@@ -84,3 +84,9 @@
 .postCard:hover .postImage {
     transform: scale(1.05);
 }
+
+.emptyMessage {
+    font-style: italic;
+    color: #333;
+    text-align: center;
+}
