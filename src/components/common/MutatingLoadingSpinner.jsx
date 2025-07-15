@@ -1,9 +1,9 @@
-import { MutatingDots } from "react-loader-spinner";
+import { Circles } from "react-loader-spinner";
 
 export default function MutatingLoadingSpinner({color="white"}) {
     return (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <MutatingDots
+            <Circles
                 visible={true}
                 height="100"
                 width="100"
