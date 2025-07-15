@@ -19,6 +19,10 @@ export default function Diary() {
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const loader = useRef(null);
+
+    const onPostCreated = (newPost) => {
+        setPosts(prev => [newPost, ...prev]);
+    }
     
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
@@ -99,7 +103,7 @@ export default function Diary() {
                         </button>
                     )}
                     {showCreateDiaryModal && (
-                        <CreateDiaryModal onClose={() => setShowCreateDiaryModal(false)}/>
+                        <CreateDiaryModal onClose={() => setShowCreateDiaryModal(false)} onPostCreated={onPostCreated}/>
                     )}
                 </div>
             </div>
