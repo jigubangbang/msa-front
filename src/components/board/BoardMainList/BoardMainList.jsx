@@ -26,7 +26,7 @@ const BoardMainList = (isLogin) => {
         api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/board/list`, {
           params: {
             category: category.value,
-            limit: 5,
+            limit: 10,
             sortOption: 'popular'
           }
         })
@@ -36,11 +36,15 @@ const BoardMainList = (isLogin) => {
       const newBoardData = {};
 
       boardCategories.forEach((category, index) => {
-        newBoardData[category.value] = {
-          ...category,
-          posts: responses[index].data.posts || []
-        };
-      });
+      const filteredPosts = (responses[index].data.posts || [])
+        .filter(post => post.blindStatus !== 'BLINDED')
+        .slice(0, 5);
+        
+      newBoardData[category.value] = {
+        ...category,
+        posts: filteredPosts
+      };
+    });
 
       setBoardData(newBoardData);
     } catch (error) {

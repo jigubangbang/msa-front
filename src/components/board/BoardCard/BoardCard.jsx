@@ -27,7 +27,7 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
     setLoading(true);
     try {
       const params = {
-        limit: 3,
+        limit: 6,
         sortOption: 'popular' // 인기순 정렬
       };
 
@@ -37,7 +37,10 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
       }
 
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/board/list`, { params });
-      setPosts(response.data.posts || []);
+      const filteredPosts = (response.data.posts || [])
+        .filter(post => post.blindStatus !== 'BLINDED')
+        .slice(0, 3);
+      setPosts(filteredPosts);
     } catch (error) {
       console.error('Failed to fetch popular posts:', error);
       setPosts([]);
@@ -114,10 +117,6 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
     return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
   };
 
-  //#NeedToChange
-  const getDefaultThumbnail = () => {
-    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgdmlld0JveD0iMCAwIDQwMCAyNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjQwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0xODAgMTAwSDIyMFYxNDBIMTgwVjEwMFoiIGZpbGw9IiNEMEQwRDAiLz4KPHBhdGggZD0iTTE2MCA4MEgyNDBWMTYwSDE2MFY4MFoiIHN0cm9rZT0iI0QwRDBEMCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5OTk5IiBmb250LXNpemU9IjE0Ij5JbWFnZTwvdGV4dD4KPC9zdmc+';
-  };
 
     const handleLoginConfirm = () => {
     setIsModalOpen(false);
@@ -155,7 +154,7 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
           className={styles.card}
           onClick={() => handleCardClick(post.id)}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${post.thumbnail || getDefaultThumbnail()})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${post.thumbnail || "/icons/common/board_image.jpg"})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}

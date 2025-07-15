@@ -292,7 +292,7 @@ const handleDelete = async (commentId) => {
               <div className={styles.questionContainer}>
                 <div className={styles.profileImage}>
                   <img 
-                    src={question.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (question.profileImage || '/icons/common/user_profile.svg')} 
+                    src={question.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (question.profileImage || '/icons/common/default_profile.png')} 
                     alt="프로필"
                   />
                 </div>
@@ -361,7 +361,7 @@ const handleDelete = async (commentId) => {
                     <div key={reply.id} className={styles.replyContainer}>
                       <div className={styles.profileImage}>
                         <img 
-                          src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/user_profile.svg')} 
+                          src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/default_profile.png')} 
                           alt="프로필"
                         />
                       </div>
@@ -423,7 +423,7 @@ const handleDelete = async (commentId) => {
                 <div className={styles.replyForm}>
                   <div className={styles.profileImage}>
                     <img 
-                      src={userProfile || '/icons/common/user_profile.svg'} 
+                      src={userProfile || '/icons/common/default_profile.png'} 
                       alt="내 프로필"
                     />
                   </div>
@@ -466,7 +466,7 @@ const handleDelete = async (commentId) => {
         <div className={styles.questionForm}>
           <div className={styles.profileImage}>
             <img 
-              src={userProfile || '/icons/common/user_profile.svg'} 
+              src={userProfile || '/icons/common/default_profile.png'} 
               alt="내 프로필"
             />
           </div>
