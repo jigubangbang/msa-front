@@ -28,7 +28,7 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
   };
 
   const {senderId, nickname, messages, setMessages, sendMessage, isLoading, chatError, isJoining, isKicked, unsubscribeChatRoom} 
-    = joinSock(isOpen, chatId, showAlert, currentUserId);
+    = joinSock(isOpen, chatId, showAlert, currentUserId, onClose);
 
   // const isMinimized = minimizedChats.includes(chatId);
 

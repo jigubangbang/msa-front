@@ -206,9 +206,9 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   
         removeSubscription(chatId);
         showAlert("알림", "채팅방이 성공적으로 삭제되었습니다.");
-        onForceClose?.(); // 사이드바 닫기
-        navigate('/chat'); // 채팅 목록으로 이동
-  
+        onClose?.();
+        onForceClose?.();
+        
       } catch (error) {
         console.error("[ChatSidebar] 채팅방 삭제 실패:", error);
         showAlert("오류", "채팅방 삭제 중 오류가 발생했습니다.");

@@ -4,7 +4,7 @@ import { useStomp, useStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 
-export function joinSock(isOpen, chatId, showAlert, currentUserId) {
+export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal) {
   const senderId = useStore(state => state.senderId);
   const setSenderId = useStore(state => state.setSenderId);
   const { connect, disconnect, send, subscribe, unsubscribe } = useStomp();
@@ -41,6 +41,11 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId) {
         // 구독 시작
         const subscription = subscribe(`/topic/chat/${chatId}`, (receivedMessage) => {
           console.log('[joinChat] 메시지 수신: ', receivedMessage);
+
+          if (receivedMessage.type === 'ROOM_DELETE') {
+            handleRoomDelete(receivedMessage);
+            return;
+          }
 
           // 백엔드에서 "강제 퇴장" 문구가 포함된 LEAVE 메시지를 보내므로, 이를 KICK으로 간주
           if (receivedMessage.type === 'LEAVE' && receivedMessage.message.includes('강제 퇴장')) {
@@ -90,6 +95,34 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId) {
       console.log(`[joinSock] 모든 구독 해제 완료: chatId=${chatId}`);
     }
   }, [chatId]);
+
+    // 채팅방 삭제
+  const handleRoomDelete = useCallback((deleteMessage) => {
+    console.log('[joinChat] 채팅방 삭제 처리: ', deleteMessage);
+    
+    if (deleteMessage.chatId === chatId) {
+      console.log('[joinChat] 현재 채팅방이 삭제됨 - 자동 퇴장 처리');
+      
+      // 1. 구독 해제
+      unsubscribeChatRoom();
+      
+      // 2. 상태 초기화
+      setMessages([]);
+      setIsLoading(false);
+      setIsJoining(false);
+      setChatError(null);
+      
+      // 3. 알림 표시
+      showAlert('채팅방 삭제', deleteMessage.message || '현 채팅방이 삭제되어 더이상 채팅이 불가합니다.');
+      
+      // 4. 모달 닫기 (1.5초 후)
+      setTimeout(() => {
+        if (onCloseModal) {
+          onCloseModal();
+        }
+      }, 1500);
+    }
+  }, [chatId, unsubscribeChatRoom, showAlert, onCloseModal]);
 
   // 강제 퇴장 메시지 처리 함수 추가
   const handleKickMessage = useCallback((kickMessage) => {
