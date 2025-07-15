@@ -116,7 +116,7 @@ const TravelmateList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`,
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`, {},
       {
         headers: {
           'User-Id': currentUserId,

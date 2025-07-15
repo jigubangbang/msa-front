@@ -192,6 +192,14 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
     });
   };
 
+  
+  const handleExitClick = async (groupId) => {
+    console.log(groupId,"그룹 나가기");
+    //나가기
+    //TODO 나가기 버튼 구현
+  }
+
+
   const renderTravelInfoList = (travelInfos, title, sectionType) => (
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>{title}</h3>
@@ -210,15 +218,26 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
                       className={styles.thumbnail}
                     />
                     {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (  // joinedChats.has(info.id) → info.isJoined
-                      <button 
-                        className={styles.chatButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleChatClick(info.id);
-                        }}
-                      >
-                        채팅하기
-                      </button>
+                      <div className={styles.buttonContainer}>
+                        <button 
+                          className={styles.chatButton}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleChatClick(info.id);
+                          }}
+                        >
+                          채팅하기
+                        </button>
+                        <button 
+                          className={styles.chatButton}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleExitClick(info.id);
+                          }}
+                        >
+                          나가기
+                        </button>
+                      </div>
                     ) : (
                       <button 
                         className={styles.joinButton}

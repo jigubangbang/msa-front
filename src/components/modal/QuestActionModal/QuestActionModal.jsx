@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './QuestActionModal.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
+import api from '../../../apis/api';
 
 const QuestActionModal = ({ 
   isOpen, 
@@ -62,73 +63,73 @@ const QuestActionModal = ({
 
     // season_end의 경우 바로 API 호출하고 모달 닫기
     if (actionType === 'season_end') {
-      setIsLoading(true);
-      
-      try {
-         const url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/season-end`;
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'User-Id': currentUserId
-            }
-        });
-
-        const result = await response.json();
-        console.log('Season end result:', result);
-        
-      } catch (error) {
-        console.error('Season end API 요청 실패:', error);
-      } finally {
-        setIsLoading(false);
-        onClose();
-        // API 성공/실패 여부와 상관없이 onSuccess 호출
-        if (onSuccess) {
-          onSuccess();
+    setIsLoading(true);
+    
+    try {
+      const url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/season-end`;
+      const response = await api.post(url, {}, {
+        headers: {
+          'User-Id': currentUserId
         }
+      });
+      
+      const result = response.data;
+      console.log('Season end result:', result);
+      
+    } catch (error) {
+      console.error('Season end API 요청 실패:', error);
+    } finally {
+      setIsLoading(false);
+      onClose();
+      // API 성공/실패 여부와 상관없이 onSuccess 호출
+      if (onSuccess) {
+        onSuccess();
       }
-      return;
+    }
+    return;
     }
 
     setIsLoading(true);
     
-    try {
-      let url, method = 'POST';
-      
-      switch(actionType) {
-        case 'challenge':
-          url = `${API_ENDPOINTS.QUEST.USER}/challenge/${quest_id}`;
-          break;
-        case 'retry':
-          url = `${API_ENDPOINTS.QUEST.USER}/reChallenge/${quest_id}`;
-          break;
-        case 'abandon':
-          url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/abandon`;
-          break;
-        default:
-          throw new Error('Invalid action type');
-      }
+  try {
+    console.log(currentUserId);
+    
+    let url, requestData;
+    
+    switch(actionType) {
+      case 'challenge':
+        url = `${API_ENDPOINTS.QUEST.USER}/challenge/${quest_id}`;
+        requestData = { quest_id: quest_id };
+        break;
+      case 'retry':
+        url = `${API_ENDPOINTS.QUEST.USER}/reChallenge/${quest_id}`;
+        requestData = { quest_id: quest_id };
+        break;
+      case 'abandon':
+        url = `${API_ENDPOINTS.QUEST.USER}/${quest_user_id}/abandon`;
+        requestData = {}; // 빈 객체 또는 null
+        break;
+      default:
+        throw new Error('Invalid action type');
+    }
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            'User-Id': currentUserId
-        },
-        body: actionType === 'abandon' ? null : JSON.stringify({ quest_id: quest_id })
+    const response = await api.post(url, requestData, {
+      headers: {
+        'User-Id': currentUserId
+      }
     });
 
-      const result = await response.json();
-      
-      if (result.success) {
-        setIsSuccess(true);
-        setResultMessage(`${getActionText()}이 완료되었습니다.`);
-      } else {
-        setIsSuccess(false);
-        setResultMessage(result.message || '처리 중 오류가 발생했습니다.');
-      }
-      
-      setShowResult(true);
+    const result = response.data;
+    
+    if (result.success) {
+      setIsSuccess(true);
+      setResultMessage(`${getActionText()}이 완료되었습니다.`);
+    } else {
+      setIsSuccess(false);
+      setResultMessage(result.message || '처리 중 오류가 발생했습니다.');
+    }
+    
+    setShowResult(true);
     } catch (error) {
       console.error('API 요청 실패:', error);
       setIsSuccess(false);

@@ -4,7 +4,6 @@ import { jwtDecode } from 'jwt-decode';
 import styles from './ProfileDropdown.module.css';
 import profileIcon from '../../assets/profile/profile-menu/profile.svg';
 import globeIcon from '../../assets/profile/profile-menu/globe.svg';
-import badgeIcon from '../../assets/profile/profile-menu/badge.svg';
 import listIcon from '../../assets/profile/profile-menu/list.svg';
 import inkpenIcon from '../../assets/profile/profile-menu/inkpen.svg';
 import logoutIcon from '../../assets/profile/profile-menu/logout.svg'; 
@@ -54,11 +53,6 @@ export default function ProfileDropdown({ onLogout }) {
           <Link to={`/profile/${userId}/countries`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
               <img src={globeIcon} alt="국가" /> 국가
-            </div>
-          </Link>
-          <Link to={`/profile/${userId}/badges`} onClick={handleCloseDropdown}>
-            <div className={styles.dropdownItem}>
-              <img src={badgeIcon} alt="뱃지함" /> 뱃지함
             </div>
           </Link>
           <Link to={`/profile/${userId}/bucketlist`} onClick={handleCloseDropdown}>

@@ -16,7 +16,8 @@ const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
 
   const navigate = useNavigate();
 
-
+    const [chatModalOpen, setChatModalOpen] = useState(false);
+    const [selectedChatId, setSelectedChatId] = useState(null);
 
 useEffect(() => {
   if (postId) {
@@ -96,7 +97,7 @@ useEffect(() => {
         setIsLiked(false);
         setDetail(prev => ({ ...prev, likeCount: prev.likeCount - 1 }));
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`,
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/like/${postId}`, {},
       {
         headers: {
           'User-Id': currentUserId,
@@ -151,9 +152,9 @@ useEffect(() => {
       case 'PENDING':
         return '모임 참여 신청 중';
       case 'MEMBER':
-        return '참여 중인 모임';
+        return '참여 중인 모임: 채팅하기';
       case 'CREATOR' :
-        return '내 모임';
+        return '내 모임: 채팅하기';
       default:
         return '모임 참여 신청하기';
     }
@@ -220,6 +221,43 @@ useEffect(() => {
     }
   };
 
+  const handleButtonClick = () => {
+    if (memberStatus === 'NOT_MEMBER') {
+      handleJoinRequest();
+    } else if (memberStatus === 'MEMBER' || memberStatus === 'CREATOR') {
+      handleChatClick();
+    }
+  };
+
+  //07-15
+  const handleChatClick = async () => {
+    console.log('채팅방으로 이동:', postId);
+    try {
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+        groupType: "TRAVELMATE",
+        groupId: postId
+      });
+      
+      console.log('채팅방 조회/생성 성공:', response.data);
+    if (response.data.success && response.data.chatRoomId) {
+        setSelectedChatId(response.data.chatRoomId);
+        setChatModalOpen(true);
+      } else {
+        alert('채팅방 정보를 가져오는데 실패했습니다.');
+      }
+      
+    } catch (error) {
+      console.error('Failed to get chat room:', error);
+      alert('채팅방에 접속할 수 없습니다.');
+    }
+  };
+
+      const handleReportClose = () => {
+    setShowReportModal(false);
+    setReportInfo(null);
+  };
+
+
 
   const isBlind = detail?.blindStatus === 'BLINDED';
 
@@ -272,10 +310,10 @@ useEffect(() => {
               </button>
               
               <button 
-                className={`${styles.joinButton} ${memberStatus !== 'NOT_MEMBER' ? styles.disabled : ''}`}
-                onClick={handleJoinRequest}
-                disabled={!isLogin || isBlind || memberStatus !== 'NOT_MEMBER'}
-              >
+              className={`${styles.joinButton} ${memberStatus == 'PENDING' ? styles.disabled : ''}`}
+              onClick={handleButtonClick}
+              disabled={!isLogin || isBlind}
+>
                 {isBlind ? '참여 불가' : getJoinButtonText()}
               </button>
             </div>
@@ -358,11 +396,19 @@ useEffect(() => {
         applicationDescription={detail?.applicationDescription}
       />
 
-      <ReportModal
-        show={showReportModal}
-        onClose={() => setShowReportModal(false)}
-        onSubmit={handleReportSubmit}
-      />
+      {chatModalOpen && selectedChatId && (
+            <ChatModal
+              isOpen={chatModalOpen}
+              chatId={selectedChatId}
+              currentUserId={currentUserId}
+            />
+          )}
+    
+          <ReportModal
+                  show={showReportModal}
+                  onClose={handleReportClose}
+                  onSubmit={handleReportSubmit}
+                />
     </div>
   );
 };

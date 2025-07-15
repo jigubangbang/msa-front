@@ -7,6 +7,30 @@
   margin-bottom: 30px;
 }
 
+.dropdownContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  width: fix-content;
+}
+
+.applicantUser{
+  display: flex;
+  gap: 10px;
+
+}
+
+.bin{
+  cursor: pointer;
+}
+
+
+
+.chatButton{
+  width: 100%;
+}
+
 .header h2 {
   font-size: 24px;
   font-weight: 600;
@@ -169,6 +193,7 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
+  justify-content: space-between;
 }
 
 .nickname {
