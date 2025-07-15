@@ -228,12 +228,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     });
   };
 
-  
-  const handleExitClick = async (groupId) => {
-    console.log(groupId,"그룹 나가기");
-    //나가기 버튼
-    //TODO 나가기 버튼 구현
-  }
 
 
 
@@ -276,14 +270,15 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                                 채팅방 삭제하기
                               </button>
                             ) : (
-                              <button
-                                className={styles.chatButton}
+                              <button 
+                                className={styles.leaveButton}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleExitClick(info.id);
+                                  handleLeaveGroup(info.id);
                                 }}
+                                disabled={isLeaving}
                               >
-                                나가기
+                                {isLeaving ? '나가는 중...' : '채팅방 나가기'}
                               </button>
                             )}
                           </div>
