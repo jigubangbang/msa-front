@@ -4,7 +4,7 @@ import AppRouter from "./routes/AppRouter";
 import { ThemeContext } from "./utils/themeContext";
 import Header from "./components/main/Header";
 import Footer from "./components/main/Footer";
-import ChatModal from "./pages/Chat/ChatModal";
+import ChatModal from "./pages/chat/ChatModal";
 import FeedDetail from "./components/feed/FeedDetail";
 import "./App.css";
 
@@ -61,7 +61,7 @@ function App() {
             </Routes>
           )}
 
-          <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />
+          {isChatModal && <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />}
         </main>
         <Footer />
       </div>
