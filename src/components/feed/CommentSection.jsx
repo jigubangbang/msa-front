@@ -5,7 +5,7 @@ import API_ENDPOINTS from '../../utils/constants';
 import FeedComment from './FeedComment';
 import moreIcon from '../../assets/feed/more_black.svg';
 
-export default function CommentSection({feedId, newComment}) {
+export default function CommentSection({feedId, newComment, setCommentCount}) {
     const limit = 4;
     const [currentPage, setCurrentPage] = useState(0);
     const [comments, setComments] = useState([]);
@@ -55,7 +55,7 @@ export default function CommentSection({feedId, newComment}) {
     return (
         <div className={styles.comments}>
             {comments.map((comment) => (
-                <FeedComment key={comment.id} comment={comment} feedId={feedId} onCommentDelete={onCommentDelete}/>
+                <FeedComment key={comment.id} comment={comment} feedId={feedId} onCommentDelete={onCommentDelete} setCommentCount={setCommentCount}/>
             ))}
             {hasMore.current && (
                 <div className={styles.loadMoreWrapper}>

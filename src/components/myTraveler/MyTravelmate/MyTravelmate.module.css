@@ -25,10 +25,24 @@
   cursor: pointer;
 }
 
-
-
-.chatButton{
+.chatButton, .leaveButton {
   width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.leaveButton {
+  background-color: rgb(246, 83, 83);
+  color: white;
+}
+
+.leaveButton:hover {
+  background-color: red;
 }
 
 .header h2 {

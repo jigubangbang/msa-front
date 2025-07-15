@@ -61,7 +61,7 @@ const API_ENDPOINTS = {
   CHAT: `${LOCAL}/api/chat`,
 
   WS: `ws://localhost:8080/api/ws/chat`,
-  // WS: `ws://192.168.100.25:8080/api/ws/chat`,
+  // WS: `ws://192.168.100.27:8080/api/ws/chat`,
   // WS: `http://localhost:8080/api/ws/chat`,
 
   NOTI: `${LOCAL}/api/notifications`,

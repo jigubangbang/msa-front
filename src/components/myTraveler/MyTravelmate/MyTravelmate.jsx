@@ -5,6 +5,7 @@ import {useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
 
 export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }) {
@@ -12,11 +13,11 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
-  
-
-    // 채팅방 입장
-    const [chatModalOpen, setChatModalOpen] = useState(false);
-    const [selectedChatId, setSelectedChatId] = useState(null);
+  // 채팅방 입장
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
+  // 모임 나가기
+  const { leaveChatRoom, isLeaving } = useChatLeave();
 
   const navigate = useNavigate();
 
@@ -152,10 +153,44 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
-  const handleExitClick = async (groupId) => {
-    console.log(groupId,"그룹 나가기");
-    //나가기 버튼
-  }
+  // 채팅방 나가기
+  const handleLeaveGroup = async (travelinfoId) => {
+    try {
+      // chatId 불러오기
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+        groupType: "TRAVELINFO",
+        groupId: travelinfoId
+      });     
+      const chatRoomId = response.data.chatRoomId;
+      
+      if (chatRoomId) {
+        // 모임 나가기
+        const success = await leaveChatRoom(chatRoomId, {
+          skipConfirmation: false, // 확인 모달 표시
+          showAlert: (title, message) => alert(message),
+          onSuccess: () => {
+            // 성공시 joinedChats에서 제거
+            setJoinedChats(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(travelinfoId);
+              return newSet;
+            });
+            // 멤버 수 감소
+            setTravelinfos(prev => prev.map(info => 
+              info.id === travelinfoId 
+                ? { ...info, memberCount: info.memberCount - 1 }
+                : info
+            ));
+          }
+        });
+      } else {
+        alert('채팅방 정보를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('Failed to get chat room info:', error);
+      alert('채팅방 정보를 가져오는데 실패했습니다.');
+    }
+  };
 
 
 
@@ -245,15 +280,17 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       </button>                                           
                     )}
                     {sectionType === 'joined' && (
-                      <button
-                        className={styles.chatButton}
+                      <button 
+                        className={styles.leaveButton}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleExitClick(travel.id);
+                          handleLeaveGroup(travel.id);
                         }}
+                         disabled={isLeaving}
                       >
-                        나가기
-                      </button>                                           
+                        {isLeaving ? '나가는 중...' : '모임 나가기'}
+                      </button>
+                      
                     )}
                 </div>
               </div>
@@ -391,6 +428,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       {chatModalOpen && selectedChatId && (
               <ChatModal
                 isOpen={chatModalOpen}
+                onClose={() => setChatModalOpen(false)}
                 chatId={selectedChatId}
                 currentUserId={currentUserId}
               />

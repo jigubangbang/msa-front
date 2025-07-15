@@ -10,7 +10,7 @@ import backIcon from "../../../assets/feed/arrow_back.svg";
 import forwardIcon from "../../../assets/feed/arrow_forward.svg";
 import API_ENDPOINTS from "../../../utils/constants";
 
-export default function CreateDiaryModal({onClose}) {
+export default function CreateDiaryModal({onClose, onPostCreated}) {
     const firstStep = 1;
     const lastStep = 4;
     const [step, setStep] = useState(firstStep);
@@ -58,6 +58,12 @@ export default function CreateDiaryModal({onClose}) {
                     })
                 })
             )
+
+            const newPost = {
+                ...postResponse.data.post,
+                photoUrl: orderedImages[0]?.photoUrl || null
+            }
+            onPostCreated(newPost);
             onClose();
         } catch (err) {
             console.error("Failed to upload post", err);

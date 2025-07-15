@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import MasonryFeed from "./MasonryFeed";
 import api from "../../apis/api";
+import styles from "./MasonryFeed.module.css";
 
-export default function CommonFeed({endpoint}) {
+export default function CommonFeed({endpoint, showEmptyMessage=false}) {
     const [posts, setPosts] = useState([]);
 
     const pageSize = 10;
@@ -57,6 +58,7 @@ export default function CommonFeed({endpoint}) {
 
     return (
         <div>
+            {showEmptyMessage && posts.length == 0 && <p className={styles.emptyMessage}>현재 게시물이 없습니다.</p>}
             <MasonryFeed posts={posts} numColumn={5}/>
             {hasMore && <div ref={loader} style={{ height: "50px" }}></div>}
         </div>
