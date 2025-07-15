@@ -29,7 +29,7 @@ const API_ENDPOINTS = {
   // mypage-service
   MYPAGE: {
     // Public 경로 (인증 불필요)
-    PUBLIC: `${LOCAL}/api/public`,
+    PUBLIC: `${LOCAL}/api/profile/public`,
     // (User 권한 필요)
     PROFILE: `${LOCAL}/api/profile`,
     USERS: `${LOCAL}/api/users`,
@@ -61,7 +61,7 @@ const API_ENDPOINTS = {
   CHAT: `${LOCAL}/api/chat`,
 
   WS: `ws://localhost:8080/api/ws/chat`,
-  // WS: `ws://192.168.100.25:8080/api/ws/chat`,
+  // WS: `ws://192.168.100.28:8080/api/ws/chat`,
   // WS: `http://localhost:8080/api/ws/chat`,
 
   NOTI: `${LOCAL}/api/notifications`,

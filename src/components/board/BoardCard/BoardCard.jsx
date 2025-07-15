@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardCard.module.css';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const BoardCard = ({ category, isLogin, currentUserId }) => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState({});
+
+   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchPopularPosts();
@@ -69,10 +72,8 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
 
   const handleBookmarkToggle = async (postId, e) => {
     e.stopPropagation();
-    
     if (!isLogin) {
-      //#NeedToChange
-      alert('로그인이 필요한 서비스입니다.');
+      setIsModalOpen(true);
       return;
     }
 
@@ -95,13 +96,14 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
       }));
     } catch (error) {
       console.error('Failed to toggle bookmark:', error);
-      alert('북마크 처리 중 오류가 발생했습니다.');
+
+      console.log('북마크 처리 중 오류가 발생했습니다.');
     }
   };
 
   const handleCardClick = (postId) => {
     if (!isLogin) {
-      alert('로그인이 필요한 서비스 입니다');
+      setIsModalOpen(true);
       return;
     }
     navigate(`/board/${postId}`);
@@ -116,6 +118,12 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
   const getDefaultThumbnail = () => {
     return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI0MCIgdmlld0JveD0iMCAwIDQwMCAyNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjQwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0xODAgMTAwSDIyMFYxNDBIMTgwVjEwMFoiIGZpbGw9IiNEMEQwRDAiLz4KPHBhdGggZD0iTTE2MCA4MEgyNDBWMTYwSDE2MFY4MFoiIHN0cm9rZT0iI0QwRDBEMCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5OTk5IiBmb250LXNpemU9IjE0Ij5JbWFnZTwvdGV4dD4KPC9zdmc+';
   };
+
+    const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
 
   if (loading) {
     return (
@@ -177,6 +185,12 @@ const BoardCard = ({ category, isLogin, currentUserId }) => {
           </div>
         </div>
       ))}
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 };

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './BoardCategoryBrowse.module.css';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const BoardCategoryBrowse = ({ category, onCategorySelect, isLogin }) => {
   const navigate = useNavigate();
+
+     const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = [
     { value: 0, label: '인기글', navigate:'popular'},
@@ -17,9 +20,16 @@ const BoardCategoryBrowse = ({ category, onCategorySelect, isLogin }) => {
     if (isLogin) {
       navigate('/board/new');
     } else {
-      alert('로그인이 필요한 서비스 입니다');
+      setIsModalOpen(true);
     }
   };
+
+  
+    const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
 
   return (
     <div className={styles.categoryBrowse}>
@@ -43,6 +53,13 @@ const BoardCategoryBrowse = ({ category, onCategorySelect, isLogin }) => {
       >
         글쓰기
       </button>
+
+      
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 };

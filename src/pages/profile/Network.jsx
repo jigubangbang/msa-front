@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ProfileTemplate from "../../components/profile/ProfileTemplate";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./Network.module.css";
@@ -10,6 +10,7 @@ import premiumIcon from "../../assets/common/premium.svg";
 
 export default function Network({type}) {
     const {userId} = useParams();
+    const navigate = useNavigate();
     const [list, setList] = useState([]);
     const [total, setTotal] = useState(0);
     const pageSize = 10;
@@ -42,30 +43,28 @@ export default function Network({type}) {
            {list && (
                 <div>
                 {list.map((user) => (
-                    <Link to={`/profile/${user.userId}`}>
-                        <div
-                            key={user.userId}
-                            className={styles.userCard}
-                            onClick={() => navigate(`/profile/${user.userId}`)}
-                        >
-                            <img
-                                src={user.profileImage || defaultProfile}
-                                alt="profile"
-                                className={styles.profileImage}
-                            />
-                            <div className={styles.userInfo}>
-                                <div className={styles.nicknameRow}>
-                                    {user.nickname}
-                                    {user.premium && (
-                                        <img className={styles.premiumIcon} src={premiumIcon}/>
-                                    )}
-                                </div>
-                                <div className={styles.statsRow}>
-                                    팔로워 {user.followerCount} · 팔로잉 {user.followingCount} · 방문국 {user.countryVisitCount}
-                                </div>
+                    <div
+                        key={user.userId}
+                        className={styles.userCard}
+                        onClick={() => navigate(`/profile/${user.userId}`)}
+                    >
+                        <img
+                            src={user.profileImage || defaultProfile}
+                            alt="profile"
+                            className={styles.profileImage}
+                        />
+                        <div className={styles.userInfo}>
+                            <div className={styles.nicknameRow}>
+                                {user.nickname}
+                                {user.premium && (
+                                    <img className={styles.premiumIcon} src={premiumIcon}/>
+                                )}
+                            </div>
+                            <div className={styles.statsRow}>
+                                팔로워 {user.followerCount} · 팔로잉 {user.followingCount} · 방문국 {user.countryVisitCount}
                             </div>
                         </div>
-                    </Link>
+                    </div>
                 ))}
                 </div>
             )}

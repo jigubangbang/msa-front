@@ -112,12 +112,14 @@ const TravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${postId}`,
-      {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`, 
+          {},
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          }
+        );
         setLikedPosts(prev => new Set(prev).add(postId));
       }
       
@@ -177,7 +179,7 @@ const TravelInfoList = ({
     if (!selectedInfo) return;
 
     try {
-      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`,
+      await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${selectedInfo.id}/join`, {}, 
       {
         headers: {
           'User-Id': currentUserId,
