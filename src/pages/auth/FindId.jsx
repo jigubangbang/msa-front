@@ -69,7 +69,7 @@ const FindId = () => {
 
       // 소셜 로그인 계정
       if (response.data?.isSocial) {
-        setMessage("소셜 로그인 가입 회원입니다");
+        setMessage("소셜 회원으로 가입된 계정입니다");
         setMessageType("error");
         return; 
       }
