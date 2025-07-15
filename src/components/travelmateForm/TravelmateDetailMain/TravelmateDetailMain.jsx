@@ -5,7 +5,9 @@ import api from '../../../apis/api';
 import JoinApplicationModal from '../../modal/JoinApplicationModal/JoinApplicationModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
+import ChatModal from '../../../pages/chat/ChatModal';
 import { useNavigate } from 'react-router-dom';
+
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -229,7 +231,6 @@ useEffect(() => {
     }
   };
 
-  //07-15
   const handleChatClick = async () => {
     console.log('채팅방으로 이동:', postId);
     try {
@@ -252,12 +253,10 @@ useEffect(() => {
     }
   };
 
-      const handleReportClose = () => {
+  const handleReportClose = () => {
     setShowReportModal(false);
     setReportInfo(null);
   };
-
-
 
   const isBlind = detail?.blindStatus === 'BLINDED';
 
@@ -313,7 +312,7 @@ useEffect(() => {
               className={`${styles.joinButton} ${memberStatus == 'PENDING' ? styles.disabled : ''}`}
               onClick={handleButtonClick}
               disabled={!isLogin || isBlind}
->
+              >
                 {isBlind ? '참여 불가' : getJoinButtonText()}
               </button>
             </div>
@@ -399,6 +398,7 @@ useEffect(() => {
       {chatModalOpen && selectedChatId && (
             <ChatModal
               isOpen={chatModalOpen}
+              onClose={() => setChatModalOpen(false)}
               chatId={selectedChatId}
               currentUserId={currentUserId}
             />

@@ -186,6 +186,23 @@
   background-color: #1e7e34;
 }
 
+.leaveButton {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: rgb(246, 83, 83);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.leaveButton:hover {
+  background-color: red;
+}
+
 .loading {
   display: flex;
   justify-content: center;

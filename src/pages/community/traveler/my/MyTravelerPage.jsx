@@ -178,6 +178,7 @@ const fetchTravelerData = async () => {
               <MyTravelinfo 
                 data={travelerData || {}}
                 currentUserId={currentUserId}
+                isLogin={isLogin}
                 fetchTravelinfos={handleUpdate}
               />
             )}
