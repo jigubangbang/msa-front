@@ -118,7 +118,9 @@ export default function PostInfoStep({setPostInfo, title, publicStatus, errorMes
                 </div>
             </div>
             {errorMessage && (
-                <p className={styles.errorMessage}>{errorMessage}</p>
+                <div className={`${styles.message} ${styles.error}`}>
+                    <span className={styles.errorIcon}>{errorMessage}</span>
+                </div>
             )}
         </>
     );
