@@ -6,7 +6,6 @@ import Vote from '../../components/community/Vote';
 import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import defaultProfile from "../../assets/default_profile.png";
-import { useNavigate, useLocation } from "react-router-dom";
 import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
 import Modal from "../../components/common/Modal/Modal";
 
@@ -18,17 +17,12 @@ const mockPopularFeeds = [
 ];
 
 export default function Main() {
-    // ==================================================================================
-    // 상태 관리 (State Management)
-    // - API로부터 받아온 실제 데이터를 저장하기 위한 state들입니다.
-    // - 초기값으로는 위에서 정의한 목업 데이터를 사용하여, API 연동 전에도 화면이 정상적으로 보이도록 합니다.
-    // - 각 팀원은 자신의 데이터를 담을 state를 관리하게 됩니다.
-    // ==================================================================================
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
-    const [showProfileModal, setShowProfileModal] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userId, setUserId] = useState(null);
+    const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     
     const [feeds, setFeeds] = useState(mockPopularFeeds);
     const [quests, setQuests] = useState([]);
@@ -60,13 +54,6 @@ export default function Main() {
         }
     }, [location]);
 
-
-    // ==================================================================================
-    // 데이터 연동 (Data Fetching)
-    // - 페이지가 처음 렌더링될 때, 각 서비스의 API를 호출하여 실제 데이터를 가져오는 부분입니다.
-    // - useEffect 훅은 컴포넌트가 마운트될 때 (처음 나타날 때) 한 번만 실행됩니다.
-    // - 각 팀원은 아래의 주석 처리된 예시를 참고하여 자신의 API 호출 코드를 작성하면 됩니다.
-    // ==================================================================================
     useEffect(() => {
         const fetchAllData = async () => {
             setLoading(true);
@@ -288,7 +275,7 @@ export default function Main() {
                     firstLabel="확인"
                     secondLabel="나중에"
                 >
-                    원활한 서비스 이용을 위해 추가 정보를 입력해 주세요
+                    원활한 서비스 이용을 위해 추가 정보를 입력해 주세요.
                 </Modal>
             )}
         </div>
