@@ -133,7 +133,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     const handleChatClick = async (groupId) => {
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELINFO",
+        groupType: "TRAVELMATE",
         groupId: groupId
       });
       
@@ -154,12 +154,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   };
 
   // 채팅방 나가기
-  const handleLeaveGroup = async (travelinfoId) => {
+  const handleLeaveGroup = async (travelId) => {
     try {
       // chatId 불러오기
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELINFO",
-        groupId: travelinfoId
+        groupType: "TRAVELMATE",
+        groupId: travelId
       });     
       const chatRoomId = response.data.chatRoomId;
       
@@ -169,18 +169,9 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           skipConfirmation: false, // 확인 모달 표시
           showAlert: (title, message) => alert(message),
           onSuccess: () => {
-            // 성공시 joinedChats에서 제거
-            setJoinedChats(prev => {
-              const newSet = new Set(prev);
-              newSet.delete(travelinfoId);
-              return newSet;
-            });
-            // 멤버 수 감소
-            setTravelinfos(prev => prev.map(info => 
-              info.id === travelinfoId 
-                ? { ...info, memberCount: info.memberCount - 1 }
-                : info
-            ));
+            if (fetchTravelerData){
+              fetchTravelerData();
+            }
           }
         });
       } else {
