@@ -226,7 +226,7 @@ const NotificationDropdown = ({ userId }) => {
     if (notification.senderProfileImage) {
       return <img src={notification.senderProfileImage} alt="프로필 이미지" className={styles.profileImage} />;
     }
-    return <img src={getNotificationIcon(notification.type)} alt="알림 아이콘" className={styles.typeIcon} />;
+    return <img src={getNotificationIcon(notification.type)} alt="알림 아이콘" className={notification.type == 'FOLLOW' ? styles.profileImage : styles.typeIcon} />;
   };
 
   const renderNotificationGroup = (notifications, groupTitle) => {

@@ -335,7 +335,9 @@ useEffect(() => {
           </div>
           <div className={styles.creatorDetails}>
             <div className={styles.creatorName}>
-              <span className={styles.style}>[{isBlind ? '-' : (detail.creatorStyle|| '')}]</span>
+              {!isBlind && detail.creatorStyle && (
+                <span className={styles.style}>[{detail.creatorStyle}]</span>
+              )}
               <span className={styles.nickname}>{isBlind ? '블라인드 사용자' : detail.creatorNickname}</span>
               <span className={styles.userId}>({isBlind ? '-' : detail.creatorId})</span>
             </div>

@@ -46,21 +46,24 @@ const TopTravelmateList = ({
     try {
       let params = {
         pageNum: 1,
-        limit: 5 // 5개만 가져오기
+        limit: 10 
       };
 
-      // option에 따라 다른 파라미터 설정
       if (option === 'popular') {
-        params.sortOption = 'likes'; // 좋아요 순
+        params.sortOption = 'likes'; 
       } else if (option === 'recent') {
-        params.sortOption = 'latest'; // 최신 순
+        params.sortOption = 'latest'; 
       }
 
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/list`, {
         params: params
       });
 
-      setTravelmates(response.data.travelmates?.slice(0, 5) || []);
+      const filteredTravelmates = response.data.travelmates
+     ?.filter(travelmate => travelmate.blindStatus === 'VISIBLE')
+     ?.slice(0, 5) || [];
+   
+    setTravelmates(filteredTravelmates);
     } catch (err) {
       console.error("Failed to fetch top travelmates", err);
       setTravelmates([]);

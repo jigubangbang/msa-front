@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from 'react-dom';
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import api from "../../apis/api";
@@ -12,13 +12,6 @@ import QuestModal from "../../components/modal/QuestModal/QuestModal";
 import Modal from "../../components/common/Modal/Modal";
 import CirclesSpinner from "../../components/common/Spinner/CirclesSpinner";
 
-const mockPopularFeeds = [
-    { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
-    { id: 2, user: '탐험가', location: '이탈리아', avatar: '/2.jpg', image: '/2.jpg' },
-    { id: 3, user: '방랑자', location: '프랑스', avatar: '/3.jpg', image: '/3.jpg' },
-    { id: 4, user: '모험가', location: '스페인', avatar: '/4.jpg', image: '/4.jpg' },
-];
-
 export default function Main() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -27,7 +20,7 @@ export default function Main() {
     const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
     const [showProfileModal, setShowProfileModal] = useState(false);
 
-    const [feeds, setFeeds] = useState(mockPopularFeeds);
+    const [feeds, setFeeds] = useState([]);
     const [badges, setBadges] = useState([]);
     const [posts, setPosts] = useState([]);
     const [rankings, setRankings] = useState([]);
@@ -42,6 +35,26 @@ export default function Main() {
     const [showQuestModal, setShowQuestModal] = useState(false);
     const [selectedQuest, setSelectedQuest] = useState(null);
     const scrollPosition = useRef(0);
+
+    const getDifficultyText = (difficulty) => {
+        switch(String(difficulty)) {
+          case '1': return '초급';
+          case '2': return '중급';
+          case '3': return '고급';
+          case '4': return '시즌';
+          default: return '';
+        }
+    };
+
+    const getDifficultyClass = (difficulty) => {
+        switch(String(difficulty)) {
+            case '1': return styles.difficultyEasy;
+            case '2': return styles.difficultyNormal;
+            case '3': return styles.difficultyHard;
+            case '4': return styles.difficultySeasonal;
+            default: return '';
+        }
+    };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -92,15 +105,28 @@ export default function Main() {
             setError(null);
 
             try {
-                const [badgeResponse, postResponse, rankingResponse, feedResponse] = await Promise.all([
-                    api.get('/api/quests/badges?type=popular&limit=8'),
-                    api.get('/api/com/board/list?sortOption=latest&limit=4'),
+                const [
+                    badgeResponse,
+                    postResponse, 
+                    rankingResponse, 
+                    feedResponse
+                ] = await Promise.all([
+                    api.get('/api/quests/badges?type=popular&limit=30'),
+                    api.get('/api/com/board/list?sortOption=latest&limit=20'),
                     api.get('/api/quests/rankings?limit=5'),
                     api.get(`${API_ENDPOINTS.FEED.PUBLIC}/posts/top`),
                 ]);
+
                 const feedData = await feedResponse.data.posts;
                 setFeeds(feedData);
-                setBadges(badgeResponse.data.badges);
+
+                const allBadges = badgeResponse.data.badges || [];
+                
+                // 뱃지 목록을 랜덤으로 섞고 8개를 선택
+                const shuffledBadges = allBadges.sort(() => 0.5 - Math.random());
+                const randomBadges = shuffledBadges.slice(0, 8);
+                setBadges(randomBadges);
+
                 setPosts(postResponse.data.posts);
                 setRankings(rankingResponse.data.rankings);
 
@@ -248,7 +274,7 @@ export default function Main() {
                         </div>
                     </div>
                     <div className={styles.sectionFooter}>
-                        <Link to="/feed" className={`${styles.btn} ${styles.btnOutline}`}>전체 피드 보기</Link>
+                        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/feed")}>전체 피드 보기</button>
                     </div>
                 </div>
 
@@ -262,6 +288,7 @@ export default function Main() {
                         {badges.map((badge) => (
                             <div key={badge.id} className={styles.badgeCard} onClick={() => openBadgeModal(badge.id)}>
                                 <img src={badge.icon} alt={`${badge.kor_title} 뱃지`} className={styles.badgeIcon} />
+                                <p className={`${styles.badgeDifficulty} ${getDifficultyClass(badge.difficulty)}`}>{getDifficultyText(badge.difficulty)}</p>
                                 <h4 className={styles.badgeTitle}>{badge.kor_title}</h4>
                                 <p className={styles.badgeAcquired}>
                                     {badge.acquired_count}명이 획득
@@ -270,7 +297,7 @@ export default function Main() {
                         ))}
                     </div>
                     <div className={styles.sectionFooter}>
-                        <Link to="/quest/badge" className={`${styles.btn} ${styles.btnOutline}`}>전체 뱃지 보기</Link>
+                        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/quest/badge")}>전체 뱃지 보기</button>
                     </div>
                 </div>
 
@@ -284,20 +311,17 @@ export default function Main() {
                         <div className={styles.communityColumn}>
                             <h4 className={styles.centeredText}>최신 게시글</h4>
                             <ul className={styles.postList}>
-                                {posts.map((post) => {
-                                    const isBlinded = post.blindStatus === 'BLINDED';
-                                    return (
-                                        <li key={post.id} className={styles.postItem} onClick={() => !isBlinded && handlePostClick(post.id)}>
-                                            <h4>{isBlinded ? '블라인드 처리된 게시물입니다.' : post.title}</h4>
-                                            <div className={styles.postMeta}>
-                                                <span>{isBlinded ? '-' : post.creatorNickname}</span> | <span>{formatDate(post.createdAt)}</span>
-                                            </div>
-                                        </li>
-                                    );
-                                })}
+                                {posts.filter(post => post.blindStatus !== 'BLINDED').slice(0, 4).map((post) => (
+                                    <li key={post.id} className={styles.postItem} onClick={() => handlePostClick(post.id)}>
+                                        <h4>{post.title}</h4>
+                                        <div className={styles.postMeta}>
+                                            <span>{post.creatorNickname}</span> | <span>{formatDate(post.createdAt)}</span>
+                                        </div>
+                                    </li>
+                                ))}
                             </ul>
                             <div className={styles.sectionFooter}>
-                                <Link to="/board/popular" className={`${styles.btn} ${styles.btnOutline}`}>전체 게시글 보기</Link>
+                                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/board/popular")}>전체 게시글 보기</button>
                             </div>
                         </div>
                         <div className={styles.communityColumn}>
@@ -306,7 +330,7 @@ export default function Main() {
                                 {rankings.map(user => (
                                     <li key={user.rank} className={styles.rankingItem} onClick={() => navigate(`/profile/${user.user_id}`)}>
                                         <span className={styles.rank}>{user.rank}</span>
-                                        <img src={user.icon || user.profile_image || '/icons/common/user_profile.svg'} alt={user.nickname} className={styles.userAvatar} />
+                                        <img src={user.icon || user.profile_image || defaultProfile} alt={user.nickname} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
                                             <span className={styles.userNickname}>{user.nickname}</span>
                                             <span className={styles.userLevel}>Lv. {user.level}</span>
@@ -315,7 +339,7 @@ export default function Main() {
                                 ))}
                             </ul>
                             <div className={styles.sectionFooter}>
-                                <Link to="/rank/list" className={`${styles.btn} ${styles.btnOutline}`}>랭킹 더보기</Link>
+                                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/rank/list")}>랭킹 더보기</button>
                             </div>
                         </div>
                     </div>
@@ -342,7 +366,7 @@ export default function Main() {
                                     <span className={styles.label}>나의 레벨</span>
                                 </div>
                             </div>
-                            <button className={`${styles.btn} ${styles.btnOutline}`} style={{ marginTop: '20px' }}>마이페이지 바로가기</button>
+                            <button className={`${styles.btn} ${styles.btnSecondary}`} style={{ marginTop: '20px' }}>마이페이지 바로가기</button>
                         </div>
                     </div>
                 )}
