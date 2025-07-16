@@ -1,6 +1,7 @@
 .recommendationWrapper {
     position: relative;
     padding: 16px;
+    min-width: 1100px;
 }
 
 .refreshButton {
