@@ -165,9 +165,9 @@ export default function UserManage() {
       if (searchTerm) {
         filtered = filtered.filter(
           (user) =>
-            user.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+            user.userId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.nickname?.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
 
@@ -280,7 +280,7 @@ export default function UserManage() {
           placeholder="아이디, 이름, 닉네임으로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown

@@ -1,6 +1,8 @@
 .wrapper {
     width: 100%;
     padding: 8px 0;
+    display: flex;
+    justify-content: center;
 }
 
 .formGroup {
@@ -15,6 +17,10 @@
     min-width: 120px;
 }
 
+.dropdownWrapper.countryDropdownWrapper {
+    min-width: 300px;
+}
+
 .dropdownSelector {
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -24,7 +30,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .arrow {
@@ -85,8 +91,8 @@
 }
 
 .btn {
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 8px 18px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   border: none;

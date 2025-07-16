@@ -243,7 +243,7 @@ export default function GroupManage() {
           placeholder="그룹명, 소개글, 생성자로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown

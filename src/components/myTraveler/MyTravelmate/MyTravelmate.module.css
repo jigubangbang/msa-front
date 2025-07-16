@@ -113,11 +113,33 @@
   flex: 1;
 }
 
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.blindedBadge {
+  display: inline-block;
+  background-color: #ff4444;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
 .travelTitle {
   font-size: 18px;
   font-weight: 600;
   color: #333;
-  margin: 0 0 8px 0;
+  flex: 1;
+  min-width: 0;
+
+  margin:0;
 }
 
 .travelDescription {
