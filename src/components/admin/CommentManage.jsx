@@ -336,13 +336,15 @@ export default function CommentManage() {
                               { label: "공개", value: "VISIBLE" },
                               { label: "블라인드", value: "BLINDED" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(
-                                comment.commentId,
-                                comment.contentType,
-                                option.value
-                              )
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== comment.status) {
+                                handleStatusChange(
+                                  comment.commentId,
+                                  comment.contentType,
+                                  option.value
+                                );
+                              }
+                            }}
                           />
                         </div>
                       </td>
