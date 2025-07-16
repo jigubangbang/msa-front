@@ -117,6 +117,7 @@ export default function FeedDetail() {
         try {
             await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}`);
             setShowDeleteModal(false);
+            navigate(-1);
         } catch (err) {
             console.error("Failed to delete post", err)
         }
@@ -247,7 +248,7 @@ export default function FeedDetail() {
                                 </div>
                             </div>
                             <div className={styles.comments}>
-                                <CommentSection feedId={feedId} newComment={newComment}/>
+                                <CommentSection feedId={feedId} newComment={newComment} setCommentCount={setCommentCount}/>
                             </div>
                             <div className={styles.footer}>
                                 <div className={styles.actionsLeft}>

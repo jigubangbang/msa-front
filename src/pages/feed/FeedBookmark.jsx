@@ -9,7 +9,7 @@ export default function FeedBookmark() {
     return (
         <FeedTemplate>
             <div className={styles.feedContainer}>
-                <CommonFeed endpoint={endpoint}/>
+                <CommonFeed endpoint={endpoint} showEmptyMessage={true}/>
             </div>
         </FeedTemplate>
     );

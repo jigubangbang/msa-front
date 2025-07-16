@@ -196,7 +196,7 @@ export default function ProfileSidebar() {
 
                 <span className={styles.nickname}>
                     {data.nickname}
-                    {nationality && <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>}
+                    {nationality && findFlagUrlByIso3Code(nationality) && <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>}
                     {data.premium && <img className={styles.premiumIcon} src={premiumIcon}/>}
                 </span>
                 <p className={styles.userId}>@{data.userId}</p>

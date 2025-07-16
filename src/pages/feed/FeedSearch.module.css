@@ -51,6 +51,10 @@
     background-color: #f1f1f1;
 }
 
+.tagHeading {
+    font-size: 20px;
+}
+
 /* search recommendation */
 .searchRecommendation {
     display: flex;

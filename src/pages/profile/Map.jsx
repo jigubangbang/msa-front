@@ -141,7 +141,7 @@ const Map = forwardRef((props, ref) => {
                         <div className={styles.postList}>
                             {posts.map((post) => (
                                 <div key={post.id} className={styles.postCard} onClick={() => navigate(`/feed/${post.id}`)}>
-                                    <img src={post.thumbnail || "/default-thumbnail.png"} alt={post.title} className={styles.thumbnail}/>
+                                    <img src={post.thumbnail} alt={post.title} className={styles.thumbnail}/>
                                     <div className={styles.postInfo}>
                                         <p className={styles.postTitle}>{post.title}</p>
                                         <p className={styles.postDate}>{post.createdAt?.slice(0,10)}</p>

@@ -165,8 +165,28 @@ h2 {
     min-width: 0; /* allow shrink on small screens */
 }
 
-.errorMessage {
+/* Error message */
+.message {
+  font-family: 'Pretendard';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 8px 16px;
   font-size: 14px;
-  padding-top: 8px;
-  text-align: center;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.message.error {
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
+}
+
+.errorIcon {
+  font-weight: bold;
+  font-size: 14px;
 }

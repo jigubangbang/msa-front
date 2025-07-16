@@ -8,7 +8,7 @@ export default function FeedFollowing() {
     return (
         <FeedTemplate>
             <div className={styles.feedContainer}>
-                <CommonFeed endpoint={endpoint}/>
+                <CommonFeed endpoint={endpoint} showEmptyMessage={true}/>
             </div>
         </FeedTemplate>
     );

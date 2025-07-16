@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from 'react-dom';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import api from "../../apis/api";
@@ -9,6 +9,7 @@ import defaultProfile from "../../assets/default_profile.png";
 import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
 import BadgeModal from "../../components/modal/BadgeModal/BadgeModal";
 import QuestModal from "../../components/modal/QuestModal/QuestModal";
+import Modal from "../../components/common/Modal/Modal";
 
 const mockPopularFeeds = [
     { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
@@ -19,10 +20,12 @@ const mockPopularFeeds = [
 
 export default function Main() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null);
     const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
-    
+    const [showProfileModal, setShowProfileModal] = useState(false);
+
     const [feeds, setFeeds] = useState(mockPopularFeeds);
     const [badges, setBadges] = useState([]);
     const [posts, setPosts] = useState([]);
@@ -43,7 +46,7 @@ export default function Main() {
         const date = new Date(dateString);
         return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
     };
-    
+
     useEffect(() => {
         const accessToken = localStorage.getItem("accessToken");
         const storedUserId = localStorage.getItem("userId");
@@ -73,6 +76,13 @@ export default function Main() {
             }
         }
     }, [showBadgeModal, showQuestModal, showLoginConfirmModal]);
+
+    useEffect(() => {
+        if (location.state?.showIncompleteProfileModal) {
+            setShowProfileModal(true);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location]);
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -109,7 +119,6 @@ export default function Main() {
 
     }, [isLoggedIn, userId]);
 
-
     const scrollToContent = () => {
         scroller.scrollTo('content-section', {
             duration: 800,
@@ -133,7 +142,7 @@ export default function Main() {
         try {
             const endpoint = `/api/quests/badges/${badge_id}`;
             const config = isLoggedIn ? { headers: { 'User-Id': userId } } : {};
-            
+
             const response = await api.get(endpoint, config);
             setSelectedBadge(response.data);
             setShowBadgeModal(true);
@@ -178,22 +187,30 @@ export default function Main() {
         closeQuestModal();
         openBadgeModal(badge_id);
     };
-    
+
     const handleQuestUpdate = async (questId) => {
         // In main page, we might just refetch the specific quest for the modal
         openQuestModal(questId);
+    }; // 중복 선언된 함수 중 하나를 제거했습니다.
+
+    const handleProfileModalConfirm = () => {
+        setShowProfileModal(false);
+        navigate("/user/manage");
+    };
+
+    const handleProfileModalClose = () => {
+        setShowProfileModal(false);
     };
 
     // ==================================================================================
     // UI 렌더링 (Rendering)
     // ==================================================================================
-    
     if (loading && badges.length === 0 && !showBadgeModal && !showQuestModal) return <div>로딩 중...</div>;
     if (error) return <div>{error}</div>;
 
     return (
         <div className={styles.outerContainer}>
-            
+
             <div className={styles.mainPoster}>
                 <div className={styles.posterTitle}>JIGU BANGBANG</div>
                 <div className={styles.posterSubtitle}>여행, 그 이상의 여정을 기록하다</div>
@@ -321,7 +338,7 @@ export default function Main() {
                                     <span className={styles.label}>나의 레벨</span>
                                 </div>
                             </div>
-                            <button className={`${styles.btn} ${styles.btnOutline}`} style={{marginTop: '20px'}}>마이페이지 바로가기</button>
+                            <button className={`${styles.btn} ${styles.btnOutline}`} style={{ marginTop: '20px' }}>마이페이지 바로가기</button>
                         </div>
                     </div>
                 )}
@@ -335,25 +352,41 @@ export default function Main() {
             )}
 
             {showBadgeModal && ReactDOM.createPortal(
-                <BadgeModal 
-                    badgeData={selectedBadge} 
+                <BadgeModal
+                    badgeData={selectedBadge}
                     onClose={closeBadgeModal}
                     onQuestClick={handleQuestClickFromBadge}
-                    isLogin={isLoggedIn} 
+                    isLogin={isLoggedIn}
                 />,
                 document.body
             )}
 
             {showQuestModal && ReactDOM.createPortal(
-                <QuestModal 
+                <QuestModal
                     currentUserId={userId}
-                    questData={selectedQuest} 
+                    questData={selectedQuest}
                     onClose={closeQuestModal}
                     onBadgeClick={handleBadgeClickFromQuest}
                     isLogin={isLoggedIn}
-                    onQuestUpdate={handleQuestUpdate} 
+                    onQuestUpdate={handleQuestUpdate}
                 />,
                 document.body
+            // ==========================================================
+            // 아래에 닫는 괄호 `)`와 중괄호 `}`가 누락되었습니다.
+            // ==========================================================
+            )} 
+
+            {showProfileModal && (
+                <Modal
+                    show={showProfileModal}
+                    onClose={handleProfileModalClose}
+                    onSubmit={handleProfileModalConfirm}
+                    heading="추가 정보 입력"
+                    firstLabel="확인"
+                    secondLabel="나중에"
+                >
+                    원활한 서비스 이용을 위해 추가 정보를 입력해 주세요.
+                </Modal>
             )}
         </div>
     );

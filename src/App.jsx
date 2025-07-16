@@ -61,7 +61,7 @@ function App() {
             </Routes>
           )}
 
-          <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />
+          {isChatModal && <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />}
         </main>
         <Footer />
       </div>
