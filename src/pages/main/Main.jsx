@@ -211,6 +211,9 @@ export default function Main() {
     if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
 
+
+    
+
     return (
         <div className={styles.outerContainer}>
 
