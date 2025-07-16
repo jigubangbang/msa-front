@@ -109,7 +109,7 @@ const TravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`, 
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${postId}`, 
           {},
           {
             headers: {
