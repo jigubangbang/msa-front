@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from 'react-dom';
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import api from "../../apis/api";
@@ -12,13 +12,6 @@ import QuestModal from "../../components/modal/QuestModal/QuestModal";
 import Modal from "../../components/common/Modal/Modal";
 import CirclesSpinner from "../../components/common/Spinner/CirclesSpinner";
 
-const mockPopularFeeds = [
-    { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
-    { id: 2, user: '탐험가', location: '이탈리아', avatar: '/2.jpg', image: '/2.jpg' },
-    { id: 3, user: '방랑자', location: '프랑스', avatar: '/3.jpg', image: '/3.jpg' },
-    { id: 4, user: '모험가', location: '스페인', avatar: '/4.jpg', image: '/4.jpg' },
-];
-
 export default function Main() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -27,7 +20,7 @@ export default function Main() {
     const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
     const [showProfileModal, setShowProfileModal] = useState(false);
 
-    const [feeds, setFeeds] = useState(mockPopularFeeds);
+    const [feeds, setFeeds] = useState([]);
     const [badges, setBadges] = useState([]);
     const [posts, setPosts] = useState([]);
     const [rankings, setRankings] = useState([]);
@@ -248,7 +241,7 @@ export default function Main() {
                         </div>
                     </div>
                     <div className={styles.sectionFooter}>
-                        <Link to="/feed" className={`${styles.btn} ${styles.btnOutline}`}>전체 피드 보기</Link>
+                        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/feed")}>전체 피드 보기</button>
                     </div>
                 </div>
 
@@ -270,7 +263,7 @@ export default function Main() {
                         ))}
                     </div>
                     <div className={styles.sectionFooter}>
-                        <Link to="/quest/badge" className={`${styles.btn} ${styles.btnOutline}`}>전체 뱃지 보기</Link>
+                        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/quest/badge")}>전체 뱃지 보기</button>
                     </div>
                 </div>
 
@@ -297,7 +290,7 @@ export default function Main() {
                                 })}
                             </ul>
                             <div className={styles.sectionFooter}>
-                                <Link to="/board/popular" className={`${styles.btn} ${styles.btnOutline}`}>전체 게시글 보기</Link>
+                                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/board/popular")}>전체 게시글 보기</button>
                             </div>
                         </div>
                         <div className={styles.communityColumn}>
@@ -306,7 +299,7 @@ export default function Main() {
                                 {rankings.map(user => (
                                     <li key={user.rank} className={styles.rankingItem} onClick={() => navigate(`/profile/${user.user_id}`)}>
                                         <span className={styles.rank}>{user.rank}</span>
-                                        <img src={user.icon || user.profile_image || '/icons/common/user_profile.svg'} alt={user.nickname} className={styles.userAvatar} />
+                                        <img src={user.icon || user.profile_image || defaultProfile} alt={user.nickname} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
                                             <span className={styles.userNickname}>{user.nickname}</span>
                                             <span className={styles.userLevel}>Lv. {user.level}</span>
@@ -315,7 +308,7 @@ export default function Main() {
                                 ))}
                             </ul>
                             <div className={styles.sectionFooter}>
-                                <Link to="/rank/list" className={`${styles.btn} ${styles.btnOutline}`}>랭킹 더보기</Link>
+                                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/rank/list")}>랭킹 더보기</button>
                             </div>
                         </div>
                     </div>
@@ -342,7 +335,7 @@ export default function Main() {
                                     <span className={styles.label}>나의 레벨</span>
                                 </div>
                             </div>
-                            <button className={`${styles.btn} ${styles.btnOutline}`} style={{ marginTop: '20px' }}>마이페이지 바로가기</button>
+                            <button className={`${styles.btn} ${styles.btnSecondary}`} style={{ marginTop: '20px' }}>마이페이지 바로가기</button>
                         </div>
                     </div>
                 )}
