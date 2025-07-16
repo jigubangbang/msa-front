@@ -6,7 +6,7 @@ import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import ChatDescriptionEditor from '../../components/chat/ChatDescriptionEditor';
-import ReportModal from '../../components/common/Modal/ReportModal';
+import ChatReportModal from '../../components/chat/ChatReportModal';
 import ChatAlertModal from '../../components/chat/ChatAlertModal';
 import defaultProfile from '../../assets/default_profile.png';
 import API_ENDPOINTS from '../../utils/constants';
@@ -403,7 +403,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         </div>
       </div>
 
-      <ReportModal
+      <ChatReportModal
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         onSubmit={handleReportSubmit}

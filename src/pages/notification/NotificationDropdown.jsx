@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './NotificationDropdown.module.css';
 import API_ENDPOINTS from '../../utils/constants';
-import { Circles } from 'react-loader-spinner';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 import { getNotificationIcon } from '../../utils/NotificationIcons';
 import bell from '../../assets/chat/notification_bell_26.svg';
@@ -328,9 +327,8 @@ const NotificationDropdown = ({ userId }) => {
                   <button 
                     className={styles.loadMoreButton}
                     onClick={loadMore}
-                    disabled={loading}
                   >
-                    {loading ? <Circles /> : '더 보기'}
+                    {loading ? '' : '더 보기'}
                   </button>
                 )}
               </>
