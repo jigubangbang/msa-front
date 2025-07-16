@@ -4,7 +4,7 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import {useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
 
@@ -13,10 +13,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
-  // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  // 모임 나가기
+  const { openChat, closeChat, chatRooms } = useChatContext();
   const { leaveChatRoom, isLeaving } = useChatLeave();
 
   const navigate = useNavigate();
@@ -147,8 +144,13 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelerData) {
+              fetchTravelerData();
+            }
+          }
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
@@ -175,6 +177,9 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           skipConfirmation: false, // 확인 모달 표시
           showAlert: (title, message) => alert(message),
           onSuccess: () => {
+            if (chatRooms[chatRoomId]) {
+              closeChat(chatRoomId);
+            }
             if (fetchTravelerData){
               fetchTravelerData();
             }
@@ -188,8 +193,6 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       alert('채팅방 정보를 가져오는데 실패했습니다.');
     }
   };
-
-
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ko-KR', {
@@ -432,26 +435,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
       {/* 완료된 여행 */}
       {data.completedTravelmates && renderTravelList(data.completedTravelmates, '완료된 여행', 'completed')}
-
-      {chatModalOpen && selectedChatId && (
-              <ChatModal
-                isOpen={chatModalOpen}
-                onClose={() => setChatModalOpen(false)}
-                chatId={selectedChatId}
-                currentUserId={currentUserId}
-                onLeave={() => {
-                  if (fetchTravelerData) {
-                    fetchTravelerData();
-                  }
-                }}
-              />
-            )}
       
-            <ReportModal
-                    show={showReportModal}
-                    onClose={handleReportClose}
-                    onSubmit={handleReportSubmit}
-                  />
+      <ReportModal
+        show={showReportModal}
+        onClose={handleReportClose}
+        onSubmit={handleReportSubmit}
+      />
     </div>
 
     

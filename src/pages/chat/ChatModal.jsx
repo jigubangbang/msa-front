@@ -62,12 +62,15 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
         member.userId === lastMessage?.senderId || member.nickname === lastMessage?.nickname
       )?.profileImage;
 
-    const bottomPosition = getMinimizedPosition(chatId);
+    const position = getMinimizedPosition(chatId);
 
     return (
       <div 
         className="minimized-chat" 
-        style={{ bottom: `${70 + bottomPosition}px` }}
+        style={{ 
+          bottom: `${110 + position}px`,
+          zIndex: 1000
+        }}
         onClick={handleRestore}
       >
         <div className="minimized-chat-content">

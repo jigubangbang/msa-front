@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import AppRouter from "./routes/AppRouter";
 import { ThemeContext } from "./utils/themeContext";
-import { ChatProvider } from "./utils/ChatContext";
+import { ChatProvider, useChatContext } from "./utils/ChatContext";
 import Header from "./components/main/Header";
 import Footer from "./components/main/Footer";
 import ChatModal from "./pages/chat/ChatModal";
@@ -20,8 +20,9 @@ function ScrollToTop() {
   return null;
 }
 
-function App() {
+function AppContent() {
   const [isDark, setIsDark] = useState(false); // 다크모드
+  const { chatRooms, openChat } = useChatContext();
 
   // 이제 지워야 할 부분
   const [isChatModal, setIsChatModal] = useState(false);
@@ -58,7 +59,6 @@ function App() {
 
   return (
     <ThemeContext.Provider value={{ isDark, setIsDark }}>
-      <ChatProvider>
         <div className="app-container">
           <Header onOpenChat={openChatModal} />
           <main className="main-container">
@@ -82,11 +82,31 @@ function App() {
               />
             )}
 
+             {Object.entries(chatRooms).map(([chatId, chatData]) => (
+              chatData.isOpen && (
+                <ChatModal
+                  key={chatId}
+                  isOpen={chatData.isOpen}
+                  onClose={() => chatData.onClose?.()} 
+                  chatId={chatId}
+                  currentUserId={chatData.currentUserId}
+                  onLeave={chatData.onLeave}
+                />
+              )
+          ))}
+
           </main>
           <Footer />
         </div>
-      </ChatProvider>
     </ThemeContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <ChatProvider>
+      <AppContent />
+    </ChatProvider>
   );
 }
 
