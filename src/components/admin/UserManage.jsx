@@ -396,9 +396,11 @@ export default function UserManage() {
                               { label: "정지", value: "BANNED" },
                               { label: "탈퇴", value: "WITHDRAWN" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(user.userId, option.value)
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== user.status) { 
+                                handleStatusChange(user.userId, option.value);
+                              }
+                            }}
                           />
                         </div>
                       </td>
