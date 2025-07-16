@@ -58,7 +58,6 @@ export default function Diary() {
                 const response = await api.get(`${API_ENDPOINTS.FEED.PRIVATE}/users/${userId}`, {
                     params: { pageSize, offset }
                 });
-
                 const newPosts = response.data.posts;
 
                 setPosts((prev) => {

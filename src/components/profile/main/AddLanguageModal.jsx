@@ -52,15 +52,6 @@ export default function AddLanguageModal({showAddLanguageModal, setShowAddLangua
         fetchLanguages();
     }, []);
 
-    useEffect(() => {
-        if (languages.length > 0) {
-            const firstAvailable = languages.find((lang) => !lang.addStatus);
-            if (firstAvailable) {
-                setSelectedLanguage(firstAvailable.id);
-            }
-        }
-    }, [languages]);
-
     return (
         <Modal
             show={showAddLanguageModal}
@@ -75,10 +66,11 @@ export default function AddLanguageModal({showAddLanguageModal, setShowAddLangua
                 <div className={styles.inputWrapper}>
                     {languages && (
                         <select
-                            value={selectedLanguage}
+                            value={selectedLanguage || ""}
                             onChange={(e) => setSelectedLanguage(e.target.value)}
                             className={styles.formInput}
                         >
+                            <option value="" disabled>언어를 선택하세요</option>
                             {languages
                             .filter((lang) => !lang.addStatus)
                             .map((lang) => (
