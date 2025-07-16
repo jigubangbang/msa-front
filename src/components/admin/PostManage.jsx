@@ -330,13 +330,15 @@ export default function PostManage() {
                               { label: "공개", value: "VISIBLE" },
                               { label: "블라인드", value: "BLINDED" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(
-                                post.postId,
-                                post.contentType,
-                                option.value
-                              )
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== post.status) {
+                                handleStatusChange(
+                                  post.postId,
+                                  post.contentType,
+                                  option.value
+                                );
+                              }
+                            }}
                           />
                         </div>
                       </td>
