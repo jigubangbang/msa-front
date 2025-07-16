@@ -44,12 +44,12 @@ const DetailDropdown = ({
 
       {isOpen && (
         <div className={styles.dropdownMenu}>
-          <div 
+          {!isCreator && (<div 
             className={styles.dropdownItem}
             onClick={() => handleItemClick(onReport)}
           >
             신고하기
-          </div>
+          </div>)}
           
           {isCreator && (
             <>

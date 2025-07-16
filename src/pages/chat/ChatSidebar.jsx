@@ -6,7 +6,7 @@ import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import ChatDescriptionEditor from '../../components/chat/ChatDescriptionEditor';
-import ReportModal from '../../components/common/Modal/ReportModal';
+import ChatReportModal from '../../components/chat/ChatReportModal';
 import ChatAlertModal from '../../components/chat/ChatAlertModal';
 import defaultProfile from '../../assets/default_profile.png';
 import API_ENDPOINTS from '../../utils/constants';
@@ -14,7 +14,7 @@ import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
 import '../../styles/Chat/ChatSidebar.css';
 
-export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark }) {
+export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark, onLeave }) {
   const { subscribe, unsubscribe } = useStomp();
   const {members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
@@ -169,6 +169,9 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   
         removeSubscription(chatId);
         showAlert("알림", "채팅방을 성공적으로 탈퇴했습니다.");
+        if (onLeave) {
+          onLeave();
+        }
         onForceClose?.(); // 사이드바 닫기
   
       } catch (error) {
@@ -185,6 +188,21 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
 
     showConfirmModal("채팅방 삭제", confirmMessage, async () => {
       try {
+
+        if (groupType === 'TRAVELINFO') {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${info?.groupId}`, {
+            headers: {
+              'User-Id': senderId,
+            },
+          });
+        } else if (groupType === 'TRAVELMATE') {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${info?.groupId}`, {
+            headers: {
+              'User-Id': senderId,
+            },
+          });
+        }
+        
         const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}`, {
           method: "DELETE",
           headers: {
@@ -205,6 +223,9 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         }
   
         removeSubscription(chatId);
+        if (onLeave) {
+          onLeave();
+        }
         showAlert("알림", "채팅방이 성공적으로 삭제되었습니다.");
         onClose?.();
         onForceClose?.();
@@ -403,7 +424,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         </div>
       </div>
 
-      <ReportModal
+      <ChatReportModal
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         onSubmit={handleReportSubmit}

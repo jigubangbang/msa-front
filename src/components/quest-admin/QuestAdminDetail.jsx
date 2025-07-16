@@ -201,6 +201,11 @@ const truncateText = (text, maxLength = 100) => {
     navigate('/quest-admin/quest')
   }
 
+  const handleBadgeClick = (badgeId) => {
+    window.scrollTo(0, 0);
+    navigate(`/quest-admin/badge/${badgeId}`);
+  }
+
   if (loading) {
     return (
       <div className={styles.questAdminDetail}>
@@ -303,7 +308,8 @@ const truncateText = (text, maxLength = 100) => {
               {questBadges.length > 0 ? (
                 <div className={styles.badgesGrid}>
                   {questBadges.map((badge) => (
-                    <div key={badge.id} className={styles.badgeItem} title={badge.eng_title}>
+                    <div key={badge.id} className={styles.badgeItem} title={badge.eng_title}
+                    onClick={() => {handleBadgeClick(badge.badge_id)}}>
                       <img 
                         src={badge.icon} 
                         alt={badge.kor_title}

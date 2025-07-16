@@ -16,6 +16,22 @@
   margin-bottom: 20px;
 }
 
+.searchSection {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.totalCount {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
 .badgeListTitle {
   margin: 0;
   font-family: Pretendard, sans-serif;
@@ -45,7 +61,7 @@
 /* 테이블 헤더 */
 .tableHeader {
   display: grid;
-  grid-template-columns:60px 80px 200px 200px 120px 150px 120px 100px;
+  grid-template-columns:60px 100px 210px 210px 120px 180px 120px 100px;
   gap: 10px;
   padding: 12px 15px;
   background: #f8f9fa;
@@ -70,7 +86,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 60px 80px 200px 200px 120px 150px 120px 100px;
+  grid-template-columns: 60px 100px 210px 210px 120px 180px 120px 100px;
   gap: 10px;
   padding: 12px 15px;
   border-bottom: 1px solid #f0f0f0;

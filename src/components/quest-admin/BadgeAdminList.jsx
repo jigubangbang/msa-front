@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import styles from './BadgeAdminList.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
+import SearchBar from '../common/SearchBar';
 
 const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
   const [badges, setBadges] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const formatDate = (dateString) => {
     try {
@@ -28,14 +30,22 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
     }
   };
 
+  
+
   useEffect(() => {
     fetchBadges();
-  }, []);
+  }, [searchTerm]);
 
   const fetchBadges = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`);
+      const params = {};
+
+    if (searchTerm.trim()) {
+      params.search = searchTerm.trim();
+    }
+
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`, { params });
       
       setBadges(response.data.badges || []);
       setTotalCount(response.data.totalCount || 0);
@@ -47,6 +57,10 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
       setLoading(false);
     }
   };
+
+  const handleSearchChange = (value) => { 
+  setSearchTerm(value);
+};
 
   if (loading) {
     return (
@@ -62,12 +76,19 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
         <h2 className={styles.badgeListTitle}>Badge Management</h2>
       </div>
 
-      {/* Count Section */}
-      <div className={styles.countSection}>
-        <p className={styles.totalCount}>
-          Total {totalCount} badges
-        </p>
-      </div>
+      {/* SearchBar */}
+    <div className={styles.searchSection}>
+      <p className={styles.totalCount}>
+        Total {totalCount} badges
+      </p>
+      <SearchBar
+        placeholder="Search badges..."
+        value={searchTerm}
+        onSearchChange={handleSearchChange}
+        barWidth="300px"
+        debounceMs={500}
+      />
+    </div>
 
       {/* Table Header */}
       <div className={styles.tableHeader}>

@@ -51,6 +51,9 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card:hover {
@@ -112,6 +115,10 @@
 
 .content {
   padding: 16px;
+  display: flex;
+  flex-direction: column; 
+  flex: 1; 
+  justify-content: space-between; 
 }
 
 .cardTitle {
@@ -137,12 +144,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  flex: 1;
 }
 
 .stats {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: auto;
 }
 
 .statsRow {

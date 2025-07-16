@@ -238,7 +238,7 @@ export default function CommentManage() {
           placeholder="댓글 내용, 작성자로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown
@@ -336,13 +336,15 @@ export default function CommentManage() {
                               { label: "공개", value: "VISIBLE" },
                               { label: "블라인드", value: "BLINDED" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(
-                                comment.commentId,
-                                comment.contentType,
-                                option.value
-                              )
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== comment.status) {
+                                handleStatusChange(
+                                  comment.commentId,
+                                  comment.contentType,
+                                  option.value
+                                );
+                              }
+                            }}
                           />
                         </div>
                       </td>

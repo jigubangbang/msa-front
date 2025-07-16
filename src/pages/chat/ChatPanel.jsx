@@ -10,12 +10,15 @@ import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, 
-    onClose, onMinimize, onForceClose, showAlert, members }) {
+    onClose, onMinimize, onForceClose, showAlert, members, onLeave }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
   const [input, setInput] = useState('');
-  const messagesEndRef = useRef(null); // Ref for auto-scrolling
+  // 인코딩 관리
+  const [isComposing, setIsComposing] = useState(false);
+
+  const messagesEndRef = useRef(null);
   const chatMessagesDisplayRef = useRef(null);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
@@ -31,6 +34,19 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
     }
   }, [isDark]);
   */
+
+  // 인코딩 관리 후, 메세지 전송
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !isComposing) {
+      handleSubmit(e);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -64,9 +80,16 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
       showAlert("알림", "강제 퇴장되셨습니다. 메시지를 전송할 수 없습니다.");
       return;
     }
+
+    if (isComposing) {
+      console.log('IME 조합 중이므로 전송 차단');
+      return;
+    }
+
     if(input.trim()) {
       onSendMessage(input);
       setInput('');
+      setIsComposing(false);
     }
   }
 
@@ -169,12 +192,16 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
             type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSubmit(e)}
+            onKeyDown={handleKeyDown}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             placeholder={isKicked ? "강제 퇴장되어 메시지를 보낼 수 없습니다." : "메세지를 입력하세요..."}
             className="chat-input"
             disabled={isKicked}
           />
-        <button type="submit" className="chat-send-button" disabled={isKicked}>Send</button>
+          <button type="submit" className="chat-send-button" disabled={isKicked || isComposing}>
+            Send
+          </button>
         </form>
       </div>
 
@@ -188,6 +215,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         onForceClose={onForceClose}
         showAlert={showAlert}
         isDark={isDark}
+        onLeave={onLeave}
       />
      )}
 

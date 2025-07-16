@@ -88,6 +88,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
             
             fetchUser();
             fetchUserQuests();
+            console.log("is Login", isLogin);
             fectchUserBadges();
             
         } catch (error) {
@@ -102,7 +103,7 @@ const [selectedBadge, setSelectedBadge] = useState(null);
         setIsAdmin(false);
         setCurrentUserId(null);
     }
-}, []);
+}, [currentUserId]);
 
 
   const fetchUser = async () => {

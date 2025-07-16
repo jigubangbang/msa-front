@@ -132,6 +132,14 @@ export default function Bucketlist() {
             setCompleteCount(prev => prev - 1);
         }
     }
+
+    function updateDate(id, date) {
+        setItems(prevItems => 
+            prevItems.map(item => 
+                item.id === id ? {...item, completedAt: date} : item
+            )
+        );
+    }
     
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
@@ -196,6 +204,7 @@ export default function Bucketlist() {
                                     activeDropdownOption={activeDropdownOption}
                                     onDelete={handleDeleteItem}
                                     onCheck={handleCheckItem}
+                                    updateDate={updateDate}
                                 />
                             ))}
                         </SortableContext>

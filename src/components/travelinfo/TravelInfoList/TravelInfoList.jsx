@@ -109,7 +109,7 @@ const TravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`, 
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${postId}`, 
           {},
           {
             headers: {
@@ -545,6 +545,11 @@ const TravelInfoList = ({
             onClose={() => setChatModalOpen(false)}
             chatId={selectedChatId}
             currentUserId={currentUserId}
+            onLeave={() => {
+              if (fetchTravelinfos) {
+                fetchTravelinfos();
+              }
+            }}
           />
         )}
       

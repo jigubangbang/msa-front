@@ -52,7 +52,7 @@ export default function ProfileCard({ user }) {
                     <Link to={`/profile/${user.userId}`}>
                         <span className={styles.nickname}>{user.nickname}</span>
                     </Link>
-                    {user.nationality && <img src={findFlagUrlByIso3Code(user.nationality)} alt={user.nationality} className={styles.flag} />}
+                    {user.nationality && findFlagUrlByIso3Code(user.nationality) && <img src={findFlagUrlByIso3Code(user.nationality)} alt={user.nationality} className={styles.flag} />}
                     {user.premium && <img className={styles.premiumIcon} src={premiumIcon}/>}
                 </div>
                 <div className={styles.userId}>@{user.userId}</div>

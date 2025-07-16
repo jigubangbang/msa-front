@@ -184,6 +184,7 @@ export default function FeedComment({comment, feedId, onCommentDelete, setCommen
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
                         disabled={isSubmitting}
+                        autoFocus
                     />
                     <button 
                         onClick={handleReplySubmit} 

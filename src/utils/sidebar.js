@@ -264,20 +264,20 @@ export const FEED_SIDEBAR = (isLoggedIn = false) => {
       needLogin: false
     },
     {
+      label: '탐색',
+      icon: '/icons/sidebar/search.svg',
+      path: '/feed/search', 
+      needLogin: false
+    },
+    {
       label: '팔로우',
-      icon: '/icons/sidebar/my_traveler.svg',
+      icon: '/icons/sidebar/follow.svg',
       path: '/feed/following'
     },
     {
       label: '북마크',
       icon: '/icons/sidebar/bookmark.svg',
       path: '/feed/bookmark'
-    },
-    {
-      label: '탐색',
-      icon: '/icons/sidebar/search.svg',
-      path: '/feed/search', 
-      needLogin: false
     },
     {
       label: '친구 추천',

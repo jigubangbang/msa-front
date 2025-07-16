@@ -8,8 +8,9 @@ import dragIcon from "../../../assets/profile/drag_grey.svg";
 import deleteIcon from "../../../assets/profile/close_grey.svg";
 import API_ENDPOINTS from "../../../utils/constants";
 
-export default function BucketlistItem({id, title, description, completionStatus, completedAt, userId, sessionUserId, activeDropdownOption, onDelete, onCheck}) {
+export default function BucketlistItem({id, title, description, completionStatus, completedAt, userId, sessionUserId, activeDropdownOption, onDelete, onCheck, updateDate}) {
     const [isChecked, setIsChecked] = useState(completionStatus);
+    const [newDate, setNewDate] = useState(completedAt);
     
     const {
         attributes,
@@ -31,6 +32,8 @@ export default function BucketlistItem({id, title, description, completionStatus
             .then((response) => {
                 setIsChecked(!isChecked);
                 onCheck(newChecked);
+                setNewDate(response.data.completedAt);
+                updateDate(id, response.data.completedAt);
             })
             .catch((err) => {
                 console.error("Request failed", err);
@@ -51,8 +54,8 @@ export default function BucketlistItem({id, title, description, completionStatus
     return(
         <div id={styles.checklist} ref={setNodeRef} style={style} {...attributes}>
             <div className={styles.contentWrapper}>
-                <label className={styles.customCheckbox}>
-                    <input name="dummy" type="checkbox" checked={isChecked} onChange={handleCheckboxClick}/>
+                <label className={`${styles.customCheckbox} ${(sessionUserId !== userId ? styles.disabled : '')}`}>
+                    <input name="dummy" type="checkbox" checked={isChecked} onChange={handleCheckboxClick} disabled={sessionUserId !== userId}/>
                     {sessionUserId === userId && (
                         <span className={styles.checkmark}></span>
                     )}
@@ -60,8 +63,8 @@ export default function BucketlistItem({id, title, description, completionStatus
                         <div className={`${styles.title} ${isChecked ? styles.completed : ""}`}>{title}</div>
                         <div className={`${styles.description} ${isChecked ? styles.completed : ""}`}>{description}</div>
                         {
-                            (isChecked && completedAt) && (
-                                <div className={styles.description}>달성일 : {completedAt}</div>
+                            (isChecked && newDate) && (
+                                <div className={styles.description}>달성일 : {newDate}</div>
                             )
                         }
                     </div>

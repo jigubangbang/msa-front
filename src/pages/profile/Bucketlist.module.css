@@ -204,6 +204,10 @@ body {
     color: white;
 }
 
+.disabled {
+  cursor: auto;
+}
+
 .deleteIcon {
   cursor: pointer;
   display: flex;
