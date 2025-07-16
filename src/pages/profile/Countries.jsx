@@ -84,10 +84,15 @@ export default function Countries() {
                     <div className={styles.countryGrid}>
                         {data.countries.map((country) => (
                             <div className={styles.countryWrapper} key={country.id}>
-                                <img
-                                    className={styles.flagIcon} 
-                                    src={findFlagUrlByIso3Code(country.countryId)}
-                                />
+                                {findFlagUrlByIso3Code(country.countryId) ? (
+                                    <img
+                                        className={styles.flagIcon} 
+                                        src={findFlagUrlByIso3Code(country.countryId)}
+                                    />
+                                ) : (
+                                    <div className={styles.defaultFlagIcon}></div>
+                                )}
+                                
                                 <p>
                                     {country.name}
                                 </p>
