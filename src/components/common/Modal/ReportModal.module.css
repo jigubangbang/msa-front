@@ -5,15 +5,14 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%; /* 변경: 100vw -> 100% */
-  height: 100%; /* 변경: 100vh -> 100% */
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* 변경: center -> flex-start */
-  padding-top: 20%; /* 상단 여백 추가 */
-  z-index: 1001; /* ChatAlertModal보다 위에 오도록 z-index 조정 */
-  border-radius: 8px;
+  align-items: center;
+  z-index: 999;
+  padding-top: 60px;
 }
 
 .modal {
@@ -22,7 +21,7 @@
   padding: 28px 36px;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  width: 240px;
+  width: 400px;
   font-family: 'Pretendard', sans-serif;
   position: relative;
 }
@@ -95,27 +94,21 @@
 
 .confirmButton,
 .cancelButton {
-  color: #fff;
   padding: 8px 20px;
-  font-size: 14px;
-  font-weight: 500;
   border-radius: 6px;
+  font-size: 14px;
   cursor: pointer;
-  min-height: 36px;
-  min-width: 100px;
+  min-width: 80px;
   font-family: 'Pretendard';
+  font-weight: 500;
   transition: all 0.3s ease;
   border: none;
 }
 
 .confirmButton {
   background-color: #000;
+  color: #fff;
   border: 1px solid #000;
-}
-
-.cancelButton {
-  background-color: #6c757d;
-  border: 1px solid #6c757d;
 }
 
 .confirmButton:hover {
@@ -123,9 +116,16 @@
   border-color: #333;
 }
 
+.cancelButton {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
 .cancelButton:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
 }
 
 .errorMessage {
