@@ -284,14 +284,17 @@ export default function Main() {
                         <div className={styles.communityColumn}>
                             <h4 className={styles.centeredText}>최신 게시글</h4>
                             <ul className={styles.postList}>
-                                {posts.map((post) => (
-                                    <li key={post.id} className={styles.postItem} onClick={() => handlePostClick(post.id)}>
-                                        <h4>{post.title}</h4>
-                                        <div className={styles.postMeta}>
-                                            <span>{post.creatorNickname}</span> | <span>{formatDate(post.createdAt)}</span>
-                                        </div>
-                                    </li>
-                                ))}
+                                {posts.map((post) => {
+                                    const isBlinded = post.blindStatus === 'BLINDED';
+                                    return (
+                                        <li key={post.id} className={styles.postItem} onClick={() => !isBlinded && handlePostClick(post.id)}>
+                                            <h4>{isBlinded ? '블라인드 처리된 게시물입니다.' : post.title}</h4>
+                                            <div className={styles.postMeta}>
+                                                <span>{isBlinded ? '-' : post.creatorNickname}</span> | <span>{formatDate(post.createdAt)}</span>
+                                            </div>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                             <div className={styles.sectionFooter}>
                                 <Link to="/board/popular" className={`${styles.btn} ${styles.btnOutline}`}>전체 게시글 보기</Link>
