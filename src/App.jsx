@@ -55,13 +55,13 @@ function App() {
             <Route path="/*" element={<AppRouter />} />
           </Routes>
 
+          {isChatModal && <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />}
+
           {state && (
             <Routes>
               <Route path="/feed/:feedId" element={<FeedDetail />} />
             </Routes>
           )}
-
-          {isChatModal && <ChatModal isOpen={isChatModal} onClose={closeChatModal} chatId={1} />}
         </main>
         <Footer />
       </div>
