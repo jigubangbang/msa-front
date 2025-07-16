@@ -61,6 +61,13 @@
     width: 150px;
 }
 
+.defaultFlagIcon {
+  height: 100px;
+  width: 150px;
+  background-color: #F3F3F3;
+  border-radius: 6px;
+}
+
 
 .countryGrid {
   display: flex;
