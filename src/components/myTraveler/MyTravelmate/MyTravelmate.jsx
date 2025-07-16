@@ -89,6 +89,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
+  const handleStatusChange = async (travel) => {
+    console.log(travel.id);
+    console.log(travel.isPublic);
+  }
+
+  
    const handleReport = (travel) => {
     setShowReportModal(true);
     setReportInfo(travel);
@@ -189,7 +195,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                   className={styles.thumbnail}
                 />
                 <div className={styles.travelInfo}>
-                  <h4 className={styles.travelTitle}>{travel.title}</h4>
+                  <div className={styles.titleContainer}>
+                    {travel.blindStatus === 'BLINDED' && (
+                      <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                    )}
+                    <h4 className={styles.travelTitle}>{travel.title}</h4>
+                  </div>
                   <p className={styles.travelDescription}>{travel.simpleDescription}</p>
                   <div className={styles.travelMeta}>
                     <span>일정: {formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
@@ -229,7 +240,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       </button>
                       
                     )}
-                    {sectionType === 'hosted' && (
+                    {sectionType === 'hosted' && (<>
                       <button
                         className={styles.chatButton}
                         onClick={(e) => {
@@ -238,7 +249,17 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         }}
                       >
                         그룹 삭제하기
-                      </button>                                           
+                      </button>  
+                      <button
+                        className={styles.chatButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStatusChange(travel);
+                        }}
+                      >
+                        상태 변경하기
+                      </button>  
+                      </>                                         
                     )}
                     {sectionType === 'joined' && (
                       <button
