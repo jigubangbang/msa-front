@@ -208,7 +208,6 @@ export default function Main() {
     // UI 렌더링 (Rendering)
     // ==================================================================================
     
-    
     if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
 
