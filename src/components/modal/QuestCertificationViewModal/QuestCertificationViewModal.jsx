@@ -7,7 +7,8 @@ import api from '../../../apis/api';
 const QuestCertificationViewModal = ({ 
   isOpen, 
   onClose, 
-  questUserId 
+  questUserId ,
+  currentUserId
 }) => {
   const [certificationData, setCertificationData] = useState(null);
   const [loading, setLoading] = useState(false);

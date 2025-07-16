@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import ReactDOM from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 
 import styles from "./RankListPage.module.css";
@@ -9,6 +10,8 @@ import API_ENDPOINTS from "../../../utils/constants";
 import { QUEST_SIDEBAR } from "../../../utils/sidebar";
 import api from "../../../apis/api";
 import {jwtDecode} from "jwt-decode";
+import QuestModal from "../../../components/modal/QuestModal/QuestModal";
+import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 
 export default function RankListPage() {
   const [loading, setLoading] = useState(false);
@@ -17,6 +20,12 @@ export default function RankListPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isLogin, setIsLogin] = useState(null);
+
+// Modal states 
+const [showQuestModal, setShowQuestModal] = useState(false);
+const [showBadgeModal, setShowBadgeModal] = useState(false);
+const [selectedQuest, setSelectedQuest] = useState(null);
+const [selectedBadge, setSelectedBadge] = useState(null);
 
   // 토큰 검증 및 사용자 정보 설정
   useEffect(() => {
@@ -181,6 +190,124 @@ export default function RankListPage() {
     return Math.round((completedCount / total) * 100) + "%";
   };
 
+   //quest modal
+const openQuestModal = useCallback( async (quest_id) => {
+  setLoading(true);
+  try {
+    const endpoint = isLogin 
+    ? `${API_ENDPOINTS.QUEST.USER}/detail/${quest_id}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${quest_id}`;
+
+  const response = await api.get(endpoint, isLogin ? {
+    headers: {
+      'User-Id': currentUserId
+    }
+  } : {});
+
+    setSelectedQuest(response.data);
+    setShowQuestModal(true);
+    console.log("Quest data fetched:", response.data);
+  } catch (error) {
+    console.error("Failed to fetch quest data:", error);
+  } finally {
+    setLoading(false);
+  }
+}, [isLogin]);
+
+const closeQuestModal = () => {
+  setShowQuestModal(false);
+  setSelectedQuest(null);
+};
+
+
+const handleQuestUpdate = async (questId) => {
+  console.log('퀘스트 데이터 새로고침 중...', questId);
+  setLoading(true);
+  try {
+    // 1. 현재 퀘스트 모달 새로고침
+    const endpoint = isLogin 
+  ? `${API_ENDPOINTS.QUEST.USER}/detail/${questId}`
+  : `${API_ENDPOINTS.QUEST.PUBLIC}/detail/${questId}`;
+
+const config = isLogin
+  ? { headers: { 'User-Id': currentUserId } }
+  : {};
+
+const response = await api.get(endpoint, config);
+
+    setSelectedQuest(response.data); 
+    
+    // 2. 사용자 퀘스트 목록 새로고침
+    const userQuestsResponse = await api.get(
+  `${API_ENDPOINTS.QUEST.USER}/detail`,
+  {
+    params: { status: "IN_PROGRESS" },
+    headers: { 'User-Id': currentUserId }  
+  }
+);
+
+       setUserQuests(userQuestsResponse.data || []);
+
+    // 3. 사용자 정보 새로고침
+    const userResponse = await api.get(
+    `${API_ENDPOINTS.QUEST.USER}/journey`,
+    {
+      headers: {
+        'User-Id': currentUserId
+      }
+    }
+  );
+
+      setUser(userResponse.data);
+      
+    } catch (error) {
+      console.error("Failed to refresh quest data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 모달
+  const openBadgeModal = useCallback(async (badge_id) => {
+    setLoading(true);
+    try {
+      const endpoint = isLogin 
+    ? `${API_ENDPOINTS.QUEST.USER}/badges/${badge_id}`
+    : `${API_ENDPOINTS.QUEST.PUBLIC}/badges/${badge_id}`;
+
+  const response = await api.get(endpoint, {
+    headers: {
+      'User-Id': currentUserId
+    }
+  });
+
+      setSelectedBadge(response.data);
+      setShowBadgeModal(true);
+      console.log("Badge data fetched:", response.data);
+    } catch (error) {
+      console.error("Failed to fetch badge data:", error);
+    } finally {
+      setLoading(false);
+    }
+  },[isLogin]);
+
+  const closeBadgeModal = () => {
+    setShowBadgeModal(false);
+    setSelectedBadge(null);
+  };
+
+  // 퀘스트에서 배지 클릭 핸들러
+  const handleBadgeClickFromQuest = (badge_id) => {
+    closeQuestModal(); // 퀘스트 모달 닫기
+    openBadgeModal(badge_id); // 배지 모달 열기
+  };
+
+  // 배지에서 퀘스트 클릭 핸들러
+  const handleQuestClickFromBadge = (quest_id) => {
+    closeBadgeModal(); // 배지 모달 닫기
+    openQuestModal(quest_id); // 퀘스트 모달 열기
+  };
+
   if (loading) {
     return (
       <div className={styles.Container}>
@@ -205,9 +332,33 @@ export default function RankListPage() {
             userQuests={userQuests}
             calculatePerformance={calculatePerformance}
             isLogin = {isLogin}
+            handleQuestClick={openQuestModal}
           />
         </div>
       </div>
+            {/* 모달들을 Portal로 body에 렌더링 */}
+      {showQuestModal && ReactDOM.createPortal(
+        <QuestModal 
+        currentUserId={currentUserId}
+          questData={selectedQuest} 
+          onClose={closeQuestModal}
+          onBadgeClick={handleBadgeClickFromQuest}
+          isLogin={isLogin} 
+          onQuestUpdate={handleQuestUpdate}
+        />,
+        document.body
+      )}
+
+      {showBadgeModal && ReactDOM.createPortal(
+        <BadgeModal 
+        currentUserId={currentUserId}
+          badgeData={selectedBadge} 
+          onClose={closeBadgeModal}
+          onQuestClick={handleQuestClickFromBadge}
+          isLogin={isLogin} 
+        />,
+        document.body
+      )}
     </div>
   );
 }

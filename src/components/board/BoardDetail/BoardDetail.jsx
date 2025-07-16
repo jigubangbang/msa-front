@@ -42,6 +42,10 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   const [confirmType, setConfirmType] = useState('alert'); // 'alert' | 'confirm'
   const [confirmAction, setConfirmAction] = useState(null);
 
+  // 블라인드 상태 확인
+  const isBlinded = post?.blindStatus === 'BLINDED';
+  const isCreator = post?.userId === currentUserId;
+
   useEffect(() => {
     if (postId) {
       fetchPost();
@@ -98,16 +102,17 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
         return;
       }
 
-      // 이미지 정보 별도 조회
+      // 이미지 정보 별도 조회 (블라인드되지 않은 경우에만)
       let images = [];
-      try {
-        const imageResponse = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/board/${postId}/images`);
-        images = imageResponse.data || [];
-        console.log('Images:', images);
-      } catch (imageError) {
-        console.error('Failed to fetch images:', imageError);
-        // 이미지 조회 실패해도 게시글은 표시할 수 있도록 함
-        images = [];
+      if (postData.blindStatus !== 'BLINDED') {
+        try {
+          const imageResponse = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/board/${postId}/images`);
+          images = imageResponse.data || [];
+          console.log('Images:', images);
+        } catch (imageError) {
+          console.error('Failed to fetch images:', imageError);
+          images = [];
+        }
       }
 
       // 이미지 정보를 postData에 추가
@@ -117,7 +122,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
       setLikeCount(postData.likeCount || 0);
       setBookmarkCount(postData.bookmarkCount || 0);
       
-      if (postData.userId) {
+      if (postData.userId && postData.blindStatus !== 'BLINDED') {
         fetchCreatorProfile(postData.userId);
       }
 
@@ -182,6 +187,9 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const fetchInteractionStatus = async () => {
+    // 블라인드된 게시글은 상호작용 정보를 가져오지 않음
+    if (isBlinded) return;
+    
     try {
       const [likeResponse, bookmarkResponse] = await Promise.all([
         api.get(`${API_ENDPOINTS.COMMUNITY.USER}/board/like/${postId}/status`, {
@@ -201,7 +209,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
 
   // TravelmateQA와 동일한 댓글 관련 함수들
   const handleCommentSubmit = async () => {
-    if (!isLogin || !newComment.trim()) return;
+    if (!isLogin || !newComment.trim() || isBlinded) return;
 
     try {
       await api.post(
@@ -226,7 +234,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
 
   const handleReplySubmit = async (commentId) => {
     const replyText = replyTexts[commentId];
-    if (!isLogin || !replyText?.trim()) return;
+    if (!isLogin || !replyText?.trim() || isBlinded) return;
 
     try {
       await api.post(
@@ -251,6 +259,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const handleReplyClick = (commentId) => {
+    if (isBlinded) return; // 블라인드된 게시글에서는 댓글 작성 불가
     setActiveReplyId(activeReplyId === commentId ? null : commentId);
   };
 
@@ -379,8 +388,12 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
 
   // 기존 함수들 (좋아요, 북마크, 이미지 모달 등)
   const handleLikeToggle = async () => {
-    if (!isLogin) {
-      showAlert('로그인이 필요한 서비스입니다.');
+    if (!isLogin || isBlinded) {
+      if (isBlinded) {
+        showAlert('블라인드 처리된 게시글입니다.');
+      } else {
+        showAlert('로그인이 필요한 서비스입니다.');
+      }
       return;
     }
 
@@ -405,8 +418,12 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const handleBookmarkToggle = async () => {
-    if (!isLogin) {
-      showAlert('로그인이 필요한 서비스입니다.');
+    if (!isLogin || isBlinded) {
+      if (isBlinded) {
+        showAlert('블라인드 처리된 게시글입니다.');
+      } else {
+        showAlert('로그인이 필요한 서비스입니다.');
+      }
       return;
     }
 
@@ -434,13 +451,17 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
     if (location.state?.from) {
       navigate(location.state.from, { replace: true });
     } else {
-      navigate('/board', { replace: true });
+      navigate('/board/popular', { replace: true });
     }
   };
 
   const handlePostDropdownAction = (type) => {
     switch(type) {
       case 'edit':
+        if (isBlinded) {
+          showAlert('블라인드 처리된 게시글은 수정할 수 없습니다.');
+          return;
+        }
         navigate(`/board/${postId}/edit`);
         break;
       case 'delete':
@@ -473,6 +494,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const handleImageClick = (index) => {
+    if (isBlinded) return; // 블라인드된 게시글은 이미지 확대 불가
     setSelectedImageIndex(index);
   };
 
@@ -523,68 +545,75 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
           <div className={styles.authorInfo}>
             <div className={styles.profileImage}>
               <img 
-                src={creatorProfile || '/icons/common/user_profile.svg'} 
+                src={isBlinded ? '/icons/common/default_profile.png' : (creatorProfile || '/icons/common/default_profile.png')} 
                 alt="작성자 프로필"
               />
             </div>
             <div className={styles.authorDetails}>
-              <h1 className={styles.postTitle}>{post.title}</h1>
-              <div className={styles.postMeta}>
-                <span className={styles.author}>
-                  {post.creatorNickname} ({post.userId})
-                </span>
-                <span className={styles.date}>{formatDate(post.createdAt)}</span>
-                {post.updatedAt && (
-                  <span className={styles.updatedDate}>
-                    {formatDate(post.updatedAt)}에 수정됨
+              <h1 className={styles.postTitle}>
+                {isBlinded ? '블라인드 처리된 게시글입니다' : post.title}
+              </h1>
+              {!isBlinded && (
+                <div className={styles.postMeta}>
+                  <span className={styles.author}>
+                    {post.creatorNickname} ({post.userId})
                   </span>
-                )}
-              </div>
+                  <span className={styles.date}>{formatDate(post.createdAt)}</span>
+                  {post.updatedAt && (
+                    <span className={styles.updatedDate}>
+                      {formatDate(post.updatedAt)}에 수정됨
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           
-          {/* 드롭다운 메뉴 */}
+          {/* 드롭다운 메뉴 - 블라인드된 게시글은 작성자만 삭제 가능 */}
           <div className={styles.postActions}>
             <DetailDropdown
-              isCreator={post.userId === currentUserId}
-              onEdit={() => handlePostDropdownAction('edit')}
+              isCreator={isCreator}
+              onEdit={isBlinded ? null : () => handlePostDropdownAction('edit')}
               onDelete={() => handlePostDropdownAction('delete')}
-              onReport={() => handlePostDropdownAction('report')}
+              onReport={isCreator ? null : () => handlePostDropdownAction('report')}
+              hideEdit={isBlinded}
             />
           </div>
         </div>
 
         {/* 컨텐츠와 상호작용 버튼 컨테이너 */}
         <div className={styles.contentInteractionContainer}>
-          {/* 좋아요/북마크 버튼 */}
-          <div className={styles.interactionButtons}>
-            <button 
-              className={`${styles.interactionButton} ${isLiked ? styles.liked : ''}`}
-              onClick={handleLikeToggle}
-            >
-              <img 
-                src={isLiked ? '/icons/common/heart_fill.svg' : '/icons/common/heart_blank.svg'} 
-                alt="좋아요" 
-              />
-              <span>{likeCount}</span>
-            </button>
-            
-            <button 
-              className={`${styles.interactionButton} ${isBookmarked ? styles.bookmarked : ''}`}
-              onClick={handleBookmarkToggle}
-            >
-              <img 
-                src={isBookmarked ? '/icons/common/bookmark_added.svg' : '/icons/common/bookmark.svg'} 
-                alt="북마크" 
-              />
-              <span>{bookmarkCount}</span>
-            </button>
-          </div>
+          {/* 좋아요/북마크 버튼 - 블라인드된 게시글은 숨김 */}
+          {!isBlinded && (
+            <div className={styles.interactionButtons}>
+              <button 
+                className={`${styles.interactionButton} ${isLiked ? styles.liked : ''}`}
+                onClick={handleLikeToggle}
+              >
+                <img 
+                  src={isLiked ? '/icons/common/heart_fill.svg' : '/icons/common/heart_blank.svg'} 
+                  alt="좋아요" 
+                />
+                <span>{likeCount}</span>
+              </button>
+              
+              <button 
+                className={`${styles.interactionButton} ${isBookmarked ? styles.bookmarked : ''}`}
+                onClick={handleBookmarkToggle}
+              >
+                <img 
+                  src={isBookmarked ? '/icons/common/bookmark_added.svg' : '/icons/common/bookmark.svg'} 
+                  alt="북마크" 
+                />
+                <span>{bookmarkCount}</span>
+              </button>
+            </div>
+          )}
 
           {/* 게시글 내용 */}
           <div className={styles.postContent}>
-            {/* 이미지들 */}
-            {post.images && post.images.length > 0 && (
+            {/* 이미지들 - 블라인드된 게시글은 숨김 */}
+            {!isBlinded && post.images && post.images.length > 0 && (
               <div className={styles.imageSection}>
                 <div className={styles.imageGrid}>
                   {post.images.map((imageUrl, index) => (
@@ -606,7 +635,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
             
             {/* 글 내용 */}
             <div className={styles.contentText}>
-              {post.content}
+              {isBlinded ? '블라인드 처리된 게시글입니다.' : post.content}
             </div>
           </div>
         </div>
@@ -622,7 +651,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
         <div className={styles.commentsList}>
           {comments.length === 0 ? (
             <div className={styles.emptyState}>
-              <p>아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>
+              <p>아직 댓글이 없습니다. {!isBlinded && '첫 번째 댓글을 남겨보세요!'}</p>
             </div>
           ) : (
             comments.map((comment) => (
@@ -631,7 +660,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                 <div className={styles.questionContainer}>
                   <div className={styles.profileImage}>
                     <img 
-                      src={comment.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (comment.profileImage || '/icons/common/user_profile.svg')} 
+                      src={comment.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (comment.profileImage || '/icons/common/default_profile.png')} 
                       alt="프로필"
                     />
                   </div>
@@ -685,7 +714,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                       <button 
                       className={styles.replyButton}
                       onClick={() => handleReplyClick(comment.id)}
-                      disabled={comment.blindStatus === 'BLINDED' || comment.isDeleted}
+                      disabled={comment.blindStatus === 'BLINDED' || comment.isDeleted || isBlinded}
                     >
                       댓글
                     </button>
@@ -700,7 +729,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                       <div key={reply.id} className={styles.replyContainer}>
                         <div className={styles.profileImage}>
                           <img 
-                            src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/user_profile.svg')} 
+                            src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/default_profile.png')} 
                             alt="프로필"
                           />
                         </div>
@@ -756,13 +785,13 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                   </div>
                 )}
 
-                {/* 답변 작성 */}
-                {activeReplyId === comment.id && isLogin && 
+                {/* 답변 작성 - 블라인드된 게시글에서는 숨김 */}
+                {activeReplyId === comment.id && isLogin && !isBlinded &&
                   comment.blindStatus !== 'BLINDED' && !comment.isDeleted && (
                   <div className={styles.replyForm}>
                     <div className={styles.profileImage}>
                       <img 
-                        src={userProfile || '/icons/common/user_profile.svg'} 
+                        src={userProfile || '/icons/common/default_profile.png'} 
                         alt="내 프로필"
                       />
                     </div>
@@ -800,12 +829,12 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
           )}
         </div>
 
-        {/* 댓글 작성 */}
-        {isLogin && (
+        {/* 댓글 작성 - 블라인드된 게시글에서는 숨김 */}
+        {isLogin && !isBlinded && (
           <div className={styles.commentForm}>
             <div className={styles.profileImage}>
               <img 
-                src={userProfile || '/icons/common/user_profile.svg'} 
+                src={userProfile || '/icons/common/default_profile.png'} 
                 alt="내 프로필"
               />
             </div>
@@ -831,8 +860,8 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
         )}
       </div>
 
-      {/* 이미지 확대 모달 */}
-      {selectedImageIndex !== null && post.images && (
+      {/* 이미지 확대 모달 - 블라인드되지 않은 경우에만 */}
+      {selectedImageIndex !== null && post.images && !isBlinded && (
         <div className={styles.imageModalOverlay} onClick={closeImageModal}>
           <div className={styles.imageModal} onClick={(e) => e.stopPropagation()}>
             <button className={styles.imageCloseBtn} onClick={closeImageModal}>

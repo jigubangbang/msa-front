@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -129,6 +136,7 @@ h2 {
   transition: border-color 0.3s ease;
   box-sizing: border-box;
   color: black;
+  font-family: 'Pretendard', sans-serif; 
 }
 
 .formInput:focus {
@@ -173,7 +181,7 @@ h2 {
   justify-content: center;
   gap: 6px;
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   font-size: 14px;
   margin-bottom: 20px;
   width: 100%;
@@ -188,5 +196,5 @@ h2 {
 
 .errorIcon {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
 }

@@ -33,19 +33,18 @@ export default function FeedMenu({
         <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
             {isOwner ? (
                 <>
-                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onDeleteClick}>삭제</button>
+                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onDeleteClick}>삭제하기</button>
                     {type === "post" && (
                         <>
-                            <button className={styles.dropdownItem} onClick={onEditClick}>수정</button>
+                            <button className={styles.dropdownItem} onClick={onEditClick}>수정하기</button>
                             <button className={styles.dropdownItem} onClick={onPrivacyClick}>공개 설정</button>
                         </>
                     )}
                 </>
                 ) : (
-                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onReportClick}>신고</button>
+                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onReportClick}>신고하기</button>
                 )
             }
-            <button className={styles.dropdownItem} onClick={onClose}>닫기</button>
         </div>
     );
 }

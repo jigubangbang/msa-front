@@ -56,11 +56,29 @@
   display: flex;
   gap: 40px;
   margin-bottom: 40px;
+  align-items: flex-start;
 }
 
 .leftColumn {
   flex: 2;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.leftColumn .formGroup:last-child {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+}
+
+.leftColumn .formGroup:last-child .textarea {
+  flex: 1;
+  min-height: 210px;
+  max-height: none;
+  height: auto;
+  resize: none;
 }
 
 .rightColumn {
@@ -74,6 +92,7 @@
 .formGroup {
   margin-bottom: 24px;
   width: 100%;
+  height: 100%;
 }
 
 .label {
@@ -429,7 +448,6 @@
   font-size: 16px;
   font-family: inherit;
   resize: vertical;
-  min-height: 120px;
   transition: all 0.3s ease;
 }
 

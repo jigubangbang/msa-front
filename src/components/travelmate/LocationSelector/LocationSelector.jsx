@@ -3,7 +3,7 @@ import styles from './LocationSelector.module.css';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
-export default function LocationSelector({ onSubmit }) {
+export default function LocationSelector({ onSubmit, locationOpen, locationClose}) {
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -41,13 +41,17 @@ export default function LocationSelector({ onSubmit }) {
 
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+  }, [locationClose]);
 
   // 국가 선택 시 해당 도시들 가져오기
   const handleCountrySelect = async (country) => {
     setSelectedCountry(country);
     setSelectedCity(null);
     setShowCountryDropdown(false);
+
+    if(locationClose){
+      locationClose();
+    }
 
     if (country.id === 'ALL') {
       setCities([]);
@@ -66,6 +70,10 @@ export default function LocationSelector({ onSubmit }) {
   const handleCitySelect = (city) => {
   setSelectedCity(city);
   setShowCityDropdown(false);
+
+      if(locationClose){
+      locationClose();
+    }
   
   if (selectedCountry && city) {
     if (city.id === 'ALL') {
@@ -125,6 +133,29 @@ export default function LocationSelector({ onSubmit }) {
     onSubmit([]);
   };
 
+  const handleCountryDropdownToggle = () => {
+    if (showCountryDropdown && locationClose){
+      locationClose();
+    }
+    if (!showCountryDropdown && locationOpen){
+      locationOpen();
+    }
+    setShowCountryDropdown(!showCountryDropdown);
+    
+  };
+
+const handleCityDropdownToggle = () => {
+  if (selectedCountry && selectedCountry.id !== 'ALL') {
+    if (showCityDropdown && locationClose) {
+      locationClose();
+    }
+    if (!showCityDropdown && locationOpen) {
+      locationOpen();
+    }
+    setShowCityDropdown(!showCityDropdown);
+  }
+};
+
   return (
     <div className={styles.wrapper}>
       {/* 국가와 도시 선택을 나란히 배치 */}
@@ -141,7 +172,7 @@ export default function LocationSelector({ onSubmit }) {
                 
               <div 
                 className={styles.dropdownButton}
-                onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+               onClick={handleCountryDropdownToggle}
               >
                 {selectedCountry ? selectedCountry.name : '나라 선택'}
                 <span className={styles.arrow}>▼</span>
@@ -172,7 +203,7 @@ export default function LocationSelector({ onSubmit }) {
             <div ref={cityRef} className={styles.dropdown}>
               <div 
                 className={`${styles.dropdownButton} ${!selectedCountry || selectedCountry.id === 'ALL' ? styles.disabled : ''}`}
-                onClick={() => selectedCountry && selectedCountry.id !== 'ALL' && setShowCityDropdown(!showCityDropdown)}
+                onClick={handleCityDropdownToggle}
               >
                 {selectedCity ? selectedCity.cityName : '도시 선택'}
                 <span className={styles.arrow}>▼</span>

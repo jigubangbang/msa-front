@@ -49,7 +49,7 @@ const MyPageHeader = ({
                 <img src={profileImage} alt="프로필" className={styles.img} />
               ) : (
                 <div className={styles.defaultAvatar}>
-                <img src="/icons/common/user_profile.svg" alt="기본 뱃지 이미지"/>
+                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지"/>
               </div>
               )}
             </div>
