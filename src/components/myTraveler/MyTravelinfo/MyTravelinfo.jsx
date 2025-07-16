@@ -402,6 +402,11 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
           onClose={() => setChatModalOpen(false)}
           chatId={selectedChatId}
           currentUserId={currentUserId}
+          onLeave={() => {
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }}
         />
       )}
 

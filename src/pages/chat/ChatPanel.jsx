@@ -10,7 +10,7 @@ import '../../styles/chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, 
-    onClose, onMinimize, onForceClose, showAlert, members }) {
+    onClose, onMinimize, onForceClose, showAlert, members, onLeave }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
@@ -188,6 +188,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         onForceClose={onForceClose}
         showAlert={showAlert}
         isDark={isDark}
+        onLeave={onLeave}
       />
      )}
 

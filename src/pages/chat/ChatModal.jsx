@@ -12,7 +12,7 @@ import exit from '../../assets/chat/logout.svg';
 import '../../styles/chat/ChatModal.css'
 
 
-export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
+export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLeave}) {
   
   const { chatRooms, minimizedChats, updateChatRoom, removeChatRoom, minimizeChat, restoreChat, getMinimizedPosition } = useChatContext();
   const {info, members} = useChatRoomInfo(chatId);
@@ -205,6 +205,7 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId }) {
                 showAlert={showAlert} // ChatPanel에 showAlert 전달
                 isMinimized={isMinimized}
                 members={members}
+                onLeave={onLeave}
               />
             )}
             <ChatAlertModal

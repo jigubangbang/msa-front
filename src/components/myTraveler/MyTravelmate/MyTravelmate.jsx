@@ -439,6 +439,11 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                 onClose={() => setChatModalOpen(false)}
                 chatId={selectedChatId}
                 currentUserId={currentUserId}
+                onLeave={() => {
+                  if (fetchTravelerData) {
+                    fetchTravelerData();
+                  }
+                }}
               />
             )}
       
