@@ -19,6 +19,17 @@
 }
 
 /* === Typography === */
+/* 스크롤바 숨기기 (Chrome, Safari, Opera) */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* 스크롤바 숨기기 (IE, Edge, Firefox) */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 body {
   font-family: 'Pretendard', sans-serif; 
   background-color: #f8f9fa; /* Consistent background color */

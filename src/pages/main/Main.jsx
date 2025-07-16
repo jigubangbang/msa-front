@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from 'react-dom';
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
 import styles from './Main.module.css';
 import api from "../../apis/api";
@@ -11,6 +11,13 @@ import BadgeModal from "../../components/modal/BadgeModal/BadgeModal";
 import QuestModal from "../../components/modal/QuestModal/QuestModal";
 import Modal from "../../components/common/Modal/Modal";
 import CirclesSpinner from "../../components/common/Spinner/CirclesSpinner";
+import DotNav from "../../components/common/DotNav/DotNav";
+
+const SECTIONS = [
+    { id: 'feed-section', title: '인기 피드' },
+    { id: 'badge-section', title: '뱃지 컬렉션' },
+    { id: 'community-section', title: '여행자 이야기' },
+];
 
 export default function Main() {
     const navigate = useNavigate();
@@ -28,6 +35,7 @@ export default function Main() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [activeSection, setActiveSection] = useState(null);
 
     // Modal states
     const [showBadgeModal, setShowBadgeModal] = useState(false);
@@ -122,7 +130,6 @@ export default function Main() {
 
                 const allBadges = badgeResponse.data.badges || [];
                 
-                // 뱃지 목록을 랜덤으로 섞고 8개를 선택
                 const shuffledBadges = allBadges.sort(() => 0.5 - Math.random());
                 const randomBadges = shuffledBadges.slice(0, 8);
                 setBadges(randomBadges);
@@ -144,17 +151,46 @@ export default function Main() {
         };
 
         fetchAllData();
-
     }, [isLoggedIn, userId]);
 
-    const scrollToContent = () => {
-        scroller.scrollTo('content-section', {
-            duration: 800,
-            delay: 0,
-            smooth: 'easeInOutQuart',
-            offset: -172
-        });
+    const handleDotClick = (sectionId) => {
+        const sectionElement = document.getElementById(sectionId);
+        if (sectionElement) {
+            // 최종 스크롤 위치를 80px 위로 조정합니다.
+            const offset = -(window.innerHeight / 2) + (sectionElement.offsetHeight / 2) - 60;
+            scroller.scrollTo(sectionId, {
+                duration: 800,
+                delay: 0,
+                smooth: 'easeInOutQuart',
+                offset: offset,
+                ignoreCancelEvents: true
+            });
+        }
     };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            let currentSection = null;
+
+            for (const section of SECTIONS) {
+                const element = document.getElementById(section.id);
+                if (element) {
+                    const { offsetTop, offsetHeight } = element;
+                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                        currentSection = section.id;
+                        break;
+                    }
+                }
+            }
+            setActiveSection(currentSection);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const handlePostClick = (postId) => {
         navigate(`/board/${postId}`);
@@ -217,9 +253,8 @@ export default function Main() {
     };
 
     const handleQuestUpdate = async (questId) => {
-        // In main page, we might just refetch the specific quest for the modal
         openQuestModal(questId);
-    }; // 중복 선언된 함수 중 하나를 제거했습니다.
+    };
 
     const handleProfileModalConfirm = () => {
         setShowProfileModal(false);
@@ -230,25 +265,23 @@ export default function Main() {
         setShowProfileModal(false);
     };
 
-    
     if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
 
-
     return (
         <div className={styles.outerContainer}>
+            <DotNav sections={SECTIONS} activeSection={activeSection} onDotClick={handleDotClick} />
 
-            <div className={styles.mainPoster}>
+            <div id="main-poster" className={styles.mainPoster}>
                 <div className={styles.posterTitle}>JIGU BANGBANG</div>
                 <div className={styles.posterSubtitle}>여행, 그 이상의 여정을 기록하다</div>
-                <button className={styles.startButton} onClick={scrollToContent}>
+                <button className={styles.startButton} onClick={() => handleDotClick('feed-section')}>
                     START NOW
                 </button>
             </div>
 
             <div id="content-section" className={styles.container}>
-                {/* ==================== 인기 여행 피드 섹션 ==================== */}
-                <div className={`${styles.section} ${styles.transparentBg}`}>
+                <div id="feed-section" className={`${styles.section} ${styles.transparentBg}`}>
                     <h2 className={styles.centeredText}>인기 여행 피드</h2>
                     <p className={`${styles.bodySecondary} ${styles.centeredText}`}>전 세계 여행자들의 아름다운 순간을 만나보세요.</p>
                     <div className={styles.marqueeContainer}>
@@ -274,14 +307,13 @@ export default function Main() {
                         </div>
                     </div>
                     <div className={styles.sectionFooter}>
-                        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/feed")}>전체 피드 보기</button>
+                        <Link to="/feed" className={`${styles.btn} ${styles.btnOutline}`}>전체 피드 보기</Link>
                     </div>
                 </div>
 
                 <div className={styles.sectionDivider}></div>
 
-                {/* ==================== 뱃지 컬렉션 섹션 ==================== */}
-                <div className={styles.section}>
+                <div id="badge-section" className={styles.section}>
                     <h2 className={styles.centeredText}>뱃지 컬렉션</h2>
                     <p className={`${styles.bodySecondary} ${styles.centeredText}`}>다양한 뱃지를 모아 당신의 프로필을 꾸며보세요.</p>
                     <div className={styles.badgeGrid}>
@@ -297,14 +329,13 @@ export default function Main() {
                         ))}
                     </div>
                     <div className={styles.sectionFooter}>
-                        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/quest/badge")}>전체 뱃지 보기</button>
+                        <Link to="/quest/badge" className={`${styles.btn} ${styles.btnOutline}`}>전체 뱃지 보기</Link>
                     </div>
                 </div>
 
                 <div className={styles.sectionDivider}></div>
 
-                {/* ==================== 커뮤니티 섹션 ==================== */}
-                <div className={styles.section}>
+                <div id="community-section" className={styles.section}>
                     <h2 className={styles.centeredText}>여행자들의 이야기</h2>
                     <p className={`${styles.bodySecondary} ${styles.centeredText}`}>자유롭게 소통하고 정보를 공유하는 공간입니다.</p>
                     <div className={styles.communityContainer}>
@@ -321,7 +352,7 @@ export default function Main() {
                                 ))}
                             </ul>
                             <div className={styles.sectionFooter}>
-                                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/board/popular")}>전체 게시글 보기</button>
+                                <Link to="/board/popular" className={`${styles.btn} ${styles.btnOutline}`}>전체 게시글 보기</Link>
                             </div>
                         </div>
                         <div className={styles.communityColumn}>
@@ -339,13 +370,12 @@ export default function Main() {
                                 ))}
                             </ul>
                             <div className={styles.sectionFooter}>
-                                <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/rank/list")}>랭킹 더보기</button>
+                                <Link to="/rank/list" className={`${styles.btn} ${styles.btnOutline}`}>랭킹 더보기</Link>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* ==================== 마이페이지 섹션 ==================== */}
                 {isLoggedIn && summary && (
                     <div className={styles.section}>
                         <h2>나의 여행 요약</h2>
@@ -366,7 +396,7 @@ export default function Main() {
                                     <span className={styles.label}>나의 레벨</span>
                                 </div>
                             </div>
-                            <button className={`${styles.btn} ${styles.btnSecondary}`} style={{ marginTop: '20px' }}>마이페이지 바로가기</button>
+                            <button className={`${styles.btn} ${styles.btnOutline}`} style={{ marginTop: '20px' }} onClick={() => navigate('/user/manage')}>마이페이지 바로가기</button>
                         </div>
                     </div>
                 )}
