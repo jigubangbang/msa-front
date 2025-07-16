@@ -46,7 +46,7 @@ export default function ChatDescriptionEditor({ description, setDescription, cha
             </div>
         ) : (
             <>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{description || "채팅방 설명이 나오는 부분입니다."}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{description || "아직 채팅방 정보를 작성하지 않았습니다."}</p>
             </>
         )}
         </div>
