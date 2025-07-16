@@ -204,13 +204,10 @@ export default function Main() {
         setShowProfileModal(false);
     };
 
-    // ==================================================================================
-    // UI 렌더링 (Rendering)
-    // ==================================================================================
-    
     
     if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
+
 
     return (
         <div className={styles.outerContainer}>
@@ -375,9 +372,6 @@ export default function Main() {
                     onQuestUpdate={handleQuestUpdate}
                 />,
                 document.body
-            // ==========================================================
-            // 아래에 닫는 괄호 `)`와 중괄호 `}`가 누락되었습니다.
-            // ==========================================================
             )} 
 
             {showProfileModal && (
