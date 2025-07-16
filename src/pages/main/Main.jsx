@@ -36,6 +36,26 @@ export default function Main() {
     const [selectedQuest, setSelectedQuest] = useState(null);
     const scrollPosition = useRef(0);
 
+    const getDifficultyText = (difficulty) => {
+        switch(String(difficulty)) {
+          case '1': return '초급';
+          case '2': return '중급';
+          case '3': return '고급';
+          case '4': return '시즌';
+          default: return '';
+        }
+    };
+
+    const getDifficultyClass = (difficulty) => {
+        switch(String(difficulty)) {
+            case '1': return styles.difficultyEasy;
+            case '2': return styles.difficultyNormal;
+            case '3': return styles.difficultyHard;
+            case '4': return styles.difficultySeasonal;
+            default: return '';
+        }
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
@@ -85,15 +105,28 @@ export default function Main() {
             setError(null);
 
             try {
-                const [badgeResponse, postResponse, rankingResponse, feedResponse] = await Promise.all([
-                    api.get('/api/quests/badges?type=popular&limit=8'),
-                    api.get('/api/com/board/list?sortOption=latest&limit=4'),
+                const [
+                    badgeResponse,
+                    postResponse, 
+                    rankingResponse, 
+                    feedResponse
+                ] = await Promise.all([
+                    api.get('/api/quests/badges?type=popular&limit=30'),
+                    api.get('/api/com/board/list?sortOption=latest&limit=20'),
                     api.get('/api/quests/rankings?limit=5'),
                     api.get(`${API_ENDPOINTS.FEED.PUBLIC}/posts/top`),
                 ]);
+
                 const feedData = await feedResponse.data.posts;
                 setFeeds(feedData);
-                setBadges(badgeResponse.data.badges);
+
+                const allBadges = badgeResponse.data.badges || [];
+                
+                // 뱃지 목록을 랜덤으로 섞고 8개를 선택
+                const shuffledBadges = allBadges.sort(() => 0.5 - Math.random());
+                const randomBadges = shuffledBadges.slice(0, 8);
+                setBadges(randomBadges);
+
                 setPosts(postResponse.data.posts);
                 setRankings(rankingResponse.data.rankings);
 
@@ -255,6 +288,7 @@ export default function Main() {
                         {badges.map((badge) => (
                             <div key={badge.id} className={styles.badgeCard} onClick={() => openBadgeModal(badge.id)}>
                                 <img src={badge.icon} alt={`${badge.kor_title} 뱃지`} className={styles.badgeIcon} />
+                                <p className={`${styles.badgeDifficulty} ${getDifficultyClass(badge.difficulty)}`}>{getDifficultyText(badge.difficulty)}</p>
                                 <h4 className={styles.badgeTitle}>{badge.kor_title}</h4>
                                 <p className={styles.badgeAcquired}>
                                     {badge.acquired_count}명이 획득
@@ -277,17 +311,14 @@ export default function Main() {
                         <div className={styles.communityColumn}>
                             <h4 className={styles.centeredText}>최신 게시글</h4>
                             <ul className={styles.postList}>
-                                {posts.map((post) => {
-                                    const isBlinded = post.blindStatus === 'BLINDED';
-                                    return (
-                                        <li key={post.id} className={styles.postItem} onClick={() => !isBlinded && handlePostClick(post.id)}>
-                                            <h4>{isBlinded ? '블라인드 처리된 게시물입니다.' : post.title}</h4>
-                                            <div className={styles.postMeta}>
-                                                <span>{isBlinded ? '-' : post.creatorNickname}</span> | <span>{formatDate(post.createdAt)}</span>
-                                            </div>
-                                        </li>
-                                    );
-                                })}
+                                {posts.filter(post => post.blindStatus !== 'BLINDED').slice(0, 4).map((post) => (
+                                    <li key={post.id} className={styles.postItem} onClick={() => handlePostClick(post.id)}>
+                                        <h4>{post.title}</h4>
+                                        <div className={styles.postMeta}>
+                                            <span>{post.creatorNickname}</span> | <span>{formatDate(post.createdAt)}</span>
+                                        </div>
+                                    </li>
+                                ))}
                             </ul>
                             <div className={styles.sectionFooter}>
                                 <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => navigate("/board/popular")}>전체 게시글 보기</button>
