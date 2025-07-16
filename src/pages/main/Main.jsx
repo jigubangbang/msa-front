@@ -77,6 +77,7 @@ export default function Main() {
         }
     }, [showBadgeModal, showQuestModal, showLoginConfirmModal]);
 
+
     useEffect(() => {
         if (location.state?.showIncompleteProfileModal) {
             setShowProfileModal(true);
