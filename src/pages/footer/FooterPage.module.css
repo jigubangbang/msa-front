@@ -94,3 +94,17 @@
   color: #666; 
   text-decoration: none; 
 }
+
+.icon {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 3px;
+  vertical-align: middle;
+}
+
+.icon2 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 2.5px;
+  vertical-align: middle;
+}

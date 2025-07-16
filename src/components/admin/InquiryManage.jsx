@@ -184,9 +184,7 @@ export default function InquiryManage() {
         filtered = filtered.filter(
           (inquiry) =>
             inquiry.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            inquiry.nickname
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
+            inquiry.nickname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             inquiry.userId?.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
@@ -222,7 +220,7 @@ export default function InquiryManage() {
           placeholder="문의 제목, 작성자로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown
