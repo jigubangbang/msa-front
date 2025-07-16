@@ -218,6 +218,7 @@ const handleFilterClick = (filterValue) => {
         ) : (
           posts.map((post, index) => {
             const postNumber = (currentPage - 1) * itemsPerPage + index + 1;
+            const isBlinded = post.blindStatus === 'BLINDED';
             
             return (
               <div
@@ -228,38 +229,42 @@ const handleFilterClick = (filterValue) => {
                 <div className={styles.postNumber}>{postNumber}.</div>
                 <div className={styles.postContent}>
                     <div className={styles.postTitle}>
-                        {post.title}
+                        {isBlinded ? '블라인드된 게시글입니다' : post.title}
                     </div>
-                    <div className={styles.postMeta}>
-                        {post.creatorTravelStyle && (
-                        <span className={styles.travelStyle}>
-                            [{getTravelStyleLabel(post.creatorTravelStyle)}]
-                        </span>
-                        )}
-                        <span className={styles.author}>
-                        {post.creatorNickname} ({post.userId})
-                        </span>
-                        <span className={styles.separator}>|</span>
-                        <span className={styles.date}>{formatDate(post.createdAt)}</span>
-                        <span className={styles.separator}>|</span>
-                        
-                        <div className={styles.stats}>
-                        <div className={styles.statItem}>
-                            <img src="/icons/common/comment.svg" alt="댓글" className={styles.icon} />
-                            <span>{post.commentCount || 0}</span>
+                        <div className={styles.postMeta}>
+                          
+                            {(!isBlinded && post.creatorTravelStyle) && (
+                            <span className={styles.travelStyle}>
+                                [{getTravelStyleLabel(post.creatorTravelStyle)}]
+                            </span>
+                            )}
+
+                            <span className={styles.author}>
+                            {isBlinded ? ' - ' : post.creatorNickname} ({isBlinded ? ' - ' : post.userId})
+                            </span>
+                            <span className={styles.separator}>|</span>
+                            <span className={styles.date}>{isBlinded ? ' 0000-00-00 ' : formatDate(post.createdAt)}</span>
+                            <span className={styles.separator}>|</span>
+                            
+                            
+                            <div className={styles.stats}>
+                              <div className={styles.statItem}>
+                                  <img src="/icons/common/comment.svg" alt="댓글" className={styles.icon} />
+                                  <span>{isBlinded ? ' - ' : post.commentCount || 0}</span>
+                              </div>
+                              <span className={styles.separator}>|</span>
+                              <div className={styles.statItem}>
+                                  <img src="/icons/common/heart_fill.svg" alt="좋아요" className={styles.icon} />
+                                  <span>{isBlinded ? ' - ' : post.likeCount || 0}</span>
+                              </div>
+                              <span className={styles.separator}>|</span>
+                              <div className={styles.statItem}>
+                                  <img src="/icons/common/view.svg" alt="조회수" className={styles.icon} />
+                                  <span>{isBlinded ? ' - ' : post.viewCount || 0}</span>
+                              </div>
+                            </div>
                         </div>
-                        <span className={styles.separator}>|</span>
-                        <div className={styles.statItem}>
-                            <img src="/icons/common/heart_fill.svg" alt="좋아요" className={styles.icon} />
-                            <span>{post.likeCount || 0}</span>
-                        </div>
-                        <span className={styles.separator}>|</span>
-                        <div className={styles.statItem}>
-                            <img src="/icons/common/view.svg" alt="조회수" className={styles.icon} />
-                            <span>{post.viewCount || 0}</span>
-                        </div>
-                        </div>
-                    </div>
+                    
                 </div>
               </div>
             );

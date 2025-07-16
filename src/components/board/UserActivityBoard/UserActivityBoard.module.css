@@ -9,6 +9,16 @@
   font-family: Pretendard, sans-serif;
 }
 
+.blindedBadge {
+  display: inline-block;
+  background-color: #ff4444;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
 .boardSection {
   background: #ffffff;
   border-radius: 12px;
@@ -88,6 +98,8 @@
 }
 
 .postTitle {
+    display: flex;
+  align-items: center;
   font-size: 16px;
   font-weight: 600;
   color: #333;
@@ -96,6 +108,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  gap: 6px;
 }
 
 .postMeta {

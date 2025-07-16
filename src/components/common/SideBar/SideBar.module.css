@@ -14,6 +14,7 @@
   top: 0;
   z-index: 10;
   overflow: hidden;
+  
 }
 
 /* Navigation */
@@ -72,12 +73,15 @@
   width: calc(100% - 44px);
   padding-right: 12px;
   opacity: 1; /* 항상 보이도록 */
+  
 }
 
 .menuLabel {
   font-size: 14px;
   color: #000;
   font-weight: 500;
+    word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .badge {

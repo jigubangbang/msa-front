@@ -5,7 +5,9 @@ import api from '../../../apis/api';
 import JoinApplicationModal from '../../modal/JoinApplicationModal/JoinApplicationModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
+import ChatModal from '../../../pages/chat/ChatModal';
 import { useNavigate } from 'react-router-dom';
+
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -70,6 +72,9 @@ useEffect(() => {
   };
 
   const fetchMemberStatus = async () => {
+    if (detail?.blindStatus === 'BLINDED'){
+      return;
+    }
     try {
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/member-status`,
       {
@@ -229,7 +234,7 @@ useEffect(() => {
     }
   };
 
-  //07-15
+  //채팅하기 버튼
   const handleChatClick = async () => {
     console.log('채팅방으로 이동:', postId);
     try {
@@ -252,12 +257,10 @@ useEffect(() => {
     }
   };
 
-      const handleReportClose = () => {
+  const handleReportClose = () => {
     setShowReportModal(false);
     setReportInfo(null);
   };
-
-
 
   const isBlind = detail?.blindStatus === 'BLINDED';
 
@@ -313,7 +316,7 @@ useEffect(() => {
               className={`${styles.joinButton} ${memberStatus == 'PENDING' ? styles.disabled : ''}`}
               onClick={handleButtonClick}
               disabled={!isLogin || isBlind}
->
+              >
                 {isBlind ? '참여 불가' : getJoinButtonText()}
               </button>
             </div>
@@ -326,7 +329,7 @@ useEffect(() => {
         <div className={styles.creatorInfo}>
           <div className={styles.profileImage}>
             <img 
-              src={isBlind ? '/icons/common/warning.png' : (detail.creatorProfileImage || '/icons/common/user_profile.svg')} 
+              src={isBlind ? '/icons/common/warning.png' : (detail.creatorProfileImage || '/icons/common/default_profile.png')} 
               alt="프로필"
             />
           </div>
@@ -370,9 +373,9 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* 함영하는 여행자 스타일 */}
+      {/* 환영하는 여행자 스타일 */}
       <div className={styles.stylesSection}>
-        <h3 className={styles.sectionTitle}>함영하는 여행자 스타일</h3>
+        <h3 className={styles.sectionTitle}>환영하는 여행자 스타일</h3>
         <div className={styles.stylesList}>
           {isBlind ? (
             <span>블라인드 처리된 게시글입니다</span>
@@ -399,6 +402,7 @@ useEffect(() => {
       {chatModalOpen && selectedChatId && (
             <ChatModal
               isOpen={chatModalOpen}
+              onClose={() => setChatModalOpen(false)}
               chatId={selectedChatId}
               currentUserId={currentUserId}
             />

@@ -28,6 +28,8 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalHeader {
@@ -35,6 +37,11 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   display: flex;
   justify-content: flex-end;
   padding: 16px 20px 0;
+  flex-shrink: 0; 
+  position: sticky;
+  top: 0; 
+  background: #1a1a1a; 
+  z-index: 10;
 }
 
 .closeBtn {
@@ -67,6 +74,8 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .modalContent {
   padding: 0 20px 20px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .modalLayout {

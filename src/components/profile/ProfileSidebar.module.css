@@ -1,3 +1,16 @@
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif; 
+  background-color: #f0f2f5; /* 전체 배경색 살짝 변경 */
+  color: var(--color-text-primary);
+}
+
 .sidebar {
   width: 100%;
   max-width: 260px;
@@ -213,6 +226,10 @@
   transition: opacity 0.2s ease;
 }
 
+.disabled {
+  cursor: auto;
+}
+
 .bio {
   white-space: pre-line;
   font-size: 0.9rem;
@@ -307,6 +324,7 @@
 }
 
 .formInput {
+  font-family: 'Pretendard', sans-serif;
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #ccc;

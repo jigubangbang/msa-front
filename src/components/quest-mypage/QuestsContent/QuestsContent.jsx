@@ -365,6 +365,7 @@ const handleViewModalClose = () => {
           isOpen={certiModal.isOpen}
           onClose={handleViewModalClose}
           questUserId={certiModal.questUserId}
+          currentUserId={currentUserId}
         />,
         document.body
       )}

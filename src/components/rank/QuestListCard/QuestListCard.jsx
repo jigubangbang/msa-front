@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import styles from './QuestListCard.module.css';
+import { useNavigate } from "react-router-dom";
 
 const QuestListCard = ({ 
   title, 
   quest=[],
-  isLogin=false
+  isLogin=false,
+  handleQuestClick
 }) => {
 
+  const navigate = useNavigate();
+
   const handleButtonClick = () => {
-    // #NeedToChange
-    console.log(`Navigating to My Quest Page`);
+    navigate(`/my-quest/record`)
   };
 
   const handleLoginClick = () => {
@@ -30,7 +33,13 @@ const QuestListCard = ({
         <div className={styles.questList}>
           {displayQuests.length > 0 ? (
             displayQuests.map((questItem, index) => (
-              <div key={questItem.id || index} className={styles.questItem}>
+              <div key={questItem.id || index} className={styles.questItem} onClick={() => {
+                if (handleQuestClick && typeof handleQuestClick === 'function') {
+                  handleQuestClick(questItem.quest_id);
+                } else {
+                  console.error('handleQuestClick is not a function');
+                }
+              }}>
                 <span className={styles.questTitle}>{questItem.title}</span>
               </div>
             ))

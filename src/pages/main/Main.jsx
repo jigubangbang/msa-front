@@ -10,6 +10,7 @@ import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginCo
 import BadgeModal from "../../components/modal/BadgeModal/BadgeModal";
 import QuestModal from "../../components/modal/QuestModal/QuestModal";
 import Modal from "../../components/common/Modal/Modal";
+import CirclesSpinner from "../../components/common/Spinner/CirclesSpinner";
 
 const mockPopularFeeds = [
     { id: 1, user: '여행가', location: '스위스', avatar: '/1.jpg', image: '/1.jpg' },
@@ -206,7 +207,8 @@ export default function Main() {
     // ==================================================================================
     // UI 렌더링 (Rendering)
     // ==================================================================================
-    if (loading && badges.length === 0 && !showBadgeModal && !showQuestModal) return <div>로딩 중...</div>;
+    
+    if (loading) return <CirclesSpinner/>;
     if (error) return <div>{error}</div>;
 
     return (

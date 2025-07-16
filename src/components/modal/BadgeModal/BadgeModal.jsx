@@ -63,7 +63,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
               {user.profile_image ? (
                 <img src={user.profile_image} alt={user.nickname} />
               ) : (
-                <img src="/icons/common/user_profile.svg" alt={user.nickname} />
+                <img src="/icons/common/default_profile.png" alt={user.nickname} />
               )}
             </div>
           ))}

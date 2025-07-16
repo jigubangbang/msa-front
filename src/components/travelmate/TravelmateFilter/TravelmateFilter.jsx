@@ -18,6 +18,8 @@ export default function TravelmateFilter({ onSubmit }) {
   const [themes, setThemes] = useState([]);
   const [travelStyles, setTravelStyles] = useState([]);
 
+  const [locationOpen, setLocationOpen] = useState(false);
+
   const filterRefs = {
     location: useRef(null),
     target: useRef(null),
@@ -48,32 +50,14 @@ export default function TravelmateFilter({ onSubmit }) {
     fetchData();
   }, []);
 
-  // 외부 클릭 감지
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     const clickedOutside = Object.values(filterRefs).every(ref => 
-  //       ref.current && !ref.current.contains(event.target)
-  //     );
-      
-  //     if (clickedOutside) {
-  //       setActiveToggle(null);
-  //     }
-  //   };
-
-  //   document.addEventListener('click', handleClickOutside);
-  //   return () => document.removeEventListener('click', handleClickOutside);
-  // }, []);
-
-  // 필터 데이터 변경 시 부모에게 전달
-  // useEffect(() => {
-  //   onSubmit(selectedFilters);
-  // }, [selectedFilters, onSubmit]);
-
   const handleApplyClick = () => {
     onSubmit(selectedFilters);
   };
 
   const handleToggleClick = (toggleType) => {
+    if (activeToggle === toggleType) {
+    setLocationOpen(false);
+  }
     setActiveToggle(activeToggle === toggleType ? null : toggleType);
   };
 
@@ -132,6 +116,7 @@ export default function TravelmateFilter({ onSubmit }) {
       styles: []
     });
     setActiveToggle(null);
+    setLocationOpen(false);
   };
 
   const getToggleText = (filterType) => {
@@ -167,6 +152,16 @@ export default function TravelmateFilter({ onSubmit }) {
       [filterType]: prev[filterType].filter(item => item.id !== itemId)
     }));
   };
+
+  const handleLocationOpen = () => {
+    console.log('Location opening...');
+    setLocationOpen(true);
+  }
+
+  const handleLocationClose = () => {
+    console.log('Location closing...');
+    setLocationOpen(false);
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -275,8 +270,8 @@ export default function TravelmateFilter({ onSubmit }) {
               <img src="/icons/common/refresh.svg" alt="reset"/>
             </button>
           </div>
-          <div className={styles.selector}>
-            <LocationSelector onSubmit={handleLocationSubmit} />
+          <div className={locationOpen ? styles.selectorLocation : styles.selector}>
+            <LocationSelector onSubmit={handleLocationSubmit} locationOpen={handleLocationOpen} locationClose={handleLocationClose}/>
           </div>
         </div>
       )}

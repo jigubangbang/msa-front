@@ -6,6 +6,36 @@ import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
 const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose }) => {
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+  const validateFile = (file) => {
+    const errors = [];
+    
+    // 파일 크기 검사
+    if (file.size > MAX_FILE_SIZE) {
+      errors.push(`파일 크기는 ${MAX_FILE_SIZE / (1024 * 1024)}MB를 초과할 수 없습니다.`);
+    }
+    
+    // 파일 타입 검사
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      errors.push('지원되는 형식: JPG, PNG, WebP');
+    }
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  };
+
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const [formData, setFormData] = useState({
     title: '',
     simpleDescription: '',
@@ -176,6 +206,22 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
   const handleBackgroundImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const validation = validateFile(file);
+    
+    if (!validation.isValid) {
+      setFieldValidation(prev => ({
+        ...prev,
+        backgroundImage: 'invalid'
+      }));
+      setValidationErrors(prev => ({
+        ...prev,
+        backgroundImage: validation.errors.join(' ')
+      }));
+
+      e.target.value = '';
+      return;
+    }
+
       setFormData(prev => ({
         ...prev,
         backgroundImage: file
@@ -202,7 +248,27 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
 
   const handleThumbnailImageChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
+      // 파일 유효성 검사
+      const validation = validateFile(file);
+      
+      if (!validation.isValid) {
+        // 유효성 검사 실패
+        setFieldValidation(prev => ({
+          ...prev,
+          thumbnailImage: 'invalid'
+        }));
+        setValidationErrors(prev => ({
+          ...prev,
+          thumbnailImage: validation.errors.join(' ')
+        }));
+        
+        // 파일 input 초기화
+        e.target.value = '';
+        return;
+      }
+
       setFormData(prev => ({
         ...prev,
         thumbnailImage: file
@@ -481,12 +547,12 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                       className={styles.thumbnailImage}
                     />
                     <div className={styles.thumbnailOverlay}>
-                      <span className={styles.changeText}>이미지 변경</span>
+                      <span className={styles.changeText}>썸네일 변경</span>
                     </div>
                   </div>
                 ) : (
                   <div className={styles.thumbnailPlaceholder}>
-                    <span className={styles.placeholderText}>이미지 선택</span>
+                    <span className={styles.placeholderText}>썸네일 선택</span>
                   </div>
                 )}
               </div>

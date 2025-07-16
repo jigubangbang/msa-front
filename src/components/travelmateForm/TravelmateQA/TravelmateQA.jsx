@@ -19,6 +19,8 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState('');
 
+  const [isBlind, setIsBlind] = useState(false);
+
   useEffect(() => {
     if (postId) {
       fetchQuestions();
@@ -28,6 +30,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const fetchQuestions = async () => {
     setLoading(true);
   try {
+    const response3 = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/status`);
     const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/comments`);
     const response2 = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/user-profile/${currentUserId}`);
     // 서버에서 받은 데이터를 기존 형태로 변환
@@ -54,6 +57,10 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       
     setQuestions(transformedQuestions);
     setUserProfile(response2.data);
+    setIsBlind(response3.data.blindStatus !== "VISIBLE");
+
+    console.log(isBlind);
+
     } catch (error) {
       console.error('Failed to fetch questions:', error);
       setQuestions([]);
@@ -249,6 +256,19 @@ const handleDelete = async (commentId) => {
     );
   }
 
+  if (isBlind){
+    return (
+      <div className={styles.travelmateQA}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
+        </div>
+        <div className={styles.blindedMessage}>
+        <p>블라인드 처리된 게시글로 댓글을 확인할 수 없습니다.</p>
+      </div>
+      </div>
+    );
+  }
+
   
 
   return (
@@ -256,6 +276,8 @@ const handleDelete = async (commentId) => {
       <div className={styles.header}>
         <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
       </div>
+
+      
 
       {/* 질문 목록 */}
       <div className={styles.questionsList}>
@@ -270,7 +292,7 @@ const handleDelete = async (commentId) => {
               <div className={styles.questionContainer}>
                 <div className={styles.profileImage}>
                   <img 
-                    src={question.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (question.profileImage || '/icons/common/user_profile.svg')} 
+                    src={question.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (question.profileImage || '/icons/common/default_profile.png')} 
                     alt="프로필"
                   />
                 </div>
@@ -339,7 +361,7 @@ const handleDelete = async (commentId) => {
                     <div key={reply.id} className={styles.replyContainer}>
                       <div className={styles.profileImage}>
                         <img 
-                          src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/user_profile.svg')} 
+                          src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/default_profile.png')} 
                           alt="프로필"
                         />
                       </div>
@@ -401,7 +423,7 @@ const handleDelete = async (commentId) => {
                 <div className={styles.replyForm}>
                   <div className={styles.profileImage}>
                     <img 
-                      src={userProfile || '/icons/common/user_profile.svg'} 
+                      src={userProfile || '/icons/common/default_profile.png'} 
                       alt="내 프로필"
                     />
                   </div>
@@ -444,7 +466,7 @@ const handleDelete = async (commentId) => {
         <div className={styles.questionForm}>
           <div className={styles.profileImage}>
             <img 
-              src={userProfile || '/icons/common/user_profile.svg'} 
+              src={userProfile || '/icons/common/default_profile.png'} 
               alt="내 프로필"
             />
           </div>
@@ -470,10 +492,10 @@ const handleDelete = async (commentId) => {
       )}
 
       <ReportModal
-              show={showReportModal}
-              onClose={() => setShowReportModal(false)}
-              onSubmit={handleReportSubmit}
-            />
+        show={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 };

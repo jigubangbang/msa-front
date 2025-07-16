@@ -32,7 +32,6 @@ const TravelInfoList = ({
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
   
-  
   // 내부에서 카테고리와 정렬 관리
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
   const [sortOption, setSortOption] = useState('latest');
@@ -149,6 +148,7 @@ const TravelInfoList = ({
     }
   };
 
+  //채팅하기 버튼
   const handleChatClick = async (groupId) => {
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
@@ -542,12 +542,12 @@ const TravelInfoList = ({
       {chatModalOpen && selectedChatId && (
           <ChatModal
             isOpen={chatModalOpen}
+            onClose={() => setChatModalOpen(false)}
             chatId={selectedChatId}
             currentUserId={currentUserId}
           />
         )}
       
-
       <ReportModal
               show={showReportModal}
               onClose={handleReportClose}

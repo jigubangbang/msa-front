@@ -7,15 +7,16 @@ const UserInfoPanel = ({
   user, 
   userQuests = [], 
   calculatePerformance,
-  isLogin = false
-  
+  isLogin = false,
+  handleQuestClick
 }) => {
+  
   return (
     <div className={styles.loginContent}>
       <div className={styles.myInfo}>
         <div className={styles.myProfile}>
           <img 
-            src={user?.profile_image || "/icons/common/user_profile.svg"} 
+            src={user?.profile_image || "/icons/common/default_profile.png"} 
             alt="user_profile_image" 
             className={styles.profileImage}
           />
@@ -63,6 +64,7 @@ const UserInfoPanel = ({
           title="Ongoing Quests"
           quest={userQuests}
           isLogin={isLogin}
+          handleQuestClick={handleQuestClick}
         />
       </div>
     </div>

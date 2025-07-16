@@ -17,6 +17,24 @@
   color: #000;
 }
 
+.searchConditions {
+  font-size: 14px;
+  color: #666;
+}
+
+.searchConditionsLabel {
+  font-weight: 500;
+  color: #333;
+}
+
+.searchCondition {
+  background-color: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  display: inline-block;
+}
+
 /* 검색 섹션 */
 .searchSection {
   display: flex;

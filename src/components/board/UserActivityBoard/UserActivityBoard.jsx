@@ -159,7 +159,12 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
           >
             <div className={styles.postNumber}>{index + 1}.</div>
             <div className={styles.postContent}>
-              <div className={styles.postTitle}>{post.title}</div>
+              <div className={styles.postTitle}>
+                {post.title}
+                {post.blindStatus === 'BLINDED' && (
+                  <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                )}
+              </div>
               <div className={styles.postMeta}>
                 <span className={styles.author}>{`${post.creatorNickname} (${post.userId})`}</span>
                 <span className={styles.separator}>|</span>

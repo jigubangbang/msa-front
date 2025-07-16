@@ -60,7 +60,7 @@ const TravelmateMembers = ({ postId }) => {
               <div className={styles.profileSection} onClick={() => {handleProfileClick(member.userId)}}>
                 <div className={styles.profileImage}>
                   <img 
-                    src={member.profileImage || '/icons/common/user_profile.svg'} 
+                    src={member.profileImage || '/icons/common/default_profile.png'} 
                     alt="프로필"
                   />
                 </div>
