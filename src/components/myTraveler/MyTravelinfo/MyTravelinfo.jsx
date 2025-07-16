@@ -295,7 +295,12 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                         )}
                   </div>
                 <div className={styles.travelInfoContent}>
+                  <div className={styles.titleContainer}>
+                    {info.blindStatus === 'BLINDED' && (
+                    <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                  )}
                   <h4 className={styles.travelInfoTitle}>{info.title}</h4>
+                </div>
                   <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
                   
                   <div className={styles.creatorInfo}>

@@ -306,10 +306,9 @@
 /* 섹션 헤더 - 새로 추가 */
 .sectionHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 16px;
-  gap: 20px;
 }
 
 .sectionHeader .sectionLabel,
@@ -318,27 +317,61 @@
   flex-shrink: 0;
 }
 
-/* 현재 정보 표시 - 새로 추가 */
+.existingInfo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.existingLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin-right: 8px;
+}
+
+.existingTag {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.currentLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-right: 8px;
+}
+
+
 .currentInfo {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
-  max-width: 60%;
+  padding: 12px;
+  background-color: #e8f5e8;
+  border: 1px solid #c3e6c3;
+  border-radius: 8px;
 }
 
 .currentTag {
   display: inline-block;
-  padding: 4px 12px;
-  background: #e3f2fd;
-  color: #1976d2;
-  border-radius: 16px;
+  padding: 4px 8px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid #bbdefb;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
 }
 
 /* 전체 너비 섹션 */
