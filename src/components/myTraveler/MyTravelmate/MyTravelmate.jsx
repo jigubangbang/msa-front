@@ -87,10 +87,6 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
-  const handleStatusChange = async (travel) => {
-    console.log(travel.id);
-    console.log(travel.isPublic);
-  }
 
   
    const handleReport = (travel) => {
@@ -208,6 +204,10 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     navigate(`/traveler/mate/${travelmate.id}`);
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/my-quest/profile/${userId}`);
+  }
+
   const renderTravelList = (travels, title, sectionType) => (
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>{title}</h3>
@@ -279,15 +279,6 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       >
                         그룹 삭제하기
                       </button>  
-                      <button
-                        className={styles.chatButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStatusChange(travel);
-                        }}
-                      >
-                        상태 변경하기
-                      </button>  
                       </>                                         
                     )}
                     {sectionType === 'joined' && (
@@ -333,7 +324,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         <div key={application.id} className={styles.applicationCard}>
                           <div className={styles.applicationInfo}>
                             <div className={styles.applicantInfo}>
-                              <div className={styles.applicantUser}>
+                              <div className={styles.applicantUser} onClick={() => handleUserClick(application.userId)}>
                                 <span className={styles.nickname}>{application.userNickname}</span>
                                 <span className={styles.userId}>({application.userId})</span>
                               </div>
