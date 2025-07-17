@@ -41,7 +41,7 @@ const BadgeCard = ({userBadge, isLogin=false}) => {
       </div>
 
       <button className={`${styles.btn}`}
-          onClick={handleButtonClick}>View All Badges →</button>
+          onClick={handleButtonClick}>전체 뱃지 보기 →</button>
     </div>
   );
 };
