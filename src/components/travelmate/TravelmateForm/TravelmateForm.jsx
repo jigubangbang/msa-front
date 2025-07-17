@@ -4,10 +4,17 @@ import TravelmateFilter from '../TravelmateFilter/TravelmateFilter';
 import DateSelector from '../DateSelector/DateSelector';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 
 const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose }) => {
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
   const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
 
   const validateFile = (file) => {
     const errors = [];
@@ -27,6 +34,28 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       errors
     };
   };
+
+  
+const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -397,7 +426,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      alert('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요.');
       return;
     }
 
@@ -436,7 +465,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       
     } catch (error) {
       console.error('Failed to submit form:', error);
-      alert('모임 저장에 실패했습니다.');
+      showAlertModal('모임 저장에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -713,6 +742,14 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
           </button>
         </div>
       </form>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

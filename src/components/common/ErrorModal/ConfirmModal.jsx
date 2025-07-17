@@ -10,12 +10,13 @@ const ConfirmModal = ({
 }) => {
   if (!isOpen) return null;
 
+  console.log("ConfirmModal에서 받은 props - message:", message, "type:", type);
+
   const handleConfirm = () => {
     if (onConfirm) {
       onConfirm();
-    } else {
-      onClose();
     }
+      onClose();
   };
 
   return (

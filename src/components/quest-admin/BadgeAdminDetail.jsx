@@ -5,10 +5,24 @@ import { useNavigate } from 'react-router-dom';
 import styles from './BadgeAdminDetail.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
+import ConfirmModal from '../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../common/ErrorModal/SimpleConfirmModal';
 
 const BadgeAdminDetail = ({ badgeId }) => {
   const [badgeDetail, setBadgeDetail] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Alert 모달 상태
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
+  // 삭제 확인 모달 상태들
+  const [showFirstConfirm, setShowFirstConfirm] = useState(false);
+  const [showSecondConfirm, setShowSecondConfirm] = useState(false);
+  const [firstConfirmMessage, setFirstConfirmMessage] = useState('');
+  const [secondConfirmMessage, setSecondConfirmMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -24,6 +38,68 @@ const BadgeAdminDetail = ({ badgeId }) => {
     } catch (error) {
       return dateString;
     }
+  };
+
+  // Alert 모달 관련 함수들
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+  // 첫 번째 모달 함수들
+  const handleFirstConfirm = () => {
+    setShowFirstConfirm(false);
+    // 첫 번째 확인 후 두 번째 모달 표시
+    setSecondConfirmMessage('⚠️ 주의: 뱃지를 삭제하면 모든 사용자의 해당 뱃지가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?');
+    setShowSecondConfirm(true);
+  };
+
+  const handleFirstCancel = () => {
+    setShowFirstConfirm(false);
+  };
+
+  // 두 번째 모달 함수들
+  const handleSecondConfirm = async () => {
+    setShowSecondConfirm(false);
+    
+    try {
+      await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}`);
+      showAlertModal('뱃지가 성공적으로 삭제되었습니다.');
+      navigate('/quest-admin/badge');
+    } catch (error) {
+      console.error('Failed to delete badge:', error);
+      
+      if (error.response && error.response.data && error.response.data.error) {
+        showAlertModal(`뱃지 삭제에 실패했습니다: ${error.response.data.error}`);
+      } else {
+        showAlertModal('뱃지 삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleSecondCancel = () => {
+    setShowSecondConfirm(false);
+  };
+
+  // 삭제 함수
+  const handleDelete = () => {
+    setFirstConfirmMessage(`정말로 "${badgeDetail.kor_title}" 뱃지를 삭제하시겠습니까?`);
+    setShowFirstConfirm(true);
   };
 
   const handleEdit = () => {
@@ -42,31 +118,6 @@ const BadgeAdminDetail = ({ badgeId }) => {
       setLoading(false);
     }
   };
-
-  const handleDelete = async () => {
-  if (!window.confirm(`정말로 "${badgeDetail.kor_title}" 뱃지를 삭제하시겠습니까?`)) {
-    return;
-  }
-
-  if (!window.confirm('⚠️ 주의: 뱃지를 삭제하면 모든 사용자의 해당 뱃지가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?')) {
-    return;
-  }
-
-  try {
-    await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/badges/${badgeId}`);
-    
-    alert('뱃지가 성공적으로 삭제되었습니다.');
-    navigate('/quest-admin/badge');
-  } catch (error) {
-    console.error('Failed to delete badge:', error);
-    
-    if (error.response && error.response.data && error.response.data.error) {
-      alert(`뱃지 삭제에 실패했습니다: ${error.response.data.error}`);
-    } else {
-      alert('뱃지 삭제에 실패했습니다.');
-    }
-  }
-};
 
   useEffect(() => {
     if (badgeId) {
@@ -240,6 +291,31 @@ const BadgeAdminDetail = ({ badgeId }) => {
           )}
         </div>
       </div>
+
+      {/* 첫 번째 확인 모달 */}
+      <SimpleConfirmModal
+        isOpen={showFirstConfirm}
+        message={firstConfirmMessage}
+        onConfirm={handleFirstConfirm}
+        onCancel={handleFirstCancel}
+      />
+
+      {/* 두 번째 확인 모달 */}
+      <SimpleConfirmModal
+        isOpen={showSecondConfirm}
+        message={secondConfirmMessage}
+        onConfirm={handleSecondConfirm}
+        onCancel={handleSecondCancel}
+      />
+
+      {/* Alert 모달 */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

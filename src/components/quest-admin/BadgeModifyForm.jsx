@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './BadgeModifyForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
+import ConfirmModal from '../common/ErrorModal/ConfirmModal';
 
 const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
   const [badgeData, setBadgeData] = useState(null);
@@ -18,6 +19,11 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [iconPreview, setIconPreview] = useState('');
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
@@ -29,6 +35,27 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
       return dateString;
     }
   };
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   const fetchBadgeData = async () => {
     setLoading(true);
@@ -146,7 +173,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
       );
       
       console.log('Badge updated successfully:', response.data);
-      alert('뱃지가 성공적으로 수정되었습니다.'); 
+      showAlertModal('뱃지가 성공적으로 수정되었습니다.'); 
       
       if (onSave) onSave(badgeId); 
       if (onClose) onClose(badgeId); 
@@ -156,9 +183,9 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
       
       // 더 상세한 에러 처리
       if (error.response && error.response.data && error.response.data.error) {
-        alert(`뱃지 수정에 실패했습니다: ${error.response.data.error}`);
+        showAlertModal(`뱃지 수정에 실패했습니다: ${error.response.data.error}`);
       } else {
-        alert('뱃지 수정에 실패했습니다.');
+        showAlertModal('뱃지 수정에 실패했습니다.');
       }
     }
   };
@@ -417,6 +444,14 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
     </div>
   );
 };

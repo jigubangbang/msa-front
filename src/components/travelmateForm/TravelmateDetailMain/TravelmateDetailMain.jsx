@@ -7,6 +7,9 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
 import { useChatContext } from '../../../utils/ChatContext';
 import { useNavigate } from 'react-router-dom';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
@@ -16,9 +19,60 @@ const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
-  const navigate = useNavigate();
+  // Alert 모달 상태 (ConfirmModal)
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
+  // 삭제 확인 모달 상태 (SimpleConfirmModal)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmMessage, setDeleteConfirmMessage] = useState('');
+
+  // 로그인 확인 모달 상태 (LoginConfirmModal)
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
+
+  const navigate = useNavigate();
   const { openChat } = useChatContext();
+
+  // 모달 관련 함수들
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const hideAlert = () => {
+    setShowAlertModal(false);
+    setAlertMessage('');
+  };
+
+  const handleDeleteConfirm = async () => {
+    setShowDeleteConfirm(false);
+    try {
+      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}`, {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
+
+      showAlert('여행자모임이 삭제되었습니다.');
+      navigate('/traveler/mate'); // 목록 페이지로 이동
+    } catch (error) {
+      console.error('Failed to delete travelmate:', error);
+      showAlert('삭제에 실패했습니다.');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+  };
+
+  const handleLoginConfirm = () => {
+    setShowLoginConfirm(false);
+    navigate('/login');
+  };
+
+  const handleLoginCancel = () => {
+    setShowLoginConfirm(false);
+  };
 
 useEffect(() => {
   if (postId) {
@@ -131,11 +185,11 @@ useEffect(() => {
         }
       });
       setMemberStatus('PENDING');
-      alert('참여 신청이 완료되었습니다.');
+      showAlert('참여 신청이 완료되었습니다.');
     } catch (error) {
       console.error('Failed to request join:', error);
       const errorMessage = error.response?.data?.error || '참여 신청에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
       throw error; 
     }
   };
@@ -169,26 +223,13 @@ useEffect(() => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      try {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}`, {
-          headers: {
-            'User-Id': currentUserId,
-          },
-        });
-
-        alert('여행자모임이 삭제되었습니다.');
-        navigate('/traveler/mate'); // 목록 페이지로 이동
-      } catch (error) {
-        console.error('Failed to delete travelmate:', error);
-        alert('삭제에 실패했습니다.');
-      }
-    }
+    setDeleteConfirmMessage('정말로 삭제하시겠습니까?');
+    setShowDeleteConfirm(true);
   };
 
   const handleReport = () => {
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      setShowLoginConfirm(true);
       return;
     }
     setShowReportModal(true);
@@ -217,11 +258,11 @@ useEffect(() => {
       );
       
       setShowReportModal(false);
-      alert('신고가 접수되었습니다.');
+      showAlert('신고가 접수되었습니다.');
     } catch (error) {
       console.error('Failed to submit report:', error);
       const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -253,11 +294,11 @@ useEffect(() => {
           }
         });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlert('채팅방 정보를 가져오는데 실패했습니다.');
       }
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방에 접속할 수 없습니다.');
+      showAlert('채팅방에 접속할 수 없습니다.');
     }
   };
 
@@ -396,6 +437,7 @@ useEffect(() => {
         </div>
       </div>
 
+      {/* 참여 신청 모달 (JoinApplicationModal) */}
       <JoinApplicationModal
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
@@ -404,10 +446,34 @@ useEffect(() => {
         applicationDescription={detail?.applicationDescription}
       />
 
+      {/* 신고 모달 (ReportModal) */}
       <ReportModal
         show={showReportModal}
         onClose={handleReportClose}
         onSubmit={handleReportSubmit}
+      />
+
+      {/* 로그인 확인 모달 (LoginConfirmModal) */}
+      <LoginConfirmModal
+        isOpen={showLoginConfirm}
+        onClose={handleLoginCancel}
+        onConfirm={handleLoginConfirm}
+      />
+
+      {/* 삭제 확인 모달 (SimpleConfirmModal) */}
+      <SimpleConfirmModal
+        isOpen={showDeleteConfirm}
+        message={deleteConfirmMessage}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
+      {/* Alert 모달 (ConfirmModal) */}
+      <ConfirmModal
+        isOpen={showAlertModal}
+        onClose={hideAlert}
+        message={alertMessage}
+        type="alert"
       />
     </div>
   );

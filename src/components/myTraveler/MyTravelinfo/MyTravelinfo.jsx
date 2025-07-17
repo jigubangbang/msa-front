@@ -10,6 +10,7 @@ import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
 
 
 export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, isLogin}) {
@@ -24,6 +25,11 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   const [confirmMessage, setConfirmMessage] = useState('');
   const [confirmType, setConfirmType] = useState('alert');
   const [confirmAction, setConfirmAction] = useState(null);
+
+  // SimpleConfirmModal 상태
+  const [showSimpleConfirm, setShowSimpleConfirm] = useState(false);
+  const [simpleConfirmMessage, setSimpleConfirmMessage] = useState('');
+  const [simpleConfirmCallback, setSimpleConfirmCallback] = useState(null);
 
   const { openChat, closeChat, chatRooms } = useChatContext();
   const { leaveChatRoom, isLeaving } = useChatLeave();
@@ -46,6 +52,26 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       confirmAction();
     }
     hideConfirm();
+  };
+
+  // SimpleConfirmModal 관련 함수들
+  const customConfirm = (message, callback) => {
+    setSimpleConfirmMessage(message);
+    setSimpleConfirmCallback({ fn: callback });
+    setShowSimpleConfirm(true);
+  };
+
+  const handleSimpleConfirm = () => {
+    if (simpleConfirmCallback && simpleConfirmCallback.fn) {
+      simpleConfirmCallback.fn();
+    }
+    setShowSimpleConfirm(false);
+    setSimpleConfirmCallback(null);
+  };
+
+  const handleSimpleCancel = () => {
+    setShowSimpleConfirm(false);
+    setSimpleConfirmCallback(null);
   };
 
   const themeMap = {
@@ -157,11 +183,13 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
             if (chatRooms[chatRoomId]) {
               closeChat(chatRoomId);
             }
+
+             showAlertModal('공유방에서 나갔습니다.');
             if (fetchTravelinfos) {
               fetchTravelinfos();
             }
 
-            showAlertModal('공유방에서 나갔습니다.');
+           
           }
         });
       } else {
@@ -230,24 +258,25 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   };
 
   const handleDelete = async (travelinfoId) => {
-    if (!window.confirm('정말로 이 정보방을 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
-      {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
-      showAlertModal('정보방이 삭제되었습니다.');
-      // 목록 새로고침
-      fetchTravelinfos();
-    } catch (error) {
-      console.error('Failed to delete travelinfo:', error);
-      showAlertModal('삭제에 실패했습니다.');
-    }
+    customConfirm(
+      '정말로 이 정보방을 삭제하시겠습니까?',
+      async () => {
+        try {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          });
+          showAlertModal('정보방이 삭제되었습니다.');
+          // 목록 새로고침
+          fetchTravelinfos();
+        } catch (error) {
+          console.error('Failed to delete travelinfo:', error);
+          showAlertModal('삭제에 실패했습니다.');
+        }
+      }
+    );
   };
 
 
@@ -438,6 +467,14 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
         onConfirm={confirmAction ? handleConfirmAction : null}
         message={confirmMessage}
         type={confirmType}
+      />
+
+      {/* SimpleConfirmModal 추가 */}
+      <SimpleConfirmModal
+        isOpen={showSimpleConfirm}
+        message={simpleConfirmMessage}
+        onConfirm={handleSimpleConfirm}
+        onCancel={handleSimpleCancel}
       />
 
     </>
