@@ -1,0 +1,90 @@
+.recommendationWrapper {
+    position: relative;
+    padding: 16px;
+    min-width: 1100px;
+}
+
+.refreshButton {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.refreshButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.refreshButton:hover:not(:disabled) {
+    transform: rotate(90deg);
+}
+
+.cardGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center; /* center the row */
+    margin-top: 48px; /* leave space for the button */
+}
+
+.skeletonCard {
+    width: 150px;
+    height: 250px;
+    border-radius: 12px;
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 37%,
+        #f0f0f0 63%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+.centeredBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background-color: #fdfdfd;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 40px auto;
+  max-width: 600px;
+}
+
+.boxText {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.btnSecondary {
+  background-color: #242424;
+  color: white;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btnSecondary:hover {
+  background-color: #000;
+}

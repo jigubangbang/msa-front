@@ -1,3 +1,16 @@
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif; 
+  background-color: #f0f2f5; /* 전체 배경색 살짝 변경 */
+  color: var(--color-text-primary);
+}
+
 .sidebar {
   width: 100%;
   max-width: 260px;
@@ -164,10 +177,16 @@
 .label {
   color: #999;
   font-size: 0.8rem;
+  margin-bottom: 0.8vh;
 }
 
 .value {
   font-weight: 600;
+  color: #444;
+}
+
+.value:hover {
+  color: #6b6b6b;
 }
 
 /* Extra info */
@@ -188,6 +207,27 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #333;
+}
+
+.bioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.disabled {
+  cursor: auto;
 }
 
 .bio {
@@ -246,7 +286,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
-  cursor: default;
+  cursor: pointer;
 }
 
 /* Nav Bar */
@@ -265,8 +305,111 @@
   position: relative;
 }
 
+.tab:hover {
+  color: black;
+}
+
 .active {
   color: black;
   font-weight: bold;
   border-bottom: 2px solid black;
+}
+
+/* FORM STYLING */
+.formGroup {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.formInput {
+  font-family: 'Pretendard', sans-serif;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  color: black;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+.badgeBlock {
+  flex: 1;
+  min-width: 45%;
+}
+
+.badgeBlock h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.badgeBlock img {
+  margin-top: 5px;
+  width: 40px;
+}
+
+.tooltipWrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.pinnedBadgeIcon {
+    width: 40px;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    max-width: 200px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    text-align: center;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    position: absolute;
+    z-index: 10;
+    top: 110%; /* BELOW the image */
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    white-space: pre-wrap;
+}
+
+/* Arrow pointing UP at top of tooltip */
+.tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%; /* top edge of tooltip box */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent rgba(0, 0, 0, 0.85) transparent;
+}
+
+.tooltipWrapper:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
 }

@@ -1,0 +1,282 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  font-family: 'Pretendard', sans-serif;
+  gap: 16px;
+  overflow: visible;
+  box-sizing: border-box;
+  padding: 20px;
+  overflow: visible;
+  position: relative;
+}
+
+.selector{
+  margin-top: 10px;
+  padding: 12px 16px;
+  max-height: 500px; 
+  overflow: visible;
+   z-index: auto;
+}
+
+.selectorLocation {
+  margin-top: 10px;
+  padding: 12px 16px;
+  height: 350px;
+  overflow: visible; 
+  position: relative;
+}
+
+
+.selectedSection {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  min-height: 40px;
+}
+
+.selectedFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
+
+.selectedTag {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  gap: 8px;
+  flex: 0 0 calc(20% - 6.4px);
+  min-width: 120px;
+  box-sizing: border-box;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeButton:hover {
+  background-color: #e4e4e4;
+}
+
+.removeButton img {
+  width: 12px;
+  height: 12px;
+}
+
+.resetAllButton {
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.resetAllButton:hover {
+  background-color: #e4e4e4;
+}
+
+.resetAllButton img {
+  width: 20px;
+  height: 20px;
+}
+
+/* 토글 섹션 */
+.toggleSection {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.filterToggle {
+  min-width: 200px;
+}
+
+.toggleButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.toggleButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.toggleButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+  margin-left: 8px;
+}
+
+.toggleButton.active .arrow {
+  transform: rotate(180deg);
+  color: #fff;
+}
+
+/* 컨텐츠 패널 */
+.contentPanel {
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  min-width: 1000px;
+  max-height: 500px;
+  overflow: visible;
+  overflow-y: auto;
+  z-index: auto;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.resetButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resetButton:hover {
+  background-color: #e4e4e4;
+}
+
+.resetButton img {
+  width: 16px;
+  height: 16px;
+}
+
+/* 옵션 그리드 */
+.optionGrid {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  max-height: 400px; 
+  overflow-y: auto; 
+}
+
+.optionButton {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  text-align: center;
+  font-family: inherit;
+    word-break: keep-all; 
+  overflow-wrap: break-word;
+}
+
+.optionButton:hover {
+  border-color: #999;
+  background-color: #fafafa;
+}
+
+.optionButton.selected {
+  border-color: #000;
+  background-color: #000;
+  color: #fff;
+}
+
+.optionButton.selected:hover {
+  background-color: #333;
+}
+
+
+.button {
+  width: auto; /* 100%에서 auto로 변경 */
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  outline: none !important;
+}
+
+.buttonDiv {
+  display: flex;
+  margin-right: 0;
+}
+/* === 다크 버튼 === */
+.darkButton {
+  background-color: #000;
+  color: #fff;
+  border: none;
+}
+
+.darkButton:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+}

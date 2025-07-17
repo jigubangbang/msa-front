@@ -1,0 +1,456 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.section {
+  font-family: 'Pretendard';
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 25px 25px 35px 25px;
+  margin-bottom: 5px;
+}
+
+/* 헤더 */
+.header {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-family: 'Pretendard';
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f8f9fa;
+  text-align: center;
+}
+
+.backButton {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: transform 0.3s ease;
+  color: #000;
+  margin-left: -10px;
+}
+
+.backButton:hover {
+  transform: scale(1.1);
+  color: #666;
+}
+
+.backIcon {
+  width: 25px;
+  height: 25px;
+}
+
+/* 로딩 */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+/* 메시지 */
+.message {
+  font-family: 'Pretendard';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  margin: 0 auto 10px auto;  
+  width: 100%;             
+  box-sizing: border-box;
+}
+
+.message.error {
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
+}
+
+.errorIcon {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 문의 컨테이너 */
+.inquiryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 문의 헤더 (제목 섹션) */
+.inquiryHeader {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 0 15px 0; 
+  border-bottom: 1px solid #e9ecef;
+}
+
+.inquiryMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.category {
+  font-family: 'Pretendard';
+  background-color: #e9ecef;
+  display: inline-block;
+  color: #495057;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusBadge {
+  font-family: 'Pretendard';
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  min-width: 50px;
+}
+
+.statusPending {
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
+}
+
+.statusReplied {
+  background-color: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
+}
+
+.inquiryTitle {
+  font-family: 'Pretendard';
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.inquiryDate {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 컨텐츠 섹션 */
+.inquiryContent,
+.attachmentsSection {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 20px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.contentTitle {
+  font-family: 'Pretendard';
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #c3e6cb;
+}
+
+.contentText {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  color: #000;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 100px;
+}
+
+/* 첨부파일 */
+.attachmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+.fileName {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  color: #000;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 700px;
+  cursor: pointer;
+}
+
+.fileName:hover {
+  color: #666;
+}
+
+/* 답변 섹션 */
+.replySection {
+  background-color: #f8fff9;
+  border: 1px solid #c3e6cb;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.replyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.replyDate {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+.replyContent {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  color: #000;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 10px;
+}
+
+/* 액션 버튼 */
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.editButton,
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.3s ease;
+}
+
+.editButton:hover,
+.deleteButton:hover {
+  transform: scale(1.1);
+}
+
+.actionIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.actionIcon2 {
+  width: 25px;
+  height: 25px;
+}
+
+/* 수정 모드 */
+.selectInput {
+  font-family: 'Pretendard';
+  width: 160px;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
+  cursor: pointer;
+  appearance: none;
+  background-image: url('../../assets/user/dropdown.svg');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 25px;
+  padding-right: 50px;
+}
+
+.selectInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+.textInput {
+  font-family: 'Pretendard';
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
+  margin-bottom: 15px;
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+.textareaInput {
+  font-family: 'Pretendard';
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.textareaInput:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+.saveButton,
+.cancelEditButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  gap: 5px;
+  transition: transform 0.3s ease;
+}
+
+.saveButton:hover,
+.cancelEditButton:hover {
+  transform: scale(1.1);
+}
+
+/* 파일 업로드 (InquiryForm과 동일) */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.fileUploadBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: 'Pretendard';
+  flex-wrap: nowrap;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.fileInputLabel {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.fileInputLabel:hover {
+  background-color: #f0f0f0;
+}
+
+.fileStatus {
+  font-size: 14px;
+  color: #6c757d;
+  font-family: 'Pretendard';
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+.fileRemoveButton {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.fileRemoveButton:hover {
+  color: #c82333;
+}

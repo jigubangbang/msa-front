@@ -1,57 +1,109 @@
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
 import ProfileDropdown from './ProfileDropdown';
-import { Link } from 'react-router-dom';
+import NotificationDropdown from '../../pages/notification/NotificationDropdown';
+import { jwtDecode } from "jwt-decode";
+import LoginConfirmModal from '../common/LoginConfirmModal/LoginConfirmModal';
+
+export default function Header({onOpenChat}) {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
+  const [userId, setUserId] = useState();
+  const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem('accessToken'));
+  }, [location]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+      if (token) {
+          const decoded = jwtDecode(token);
+          setUserId(decoded.sub);
+      }
+
+  }, [isLoggedIn])
+
+  const handleLogout = () => {
+    navigate('/logout'); 
+  };
+
+  const handlePremiumClick = () => {
+    if (isLoggedIn) {
+      navigate('/payment');
+    } else {
+      setShowLoginConfirmModal(true);
+    }
+  };
 
 
-export default function Header() {
-    return (
+  return (
     <div className={styles.headerWrapper}>
-        <div className={styles.scrollText}>
-            <div className={styles.promoBanner}>
-                <img src={diamond}/>
-                <span>월 990원</span>
-                <b>프리미엄 구독권</b>
-                <img src={diamond}/>
-                <span>Get membership for only ₩990/month</span>
-                <b>Premium Subscription</b>
-                <img src={diamond}/>
-                <span>월 990원</span>
-                <b>프리미엄 구독권</b>
-                <img src={diamond}/>
-                <span>Get membership for only ₩990/month</span>
-                <b>Premium Subscription</b>
-                <img src={diamond}/>
-                <span>월 990원</span>
-                <b>프리미엄 구독권</b>
-                <img src={diamond}/>
-                <span>Get membership for only ₩990/month</span>
-                <b>Premium Subscription</b>
-                <img src={diamond}/>
-            </div>
+      <div className={styles.scrollText}>
+        <div onClick={handlePremiumClick} style={{ cursor: 'pointer' }}>
+          <div className={styles.promoBanner}>
+            <img src={diamond} />
+            <span>월 990원</span>
+            <b>프리미엄 구독권</b>
+            <img src={diamond} />
+            <span>Get membership for only ₩990/month</span>
+            <b>Premium Subscription</b>
+            <img src={diamond} />
+            <span>월 990원</span>
+            <b>프리미엄 구독권</b>
+            <img src={diamond} />
+            <span>Get membership for only ₩990/month</span>
+            <b>Premium Subscription</b>
+            <img src={diamond} />
+            <span>월 990원</span>
+            <b>프리미엄 구독권</b>
+            <img src={diamond} />
+            <span>Get membership for only ₩990/month</span>
+            <b>Premium Subscription</b>
+            <img src={diamond} />
+          </div>
         </div>
-        <header className={styles.mainHeader}>
+      </div>
 
-            <img src={logo} className={styles.logo}/>
-            
-            <nav className={styles.menu}>
-                <span><Link to="/travel-test">스타일테스트</Link></span>
-                <span><Link to="/style-guide">스타일가이드</Link></span>
-                <span><Link to="/test-page">테스트페이지</Link></span>
-                <span>퀘스트</span>
-                <span>커뮤니티 <span className={styles.badge}>New</span></span>
-                <span>여행기록 <span className={styles.badge}>New</span></span>
-                <ProfileDropdown/>
-            </nav>
+      <header className={styles.mainHeader}>
+        <Link to="/"><img src={logo} className={styles.logo} alt="logo" /></Link>
 
-            {/* Auth buttons */}
-            <div className={styles.authButtons}>
-                <Link to="/login"><span>로그인</span></Link>
-                <Link to="/register"><span>회원가입</span></Link>
-                <button className={styles.proBtn}>Premium</button>
-            </div>
-        </header>
+        <nav className={styles.menu}>
+          {isLoggedIn && (
+            <span><Link to={`/profile/${userId}/map`}>지도</Link></span>
+          )}
+          <span><Link to="/style-guide">스타일가이드</Link></span>
+          <span><Link to="/quest">퀘스트</Link></span>
+          <span><Link to="/traveler/mate">커뮤니티</Link><span className={styles.badge}>New</span></span>
+          <span><Link to="/feed">여행기록</Link><span className={styles.badge}>New</span></span>
+          <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
+          <span onClick={() => {console.log(localStorage.getItem("accessToken"))}}>JWT 토큰</span>
+        </nav>
+        <div className={styles.authButtons}>
+          {isLoggedIn ? (
+            <>
+              <NotificationDropdown userId={userId}/>
+              <ProfileDropdown onLogout={handleLogout} />
+            </>
+          ) : (
+            <Link to="/login"><span>로그인</span></Link>
+          )}
+          <div onClick={handlePremiumClick} className={styles.proBtn}><span>Premium</span></div>
+        </div>
+      </header>
+
+      {showLoginConfirmModal && (
+        <LoginConfirmModal
+          isOpen={showLoginConfirmModal}
+          onClose={() => setShowLoginConfirmModal(false)}
+        />
+      )}
     </div>
   );
 }
+

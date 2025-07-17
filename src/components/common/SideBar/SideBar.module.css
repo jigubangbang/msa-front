@@ -1,0 +1,155 @@
+/* Sidebar Container */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.sidebar {
+  font-family: "Pretendard";
+  width: 180px; /* 항상 펼쳐진 상태 */
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  overflow: hidden;
+  
+}
+
+/* Navigation */
+.navigation {
+  flex: 1;
+  padding: 8px 0;
+  overflow-y: auto;
+}
+
+.menuGroup {
+  margin-bottom: 8px;
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 4px 8px;
+  transition: background-color 0.15s ease;
+  position: relative;
+  min-height: 48px;
+}
+
+.menuButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* 현재 위치를 연한 회색으로 표시 */
+.menuButton.active {
+  background-color: #e9ecef;
+  color: #000;
+}
+
+.menuIcon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.menuIcon img {
+  width: 20px;
+  height: 20px;
+}
+
+.menuContent {
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% - 44px);
+  padding-right: 12px;
+  opacity: 1; /* 항상 보이도록 */
+  
+}
+
+.menuLabel {
+  font-size: 14px;
+  color: #000;
+  font-weight: 500;
+    word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.badge {
+  background-color: #dc3545;
+  color: white;
+  font-size: 12px; /* 폰트 크기 증가 */
+  padding: 6px; /* 정사각형을 위해 동일한 패딩 */
+  border-radius: 4px; /* 정사각형에 가까운 모서리 */
+  min-width: 30px; /* 최소 너비 증가 */
+  width: 30px; /* 고정 너비 */
+  height: 30px; /* 고정 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Submenus */
+.submenuContainer {
+  margin-left: 45px;
+  margin-top: 4px;
+  opacity: 1; /* 항상 보이도록 */
+}
+
+.submenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 1px 8px 1px 0;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.15s ease;
+}
+
+.submenuItem:hover {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+/* 서브메뉴 현재 위치도 연한 회색으로 표시 */
+.submenuItem.active {
+  background-color: #e9ecef;
+  color: #000;
+}
+
+/* Bottom Section */
+.bottomSection {
+  border-top: 1px solid #e9ecef;
+  padding: 8px 0;
+}
+
+/* Scrollbar */
+.navigation::-webkit-scrollbar {
+  width: 4px;
+}
+
+.navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navigation::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 2px;
+}
+
+.navigation::-webkit-scrollbar-thumb:hover {
+  background: #ced4da;
+}

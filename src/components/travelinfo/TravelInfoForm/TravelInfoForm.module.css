@@ -1,0 +1,651 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.travelInfoForm {
+  width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #f8f9fa;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+/* 폼 */
+.form {
+  padding: 32px;
+  width: 100%;
+  box-sizing: border-box;
+
+}
+
+/* 기본 정보 섹션 */
+.basicInfoSection {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+  align-items: flex-start;
+}
+
+.leftColumn {
+  flex: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.leftColumn .formGroup:last-child {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+}
+
+.leftColumn .formGroup:last-child .textarea {
+  flex: 1;
+  min-height: 210px;
+  max-height: none;
+  height: auto;
+  resize: none;
+}
+
+.rightColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+  width: 100%;
+  height: 100%;
+}
+
+.label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input.validInput {
+  border-color: #28a745;
+}
+
+.input.invalidInput {
+  border-color: #dc3545;
+}
+
+/* 썸네일 업로드 */
+.thumbnailUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.thumbnailImageUpload {
+  width: 300px;
+  height: 300px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnailImageUpload:hover {
+  border-color: #007bff;
+  background: #f8f9ff;
+}
+
+.thumbnailImageUpload.invalidUpload {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.thumbnailPreview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnailOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+}
+
+.thumbnailPreview:hover .thumbnailOverlay {
+  opacity: 1;
+}
+
+.thumbnailPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+}
+
+.changeText,
+.placeholderText {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 테마 선택 섹션 */
+.themeSelector {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.themeSelector:focus-within {
+  border-color: #007bff;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+  justify-content: flex-start;
+}
+
+.column {
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdown {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.formGroup {
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  color: black;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdownButton:focus,
+.dropdownButton:hover {
+  outline: none;
+  border-color: #007bff;
+  background-color: #fff;
+}
+
+.arrow {
+  font-size: 12px;
+  color: #666;
+}
+
+.themeList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 2px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.themeItem {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.themeItem:last-child {
+  border-bottom: none;
+}
+
+.themeItem:hover {
+  background-color: #fafafa;
+}
+
+.addedSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.addedThemes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+  max-width: 100%;
+}
+
+.themeTag {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 16px;
+  border: 1px solid #bbdefb;
+  flex: 0 0 calc(25% - 6px); 
+  min-width: 120px; 
+  box-sizing: border-box;
+}
+
+.btn {
+  font-size: 0.875rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  padding: 7px 7px;
+  min-width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.btnOutline {
+  border: 1px solid #1976d2;
+}
+
+.btn:hover {
+  background: rgba(25, 118, 210, 0.1);
+}
+
+.resetButton {
+  padding: 7px;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  background: #f8f9fa;
+}
+
+.resetButton:hover {
+  border: none;
+  background-color: #e4e4e4;
+}
+
+/* 섹션 제목 */
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* 섹션 헤더 */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 20px;
+}
+
+.sectionHeader .sectionLabel,
+.sectionHeader .sectionTitle {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* 현재 정보 표시 */
+.currentInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 60%;
+}
+
+.currentTag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #bbdefb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* 전체 너비 섹션 */
+.fullWidthSection {
+  margin-bottom: 40px;
+}
+
+/* 텍스트 에어리어 */
+.textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.textarea.validInput {
+  border-color: #28a745;
+}
+
+.textarea.invalidInput {
+  border-color: #dc3545;
+}
+
+/* 도움말 텍스트 */
+.helpText {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* 에러 메시지 */
+.errorMessage {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.errorMessage::before {
+  content: "⚠";
+  font-size: 12px;
+}
+
+/* 숨겨진 파일 입력 */
+.hiddenFileInput {
+  display: none;
+}
+
+/* 액션 버튼 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 40px;
+}
+
+.cancelButton {
+  padding: 12px 32px;
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #e9ecef;
+  border-color: #6c757d;
+}
+
+.saveButton {
+  padding: 12px 32px;
+  background: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.saveButton:disabled {
+  background: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .travelInfoForm {
+    margin: 20px;
+  }
+  
+  .form {
+    padding: 24px;
+  }
+  
+  .basicInfoSection {
+    gap: 30px;
+  }
+  
+  .themeSelector {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .basicInfoSection {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .leftColumn,
+  .rightColumn {
+    flex: none;
+    width: 100%;
+  }
+  
+  .thumbnailImageUpload {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .column {
+    max-width: 100%;
+    width: 100%;
+    align-items: flex-start;
+  }
+  
+  .formGroup {
+    width: 100%;
+  }
+  
+  .dropdownButton {
+    width: 100%;
+  }
+  
+  .themeTag {
+    flex: 0 0 calc(50% - 4px);
+    min-width: auto;
+  }
+  
+  .currentInfo {
+    max-width: 100%;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .cancelButton,
+  .saveButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 16px 20px;
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+  
+  .form {
+    padding: 20px;
+  }
+  
+  .themeTag {
+    flex: 0 0 100%;
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+  
+  .label,
+  .sectionLabel,
+  .sectionTitle {
+    font-size: 16px;
+  }
+  
+  .input,
+  .textarea {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,111 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.Container {
+  display: flex;
+  min-height: 100vh;
+  position: relative; /* sidebar 때문에 필수 */
+}
+
+.content {
+    flex: 1;
+  display: flex;
+  margin-left: 180px; /* sidebar 때문에 필수 */
+  padding: 20px 40px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  width: 100%;   
+  
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+
+.contentWrapper {
+  max-width: 1100px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  flex-direction: column;
+  font-family: Pretendard, sans-serif;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.tabSection {
+  width: 1100px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  padding: 10px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.tabButtons {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 1rem;
+  justify-items: space-between;
+  align-items: center;
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  padding: 0.5rem 0;
+  color: #555;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-family: inherit;
+  text-decoration: none;
+  border-radius: none;
+}
+
+.tabButton.active {
+  color: black;
+  font-weight: bold;
+  border-radius: 0%;
+  border-bottom: 2px solid black;
+}
+
+.tabButton:hover {
+  color: black;
+}
+
+/* 컨텐츠 영역 */
+.contentArea {
+  min-height: 500px;
+}
+
+.travelmateSection,
+.travelinfoSection {
+  width: 100%;
+}
+
+/* 로딩 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  color: #666;
+  font-size: 16px;
+}

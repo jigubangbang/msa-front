@@ -1,0 +1,373 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+.travelmateList {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: Pretendard, sans-serif;
+  padding: 20px;
+}
+
+.travelmateListTitle {
+  margin: 0;
+  font-family: Pretendard, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: left;
+  color: #000;
+}
+
+.searchConditions {
+  font-size: 14px;
+  color: #666;
+}
+
+.searchConditionsLabel {
+  font-weight: 500;
+  color: #333;
+}
+
+.searchCondition {
+  background-color: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+/* 검색 섹션 */
+.searchSection {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.totalCount {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* 필터 */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.filterButton:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.filterButton.active {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.dropdown {
+  display: flex;
+  margin: 10px 0px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 테이블 헤더 */
+.tableHeader {
+  display: grid;
+  grid-template-columns: 80px 100px 200px 120px 120px 150px 80px 80px;
+  gap: 15px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tableBody {
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 80px 100px 200px 120px 120px 150px 80px 80px;
+  gap: 15px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  align-items: center;
+  cursor: pointer;
+  min-height: 80px;
+}
+
+.tableRow:hover {
+  background: #f8f9fa;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+/* 썸네일 이미지 */
+.thumbnailImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.thumbnailImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 모집자 정보 */
+.creatorInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.creatorNickname {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.creatorStyle {
+  font-size: 12px;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* 제목 셀 */
+.titleCell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.description {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* 기간 셀 */
+.periodCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  color: #333;
+}
+
+/* 장소 셀 */
+.locationCell {
+  font-size: 12px;
+  color: #333;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* 테마/스타일 셀 */
+.tagsCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.themes {
+  font-size: 11px;
+  color: #007bff;
+  background: #e7f3ff;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.styles {
+  font-size: 11px;
+  color: #28a745;
+  background: #e8f5e8;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* 좋아요 섹션 */
+.likeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.likeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s ease;
+}
+
+.likeButton:hover {
+  transform: scale(1.1);
+}
+
+.likeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.likeButton.liked {
+  animation: likeAnimation 0.3s ease;
+}
+
+@keyframes likeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.likeCount {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 조회수 */
+.viewCount {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 로딩 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.controlsContainer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+.targets {
+  font-size: 11px;
+  color: #dc3545;
+  background: #ffeaea;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-word;
+  margin-top: 2px;
+}
