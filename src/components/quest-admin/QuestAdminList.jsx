@@ -92,6 +92,7 @@ const QuestAdminList = ({ onQuestClick}) => {
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
     setCurrentPage(pageNum);
   };
 

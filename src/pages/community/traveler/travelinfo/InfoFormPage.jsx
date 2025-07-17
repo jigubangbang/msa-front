@@ -147,10 +147,8 @@ const InfoFormPage = () => {
         
         console.log('정보방이 수정되었습니다:', response.data);
         alert('정보방이 성공적으로 수정되었습니다!');
-        
-        // 수정된 정보방 상세 페이지로 이동
-        //#NeedToChange 내 정보방으로 이동
-        navigate(`/traveler/info`);
+
+        navigate(`/traveler/my/travelinfo`);
       }
       
     } catch (error) {
@@ -173,8 +171,7 @@ const InfoFormPage = () => {
 
   // 폼 닫기/취소
   const handleFormClose = () => {
-    // 이전 페이지로 돌아가거나 목록으로 이동 #NeedToChange 이거 이전 페이지 말고 내 거기 수정하는 거기로 마들면
-      navigate(`/traveler/info`);
+    navigate(-1);
   };
 
   if (loading) {

@@ -357,8 +357,23 @@ const TravelInfoList = ({
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
     setCurrentPage(pageNum);
   };
+
+  const getSelectedCategoryNames = () => {
+  if (selectedCategories.length === 0) return null;
+  
+  return selectedCategories.map(categoryId => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.label : categoryId;
+  });
+};
+
+const getSortDisplayText = () => {
+  const selected = sortOptions.find(opt => opt.value === sortOption);
+  return selected ? selected.label : "정렬 기준";
+};
 
   if (loading) {
     return (
@@ -374,7 +389,7 @@ const TravelInfoList = ({
       {/* 헤더와 정렬 */}
       <div className={styles.header}>
         <Dropdown
-          defaultOption="정렬 기준"
+          defaultOption={getSortDisplayText()}
           options={sortOptions}
           onSelect={handleSortChange}
         />
@@ -402,11 +417,27 @@ const TravelInfoList = ({
       </div>
 
       {/* 검색 결과 정보 */}
-      <div className={styles.searchSection}>
-        <p className={styles.totalCount}>
-          현재 {totalCount}개의 정보 공유방이 있습니다.
-        </p>
-      </div>
+    <div className={styles.searchSection}>
+      <p className={styles.totalCount}>
+        {searchTerm 
+          ? `"${searchTerm}"의 검색 결과... ${totalCount}개의 정보 공유방을 찾았습니다.`
+          : `현재 ${totalCount}개의 정보 공유방이 있습니다.`
+        }
+      </p>
+      
+      {/* 카테고리 선택 결과 표시 */}
+      {selectedCategories.length > 0 && (
+        <div className={styles.searchConditions}>
+          <span className={styles.searchConditionsLabel}>카테고리 선택: </span>
+          {getSelectedCategoryNames().map((categoryName, index) => (
+            <span key={index} className={styles.searchCondition}>
+              {categoryName}
+              {index < getSelectedCategoryNames().length - 1 && ', '}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
 
       {/* Table Header */}
       <div className={styles.tableHeader}>
