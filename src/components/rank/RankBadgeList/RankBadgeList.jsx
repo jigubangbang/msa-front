@@ -5,6 +5,7 @@ import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import ReactDOM from 'react-dom';
 import api from '../../../apis/api';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 
 
@@ -83,7 +84,7 @@ const RankBadgeList = ({
   if (loading) {
     return (
       <div className={styles.badgeList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -97,7 +98,7 @@ const RankBadgeList = ({
                 현재 {totalCount}개의 뱃지에 도전할 수 있습니다.
               </p>
               <SearchBar
-                placeholder="Badge"
+                placeholder="뱃지명"
                 value={searchTerm}
                 onSearchChange={handleSearchChange}
                 barWidth="200px"
@@ -107,12 +108,12 @@ const RankBadgeList = ({
 
       {/* header */}
       <div className={styles.tableHeader}>
-        <div className={styles.headerCell}>Icon</div>
+        <div className={styles.headerCell}>뱃지</div>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Title</div>
-        <div className={styles.headerCell}>Quests</div>
-        <div className={styles.headerCell}>Difficulty</div>
-        <div className={styles.headerCell}>Acquired</div>
+        <div className={styles.headerCell}>제목</div>
+        <div className={styles.headerCell}>퀘스트</div>
+        <div className={styles.headerCell}>난이도</div>
+        <div className={styles.headerCell}>획득</div>
       </div>
 
       {/* table */}

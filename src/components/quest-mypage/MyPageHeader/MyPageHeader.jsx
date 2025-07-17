@@ -121,9 +121,7 @@ const MyPageHeader = ({
               {profileImage ? (
                 <img src={profileImage} alt="프로필" className={styles.img} />
               ) : (
-                <div className={styles.defaultAvatar}>
-                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지"/>
-              </div>
+                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지" className={styles.img}/>
               )}
             </div>
           </div>
