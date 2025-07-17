@@ -359,7 +359,13 @@ export default function Main() {
                             <h4 className={styles.centeredText}>유저 랭킹</h4>
                             <ul className={styles.rankingList}>
                                 {rankings.map(user => (
-                                    <li key={user.rank} className={styles.rankingItem} onClick={() => navigate(`/profile/${user.user_id}`)}>
+                                    <li key={user.rank} className={styles.rankingItem} onClick={() => {
+                                        if (isLoggedIn) {
+                                            navigate(`/profile/${user.user_id}`);
+                                        } else {
+                                            setShowLoginConfirmModal(true);
+                                        }
+                                    }}>
                                         <span className={styles.rank}>{user.rank}</span>
                                         <img src={user.icon || user.profile_image || defaultProfile} alt={user.nickname} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
