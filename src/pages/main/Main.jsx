@@ -28,8 +28,7 @@ export default function Main() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    // Modal states
+    
     const [showBadgeModal, setShowBadgeModal] = useState(false);
     const [selectedBadge, setSelectedBadge] = useState(null);
     const [showQuestModal, setShowQuestModal] = useState(false);
