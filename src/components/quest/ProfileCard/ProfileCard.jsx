@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
 import styles from './ProfileCard.module.css';
 import defaultProfile from "../../../assets/default_profile.png";
 
@@ -11,13 +13,12 @@ const ProfileCard = ({
   level, 
   nickname 
 }) => {
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleProfileClick = () => {
-    // #NeedToChange
-    //window.scrollTo(0, 0);
-    // navigate(`/profile/${id}`);
-    console.log(`Navigating to /profile/${id}`);
+    window.scrollTo(0, 0);
+     navigate(`/my-quest/profile/${id}`);
   };
 
   return (
