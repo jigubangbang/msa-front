@@ -9,6 +9,7 @@ import ReportModal from '../../common/Modal/ReportModal';
 import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 
 
 export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, isLogin}) {
@@ -19,8 +20,33 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
   const { openChat, closeChat, chatRooms } = useChatContext();
   const { leaveChatRoom, isLeaving } = useChatLeave();
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
 
   const themeMap = {
       1: '후기/팁',
@@ -72,12 +98,12 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
           }
         });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
       }
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방을 불러오는데 실패했습니다.');
+      showAlertModal('채팅방을 불러오는데 실패했습니다.');
     }
   };
 
@@ -94,22 +120,24 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       }
     );
 
-      if (fetchTravelinfos) {
-            fetchTravelinfos();
-          }
-      alert('참여가 완료되었습니다!');
+    showAlertModal('참여가 완료되었습니다!');
       setIsModalOpen(false);
       setSelectedInfo(null);
+
+    if (fetchTravelinfos) {
+      await fetchTravelinfos();
+    }
+      
     } catch (error) {
       console.error('Failed to join chat:', error);
-      alert('참여에 실패했습니다.');
+      showAlertModal('참여에 실패했습니다.');
     }
   };
 
   // 공유방 나가기
   const handleLeaveGroup = async (travelinfoId) => {
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      showAlertModal('로그인이 필요합니다.');
       return;
     }
 
@@ -124,7 +152,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       if (chatRoomId) {
         const success = await leaveChatRoom(chatRoomId, {
           skipConfirmation: false, // 확인 모달 표시
-          showAlert: (title, message) => alert(message),
+          showAlert: (title, message) => showAlertModal(message),
           onSuccess: () => {
             if (chatRooms[chatRoomId]) {
               closeChat(chatRoomId);
@@ -132,14 +160,16 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
             if (fetchTravelinfos) {
               fetchTravelinfos();
             }
+
+            showAlertModal('공유방에서 나갔습니다.');
           }
         });
       } else {
-        alert('채팅방 정보를 찾을 수 없습니다.');
+        showAlertModal('채팅방 정보를 찾을 수 없습니다.');
       }
     } catch (error) {
       console.error('Failed to get chat room info:', error);
-      alert('채팅방 정보를 가져오는데 실패했습니다.');
+      showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
     }
   };
   
@@ -182,12 +212,12 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
         
         setShowReportModal(false);
         setReportInfo(null);
-        alert('신고가 접수되었습니다.');
+        showAlertModal('신고가 접수되었습니다.');
         
       } catch (error) {
         console.error('Failed to submit report:', error);
         const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-        alert(errorMessage);
+        showAlertModal(errorMessage);
       }
     };
   
@@ -211,12 +241,12 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
           'User-Id': currentUserId,
         },
       });
-      alert('정보방이 삭제되었습니다.');
+      showAlertModal('정보방이 삭제되었습니다.');
       // 목록 새로고침
       fetchTravelinfos();
     } catch (error) {
       console.error('Failed to delete travelinfo:', error);
-      alert('삭제에 실패했습니다.');
+      showAlertModal('삭제에 실패했습니다.');
     }
   };
 
@@ -401,6 +431,15 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
               onClose={handleReportClose}
               onSubmit={handleReportSubmit}
             />
+
+            <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
     </>
   );
 }

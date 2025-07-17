@@ -6,7 +6,6 @@ import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 import styles from './BoardSearchList.module.css';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
-import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const BoardSearchList = ({ searchKeyword, isLogin }) => {
   const navigate = useNavigate();
