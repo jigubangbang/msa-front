@@ -22,10 +22,23 @@ function ScrollToTop() {
 
 function AppContent() {
   const [isDark, setIsDark] = useState(false); // 다크모드
-  const { chatRooms, openChat } = useChatContext();
+  const { chatRooms, openChat, closeAllChats } = useChatContext();
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const handleForceLogout = () => {
+      console.log('[App] 강제 로그아웃 감지 - 모든 채팅방 정리');
+      closeAllChats();
+    };
+
+    window.addEventListener('forceLogout', handleForceLogout);
+
+    return () => {
+      window.removeEventListener('forceLogout', handleForceLogout);
+    };
+  }, [closeAllChats]);
 
   useEffect(() => {
     const isLoginPage = location.pathname === "/login";

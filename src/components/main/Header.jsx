@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useChatContext } from '../../utils/ChatContext';
 import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
@@ -15,6 +16,7 @@ export default function Header({onOpenChat}) {
   const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { closeAllChats } = useChatContext();
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('accessToken'));
@@ -30,6 +32,8 @@ export default function Header({onOpenChat}) {
   }, [isLoggedIn])
 
   const handleLogout = () => {
+    console.log('[Header] 수동 로그아웃 - 모든 채팅방 정리');
+    closeAllChats();
     navigate('/logout'); 
   };
 

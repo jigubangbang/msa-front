@@ -1,4 +1,7 @@
 /* src/styles/chat/ChatModal.css */
+@font-face{
+font-family:'DNFBitBitv2';
+font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
 
 /* 최소화된 채팅창 스타일 */
 .minimized-chat {
@@ -36,8 +39,8 @@
 }
 
 .minimized-chat-header-title {
-  font-family: 'Pixelify Sans';
-  font-size: 1.125rem;
+  font-family:'DNFBitBitv2', 'Pretendard';
+  font-size: 1rem;
   color: white;
   margin: 0;
   flex: 1;

@@ -16,7 +16,6 @@ export const ChatProvider = ({ children }) => {
   const [minimizedChats, setMinimizedChats] = useState([]);
 
   const openChat = useCallback((chatId, currentUserId, options = {}) => {
-    console.log(`[ChatContext] 채팅방 열기: ${chatId}, 사용자: ${currentUserId}`);
     
     setChatRooms(prev => ({
       ...prev,
@@ -49,11 +48,8 @@ export const ChatProvider = ({ children }) => {
       return newRooms;
     });
 
-    // 최소화 목록에서도 제거
     setMinimizedChats(prev => {
     const newList = prev.filter(id => id !== chatId);
-    console.log(`[ChatContext] 닫기 후 최소화 목록:`, newList);
-    console.log(`[ChatContext] 제거된 채팅방: ${chatId}`);
     return newList;
     });
   }, []);
@@ -136,14 +132,23 @@ export const ChatProvider = ({ children }) => {
       const room = chatRooms[id];
       return room && room.isOpen && room.isMinimized;
     });
-    
+
     const index = actuallyRendered.indexOf(chatId);
     const position = index * 130;
-    
-    console.log(`[ChatContext] ${chatId} 실제 위치 계산: 전체목록=[${minimizedChats.join(',')}], 렌더링목록=[${actuallyRendered.join(',')}], index=${index}, position=${position}px`);
-    
+
     return position;
   }, [minimizedChats, chatRooms]);
+
+  const closeAllChats = useCallback(() => {
+    console.log('[ChatContext] 모든 채팅방 정리 시작');
+    Object.keys(chatRooms).forEach(chatId => {
+    });
+    // 상태 초기화
+    setChatRooms({});
+    setMinimizedChats([]);
+    console.log('[ChatContext] 모든 채팅방 정리 완료');
+  }, [chatRooms]);
+
 
   const value = {
     chatRooms,
@@ -154,7 +159,8 @@ export const ChatProvider = ({ children }) => {
     removeChatRoom,
     minimizeChat,
     restoreChat,
-    getMinimizedPosition
+    getMinimizedPosition,
+    closeAllChats
   };
 
   return (
