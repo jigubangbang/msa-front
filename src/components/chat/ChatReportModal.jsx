@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "../../styles/chat/ChatReportModal.module.css";
+import styles from "../../styles/Chat/ChatReportModal.module.css";
 
 const reasonOptions = [
   { label: "음란/선정적 내용", value: "SEX" },

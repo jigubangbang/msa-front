@@ -6,7 +6,7 @@ import menu_vert_white from '../../assets/common/more_vert_white.svg';
 import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
 import minimize from '../../assets/chat/hide.svg';
 import defaultProfile from '../../assets/default_profile.png';
-import '../../styles/chat/ChatPanel.css'
+import '../../styles/Chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, 

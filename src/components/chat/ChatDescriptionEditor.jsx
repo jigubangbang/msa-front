@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
 import edit_grey from '../../assets/profile/edit_grey.svg';
-import "../../styles/chat/ChatDescriptionEditor.css";
+import "../../styles/Chat/ChatDescriptionEditor.css";
 
 export default function ChatDescriptionEditor({ description, setDescription, chatId, isManager, showAlert }) {
     const [isEditing, setIsEditing] = useState(false);
