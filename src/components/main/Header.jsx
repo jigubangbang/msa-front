@@ -6,11 +6,13 @@ import diamond from '../../assets/main/diamond_white.svg';
 import ProfileDropdown from './ProfileDropdown';
 import NotificationDropdown from '../../pages/notification/NotificationDropdown';
 import { jwtDecode } from "jwt-decode";
+import LoginConfirmModal from '../common/LoginConfirmModal/LoginConfirmModal';
 
 export default function Header({onOpenChat}) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
   const [userId, setUserId] = useState();
+  const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -31,11 +33,19 @@ export default function Header({onOpenChat}) {
     navigate('/logout'); 
   };
 
+  const handlePremiumClick = () => {
+    if (isLoggedIn) {
+      navigate('/payment');
+    } else {
+      setShowLoginConfirmModal(true);
+    }
+  };
+
 
   return (
     <div className={styles.headerWrapper}>
       <div className={styles.scrollText}>
-        <Link to="/payment">
+        <div onClick={handlePremiumClick} style={{ cursor: 'pointer' }}>
           <div className={styles.promoBanner}>
             <img src={diamond} />
             <span>월 990원</span>
@@ -57,7 +67,7 @@ export default function Header({onOpenChat}) {
             <b>Premium Subscription</b>
             <img src={diamond} />
           </div>
-        </Link>
+        </div>
       </div>
 
       <header className={styles.mainHeader}>
@@ -83,9 +93,17 @@ export default function Header({onOpenChat}) {
           ) : (
             <Link to="/login"><span>로그인</span></Link>
           )}
-          <Link to="/payment" className={styles.proBtn}><span>Premium</span></Link>
+          <div onClick={handlePremiumClick} className={styles.proBtn}><span>Premium</span></div>
         </div>
       </header>
+
+      {showLoginConfirmModal && (
+        <LoginConfirmModal
+          isOpen={showLoginConfirmModal}
+          onClose={() => setShowLoginConfirmModal(false)}
+        />
+      )}
     </div>
   );
 }
+
