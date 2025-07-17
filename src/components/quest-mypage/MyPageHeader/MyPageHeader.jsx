@@ -156,24 +156,25 @@ const MyPageHeader = ({
           <div className={styles.userInfo}>
             <span className={styles.nickname}>{nickname}</span>
             <span className={styles.userId}>({userId})</span>
-          
+            
+          </div>
 
-          {/*  레벨 프로그레스 바 */}
-          <div 
-            className={styles.levelSection}
-            onMouseEnter={handleLevelMouseEnter}
-            onMouseLeave={handleLevelMouseLeave}
-          >
-            <div className={styles.levelInfo}>
-              <span className={styles.levelText}>Lv. {levelInfo.currentLevel}</span>
-              <div className={styles.progressBarContainer}>
-                <div className={styles.progressBar}>
-                  <div 
-                    className={styles.progressFill}
-                    style={{ width: `${getProgressPercentage()}%` }}
-                  />
+            {/*  레벨 프로그레스 바 */}
+            <div 
+              className={styles.levelSection}
+              onMouseEnter={handleLevelMouseEnter}
+              onMouseLeave={handleLevelMouseLeave}
+            >
+              <div className={styles.levelInfo}>
+                <span className={styles.levelText}>Lv. {levelInfo.currentLevel}</span>
+                <div className={styles.progressBarContainer}>
+                  <div className={styles.progressBar}>
+                    <div 
+                      className={styles.progressFill}
+                      style={{ width: `${getProgressPercentage()}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
             </div>
 
             {/* 레벨 호버 툴팁 */}
@@ -196,12 +197,12 @@ const MyPageHeader = ({
                   )}
                 </div>
                 <div className={styles.progressInfo}>
-                  진행률: <strong>{getProgressPercentage().toFixed(1)}%</strong>
+                  다음 레벨까지 <strong>{getProgressPercentage().toFixed(1)}%</strong>
                 </div>
               </div>
             )}
           </div>
-</div>
+
                 {/* 통계 섹션 */}
             <div className={styles.statsSection}>
             <div className={styles.statItem}>

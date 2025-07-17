@@ -123,20 +123,7 @@
 }
 
 /* 사용자 정보 섹션 */
-.userSection {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  padding-left: 10px;
-}
 
-.userInfo {
-  display: flex;
-  gap: 7px;
-  justify-content: center;
-  align-items: flex-end;
-}
 
 .nickname {
   font-size: 24px;
@@ -150,6 +137,8 @@
   font-weight: 700;
   color: #1f2937;
   min-width: 60px;
+  line-height: 1.2;
+  text-align: center;
 }
 
 
@@ -157,6 +146,7 @@
   font-size: 20px;
   color: #6b7280;
   font-weight: 500;
+    margin-right: 20px;
 }
 
 /* 통계 섹션 */
@@ -244,29 +234,52 @@
   font-style: italic;
 }
 
+.userSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-left: 10px;
+}
+
+.userInfo {
+  display: flex;
+  gap: 7px;
+  justify-content: flex-start;
+  align-items: flex-end;
+  width: 100%;
+}
+
 .levelSection {
-  position: relative;
+  display: flex;
   margin: 8px 0;
   cursor: pointer;
-  align-items: flex-end;
+  align-items: center;
+  margin-bottom: 3px;
+  width: 100%;
+  position: relative;
 }
 
   
 
 .levelInfo {
   display: flex;
-  align-items: center;
+   align-items: flex-end;
+   justify-content: center;
   gap: 12px;
+  width: 100%;
 }
 
 
 .progressBarContainer {
   flex: 1;
-  max-width: 200px;
+  height: 20px;
+  display: flex;
+  align-items: center;;
 }
 
 .progressBar {
-  width: 100px;
+  width: 100%;
   height: 12px;
   background-color: #e5e7eb;
   border-radius: 6px;
@@ -303,8 +316,8 @@
 /* 레벨 툴팁 */
 .levelTooltip {
   position: absolute;
-  top: -140px;
-  left: 0;
+  top: -180px;
+  left: 0px;
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
   padding: 16px 20px;
