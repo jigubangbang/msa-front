@@ -217,7 +217,7 @@
   align-items: flex-end;
   padding: 1rem;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 2000;
   animation: fadeIn 0.3s ease-out; /* 부드럽게 나타나는 애니메이션 */
   pointer-events: none;
 }

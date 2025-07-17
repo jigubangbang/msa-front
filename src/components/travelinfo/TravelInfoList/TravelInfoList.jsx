@@ -6,7 +6,7 @@ import styles from './TravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 
 const TravelInfoList = ({
@@ -25,12 +25,11 @@ const TravelInfoList = ({
   const [selectedInfo, setSelectedInfo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [showReportModal, setShowReportModal] = useState(false);
-    const [reportInfo, setReportInfo] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportInfo, setReportInfo] = useState(null);
 
   // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
+  const { openChat, closeChat, chatRooms } = useChatContext();
   
   // 내부에서 카테고리와 정렬 관리
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
@@ -160,12 +159,16 @@ const TravelInfoList = ({
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
-      
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
@@ -199,11 +202,6 @@ const TravelInfoList = ({
       console.error('Failed to join chat:', error);
       alert('참여에 실패했습니다.');
     }
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedInfo(null);
   };
 
   // ReportModal 닫기
@@ -255,7 +253,6 @@ const TravelInfoList = ({
         alert(errorMessage);
       }
     };
-
 
   const handleEdit = (travelinfoId) => {
     console.log('수정하기:', travelinfoId);
@@ -533,25 +530,10 @@ const TravelInfoList = ({
 
       <JoinChatModal
         isOpen={isModalOpen}
-        onClose={handleModalClose}
         onSubmit={handleJoinSubmit}
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
-
-      {chatModalOpen && selectedChatId && (
-          <ChatModal
-            isOpen={chatModalOpen}
-            onClose={() => setChatModalOpen(false)}
-            chatId={selectedChatId}
-            currentUserId={currentUserId}
-            onLeave={() => {
-              if (fetchTravelinfos) {
-                fetchTravelinfos();
-              }
-            }}
-          />
-        )}
       
       <ReportModal
               show={showReportModal}

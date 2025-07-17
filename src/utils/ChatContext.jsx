@@ -91,7 +91,7 @@ export const ChatProvider = ({ children }) => {
   // 최소화된 채팅방의 위치 계산
   const getMinimizedPosition = useCallback((chatId) => {
     const index = minimizedChats.indexOf(chatId);
-    return index * 90; // 60px씩 위로 쌓기
+    return index * 130; // 위로 쌓기
   }, [minimizedChats]);
 
   const value = {
