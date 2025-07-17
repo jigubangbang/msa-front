@@ -215,6 +215,10 @@
   cursor: pointer;
   transition: all 0.3s ease; 
   white-space: nowrap;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .idCheckButton:hover:not(:disabled) {
@@ -338,7 +342,7 @@
 .statusTag.active {
   background: #f8fff9;
   color: #28a745;
-  border: 1px solid #c3e6cb
+  border: 1px solid #c3e6cb;
 }
 
 .statusTag.inactive {
@@ -412,7 +416,7 @@
   transform: none;
 }
 
-/* 새로 추가 */
+/* 뒤로가기 */
 .backButton {
   position: absolute;
   left: 0;

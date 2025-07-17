@@ -430,7 +430,11 @@ const QuestCreateForm = ({ onClose, onSave }) => {
                     onClick={checkIdAvailability}
                     disabled={idCheckStatus === "checking"}
                   >
-                    {idCheckStatus === "checking" ? "확인 중..." : "ID 확인"}
+                    {idCheckStatus === "checking" ? (
+                      <Circles height="16" width="16" color="#fff" />
+                    ) : (
+                      "ID 확인"
+                    )}
                   </button>
                 </div>
                 {idCheckStatus === "available" && (
