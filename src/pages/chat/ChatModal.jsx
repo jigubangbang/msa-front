@@ -14,10 +14,10 @@ import '../../styles/chat/ChatModal.css'
 
 export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLeave}) {
   
-  const { chatRooms, minimizedChats, updateChatRoom, removeChatRoom, minimizeChat, restoreChat, getMinimizedPosition } = useChatContext();
+  const { getMinimizedPosition, minimizeChat, restoreChat, minimizedChats, updateChatRoom } = useChatContext();
   const {info, members} = useChatRoomInfo(chatId);
   const [alertInfo, setAlertInfo] = useState({ show: false, title: '', message: '' });
-  const [isMinimized, setIsMinimized] = useState(false);
+  const isMinimized = minimizedChats.includes(chatId);
 
   const showAlert = (title, message) => {
     setAlertInfo({ show: true, title, message });
@@ -30,7 +30,15 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
   const {senderId, nickname, messages, setMessages, sendMessage, isLoading, chatError, isJoining, isKicked, unsubscribeChatRoom} 
     = joinSock(isOpen, chatId, showAlert, currentUserId, onClose);
 
-  // const isMinimized = minimizedChats.includes(chatId);
+  const handleMinimize = () => {
+    console.log(`[ChatModal] 최소화: ${chatId}`);
+    minimizeChat(chatId);
+  };
+
+  const handleRestore = () => {
+    console.log(`[ChatModal] 복원: ${chatId}`);
+    restoreChat(chatId);
+  }
 
   // 채팅방 정보 업데이트
   useEffect(() => {
@@ -46,14 +54,6 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
     }
   }, [isOpen, info, members, messages, nickname, senderId, chatId, updateChatRoom]);
 
-  const handleMinimize = () => {
-    setIsMinimized(true);
-  };
-
-  const handleRestore = () => {
-    setIsMinimized(false);
-  };
-
   // 최소화된 채팅창 컴포넌트
   const MinimizedChat = () => {
     const lastMessage = messages[messages.length - 1];
@@ -63,13 +63,16 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
       )?.profileImage;
 
     const position = getMinimizedPosition(chatId);
+    console.log(`[MinimizedChat] ${chatId} 위치: ${position}px`);
+
 
     return (
       <div 
         className="minimized-chat" 
         style={{ 
-          bottom: `${110 + position}px`,
-          zIndex: 1000
+          bottom: `${18 + position}px`,
+          zIndex: `${1000 + minimizedChats.length - minimizedChats.indexOf(chatId)}`, // 위에 있는 창일수록 높은 z-index
+          position: 'fixed !important'
         }}
         onClick={handleRestore}
       >
@@ -164,7 +167,7 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
   return ReactDOM.createPortal(
     <>
      {(isLoading || isJoining) ? (
-        <div className="chat-loading-overlay">
+        <div className="chat-loading-overlay" style={{zIndex: 3000}}>
           <div className="loadingContainer">
             <MutatingDots />
           </div>
