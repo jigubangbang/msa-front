@@ -78,9 +78,7 @@ export function useStomp() {
           'content-type': 'application/json;charset=UTF-8'
         },
         onConnect : () => {
-            console.log("[STOMP] 연결 성공 - setIsConnected(true) 호출 예정");
             setIsConnected(true); // 전역 상태 업데이트
-            console.log("[STOMP] setIsConnected(true) 호출 완료");
             onConnect();
         },
         onStompError: (e) => {
@@ -128,7 +126,6 @@ export function useStomp() {
   const send = useCallback((destination, payload, headers = {}) => {
     const client = useStore.getState().stompClient;
     if (client && client.connected) {
-      console.log("[useStomp] 메시지 전송:", destination, payload);
       client.publish({
         destination,
         body: JSON.stringify(payload),

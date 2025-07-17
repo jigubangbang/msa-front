@@ -199,7 +199,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
             className="chat-input"
             disabled={isKicked}
           />
-          <button type="submit" className="chat-send-button" disabled={isKicked || isComposing}>
+          <button type="submit" className="chat-send-button" disabled={isKicked}>
             Send
           </button>
         </form>

@@ -19,10 +19,10 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const { info, members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [description, setDescription] = useState(chatInfo?.description || "");
+  const [description, setDescription] = useState("");
   const [showReportModal, setShowReportModal] = useState(false);
   const [confirmModalInfo, setConfirmModalInfo] = useState({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
-  const [sidebarTopOffset, setSidebarTopOffset] = useState(66); // 기본값 66px (4.125rem)
+  const [sidebarTopOffset, setSidebarTopOffset] = useState(58);
   const [originalCreatorId, setOriginalCreatorId] = useState(null);
   const sidebarRef = useRef(null);
   const groupType = chatInfo?.groupType || info?.groupType;
@@ -49,12 +49,30 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     console.log(  "그룹 멤버 조회 중 에러 발생" );
   }
 
+  useEffect(() => {
+    if (info?.description !== undefined) {
+      setDescription(info.description);
+    }
+  }, [info?.description]);
+
   const showConfirmModal = (title, message, onConfirm, position = 'top') => {
     setConfirmModalInfo({ show: true, title, message, onConfirm, position });
   };
 
   const hideConfirmModal = () => {
     setConfirmModalInfo({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
+  };
+
+  const customShowAlert = (title, message, position = 'top') => {
+    setConfirmModalInfo({ 
+      show: true, 
+      title, 
+      message, 
+      onConfirm: () => {
+        setConfirmModalInfo({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
+      }, 
+      position 
+    });
   };
 
   // 채팅방 신고 핸들러
@@ -250,12 +268,6 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     }
   };
 
-  // 현재 유저의 닉네임을 가져오는 함수 추가
-  const getCurrentUserNickname = () => {
-    const currentUser = members.find(member => member.userId === senderId);
-    return currentUser?.nickname || senderId;
-  };
-
   // 강제퇴장 알림을 보내는 함수 추가
   const sendForcedRemovalNotification = async (targetUserId) => {
     try {
@@ -393,7 +405,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
           setDescription={setDescription}
           chatId={chatId}
           isManager={isManager}
-          showAlert={showAlert}
+          showAlert={customShowAlert}
+          refetch={refetch}
         />
         <div className="sidebar-section members-section">
           <h3>멤버들 ({!members || members.length === 0 ? 0 : members.length})</h3>
