@@ -7,7 +7,7 @@ import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 import api from '../../../apis/api';
 
 
-const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
+const QuestListCard = ({ quest, onJoin, onDetail, isLogin, onLoginClick}) => {
 
   const getDifficultyText = (difficulty) => {
     switch(difficulty) {
@@ -26,6 +26,9 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
       default: return 1;
     }
   };
+
+  
+
 
   const calculateCompletionRate = () => {
     const total = quest.count_in_progress + quest.count_completed;
@@ -46,7 +49,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
       
       {/* 퀘스트 아이콘 */}
       <div className={styles.questIcon}>
-        <img src={quest.icon} alt="quest icon" />
+        <img src={quest.icon || "/icons/common/unknwon_badge.png"} alt="quest icon" />
       </div>
       
       {/* 퀘스트 정보 */}
@@ -118,7 +121,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
   );
 };
 
-const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId} ) => {
+const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId, onLoginClick} ) => {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -223,13 +226,16 @@ useEffect(() => {
     setCurrentPage(1);
   };
 
-  
+   const getSortDisplayText = () => {
+    if (!filters.sortOption) return "Sort by";
+    const selected = sortOptions.find(opt => opt.value === filters.sortOption);
+    return selected ? selected.label : "Sort by";
+  };
 
   const handleJoinQuest = (quest) => {
     console.log(isLogin);
-    if (!isLogin){
-      window.scroll(0,0);
-      navigate(`/login`);
+    if (!isLogin && onLoginClick){
+      onLoginClick();
       return;
     }
 
@@ -245,6 +251,10 @@ useEffect(() => {
     if (onOpenModal && quest.id) {
         onOpenModal(quest.id);
       }
+  };
+
+  const handleSortChange = (option) => {
+    handleFilterChange('sortOption', option.value);
   };
 
 
@@ -301,9 +311,9 @@ useEffect(() => {
       <div className={styles.header}>
         <h2 className={styles.title}>Available Quests</h2>
         <Dropdown 
-          defaultOption="Sort by"
+          defaultOption={getSortDisplayText()}
           options={sortOptions}
-          onSelect={(option) => handleFilterChange('sortOption', option.value)}
+          onSelect={handleSortChange}
         />
       </div>
 

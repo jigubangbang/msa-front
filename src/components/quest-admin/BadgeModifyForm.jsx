@@ -190,7 +190,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
     <div className={styles.badgeModifyForm}>
       <div className={styles.header}>
         <h2 className={styles.title}>뱃지 수정</h2>
-        <button className={styles.closeButton} onClick={onClose}>✕</button>
+        <button className={styles.closeButton} onClick={() => onClose(badgeId)}>✕</button>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -351,7 +351,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
 
         {/* 제출 버튼 */}
         <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
+          <button type="button" className={styles.cancelButton} onClick={() => onClose(badgeId)}>
             취소
           </button>
           <button type="submit" className={styles.saveButton}>
