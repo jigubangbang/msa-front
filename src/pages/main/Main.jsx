@@ -153,6 +153,7 @@ export default function Main() {
         fetchAllData();
     }, [isLoggedIn, userId]);
 
+    
     const handleDotClick = (sectionId) => {
         const sectionElement = document.getElementById(sectionId);
         if (sectionElement) {
