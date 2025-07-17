@@ -109,7 +109,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         <div className="chat-minimize-button" onClick={handleMinimize}>
           <img src={minimize} alt="화면축소"/>
         </div>
-        <h2>{info?.groupType || `Room ${chatId}`}</h2>
+        <h2>{info?.groupName || info?.groupType || `Room ${chatId}`}</h2>
         <div 
           className="chat-header-menu"
           onClick={handleSidebar}

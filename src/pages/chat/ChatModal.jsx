@@ -95,7 +95,7 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
         <div className="minimized-chat-content">
           <div className="minimized-chat-header">
             <h3 className="minimized-chat-header-title">
-              {info?.groupType || `Room ${chatId}`}
+              { info?.groupName || info?.groupType || `Room ${chatId}`}
             </h3>
             <button 
               className="minimized-close-btn"

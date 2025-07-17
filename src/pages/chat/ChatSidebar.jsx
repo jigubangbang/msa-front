@@ -16,7 +16,7 @@ import '../../styles/Chat/ChatSidebar.css';
 
 export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark, onLeave }) {
   const { subscribe, unsubscribe } = useStomp();
-  const {members, loading, error, refetch} = useChatRoomInfo(chatId);
+  const { info, members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [description, setDescription] = useState(chatInfo?.description || "");
@@ -25,7 +25,6 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const [sidebarTopOffset, setSidebarTopOffset] = useState(66); // 기본값 66px (4.125rem)
   const [originalCreatorId, setOriginalCreatorId] = useState(null);
   const sidebarRef = useRef(null);
-  const {info} = useChatRoomInfo(chatId);
   const groupType = chatInfo?.groupType || info?.groupType;
   const navigate = useNavigate();
 
@@ -251,10 +250,51 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     }
   };
 
+  // 현재 유저의 닉네임을 가져오는 함수 추가
+  const getCurrentUserNickname = () => {
+    const currentUser = members.find(member => member.userId === senderId);
+    return currentUser?.nickname || senderId;
+  };
+
+  // 강제퇴장 알림을 보내는 함수 추가
+  const sendForcedRemovalNotification = async (targetUserId) => {
+    try {
+      console.log("[ChatSidebar] info 객체:", info);
+
+      const notificationData = {
+        userId: targetUserId,                    // 퇴장당한 유저 ID
+        groupName: info?.groupName || groupType,  // 그룹/채팅방 이름
+        groupId: parseInt(info?.groupId) || 0,   // 그룹 ID
+        relatedUrl: `/traveler/my/travelmate`,   // 채팅방 URL
+        creatorId: senderId,                     // 강퇴를 실행한 운영진 ID
+      };
+
+      console.log("[ChatSidebar] 강제퇴장 알림 데이터:", notificationData);
+
+      // 알림 서비스에 API 호출
+      const response = await api.post(`${API_ENDPOINTS.NOTI}/chat/removal`, notificationData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'User-Id': senderId
+        }
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        console.log("[ChatSidebar] 강제퇴장 알림 전송 완료");
+      }
+    } catch (error) {
+      console.error("[ChatSidebar] 강제퇴장 알림 전송 실패:", error);
+      // 알림 전송 실패해도 강퇴 자체는 성공했으므로 에러 메시지는 콘솔에만 출력
+    }
+  };
+
   const kickUser = (userId) => {
     const targetNickname = getUserNickname(userId);
     showConfirmModal("멤버 내보내기", `정말 ${targetNickname}님을 내보내시겠습니까?`, async () => {
       try {
+        await sendForcedRemovalNotification(userId);
+
         const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/${userId}`, {
           method: "DELETE",
           headers: {
