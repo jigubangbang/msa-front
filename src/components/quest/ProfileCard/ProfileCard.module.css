@@ -1,106 +1,98 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
-
 .profileCard {
-  background-color: white;
-  border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #f3f4f6;
+  background-color: white;
+  border: 1px solid 	#DCDCDC;
   max-width: 400px;
   min-width: 200px;
+  border-radius: 12px;
+  text-align: center;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.profileCard:hover {
+  transform: translateY(-4px);
 }
 
 .title {
-  color: #333333;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-size: 18px;
   font-weight: 700;
-  margin: 0;
+  color: #333333;
 }
 
-.footer {
+.crownIcon {
+  margin-left: 10px;
+  height: 24px;
+  width: auto;
+  vertical-align: middle;
+}
+.profileInfo {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 25px; /* spacing between image and text */
+  text-align: left;
+  margin-top: 12px;
 }
 
-.count {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 30px;
-  font-weight: 800;
-  color: #111827;
-  margin: 0px;
-  align-self: flex-start;
-}
-
-.rightSection {
-min-height: 70px;
-  display: flex;
-  align-items: flex-end; 
-  gap: 8px;
-}
-
-.profile {
+.profileText {
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.imageContainer {
-  position: relative;
-  cursor: pointer;
-
-}
-
-.image {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
+  gap: 5px; /* 닉네임 / 퀘스트 수 gap*/
 }
 
-.img {
+
+.profileImageWrapper {
+  position: relative;
+  width: 75px;
+  height: 75px;
+  display: inline-block;
+}
+
+.profileImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
+  border: 1px solid #ccc;
 }
 
-.nickname {
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 8px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
+.levelBadge {
+  position: absolute;
+  bottom: -5px;
+  right: -10px;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(to right, #d4bf79, #daa520) border-box;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #daa520;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.level {
-  font-size: 14px;
-  color: #6b7280;
-  font-weight: 500;
+.nickname {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.questCount {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.nickname, .questCount {
   margin: 0;
-  align-self: flex-end;
 }
