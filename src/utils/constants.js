@@ -1,7 +1,7 @@
 // src/utils/constants.js
 
-export const LOCAL = 'http://localhost:8080'
-export const LOCAL_WS = 'ws://localhost:8080'
+export const LOCAL = 'http://k8s-default-msafront-0961d08170-429312898.ap-northeast-2.elb.amazonaws.com'
+export const LOCAL_WS = 'ws://k8s-default-msafront-0961d08170-429312898.ap-northeast-2.elb.amazonaws.com'
 
 // API 엔드포인트
 const API_ENDPOINTS = {
