@@ -1,7 +1,7 @@
 // /src/components/chat/ChatPanel.jsx
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { ThemeContext } from '../../utils/themeContext';
-import ChatSidebar from './ChatSideBar';
+import ChatSidebar from './ChatSidebar';
 import menu_vert_white from '../../assets/common/more_vert_white.svg';
 import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
 import minimize from '../../assets/chat/hide.svg';
