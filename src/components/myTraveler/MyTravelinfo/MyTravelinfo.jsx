@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
@@ -19,10 +19,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
-  // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  // 공유방 나가기
+  const { openChat, closeChat, chatRooms } = useChatContext();
   const { leaveChatRoom, isLeaving } = useChatLeave();
 
   const themeMap = {
@@ -44,8 +41,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       if (!themeIds || themeIds.length === 0) return '';
       return themeIds.map(id => themeMap[id] || `테마 ${id}`).join(', ');
     };
-
-    
 
     const handleJoinClick = (travelinfo) => {
   
@@ -69,8 +64,13 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
@@ -126,6 +126,9 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
           skipConfirmation: false, // 확인 모달 표시
           showAlert: (title, message) => alert(message),
           onSuccess: () => {
+            if (chatRooms[chatRoomId]) {
+              closeChat(chatRoomId);
+            }
             if (fetchTravelinfos) {
               fetchTravelinfos();
             }
@@ -227,9 +230,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       minute: '2-digit'
     });
   };
-
-
-
 
   const renderTravelInfoList = (travelInfos, title, sectionType) => (
     <div className={styles.section}>
@@ -395,15 +395,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
-
-    {chatModalOpen && selectedChatId && (
-        <ChatModal
-          isOpen={chatModalOpen}
-          onClose={() => setChatModalOpen(false)}
-          chatId={selectedChatId}
-          currentUserId={currentUserId}
-        />
-      )}
 
       <ReportModal
               show={showReportModal}

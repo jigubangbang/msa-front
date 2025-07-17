@@ -545,6 +545,11 @@ const TravelInfoList = ({
             onClose={() => setChatModalOpen(false)}
             chatId={selectedChatId}
             currentUserId={currentUserId}
+            onLeave={() => {
+              if (fetchTravelinfos) {
+                fetchTravelinfos();
+              }
+            }}
           />
         )}
       

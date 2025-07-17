@@ -407,6 +407,12 @@ useEffect(() => {
               onClose={() => setChatModalOpen(false)}
               chatId={selectedChatId}
               currentUserId={currentUserId}
+              onLeave={() => {
+                fetchTravelmateDetail();
+                if (isLogin) {
+                  fetchMemberStatus();
+                }
+            }}
             />
           )}
     

@@ -15,6 +15,62 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal)
   const [chatError, setChatError] = useState(null);
   const [isKicked, setIsKicked] = useState(false);
   const subscriptionRef = useRef(null); // 현 구독 객체 저장 ref
+  
+  // 무한 리렌더링 감지를 위한 ref들
+  const renderCountRef = useRef(0);
+  const lastRenderTimeRef = useRef(Date.now());
+  const errorCountRef = useRef(0);
+  const refreshTriggeredRef = useRef(false);
+
+  // 무한 리렌더링 감지 및 새로고침 함수
+  const checkForInfiniteRerender = useCallback(() => {
+    const now = Date.now();
+    const timeDiff = now - lastRenderTimeRef.current;
+    
+    renderCountRef.current += 1;
+    
+    // 1초 내에 10번 이상 렌더링되면 무한 리렌더링으로 판단
+    if (timeDiff < 1000) {
+      if (renderCountRef.current > 10 && !refreshTriggeredRef.current) {
+        console.warn('[joinSock] 무한 리렌더링 감지됨 - 페이지 새로고침 실행');
+        refreshTriggeredRef.current = true;
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1300);
+        return true;
+      }
+    } else {
+      // 1초가 지났으면 카운터 리셋
+      renderCountRef.current = 1;
+      lastRenderTimeRef.current = now;
+    }
+    return false;
+  }, [showAlert]);
+
+  // 에러 카운트를 통한 새로고침 트리거
+  const handleCriticalError = useCallback((error) => {
+    console.error('[joinSock] 치명적 에러 발생:', error);
+    errorCountRef.current += 1;
+    
+    // 10초 내에 3번 이상 에러가 발생하면 새로고침
+    if (errorCountRef.current >= 3 && !refreshTriggeredRef.current) {
+      refreshTriggeredRef.current = true;
+      console.warn('[joinSock] 반복적인 에러로 인한 자동 새로고침');
+      
+      if (showAlert) {
+        showAlert('연결 실패', '채팅 연결이 계속 실패합니다. 페이지를 새로고침합니다.');
+      }
+      
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+    // 에러 카운트는 10초 후 리셋
+    setTimeout(() => {
+      errorCountRef.current = Math.max(0, errorCountRef.current - 1);
+    }, 10000);
+  }, [showAlert]);
 
   // 중복 구독 방지
   const safeUnsubscribe = useCallback(() => {
@@ -36,6 +92,10 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal)
     console.log(`[joinSock] STOMP 활성화 시작: Room number: ${chatId}`);
     setIsLoading(true);
     setChatError(null);
+
+    if (checkForInfiniteRerender()) {
+      return;
+    }
 
     // useStomp 훅의 connect 함수 호출
     connect({
@@ -158,6 +218,10 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal)
       setIsLoading(false);
       setIsJoining(false);
       setChatError(null);
+      return;
+    }
+
+    if (checkForInfiniteRerender()) {
       return;
     }
 
