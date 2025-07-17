@@ -90,12 +90,12 @@ const RankingList = ({ myUserId }) => {
       {/* header */}
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Profile</div>
-        <div className={styles.headerCell}>ID / Nickname</div>
-        <div className={styles.headerCell}>Level</div>
-        <div className={styles.headerCell}>Quests Completed</div>
+        <div className={styles.headerCell}>프로필</div>
+        <div className={styles.headerCell}>ID / 닉네임</div>
+        <div className={styles.headerCell}>레벨</div>
+        <div className={styles.headerCell}>완료 퀘스트</div>
         <div className={styles.headerCell}>XP</div>
-        <div className={styles.headerCell}>Performance</div>
+        <div className={styles.headerCell}>진행률</div>
       </div>
 
       {/* table */}
