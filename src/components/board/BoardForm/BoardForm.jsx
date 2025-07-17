@@ -95,32 +95,6 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const showAlert = (message) => {
-    setConfirmMessage(message);
-    setConfirmType('alert');
-    setConfirmAction(null);
-    setShowConfirmModal(true);
-  };
-
-  const showConfirm = (message, action) => {
-    setConfirmMessage(message);
-    setConfirmType('confirm');
-    setConfirmAction(() => action);
-    setShowConfirmModal(true);
-  };
-
-  const hideConfirm = () => {
-    setShowConfirmModal(false);
-    setConfirmMessage('');
-    setConfirmAction(null);
-  };
-
-  const handleConfirmAction = () => {
-    if (confirmAction) {
-      confirmAction();
-    }
-    hideConfirm();
-  };
 
 
   // 유효성 검사 함수
@@ -289,10 +263,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return !hasErrors;
   };
 
-   const handleLoginConfirm = () => {
-    setIsModalOpen(false);
-    navigate('/login');
-  };
+
 
   // 폼 제출 핸들러
   const handleSubmit = async (e) => {
