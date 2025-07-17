@@ -86,9 +86,8 @@ const BadgeAdminDetail = ({ badgeId }) => {
 
   const handleUserClick = (user) => {
     window.scrollTo(0, 0);
-    console.log(user.user_id);
-    //#NeedToChange 
-    //navigate(`/quest-admin/quest/${user.user_id}`);
+    console.log(user);
+    navigate(`/my-quest/profile/${user.user_id}`);
   }
 
   if (loading) {
@@ -222,7 +221,7 @@ const BadgeAdminDetail = ({ badgeId }) => {
           {badgeDetail.awarded_user && badgeDetail.awarded_user.length > 0 ? (
             badgeDetail.awarded_user.map((user, index) => (
               <div key={`${user.user_id}-${index}`} className={styles.userCard} 
-                onClick={(user)=>{handleUserClick(user)}}>
+                onClick={()=>{handleUserClick(user)}}>
                 <div className={styles.userProfile}>
                   <img 
                     src={user.profile_image || '/icons/common/default_profile.png'} 

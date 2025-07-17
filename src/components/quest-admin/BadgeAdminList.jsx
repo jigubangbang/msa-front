@@ -37,6 +37,7 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
   }, [searchTerm]);
 
   const fetchBadges = async () => {
+    console.log(searchTerm);
     setLoading(true);
     try {
       const params = {};
