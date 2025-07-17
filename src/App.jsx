@@ -24,11 +24,6 @@ function AppContent() {
   const [isDark, setIsDark] = useState(false); // 다크모드
   const { chatRooms, openChat } = useChatContext();
 
-  // 이제 지워야 할 부분
-  const [isChatModal, setIsChatModal] = useState(false);
-
-  const [currentChatId, setCurrentChatId] = useState(1);
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,26 +36,13 @@ function AppContent() {
       navigate("/login", { replace: true });
     }
   }, [location, navigate]);
-
-  // 채팅방 열기 함수 (여러 채팅방 지원)
-  const openChatModal = (chatId = 1) => {
-    console.log(`[App] 채팅방 열기: ${chatId}`);
-    setCurrentChatId(chatId);
-    setIsChatModal(true);
-  };
   
-  // 채팅방 닫기
-  const closeChatModal = () => {
-    console.log(`[App] 채팅방 닫기: ${currentChatId}`);
-    setIsChatModal(false);
-  };
-
   const state = location.state && location.state.backgroundLocation;
 
   return (
     <ThemeContext.Provider value={{ isDark, setIsDark }}>
         <div className="app-container">
-          <Header onOpenChat={openChatModal} />
+          <Header/>
           <main className="main-container">
             <ScrollToTop />
 
@@ -74,20 +56,12 @@ function AppContent() {
               </Routes>
             )}
 
-            {isChatModal && ( 
-              <ChatModal 
-                isOpen={isChatModal} 
-                onClose={closeChatModal} 
-                chatId={1} 
-              />
-            )}
-
              {Object.entries(chatRooms).map(([chatId, chatData]) => (
               chatData.isOpen && (
                 <ChatModal
                   key={chatId}
                   isOpen={chatData.isOpen}
-                  onClose={() => chatData.onClose?.()} 
+                  onClose={chatData.onClose} 
                   chatId={chatId}
                   currentUserId={chatData.currentUserId}
                   onLeave={chatData.onLeave}
