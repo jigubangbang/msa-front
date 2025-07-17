@@ -23,6 +23,11 @@ pipeline {
 
         // ALB 서브넷 ID (Public + Private 포함 - 강사님 안내)
         ALB_SUBNET_IDS = "subnet-04362a3b7f2f40d81,subnet-0009bbca818e1d3bd,subnet-000fdbd8e407a0a5f,subnet-022c5c15b583995b1"
+
+        // ==================== 프론트엔드 SECRET 환경 변수 (Jenkins Credentials에서 로드) ====================
+        VITE_KAKAO_JAVASCRIPT_KEY = credentials('VITE_KAKAO_JAVASCRIPT_KEY')
+        VITE_NAVER_CLIENT_ID      = credentials('VITE_NAVER_CLIENT_ID')
+        VITE_GOOGLE_CLIENT_ID     = credentials('VITE_GOOGLE_CLIENT_ID')
     }
 
     // GitHub 웹훅 트리거 (deployAWS 브랜치에 푸시 시)
@@ -59,7 +64,7 @@ pipeline {
                     def fullEcrRepoUrl = "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${ecrRepoName}"
 
                     echo "--- Building and Deploying ${ecrRepoName} ---"
-                    def dockerImage = docker.build("${fullEcrRepoUrl}:${env.IMAGE_TAG}", "${params.FORCE_FULL_DEPLOY ? '--no-cache' : ''} .")
+                    def dockerImage = docker.build("${fullEcrRepoUrl}:${env.IMAGE_TAG}", "--build-arg VITE_KAKAO_JAVASCRIPT_KEY=${VITE_KAKAO_JAVASCRIPT_KEY} --build-arg VITE_NAVER_CLIENT_ID=${VITE_NAVER_CLIENT_ID} --build-arg VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID} ${params.FORCE_FULL_DEPLOY ? '--no-cache' : ''} .")
 
                     // ECR 로그인 및 이미지 푸시
                     withCredentials([aws(credentialsId: 'aws-cicd-credentials')]) {
