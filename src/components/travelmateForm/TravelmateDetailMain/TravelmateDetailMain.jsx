@@ -5,7 +5,7 @@ import api from '../../../apis/api';
 import JoinApplicationModal from '../../modal/JoinApplicationModal/JoinApplicationModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import { useNavigate } from 'react-router-dom';
 
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
@@ -18,8 +18,7 @@ const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
 
   const navigate = useNavigate();
 
-    const [chatModalOpen, setChatModalOpen] = useState(false);
-    const [selectedChatId, setSelectedChatId] = useState(null);
+  const { openChat } = useChatContext();
 
 useEffect(() => {
   if (postId) {
@@ -245,12 +244,17 @@ useEffect(() => {
       
       console.log('채팅방 조회/생성 성공:', response.data);
     if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            fetchTravelmateDetail();
+            if (isLogin) {
+              fetchMemberStatus();
+            }
+          }
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
-      
     } catch (error) {
       console.error('Failed to get chat room:', error);
       alert('채팅방에 접속할 수 없습니다.');
@@ -259,7 +263,6 @@ useEffect(() => {
 
   const handleReportClose = () => {
     setShowReportModal(false);
-    setReportInfo(null);
   };
 
   const isBlind = detail?.blindStatus === 'BLINDED';
@@ -401,26 +404,11 @@ useEffect(() => {
         applicationDescription={detail?.applicationDescription}
       />
 
-      {chatModalOpen && selectedChatId && (
-            <ChatModal
-              isOpen={chatModalOpen}
-              onClose={() => setChatModalOpen(false)}
-              chatId={selectedChatId}
-              currentUserId={currentUserId}
-              onLeave={() => {
-                fetchTravelmateDetail();
-                if (isLogin) {
-                  fetchMemberStatus();
-                }
-            }}
-            />
-          )}
-    
-          <ReportModal
-                  show={showReportModal}
-                  onClose={handleReportClose}
-                  onSubmit={handleReportSubmit}
-                />
+      <ReportModal
+        show={showReportModal}
+        onClose={handleReportClose}
+        onSubmit={handleReportSubmit}
+      />
     </div>
   );
 };
