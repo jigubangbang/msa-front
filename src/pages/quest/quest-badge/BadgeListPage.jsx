@@ -111,7 +111,6 @@ const [selectedBadge, setSelectedBadge] = useState(null);
     }
 });
       setUser(response.data);
-      console.log("User data fetched:", response.data);
     } catch (error) {
       console.error("Failed to fetch user data:", error);
       setUser(null);

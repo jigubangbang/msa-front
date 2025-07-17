@@ -202,12 +202,7 @@ const BoardFormPage = () => {
 
   // 폼 닫기/취소
   const handleFormClose = () => {
-    // 이전 페이지로 돌아가거나 목록으로 이동
-    if (postId) {
-      navigate(`/board/${postId}`); // 수정 모드였다면 상세 페이지로
-    } else {
-      navigate('/board/popular'); // 생성 모드였다면 목록으로
-    }
+    navigate(-1);
   };
 
   if (loading) {

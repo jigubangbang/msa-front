@@ -125,6 +125,7 @@ const RankQuestList = ({
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
       setCurrentPage(pageNum);
   };
 
@@ -133,6 +134,11 @@ const RankQuestList = ({
         onOpenModal(quest.id);
       }
   }
+
+  const getSortDisplayText = () => {
+  const selected = sortOptions.find(opt => opt.value === filters.sortOption);
+  return selected ? selected.label : "Sort by";
+};
 
 
   if (loading) {
@@ -199,7 +205,7 @@ const RankQuestList = ({
 
       <div className={styles.dropdown}>
           <Dropdown
-            defaultOption="Sort by"
+            defaultOption={getSortDisplayText()}
             options={sortOptions}
             onSelect={handleSortChange}
           />

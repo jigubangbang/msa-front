@@ -3,6 +3,8 @@ import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './MyPageHeader.module.css';
 import React, {useState, useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 
 const MyPageHeader = ({ 
@@ -27,6 +29,8 @@ const MyPageHeader = ({
     xpNeededForNextLevel: 100,
     isMaxLevel: false
   });
+    const navigate=useNavigate();
+
 
   useEffect(() => {
     const fetchUserLevel = async () => {
@@ -59,15 +63,7 @@ const MyPageHeader = ({
   const { currentXp, xpRequiredForCurrentLevel, xpRequiredForNextLevel } = levelInfo;
   
   const progress = ((currentXp - xpRequiredForCurrentLevel) / (xpRequiredForNextLevel - xpRequiredForCurrentLevel)) * 100;
-  
-  console.log('Progress Calculation:', {
-    currentXp,
-    xpRequiredForCurrentLevel,
-    xpRequiredForNextLevel,
-    numerator: currentXp - xpRequiredForCurrentLevel,
-    denominator: xpRequiredForNextLevel - xpRequiredForCurrentLevel,
-    progress
-  });
+
   
   return Math.max(0, Math.min(100, progress));
 };
@@ -98,8 +94,7 @@ const MyPageHeader = ({
   };
 
   const handleProfileClick = () => {
-    //#NeedToChange
-    console.log(userId);
+    navigate(`/profile/${userId}`);
   }
 
   return (

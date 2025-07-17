@@ -92,6 +92,7 @@ const QuestAdminList = ({ onQuestClick}) => {
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
     setCurrentPage(pageNum);
   };
 
@@ -128,6 +129,12 @@ const QuestAdminList = ({ onQuestClick}) => {
       setLoading(false);
     }
   };
+
+  const getSortDisplayText = () => {
+  const selected = sortOptions.find(opt => opt.value === filters.sortOption);
+  return selected ? selected.label : "Sort by";
+};
+
 
   if (loading) {
     return (
@@ -180,7 +187,7 @@ const QuestAdminList = ({ onQuestClick}) => {
       {/* Sort Dropdown */}
       <div className={styles.dropdown}>
         <Dropdown
-          defaultOption="Sort by"
+          defaultOption={getSortDisplayText()}
           options={sortOptions}
           onSelect={handleSortChange}
         />

@@ -17,6 +17,9 @@ const ProfileCard = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const handleProfileClick = () => {
+    if (id===null){
+      return;
+    }
     window.scrollTo(0, 0);
      navigate(`/my-quest/profile/${id}`);
   };

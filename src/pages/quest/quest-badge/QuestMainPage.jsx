@@ -17,6 +17,7 @@ import QuestList from "../../../components/quest/QuestList/QuestList";
 import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 import api from "../../../apis/api";
+import LoginConfirmModal from "../../../components/common/LoginConfirmModal/LoginConfirmModal";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -27,6 +28,7 @@ function Rankings() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   
   
 
@@ -169,6 +171,7 @@ export default function QuestMainPage() {
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const [selectedBadge, setSelectedBadge] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   //SideBar//
@@ -446,6 +449,17 @@ const response = await api.get(endpoint, {
     closeBadgeModal(); // 배지 모달 닫기
     openQuestModal(quest_id); // 퀘스트 모달 열기
   };
+  
+    const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
+  const handleLoginClick = () => {
+    if (!isLogin) {
+      setIsModalOpen(true);
+    }
+  }
 
 
   return (
@@ -528,6 +542,7 @@ const response = await api.get(endpoint, {
             
           </div>
         <QuestList currentUserId={currentUserId} isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}
+          onLoginClick={handleLoginClick}
        />
         
       </div>
@@ -556,6 +571,12 @@ const response = await api.get(endpoint, {
         />,
         document.body
       )}
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 }

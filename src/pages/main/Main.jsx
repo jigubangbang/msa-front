@@ -153,6 +153,7 @@ export default function Main() {
         fetchAllData();
     }, [isLoggedIn, userId]);
 
+    
     const handleDotClick = (sectionId) => {
         const sectionElement = document.getElementById(sectionId);
         if (sectionElement) {
@@ -193,6 +194,11 @@ export default function Main() {
     }, []);
 
     const handlePostClick = (postId) => {
+        //이거 이상 없는지 확인좀 
+        if (!isLogin){
+            setShowLoginConfirmModal(true);
+            return;
+        }
         navigate(`/board/${postId}`);
     };
     const handleLoginClick = () => {
@@ -359,7 +365,13 @@ export default function Main() {
                             <h4 className={styles.centeredText}>유저 랭킹</h4>
                             <ul className={styles.rankingList}>
                                 {rankings.map(user => (
-                                    <li key={user.rank} className={styles.rankingItem} onClick={() => navigate(`/profile/${user.user_id}`)}>
+                                    <li key={user.rank} className={styles.rankingItem} onClick={() => {
+                                        if (isLoggedIn) {
+                                            navigate(`/profile/${user.user_id}`);
+                                        } else {
+                                            setShowLoginConfirmModal(true);
+                                        }
+                                    }}>
                                         <span className={styles.rank}>{user.rank}</span>
                                         <img src={user.icon || user.profile_image || defaultProfile} alt={user.nickname} className={styles.userAvatar} />
                                         <div className={styles.userInfo}>
