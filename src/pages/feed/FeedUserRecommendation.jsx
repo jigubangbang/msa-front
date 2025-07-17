@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SearchBar from "../../components/common/Searchbar";
+import SearchBar from "../../components/common/SearchBar";
 import FeedTemplate from "./FeedTemplate";
 import styles from "./FeedUserRecommendation.module.css";
 import api from "../../apis/api";

@@ -4,7 +4,7 @@ import FeedTemplate from "./FeedTemplate";
 import styles from "./FeedSearch.module.css";
 import CommonFeed from "../../components/feed/CommonFeed";
 import { useEffect, useRef, useState } from "react";
-import SearchBar from "../../components/common/Searchbar";
+import SearchBar from "../../components/common/SearchBar";
 import api from "../../apis/api";
 
 export default function FeedSearch() {
