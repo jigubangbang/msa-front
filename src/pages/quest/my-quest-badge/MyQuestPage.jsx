@@ -287,6 +287,7 @@ export default function MyQuestPage({page, isMine}) {
                 completedQuests={userInfo.quest?.count_completed || 0}
                 awardedBadges={userInfo.badge?.count_awarded_badge || 0}
                 onBadgeClick={openBadgeModal}
+                isLogin={isLogin} 
               />
 
                 <MyPageMenu isMine={isMine}/>
