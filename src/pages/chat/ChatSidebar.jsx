@@ -16,16 +16,15 @@ import '../../styles/Chat/ChatSidebar.css';
 
 export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark, onLeave }) {
   const { subscribe, unsubscribe } = useStomp();
-  const {members, loading, error, refetch} = useChatRoomInfo(chatId);
+  const { info, members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [description, setDescription] = useState(chatInfo?.description || "");
+  const [description, setDescription] = useState("");
   const [showReportModal, setShowReportModal] = useState(false);
   const [confirmModalInfo, setConfirmModalInfo] = useState({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
-  const [sidebarTopOffset, setSidebarTopOffset] = useState(66); // 기본값 66px (4.125rem)
+  const [sidebarTopOffset, setSidebarTopOffset] = useState(58);
   const [originalCreatorId, setOriginalCreatorId] = useState(null);
   const sidebarRef = useRef(null);
-  const {info} = useChatRoomInfo(chatId);
   const groupType = chatInfo?.groupType || info?.groupType;
   const navigate = useNavigate();
 
@@ -50,12 +49,30 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     console.log(  "그룹 멤버 조회 중 에러 발생" );
   }
 
+  useEffect(() => {
+    if (info?.description !== undefined) {
+      setDescription(info.description);
+    }
+  }, [info?.description]);
+
   const showConfirmModal = (title, message, onConfirm, position = 'top') => {
     setConfirmModalInfo({ show: true, title, message, onConfirm, position });
   };
 
   const hideConfirmModal = () => {
     setConfirmModalInfo({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
+  };
+
+  const customShowAlert = (title, message, position = 'top') => {
+    setConfirmModalInfo({ 
+      show: true, 
+      title, 
+      message, 
+      onConfirm: () => {
+        setConfirmModalInfo({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
+      }, 
+      position 
+    });
   };
 
   // 채팅방 신고 핸들러
@@ -251,10 +268,45 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     }
   };
 
+  // 강제퇴장 알림을 보내는 함수 추가
+  const sendForcedRemovalNotification = async (targetUserId) => {
+    try {
+      console.log("[ChatSidebar] info 객체:", info);
+
+      const notificationData = {
+        userId: targetUserId,                    // 퇴장당한 유저 ID
+        groupName: info?.groupName || groupType,  // 그룹/채팅방 이름
+        groupId: parseInt(info?.groupId) || 0,   // 그룹 ID
+        relatedUrl: `/traveler/my/travelmate`,   // 채팅방 URL
+        creatorId: senderId,                     // 강퇴를 실행한 운영진 ID
+      };
+
+      console.log("[ChatSidebar] 강제퇴장 알림 데이터:", notificationData);
+
+      // 알림 서비스에 API 호출
+      const response = await api.post(`${API_ENDPOINTS.NOTI}/chat/removal`, notificationData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'User-Id': senderId
+        }
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        console.log("[ChatSidebar] 강제퇴장 알림 전송 완료");
+      }
+    } catch (error) {
+      console.error("[ChatSidebar] 강제퇴장 알림 전송 실패:", error);
+      // 알림 전송 실패해도 강퇴 자체는 성공했으므로 에러 메시지는 콘솔에만 출력
+    }
+  };
+
   const kickUser = (userId) => {
     const targetNickname = getUserNickname(userId);
     showConfirmModal("멤버 내보내기", `정말 ${targetNickname}님을 내보내시겠습니까?`, async () => {
       try {
+        await sendForcedRemovalNotification(userId);
+
         const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/${userId}`, {
           method: "DELETE",
           headers: {
@@ -353,7 +405,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
           setDescription={setDescription}
           chatId={chatId}
           isManager={isManager}
-          showAlert={showAlert}
+          showAlert={customShowAlert}
+          refetch={refetch}
         />
         <div className="sidebar-section members-section">
           <h3>멤버들 ({!members || members.length === 0 ? 0 : members.length})</h3>

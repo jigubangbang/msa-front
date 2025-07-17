@@ -163,7 +163,7 @@ const UserBoard = ({ isLogin, currentUserId }) => {
       setBookmarkedPosts(prev => prev.filter(post => post.id !== postId));
     } catch (error) {
       console.error('Failed to remove bookmark:', error);
-      alert('북마크 해제 중 오류가 발생했습니다.');
+      console.log('북마크 해제 중 오류가 발생했습니다.');
     }
   };
 
@@ -178,7 +178,7 @@ const UserBoard = ({ isLogin, currentUserId }) => {
       setLikedPosts(prev => prev.filter(post => post.id !== postId));
     } catch (error) {
       console.error('Failed to remove like:', error);
-      alert('좋아요 해제 중 오류가 발생했습니다.');
+      console.log('좋아요 해제 중 오류가 발생했습니다.');
     }
   };
 

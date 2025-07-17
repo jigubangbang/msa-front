@@ -44,7 +44,7 @@ const Vote = ({
         if (prev.length < vote.max_choices) {
           return [...prev, optionId];
         } else {
-          alert(`최대 ${vote.max_choices}개까지 선택할 수 있습니다.`);
+          console.log(`최대 ${vote.max_choices}개까지 선택할 수 있습니다.`);
           return prev;
         }
       }

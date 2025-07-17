@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TopTravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 
 const TopTravelInfoList = ({ 
@@ -20,8 +20,7 @@ const TopTravelInfoList = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
+  const { openChat, closeChat, chatRooms } = useChatContext();
 
   useEffect(() => {
     fetchTopTravelinfos();
@@ -182,8 +181,8 @@ const TopTravelInfoList = ({
       
       console.log('채팅방 조회/생성 성공:', response.data);
     if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
@@ -192,11 +191,6 @@ const TopTravelInfoList = ({
       console.error('Failed to get chat room:', error);
       alert('채팅방에 접속할 수 없습니다.');
     }
-  };
-
-  const handleChatModalClose = () => {
-    setChatModalOpen(false);
-    setSelectedChatId(null);
   };
 
   const handleJoinSubmit = async () => {
@@ -321,21 +315,10 @@ const TopTravelInfoList = ({
 
       <JoinChatModal
         isOpen={isModalOpen}
-        onClose={handleModalClose}
         onSubmit={handleJoinSubmit}
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
-
-      {chatModalOpen && selectedChatId && (
-        <ChatModal
-          isOpen={chatModalOpen}
-          onClose={handleChatModalClose}
-          chatId={selectedChatId}
-          currentUserId={currentUserId}
-        />
-      )}
-
     </div>
   );
 };

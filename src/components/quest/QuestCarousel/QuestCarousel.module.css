@@ -3,6 +3,7 @@ font-family:'DNFBitBitv2';
 font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
 .questCarousel {
   max-width: 1000px;
@@ -13,8 +14,9 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .carouselTitle {
    margin-top: 0px;
- font-family: Pretendard, sans-serif;
-  font-size: 26px;
+ font-family: 'Pixelify Sans', sans-serif;
+  font-size: 30px;
+  text-transform: uppercase;
  font-weight: 700;
   text-align: left;
  margin-bottom: 5px;

@@ -1,24 +1,30 @@
 // BadgeAdminList.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import styles from './BadgeAdminList.module.css';
-import API_ENDPOINTS from '../../utils/constants';
-import api from '../../apis/api';
-import SearchBar from '../common/SearchBar';
+import styles from "./BadgeAdminList.module.css";
+import API_ENDPOINTS from "../../utils/constants";
+import api from "../../apis/api";
+import SearchBar from "../common/SearchBar";
+import Pagination from "../common/Pagination/Pagination";
+import CirclesSpinner from "../common/Spinner/CirclesSpinner";
 
 const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
   const [badges, setBadges] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}.${month}.${day}`;
     } catch (error) {
       return dateString;
     }
@@ -30,24 +36,24 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
     }
   };
 
-  
-
   useEffect(() => {
     fetchBadges();
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
   const fetchBadges = async () => {
     console.log(searchTerm);
     setLoading(true);
     try {
-      const params = {};
+      const params = {
+        pageNum: currentPage,
+        search: searchTerm,
+        limit: itemsPerPage,
+      };
 
-    if (searchTerm.trim()) {
-      params.search = searchTerm.trim();
-    }
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`, {
+        params,
+      });
 
-      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`, { params });
-      
       setBadges(response.data.badges || []);
       setTotalCount(response.data.totalCount || 0);
     } catch (err) {
@@ -59,116 +65,136 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
     }
   };
 
-  const handleSearchChange = (value) => { 
-  setSearchTerm(value);
-};
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  };
+
+  const handlePageChange = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
 
   if (loading) {
-    return (
-      <div className={styles.badgeAdminList}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
-    );
+    return <CirclesSpinner/>;
   }
 
   return (
     <div className={styles.badgeAdminList}>
       <div className={styles.header}>
-        <h2 className={styles.badgeListTitle}>Badge Management</h2>
+        <p className={styles.totalCount}>전체 {totalCount}개 뱃지</p>
+        <h2 className={styles.sectionTitle}>뱃지 관리</h2>
       </div>
 
-      {/* SearchBar */}
-    <div className={styles.searchSection}>
-      <p className={styles.totalCount}>
-        Total {totalCount} badges
-      </p>
-      <SearchBar
-        placeholder="Search badges..."
-        value={searchTerm}
-        onSearchChange={handleSearchChange}
-        barWidth="300px"
-        debounceMs={500}
-      />
-    </div>
-
-      {/* Table Header */}
-      <div className={styles.tableHeader}>
-        <div className={styles.headerCell}>ID</div>
-        <div className={styles.headerCell}>Icon</div>
-        <div className={styles.headerCell}>Korean Title</div>
-        <div className={styles.headerCell}>English Title</div>
-        <div className={styles.headerCell}>Difficulty</div>
-        <div className={styles.headerCell}>Quests</div>
-        <div className={styles.headerCell}>Created</div>
-        <div className={styles.headerCell}>Actions</div>
+      <div className={styles.filterContainer}>
+        <SearchBar
+          placeholder="뱃지명으로 검색"
+          value={searchTerm}
+          onSearchChange={handleSearchChange}
+          barWidth="260px"
+        />
       </div>
 
-      {/* Table Body */}
-      <div className={styles.tableBody}>
-        {badges.map((badge, index) => {
-          const uniqueKey = badge.badge_id ? `badge-${badge.badge_id}` : `badge-${index}`;
-          
-          return (
-            <div 
-              key={uniqueKey} 
-              className={styles.tableRow}
-              onClick={() => handleBadgeRowClick(badge)}
-            >
-              <div className={styles.cell}>{badge.badge_id}</div>
-              <div className={styles.cell}>
-                <img 
-                  src={badge.icon} 
-                  alt={badge.kor_title}
-                  className={styles.badgeIcon}
-                />
-              </div>
-              <div className={styles.cell} title={badge.kor_title}>
-                <div className={styles.titleCell}>{badge.kor_title}</div>
-              </div>
-              <div className={styles.cell} title={badge.eng_title}>
-                <div className={styles.titleCell}>{badge.eng_title}</div>
-              </div>
-              <div className={styles.cell}>
-                <span className={`${styles.difficultyTag} ${styles[`difficulty${badge.difficulty}`]}`}>
-                  Level {badge.difficulty}
-                </span>
-              </div>
-              <div className={styles.cell}>
-                <div className={styles.questList}>
-                  {badge.quest && badge.quest.length > 0 ? (
-                    <>
-                      <span className={styles.questCount}>{badge.quest.length} quests</span>
-                      <div className={styles.questTooltip}>
-                        {badge.quest.map((quest, idx) => (
-                          <div key={idx} className={styles.questItem}>
-                            {quest}
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <span className={styles.noQuests}>No quests</span>
-                  )}
-                </div>
-              </div>
-              <div className={styles.cell}>{formatDate(badge.created_at)}</div>
-              <div className={styles.cell}>
-                <button 
-                    className={styles.modifyButton}
-                    onClick={(e) => {
-                    e.stopPropagation(); 
-                        if (onBadgeModify) {
-                            onBadgeModify(badge);
-                        }
-                    }}
+      {/* Table */}
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>뱃지 ID</th>
+              <th>뱃지</th>
+              <th>뱃지명 (국문)</th>
+              <th>뱃지명 (영문)</th>
+              <th>난이도</th>
+              <th>연결 퀘스트</th>
+              <th>생성일</th>
+              <th>수정</th>
+            </tr>
+          </thead>
+          <tbody>
+            {badges.map((badge, index) => {
+              const uniqueKey = badge.badge_id
+                ? `badge-${badge.badge_id}`
+                : `badge-${index}`;
+
+              return (
+                <tr
+                  key={uniqueKey}
+                  className={styles.tableRow}
+                  onClick={() => handleBadgeRowClick(badge)}
                 >
-                    수정
-                </button>
-                </div>
-            </div>
-          );
-        })}
+                  <td>{badge.badge_id}</td>
+                  <td>
+                    <img
+                      src={badge.icon}
+                      alt={badge.kor_title}
+                      className={styles.badgeIcon}
+                    />
+                  </td>
+                  <td className={styles.titleCell} title={badge.kor_title}>
+                    {badge.kor_title}
+                  </td>
+                  <td className={styles.titleCell} title={badge.eng_title}>
+                    {badge.eng_title}
+                  </td>
+                  <td>
+                    <span
+                      className={`${styles.difficultyTag} ${
+                        styles[`difficulty${badge.difficulty}`]
+                      }`}
+                    >
+                      Level {badge.difficulty}
+                    </span>
+                  </td>
+                  <td>
+                    <div className={styles.questList}>
+                      {badge.quest && badge.quest.length > 0 ? (
+                        <>
+                          <span className={styles.questCount}>
+                            {badge.quest.length}개 퀘스트
+                          </span>
+                          <div className={styles.questTooltip}>
+                            {badge.quest.map((quest, idx) => (
+                              <div key={idx} className={styles.questItem}>
+                                {quest}
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <span className={styles.noQuests}>퀘스트 없음</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>{formatDate(badge.created_at)}</td>
+                  <td>
+                    <button
+                      className={styles.modifyButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onBadgeModify) {
+                          onBadgeModify(badge);
+                        }
+                      }}
+                    >
+                      수정
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          pageBlock={5}
+          pageCount={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };
