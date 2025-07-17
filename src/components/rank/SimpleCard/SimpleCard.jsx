@@ -16,7 +16,7 @@ const SimpleCard = ({
         </h2>
       </div>
       <p className={styles.count}>
-      : {count}
+        {count}
       </p>
     </div>
   );

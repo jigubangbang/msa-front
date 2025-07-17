@@ -10,8 +10,9 @@
 
 .rankingListTitle {
   margin: 0;
-  font-family: Pretendard, sans-serif;
-  font-size: 26px;
+  font-family: 'Pixelify Sans', sans-serif;
+  text-transform: uppercase;
+  font-size: 30px;
   font-weight: 700;
   text-align: left;
   color: #000;

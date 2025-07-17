@@ -164,7 +164,7 @@ const UserTimeline = ({ data, onQuestClick, onBadgeClick }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Activity Timeline</h2>
+        <h2 className={styles.title}>활동 타임라인</h2>
       </div>
       
       <div className={styles.timeline}>
