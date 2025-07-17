@@ -2,16 +2,27 @@ import React, { useState, useEffect, useRef } from 'react';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardForm.module.css';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 
 const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null, onSubmit, onClose }) => {
   const MAX_IMAGE_COUNT = 10;
   const fileInputRefs = useRef([]);
+
+  // ConfirmModal 관련 상태 추가
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert'); // 'alert' | 'confirm'
+  const [confirmAction, setConfirmAction] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     boardId: '3'
   });
+
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const CATEGORY_OPTIONS = [
     { value: '1', label: '정보' },
@@ -82,6 +93,34 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const showAlert = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const showConfirm = (message, action) => {
+    setConfirmMessage(message);
+    setConfirmType('confirm');
+    setConfirmAction(() => action);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+
   // 유효성 검사 함수
   const validateField = (name, value) => {
     switch (name) {
@@ -134,12 +173,12 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     if (file) {
       // 파일 검증
       if (file.size > 10 * 1024 * 1024) {
-        alert('파일 크기는 10MB 이하여야 합니다.');
+        showAlert('파일 크기는 10MB 이하여야 합니다.');
         return;
       }
       
       if (!file.type.startsWith('image/')) {
-        alert('이미지 파일만 업로드 가능합니다.');
+        showAlert('이미지 파일만 업로드 가능합니다.');
         return;
       }
 
@@ -232,13 +271,13 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     e.preventDefault();
     
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      setIsModalOpen(true);
       return;
     }
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      alert('입력값을 확인해주세요.');
+      showAlert('입력값을 확인해주세요.');
       return;
     }
 
@@ -286,6 +325,12 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
       onClose();
     }
   };
+
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
 
   if (loading && mode === 'edit' && !initialData) {
     return (
@@ -456,6 +501,20 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
           </button>
         </div>
       </form>
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

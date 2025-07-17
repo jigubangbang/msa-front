@@ -3,6 +3,8 @@ import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './MyPageHeader.module.css';
 import React, {useState, useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 
 const MyPageHeader = ({ 
@@ -27,6 +29,8 @@ const MyPageHeader = ({
     xpNeededForNextLevel: 100,
     isMaxLevel: false
   });
+    const navigate=useNavigate();
+
 
   useEffect(() => {
     const fetchUserLevel = async () => {
@@ -90,8 +94,7 @@ const MyPageHeader = ({
   };
 
   const handleProfileClick = () => {
-    //#NeedToChange
-    console.log(userId);
+    navigate(`/profile/${userId}`);
   }
 
   return (

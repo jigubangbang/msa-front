@@ -122,7 +122,7 @@ export const TRAVELER_SIDEBAR = [
     ]
   },
   {
-    label: '여행 정보 공유방',
+    label: '여행 정보공유방',
     icon: '/icons/sidebar/travelinfo.svg',
     path: '/traveler/info',
     needLogin: false,
@@ -146,7 +146,7 @@ export const TRAVELER_SIDEBAR = [
         needLogin: true
       },
       {
-        label: '내 여행 정보 공유방',
+        label: '내 여행 정보공유방',
         path: '/traveler/my/travelinfo',
         needLogin: true
       }

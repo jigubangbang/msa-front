@@ -11,9 +11,8 @@
   display: flex;
   justify-content: center;
   align-items: flex-start; /* 변경: center -> flex-start */
-  padding-top: 20%; /* 상단 여백 추가 */
+  padding-top: 26%; /* 상단 여백 추가 */
   z-index: 1001; /* ChatAlertModal보다 위에 오도록 z-index 조정 */
-  border-radius: 8px;
 }
 
 .modal {

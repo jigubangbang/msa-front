@@ -106,13 +106,8 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
     }
   };
 
-  const handleMoreClick = (type) => {
-    //#NeedToChange
-    if (type === 'bookmark') {
-      navigate('/my/bookmarks');
-    } else if (type === 'like') {
-      navigate('/my/likes');
-    }
+  const handleMoreClick = () => {
+      navigate('/board/my');
   };
 
   const formatDate = (dateString) => {
@@ -216,7 +211,7 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
           <h3 className={styles.boardTitle}>내가 북마크한 글</h3>
           <button 
             className={styles.moreButton}
-            onClick={() => handleMoreClick('bookmark')}
+            onClick={handleMoreClick}
           >
             더보기
           </button>
@@ -230,7 +225,7 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
           <h3 className={styles.boardTitle}>내가 좋아요한 글</h3>
           <button 
             className={styles.moreButton}
-            onClick={() => handleMoreClick('like')}
+            onClick={handleMoreClick}
           >
             더보기
           </button>

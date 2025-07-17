@@ -5,6 +5,7 @@ import Dropdown from '../../common/Dropdown';
 import { useNavigate } from 'react-router-dom';
 import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 import api from '../../../apis/api';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 
 const QuestListCard = ({ quest, onJoin, onDetail, isLogin, onLoginClick}) => {
@@ -299,9 +300,7 @@ useEffect(() => {
 
   if (loading || isLogin === null) {
     return (
-      <div className={styles.questList}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
+      <CirclesSpinner/>
     );
   }
 

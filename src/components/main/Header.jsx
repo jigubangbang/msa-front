@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useChatContext } from '../../utils/ChatContext';
 import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
@@ -15,6 +16,7 @@ export default function Header({onOpenChat}) {
   const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { closeAllChats } = useChatContext();
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('accessToken'));
@@ -30,6 +32,8 @@ export default function Header({onOpenChat}) {
   }, [isLoggedIn])
 
   const handleLogout = () => {
+    console.log('[Header] 수동 로그아웃 - 모든 채팅방 정리');
+    closeAllChats();
     navigate('/logout'); 
   };
 
@@ -80,8 +84,8 @@ export default function Header({onOpenChat}) {
           <span><Link to="/style-guide">스타일가이드</Link></span>
           <span><Link to="/quest">퀘스트</Link></span>
           <span><Link to="/traveler/mate">커뮤니티</Link><span className={styles.badge}>New</span></span>
-          <span><Link to="/feed">여행기록</Link><span className={styles.badge}>New</span></span>
-          <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
+          <span><Link to="/feed">여행기록</Link></span>
+          <span><Link to={`/profile/${userId}/diary`}>나의 여행일지</Link></span>
           <span onClick={() => {console.log(localStorage.getItem("accessToken"))}}>JWT 토큰</span>
         </nav>
         <div className={styles.authButtons}>

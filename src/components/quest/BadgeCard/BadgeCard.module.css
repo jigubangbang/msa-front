@@ -9,6 +9,8 @@
   min-width: 200px;
   display: flex;
   flex-direction: column;
+  border: 1px solid 	#DCDCDC;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .content {

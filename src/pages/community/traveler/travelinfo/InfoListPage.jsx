@@ -87,21 +87,17 @@ useEffect(() => {
   }
 
   const handleViewAll = () => {
+    window.scroll(0,0);
+    setCategories([]);
         setIsSearching(true);
         setCurrentPage(1);
         setSearchTerm('');
     }
 
     const handleCategorySelect = (categoryId) => {
-      console.log('선택된 카테고리 ID:', categoryId);
+      window.scroll(0,0);
       
-      setCategories(prevCategories => {
-          if (prevCategories.includes(categoryId)) {
-          return prevCategories.filter(id => id !== categoryId);
-          } else {
-          return [...prevCategories, categoryId];
-          }
-      });
+      setCategories([categoryId]);
 
       setIsSearching(true);
         setCurrentPage(1);

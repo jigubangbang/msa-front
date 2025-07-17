@@ -1,9 +1,11 @@
-/* src/styles/Chat/ChatModal.css */
+/* src/styles/chat/ChatModal.css */
+@font-face{
+font-family:'DNFBitBitv2';
+font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
 
 /* 최소화된 채팅창 스타일 */
 .minimized-chat {
   position: fixed;
-  bottom: 20px;
   right: 20px;
   width: 320px;     /*기본: 42vh*/
   height: 120px;    /*기본: 63vh*/
@@ -11,7 +13,6 @@
   border-radius: 8px;
   border: var(--color-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  z-index: 9999;
   transition: all 0.3s ease;
   cursor: pointer;
   overflow: hidden;
@@ -38,8 +39,8 @@
 }
 
 .minimized-chat-header-title {
-  font-family: 'Pixelify Sans';
-  font-size: 1.125rem;
+  font-family:'DNFBitBitv2', 'Pretendard';
+  font-size: 1rem;
   color: white;
   margin: 0;
   flex: 1;

@@ -138,7 +138,6 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal)
             chat: subscription,
             kick: kickSubscription
           };
-          console.log('[joinChat] 구독 객체 저장 완료');
         } else {
           console.error('[joinChat] 구독 객체 생성 실패');
         }
@@ -163,8 +162,6 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal)
 
   // 채팅방 삭제
   const handleRoomDelete = useCallback((deleteMessage) => {
-    console.log('[joinChat] 채팅방 삭제 처리: ', deleteMessage);
-    
     if (deleteMessage.chatId === chatId) {
       console.log('[joinChat] 현재 채팅방이 삭제됨 - 자동 퇴장 처리');
       unsubscribeChatRoom();
@@ -261,7 +258,6 @@ export function joinSock(isOpen, chatId, showAlert, currentUserId, onCloseModal)
               console.error('[joinSock] 과거 메시지 조회 실패:', err);
               setChatError(new Error("과거 메시지 조회 실패: " + (err.message || "알 수 없는 에러")));
             }
-            // STOMP 활성화 시 백엔드에서 받은 userId 사용 (실제로는 currentUserId와 같아야 함)
             activateStompClient(userIdFromJoin || currentUserId);
           } else {
             setIsLoading(false);

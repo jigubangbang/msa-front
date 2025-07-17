@@ -4,6 +4,7 @@ import heart from '../assets/noti/heart.svg';
 import comment from '../assets/noti/comment.svg';
 import group_new from '../assets/noti/group_new.svg';
 import group from '../assets/noti/group.svg';
+import group_off from '../assets/noti/group_off.svg';
 import badge_earn from '../assets/noti/badge_earn.svg';
 import badge_revoke from '../assets/noti/badge_revoke.svg';
 import inquiry from '../assets/noti/inquiry.svg';
@@ -30,6 +31,9 @@ export const getNotificationIcon = (type) => {
 
     case 'GROUP_ACCEPTED':
       return group;
+
+    case 'FORCED_REMOVAL' :
+      return group_off;
 
     case 'BADGE_EARNED':
       return badge_earn;

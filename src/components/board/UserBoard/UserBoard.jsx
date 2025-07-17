@@ -39,6 +39,7 @@ const UserBoard = ({ isLogin, currentUserId }) => {
   });
 
   const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE_MY_POST = 7;
 
   useEffect(() => {
     if (isLogin && currentUserId) {
@@ -54,7 +55,7 @@ const UserBoard = ({ isLogin, currentUserId }) => {
         headers: { 'User-Id': currentUserId },
         params: {
           page: currentPages.myPosts,
-          size: ITEMS_PER_PAGE,
+          size: ITEMS_PER_PAGE_MY_POST,
           sort: sortOptions.myPosts
         }
       });
@@ -288,14 +289,17 @@ const UserBoard = ({ isLogin, currentUserId }) => {
     }
 
     return (
-      <div className={styles.postList}>
-        {posts.map((post, index) => (
+    <div className={styles.postList}>
+      {posts.map((post, index) => {
+        const globalIndex = (currentPages.myPosts - 1) * ITEMS_PER_PAGE_MY_POST + index + 1;
+        
+        return (
           <div 
             key={post.id} 
             className={styles.postItem}
             onClick={() => handlePostClick(post.id)}
           >
-            <div className={styles.postNumber}>{index + 1}.</div>
+            <div className={styles.postNumber}>{globalIndex}.</div>
             <div className={styles.postContent}>
               <div className={styles.postTitle}>
                 {post.title}
@@ -332,9 +336,10 @@ const UserBoard = ({ isLogin, currentUserId }) => {
               </div>
             </div>
           </div>
-        ))}
-      </div>
-    );
+        );
+      })}
+    </div>
+  );
   };
 
   const renderMyCommentList = (comments) => {
@@ -356,30 +361,33 @@ const UserBoard = ({ isLogin, currentUserId }) => {
 
     return (
       <div className={styles.postList}>
-        {comments.map((comment, index) => (
-          <div 
-            key={comment.postId} 
-            className={styles.postItem}
-            onClick={() => handlePostClick(comment.postId)}
-          >
-            <div className={styles.postNumber}>{index + 1}.</div>
-            <div className={styles.postContent}>
-              <div className={styles.postTitle}>
-                {comment.postTitle}
-                {comment.blindStatus === 'BLINDED' && (
-                  <span className={styles.blindedBadge}>블라인드 처리됨</span>
-                )}
-              </div>
-              <div className={styles.commentContent}>
-                <span className={styles.commentLabel}>내 댓글:</span>
-                <span className={styles.commentText}>{comment.content}</span>
-              </div>
-              <div className={styles.postMeta}>
-                <span className={styles.date}>{formatDate(comment.createdAt)}</span>
+        {comments.map((comment, index) => {
+          const globalIndex = (currentPages.myComments - 1) * ITEMS_PER_PAGE + index + 1;
+          
+          return (
+            <div 
+              key={comment.postId} 
+              className={styles.postItem}
+              onClick={() => handlePostClick(comment.postId)}
+            >
+              <div className={styles.postNumber}>{globalIndex}.</div>
+              <div className={styles.postContent}>
+                <div className={styles.postTitle}>
+                  {comment.postTitle}
+                  {comment.blindStatus === 'BLINDED' && (
+                    <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                  )}
+                </div>
+                <div className={styles.commentContent}>
+                  <span className={styles.commentText}>{comment.content}</span>
+                </div>
+                <div className={styles.postMeta}>
+                  <span className={styles.date}>{formatDate(comment.createdAt)}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
@@ -401,62 +409,69 @@ const UserBoard = ({ isLogin, currentUserId }) => {
       );
     }
 
+    const currentPage = type === 'bookmark' ? currentPages.bookmarks : currentPages.likes;
+
     return (
       <div className={styles.postList}>
-        {posts.map((post, index) => (
-          <div 
-            key={post.id} 
-            className={styles.postItem}
-            onClick={() => handlePostClick(post.id)}
-          >
-            <div className={styles.postNumber}>{index + 1}.</div>
-            <div className={styles.postContent}>
-              <div className={styles.postTitle}>
-                {post.title}
-                {post.blindStatus === 'BLINDED' && (
-                  <span className={styles.blindedBadge}>블라인드 처리됨</span>
-                )}
-              </div>
-              <div className={styles.postMeta}>
-                <span className={styles.author}>{`${post.creatorNickname} (${post.userId})`}</span>
-                <span className={styles.separator}>|</span>
-                <span className={styles.date}>{formatDate(post.createdAt)}</span>
-                <span className={styles.separator}>|</span>
-                <div className={styles.stats}>
-                  <div className={styles.statItem}>
-                    <img src="/icons/common/comment.svg" alt="댓글" className={styles.icon} />
-                    <span>{post.commentCount || 0}</span>
+        {posts.map((post, index) => {
+          const globalIndex = (currentPage - 1) * ITEMS_PER_PAGE + index + 1;
+          
+          return (
+            <div 
+              key={post.id} 
+              className={styles.postItem}
+              onClick={() => handlePostClick(post.id)}
+            >
+              <div className={styles.postNumber}>{globalIndex}.</div>
+
+              <div className={styles.postContent}>
+                <div className={styles.postTitle}>
+                  {post.title}
+                  {post.blindStatus === 'BLINDED' && (
+                    <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                  )}
+                </div>
+                <div className={styles.postMeta}>
+                  <span className={styles.author}>{`${post.creatorNickname} (${post.userId})`}</span>
+                  <span className={styles.separator}>|</span>
+                  <span className={styles.date}>{formatDate(post.createdAt)}</span>
+                  <span className={styles.separator}>|</span>
+                  <div className={styles.stats}>
+                    <div className={styles.statItem}>
+                      <img src="/icons/common/comment.svg" alt="댓글" className={styles.icon} />
+                      <span>{post.commentCount || 0}</span>
+                    </div>
+                    <span className={styles.separator}>|</span>
+                    <div className={styles.statItem}>
+                      <img src="/icons/common/view.svg" alt="조회수" className={styles.icon} />
+                      <span>{post.viewCount || 0}</span>
+                    </div>
                   </div>
                   <span className={styles.separator}>|</span>
                   <div className={styles.statItem}>
-                    <img src="/icons/common/view.svg" alt="조회수" className={styles.icon} />
-                    <span>{post.viewCount || 0}</span>
+                  <img src="/icons/common/heart_fill.svg" alt="좋아요" className={styles.icon} />
+                  <span>{post.likeCount || 0}</span>
+                  </div>
+                  <span className={styles.separator}>|</span>
+                  <div className={styles.statItem}>
+                  <img src="/icons/common/bookmark.svg" alt="북마크" className={styles.icon} />
+                  <span>{post.bookmarkCount || 0}</span>
                   </div>
                 </div>
-                <span className={styles.separator}>|</span>
-                <div className={styles.statItem}>
-                <img src="/icons/common/heart_fill.svg" alt="좋아요" className={styles.icon} />
-                <span>{post.likeCount || 0}</span>
-                </div>
-                <span className={styles.separator}>|</span>
-                <div className={styles.statItem}>
-                <img src="/icons/common/bookmark.svg" alt="북마크" className={styles.icon} />
-                <span>{post.bookmarkCount || 0}</span>
-                </div>
               </div>
+              <button
+                className={styles.actionButton}
+                onClick={(e) => onToggle(post.id, e)}
+              >
+                <img
+                  src={type === 'bookmark' ? '/icons/common/bookmark_added.svg' : '/icons/common/heart_fill.svg'}
+                  alt={type === 'bookmark' ? '북마크 해제' : '좋아요 해제'}
+                  className={styles.actionIcon}
+                />
+              </button>
             </div>
-            <button
-              className={styles.actionButton}
-              onClick={(e) => onToggle(post.id, e)}
-            >
-              <img
-                src={type === 'bookmark' ? '/icons/common/bookmark_added.svg' : '/icons/common/heart_fill.svg'}
-                alt={type === 'bookmark' ? '북마크 해제' : '좋아요 해제'}
-                className={styles.actionIcon}
-              />
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
