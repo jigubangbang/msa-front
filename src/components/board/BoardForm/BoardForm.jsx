@@ -9,11 +9,15 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
   const MAX_IMAGE_COUNT = 10;
   const fileInputRefs = useRef([]);
 
+  // ConfirmModal 관련 상태 추가
+
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     boardId: '3'
   });
+
+
 
   const CATEGORY_OPTIONS = [
     { value: '1', label: '정보' },
@@ -90,6 +94,34 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const showAlert = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const showConfirm = (message, action) => {
+    setConfirmMessage(message);
+    setConfirmType('confirm');
+    setConfirmAction(() => action);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   // 유효성 검사 함수
   const validateField = (name, value) => {
@@ -322,6 +354,12 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
       onClose();
     }
   };
+
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
 
   if (loading && mode === 'edit' && !initialData) {
     return (

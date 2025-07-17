@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../../components/common/Searchbar";
 import FeedTemplate from "./FeedTemplate";
 import styles from "./FeedUserRecommendation.module.css";
@@ -46,7 +46,9 @@ export default function FeedUserRecommendation() {
                     onSearchChange={setKeyword}
                     barWidth="500px"
                 />
-                <UserRecommendation/>
+                {keyword && (
+                    <p className={styles.searchMessage}>'{keyword}' 에 대한 검색 결과: {searchResult.length}개</p>
+                )}
                 {showResult && searchResult.length > 0 && (
                     <div className={styles.searchResult}>
                         {searchResult.map((user) => (
@@ -74,6 +76,7 @@ export default function FeedUserRecommendation() {
                         ))}
                     </div>
                 )}
+                <UserRecommendation/>
             </div>
         </FeedTemplate>
     );

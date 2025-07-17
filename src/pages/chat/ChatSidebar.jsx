@@ -6,7 +6,7 @@ import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
 import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import ChatDescriptionEditor from '../../components/chat/ChatDescriptionEditor';
-import ReportModal from '../../components/common/Modal/ReportModal';
+import ChatReportModal from '../../components/chat/ChatReportModal';
 import ChatAlertModal from '../../components/chat/ChatAlertModal';
 import defaultProfile from '../../assets/default_profile.png';
 import API_ENDPOINTS from '../../utils/constants';
@@ -14,7 +14,7 @@ import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
 import '../../styles/Chat/ChatSidebar.css';
 
-export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark }) {
+export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark, onLeave }) {
   const { subscribe, unsubscribe } = useStomp();
   const {members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
@@ -23,6 +23,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const [showReportModal, setShowReportModal] = useState(false);
   const [confirmModalInfo, setConfirmModalInfo] = useState({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
   const [sidebarTopOffset, setSidebarTopOffset] = useState(66); // 기본값 66px (4.125rem)
+  const [originalCreatorId, setOriginalCreatorId] = useState(null);
   const sidebarRef = useRef(null);
   const {info} = useChatRoomInfo(chatId);
   const groupType = chatInfo?.groupType || info?.groupType;
@@ -64,18 +65,30 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
 
   // 최초 생성자 조회
   const getOriginalCreator = async () => {
-  try {
-    const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/original-creator`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
+    try {
+      const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/original-creator`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("[ChatSidebar] 최초 생성자 조회 실패:", error);
+      throw error;
+    }
+  };
+
+  const getMemberRole = (member) => {
+    if (member.isCreator === 1) {
+      // 최초 생성자인지 확인
+      if (originalCreatorId && member.userId === originalCreatorId) {
+        return "방장";
+      } else {
+        return "운영진";
       }
-    });
-    return response.data;
-  } catch (error) {
-    console.error("[ChatSidebar] 최초 생성자 조회 실패:", error);
-    throw error;
-  }
-};
+    }
+    return null; // 일반 멤버는 역할 표시 안함
+  };
 
   // 신고 제출 핸들러
   const handleReportSubmit = async (reportData) => {
@@ -104,7 +117,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
           'User-Id': senderId
         }
      });
-     
+
       if (response.status === 200 || response.status === 201) {
         showAlert("알림", "신고가 접수되었습니다.");
         setShowReportModal(false);
@@ -132,6 +145,12 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
 };
 
   const handleLeaveGroup = () => {
+
+    if (originalCreatorId && senderId === originalCreatorId) {
+      showAlert("알림", "방장은 채팅방을 탈퇴할 수 없습니다.");
+      return;
+    }
+
     showConfirmModal("그룹 탈퇴", "정말로 그룹을 탈퇴하시겠습니까?", async () => {
       try {
         await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/me`, {
@@ -150,11 +169,70 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   
         removeSubscription(chatId);
         showAlert("알림", "채팅방을 성공적으로 탈퇴했습니다.");
+        if (onLeave) {
+          onLeave();
+        }
         onForceClose?.(); // 사이드바 닫기
   
       } catch (error) {
         console.error("[ChatSidebar] 채팅방 탈퇴 실패:", error);
         showAlert("오류", "탈퇴 처리 중 오류가 발생했습니다.");
+      }
+    }, 'top');
+  };
+
+  const handleDeleteChatRoom = () => {
+    const confirmMessage = groupType === 'TRAVELMATE' 
+      ? "정말로 그룹을 삭제하시겠습니까? 삭제된 그룹은 복구할 수 없습니다."
+      : "정말로 채팅방을 삭제하시겠습니까? 삭제된 채팅방은 복구할 수 없습니다.";
+
+    showConfirmModal("채팅방 삭제", confirmMessage, async () => {
+      try {
+
+        if (groupType === 'TRAVELINFO') {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${info?.groupId}`, {
+            headers: {
+              'User-Id': senderId,
+            },
+          });
+        } else if (groupType === 'TRAVELMATE') {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${info?.groupId}`, {
+            headers: {
+              'User-Id': senderId,
+            },
+          });
+        }
+        
+        const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}`, {
+          method: "DELETE",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+            'User-Id': senderId,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`채팅방 삭제 실패: ${response.status}`);
+        }
+  
+        const sub = getSubscription(chatId);
+        if (sub) {
+          sub.unsubscribe();
+          console.log(`[ChatSidebar] 채팅방 ${chatId} 구독 해제 완료`);
+        }
+  
+        removeSubscription(chatId);
+        if (onLeave) {
+          onLeave();
+        }
+        showAlert("알림", "채팅방이 성공적으로 삭제되었습니다.");
+        onClose?.();
+        onForceClose?.();
+        
+      } catch (error) {
+        console.error("[ChatSidebar] 채팅방 삭제 실패:", error);
+        showAlert("오류", "채팅방 삭제 중 오류가 발생했습니다.");
       }
     }, 'top');
   };
@@ -210,19 +288,36 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   };
 
   const getButtonTexts = () => {
+    const isOriginalCreator = originalCreatorId && senderId === originalCreatorId;
+    
     if (groupType === 'TRAVELMATE') {
       return {
         report: '그룹 신고',
-        leave: '그룹 탈퇴'
+        leave: isOriginalCreator ? '그룹 삭제' : '그룹 탈퇴'
       };
     } 
       return {
         report: '채팅방 신고',
-        leave: '채팅 탈퇴'
+        leave: isOriginalCreator ? '채팅방 삭제' : '채팅 탈퇴'
       };
   };
 
   const buttonTexts = getButtonTexts();
+
+  useEffect(() => {
+    const fetchOriginalCreator = async () => {
+      try {
+        const creatorId = await getOriginalCreator();
+        setOriginalCreatorId(creatorId);
+      } catch (error) {
+        console.error("[ChatSidebar] 최초 생성자 조회 실패:", error);
+      }
+    };
+
+    if (chatId && accessToken) {
+      fetchOriginalCreator();
+    }
+  }, [chatId, accessToken]);
 
   // 새 멤버 감지
   useEffect(() => {
@@ -286,7 +381,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
                       <span className="member-nickname">{member.nickname || member.userId}</span>
                       <span className="member-id">{member.userId}</span>
                     </div>
-                    {member.isCreator == '1' && <span className="member-role">관리자</span>}
+                    {member.isCreator == '1' && <span className="member-role">{getMemberRole(member)}</span>}
                   </div>
                 </div>
 
@@ -320,11 +415,16 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       </div>
         <div className="sidebar-footer">
           <button className="report-button" onClick={handleReport}>{buttonTexts.report}</button>
-          <button className="leave-button" onClick={handleLeaveGroup}>{buttonTexts.leave}</button>
+          <button 
+            className="leave-button" 
+            onClick={originalCreatorId && senderId === originalCreatorId ? handleDeleteChatRoom : handleLeaveGroup}
+          >
+            {buttonTexts.leave}
+          </button>
         </div>
       </div>
 
-      <ReportModal
+      <ChatReportModal
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         onSubmit={handleReportSubmit}

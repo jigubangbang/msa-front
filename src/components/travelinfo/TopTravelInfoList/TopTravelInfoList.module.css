@@ -48,9 +48,11 @@
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   overflow: hidden;
-  cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card:hover {
@@ -112,6 +114,10 @@
 
 .content {
   padding: 16px;
+  display: flex;
+  flex-direction: column; 
+  flex: 1; 
+  justify-content: space-between; 
 }
 
 .cardTitle {
@@ -137,12 +143,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  flex: 1;
 }
 
 .stats {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: auto;
 }
 
 .statsRow {
@@ -184,6 +192,23 @@
 
 .joinButton.chatButton:hover {
   background-color: #1e7e34;
+}
+
+.leaveButton {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: rgb(246, 83, 83);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.leaveButton:hover {
+  background-color: red;
 }
 
 .loading {

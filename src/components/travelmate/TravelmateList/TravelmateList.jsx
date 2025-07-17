@@ -59,40 +59,144 @@ const TravelmateList = ({
     }
   };
 
-const formatSearchConditions = (searchSectionData) => {
-  if (!searchSectionData) return null;
-  
+const formatSearchConditions = (searchSectionData, filters) => {
+  // 매핑 데이터
+  const mappingData = {
+    targets: [
+      { id: 1, name: '남성 전용 모임' },
+      { id: 2, name: '여성 전용 모임' },
+      { id: 3, name: '20대 모임' },
+      { id: 4, name: '30대 모임' },
+      { id: 5, name: '40대 모임' },
+      { id: 6, name: '50대 이상 모임' },
+      { id: 7, name: '가족/아이 동반 모임' },
+      { id: 8, name: '친구 동반 모임' }
+    ],
+    themes: [
+      { id: 9, name: '맛집 탐방 여행 모임' },
+      { id: 10, name: '등산/트레킹 여행 모임' },
+      { id: 11, name: '사진 찍기 여행 모임' },
+      { id: 12, name: '역사/문화 유적지 탐방 모임' },
+      { id: 13, name: '축제/이벤트 참가 여행 모임' },
+      { id: 14, name: '자연 속 힐링 여행 모임' },
+      { id: 15, name: '액티비티/레포츠 여행 모임' },
+      { id: 16, name: '캠핑/차박 여행 모임' }
+    ],
+    styles: [
+      { id: 'A', name: '열정트래블러' },
+      { id: 'B', name: '느긋한여행가' },
+      { id: 'C', name: '디테일플래너' },
+      { id: 'D', name: '슬로우로컬러' },
+      { id: 'E', name: '감성기록가' },
+      { id: 'F', name: '혼행마스터' },
+      { id: 'G', name: '맛집헌터' },
+      { id: 'H', name: '문화수집가' },
+      { id: 'I', name: '자연힐링러' },
+      { id: 'J', name: '실속낭만러' }
+    ]
+  };
+
   const conditions = [];
+  let isFromSearch = false;
+  let isFromCategory = false;
   
-  if (searchSectionData.locations && searchSectionData.locations.length > 0) {
-    if (searchSectionData.locations[0] === 'ALL') {
-      conditions.push('전체 지역');
-    } else {
-      const locationNames = searchSectionData.locations.map(location => {
-        if (location.city && location.city.name) {
-          return `${location.country.name} ${location.city.name}`;
+  // searchSectionData가 있는 경우 (검색에서 온 데이터)
+  if (searchSectionData) {
+    isFromSearch = true;
+    
+    if (searchSectionData.locations && searchSectionData.locations.length > 0) {
+      if (searchSectionData.locations[0] === 'ALL') {
+        conditions.push('전체 지역');
+      } else {
+        const locationNames = searchSectionData.locations.map(location => {
+          if (location.city && location.city.name) {
+            return `${location.country.name} ${location.city.name}`;
+          }
+          return location.country ? location.country.name : location;
+        });
+        conditions.push(`위치: ${locationNames.join(', ')}`);
+      }
+    }
+    
+    if (searchSectionData.dates) {
+      const { startDate, endDate } = searchSectionData.dates;
+      if (startDate && endDate) {
+        const formatDate = (dateObj) => {
+          if (typeof dateObj === 'string') return dateObj;
+          if (dateObj.dateString) return dateObj.dateString;
+          if (dateObj.year) return `${dateObj.year}-${String(dateObj.month).padStart(2, '0')}-${String(dateObj.day).padStart(2, '0')}`;
+          return dateObj;
+        };
+        
+        conditions.push(`기간: ${formatDate(startDate)} ~ ${formatDate(endDate)}`);
+      }
+    }
+  }
+  
+  // filters가 있는 경우 (TravelmateFilter에서 온 필터 데이터)
+  if (filters) {
+    // locations 처리 (continent 대신)
+    if (filters.locations?.length > 0) {
+      isFromCategory = true;
+      const locationNames = filters.locations.map(location => {
+        if (location.country && location.city) {
+          return `${location.country.name} ${location.city.cityName || location.city.name}`;
         }
-        return location.country ? location.country.name : location;
+        return typeof location === 'object' ? location.name || location.label : location;
       });
-      conditions.push(`위치: ${locationNames.join(', ')}`);
+      conditions.push(`지역: ${locationNames.join(', ')}`);
+    }
+    
+    // continent 처리 (카테고리에서 온 경우)
+    if (filters.continent?.length > 0) {
+      isFromCategory = true;
+      const continentNames = filters.continent.map(id => {
+        // continent 매핑 데이터가 있다면 사용, 없으면 id 그대로
+        const continentMap = {
+          'ASIA': '아시아',
+          'EUROPE': '유럽',
+          'NORTH_AMERICA': '북아메리카',
+          'AFRICA': '아프리카',
+          'OCEANIA': '오세아니아',
+          'SOUTH_AMERICA': '남아메리카'
+        };
+        return continentMap[id] || id;
+      });
+      conditions.push(`지역: ${continentNames.join(', ')}`);
+    }
+    
+    if (filters.targets?.length > 0) {
+      isFromCategory = true;
+      const targetNames = filters.targets.map(target => {
+        const id = typeof target === 'object' ? target.id : target;
+        const targetData = mappingData.targets.find(t => t.id === id);
+        return targetData ? targetData.name : (typeof target === 'object' ? target.label || target.name : target);
+      });
+      conditions.push(`대상: ${targetNames.join(', ')}`);
+    }
+    
+    if (filters.themes?.length > 0) {
+      isFromCategory = true;
+      const themeNames = filters.themes.map(theme => {
+        const id = typeof theme === 'object' ? theme.id : theme;
+        const themeData = mappingData.themes.find(t => t.id === id);
+        return themeData ? themeData.name : (typeof theme === 'object' ? theme.label || theme.name : theme);
+      });
+      conditions.push(`테마: ${themeNames.join(', ')}`);
+    }
+    
+    if (filters.styles?.length > 0) {
+      isFromCategory = true;
+      const styleNames = filters.styles.map(style => {
+        const id = typeof style === 'object' ? style.id : style;
+        const styleData = mappingData.styles.find(s => s.id === id);
+        return styleData ? styleData.name : (typeof style === 'object' ? style.label || style.name : style);
+      });
+      conditions.push(`여행 스타일: ${styleNames.join(', ')}`);
     }
   }
   
-  if (searchSectionData.dates) {
-    const { startDate, endDate } = searchSectionData.dates;
-    if (startDate && endDate) {
-      const formatDate = (dateObj) => {
-        if (typeof dateObj === 'string') return dateObj;
-        if (dateObj.dateString) return dateObj.dateString;
-        if (dateObj.year) return `${dateObj.year}-${String(dateObj.month).padStart(2, '0')}-${String(dateObj.day).padStart(2, '0')}`;
-        return dateObj;
-      };
-      
-      conditions.push(`기간: ${formatDate(startDate)} ~ ${formatDate(endDate)}`);
-    }
-  }
-  
-  return conditions;
+  return { conditions, isFromSearch, isFromCategory };
 };
 
   const handleSortChange = (option) => {
@@ -289,6 +393,7 @@ const formatSearchConditions = (searchSectionData) => {
 
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
     setCurrentPage(pageNum);
   };
 
@@ -316,18 +421,7 @@ const formatSearchConditions = (searchSectionData) => {
             현재 {totalCount}개의 여행메이트 모집글이 있습니다.
         </p>
 
-        {/* 검색 조건 표시 - 여기에 추가 */}
-      {searchSectionData && (
-        <div className={styles.searchConditions}>
-          <span className={styles.searchConditionsLabel}>검색 조건: </span>
-          {formatSearchConditions(searchSectionData).map((condition, index) => (
-            <span key={index} className={styles.searchCondition}>
-              {condition}
-              {index < formatSearchConditions(searchSectionData).length - 1 && ', '}
-            </span>
-          ))}
-        </div>
-      )}
+        
       
         <div className={styles.controlsContainer}>
             <label className={styles.checkboxContainer}>
@@ -345,7 +439,34 @@ const formatSearchConditions = (searchSectionData) => {
             onSelect={handleSortChange}
             />
         </div>
-        </div>
+      </div>
+
+      
+        {/* 검색 조건 표시 */}
+          {(searchSectionData || (filters && (filters.locations?.length > 0 || filters.continent?.length > 0 || filters.targets?.length > 0 || filters.themes?.length > 0 || filters.styles?.length > 0))) && (
+            <div className={styles.searchValSection}>
+              
+              <div className={styles.searchConditions}>
+              {(() => {
+                const { conditions, isFromSearch, isFromCategory } = formatSearchConditions(searchSectionData, filters);
+                const label = isFromSearch ? '검색 조건: ' : isFromCategory ? '카테고리 선택: ' : '검색 조건: ';
+                
+                return (
+                  <>
+                    <span className={styles.searchConditionsLabel}>{label}</span>
+                    {conditions.map((condition, index) => (
+                      <span key={index} className={styles.searchCondition}>
+                        {condition}
+                        {index < conditions.length - 1 && ', '}
+                      </span>
+                    ))}
+                  </>
+                );
+              })()}
+            </div>
+                    </div>
+          )}
+
 
       {/* Table Header */}
       <div className={styles.tableHeader}>
@@ -362,7 +483,6 @@ const formatSearchConditions = (searchSectionData) => {
       {/* Table Body */}
       <div className={styles.tableBody}>
         {travelmates.map((travelmate, index) => {
-            //#NeedToChange 기본 썸네일 이미지
           const uniqueKey = travelmate.id ? `travelmate-${travelmate.id}` : `travelmate-${currentPage}-${index}`;
           const isLiked = likedPosts.has(travelmate.id);
           const isBlind = travelmate.blindStatus === 'BLINDED';

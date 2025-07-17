@@ -8,7 +8,7 @@ import Dropdown from "../common/Dropdown";
 import SearchBar from "../common/SearchBar";
 import Modal from "../common/Modal/Modal";
 import Pagination from "../common/Pagination/Pagination";
-import premiumIcon from "../../assets/admin/premium_black.svg";
+import premiumIcon from "../../assets/admin/premium.svg";
 import kakaoIcon from "../../assets/admin/kakao.svg";
 import naverIcon from "../../assets/admin/naver.svg";
 import googleIcon from "../../assets/admin/google.svg";
@@ -119,7 +119,7 @@ export default function UserManage() {
     setStatusFilter("ALL");
     setRoleFilter("ALL");
     setCurrentPage(1);
-    setDropdownResetKey(prev => prev + 1); // 🔄 force re-render
+    setDropdownResetKey((prev) => prev + 1);
     fetchUsers();
   };
 
@@ -131,9 +131,9 @@ export default function UserManage() {
     if (searchTerm) {
       filtered = filtered.filter(
         (user) =>
-          user.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+          user.userId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.nickname?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -165,9 +165,9 @@ export default function UserManage() {
       if (searchTerm) {
         filtered = filtered.filter(
           (user) =>
-            user.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+            user.userId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.nickname?.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
 
@@ -280,7 +280,7 @@ export default function UserManage() {
           placeholder="아이디, 이름, 닉네임으로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown
@@ -295,9 +295,9 @@ export default function UserManage() {
             options={roleOptions}
             onSelect={(option) => setRoleFilter(option.value)}
           />
-          <img 
+          <img
             src={refreshIcon}
-            alt="필터 초기화" 
+            alt="필터 초기화"
             className={styles.resetIcon}
             onClick={resetFilters}
           />
@@ -396,9 +396,11 @@ export default function UserManage() {
                               { label: "정지", value: "BANNED" },
                               { label: "탈퇴", value: "WITHDRAWN" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(user.userId, option.value)
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== user.status) { 
+                                handleStatusChange(user.userId, option.value);
+                              }
+                            }}
                           />
                         </div>
                       </td>

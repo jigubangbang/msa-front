@@ -5,7 +5,9 @@ import api from '../../../apis/api';
 import JoinApplicationModal from '../../modal/JoinApplicationModal/JoinApplicationModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
+import ChatModal from '../../../pages/chat/ChatModal';
 import { useNavigate } from 'react-router-dom';
+
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -255,12 +257,10 @@ useEffect(() => {
     }
   };
 
-      const handleReportClose = () => {
+  const handleReportClose = () => {
     setShowReportModal(false);
     setReportInfo(null);
   };
-
-
 
   const isBlind = detail?.blindStatus === 'BLINDED';
 
@@ -316,7 +316,7 @@ useEffect(() => {
               className={`${styles.joinButton} ${memberStatus == 'PENDING' ? styles.disabled : ''}`}
               onClick={handleButtonClick}
               disabled={!isLogin || isBlind}
->
+              >
                 {isBlind ? '참여 불가' : getJoinButtonText()}
               </button>
             </div>
@@ -335,7 +335,9 @@ useEffect(() => {
           </div>
           <div className={styles.creatorDetails}>
             <div className={styles.creatorName}>
-              <span className={styles.style}>[{isBlind ? '-' : (detail.creatorStyle|| '')}]</span>
+              {!isBlind && detail.creatorStyle && (
+                <span className={styles.style}>[{detail.creatorStyle}]</span>
+              )}
               <span className={styles.nickname}>{isBlind ? '블라인드 사용자' : detail.creatorNickname}</span>
               <span className={styles.userId}>({isBlind ? '-' : detail.creatorId})</span>
             </div>
@@ -402,8 +404,15 @@ useEffect(() => {
       {chatModalOpen && selectedChatId && (
             <ChatModal
               isOpen={chatModalOpen}
+              onClose={() => setChatModalOpen(false)}
               chatId={selectedChatId}
               currentUserId={currentUserId}
+              onLeave={() => {
+                fetchTravelmateDetail();
+                if (isLogin) {
+                  fetchMemberStatus();
+                }
+            }}
             />
           )}
     

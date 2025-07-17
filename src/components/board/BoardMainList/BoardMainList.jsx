@@ -4,11 +4,14 @@ import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardMainList.module.css';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const BoardMainList = ({isLogin}) => {
   const navigate = useNavigate();
   const [boardData, setBoardData] = useState({});
   const [loading, setLoading] = useState(false);
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -63,6 +66,8 @@ const BoardMainList = ({isLogin}) => {
   };
 
   const handlePostClick = (postId) => {
+    console.log("handlePostClick");
+    console.log(isLogin)
     if (!isLogin) {
       setIsModalOpen(true);
       return;
@@ -73,6 +78,12 @@ const BoardMainList = ({isLogin}) => {
   const handleCategoryClick = (path) => {
     navigate(`/board/${path}`);
   };
+
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

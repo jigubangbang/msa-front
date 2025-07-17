@@ -152,7 +152,7 @@ export default function ProfileSidebar() {
             <div className={styles.container}>
                 <div className={styles.profileImageWrapper}>
                     {
-                        data.profileImage ? (
+                        profileImage ? (
                             <img
                                 className={styles.profileImage}
                                 src={profileImage}
@@ -170,7 +170,7 @@ export default function ProfileSidebar() {
                         onMouseEnter={() => setShowModal(true)}
                         onClick={() => setShowModal(!showModal)}
                     >
-                        <button className={`${styles.travelStatus} ${statusClasses[travelStatus]}`}>
+                        <button className={`${styles.travelStatus} ${statusClasses[travelStatus]} ${(sessionUserId == userId) ? "" : styles.disabled}`}>
                             {travelStatus}
                         </button>
                         {sessionUserId === userId && showModal && (
@@ -195,8 +195,10 @@ export default function ProfileSidebar() {
                 </div>
 
                 <span className={styles.nickname}>
-                    {data.nickname}
-                    {nationality && <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>}
+                    <Link to={`/profile/${userId}`} className={styles.value}>
+                        {data.nickname}
+                    </Link>
+                    {nationality && findFlagUrlByIso3Code(nationality) && <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>}
                     {data.premium && <img className={styles.premiumIcon} src={premiumIcon}/>}
                 </span>
                 <p className={styles.userId}>@{data.userId}</p>
@@ -225,8 +227,9 @@ export default function ProfileSidebar() {
 
                 <div className={styles.location}>
                     <button 
-                        className={styles.editButton}
+                        className={`${styles.editButton} ${(sessionUserId == userId) ? "" : styles.disabled}`}
                         onClick={() => setShowNationalityModal(true)}
+                        disabled={!(sessionUserId == userId)}
                     >
                         <img src={locationIcon} alt="국적 수정"/>
                     </button>
@@ -255,7 +258,9 @@ export default function ProfileSidebar() {
                     </div>
                     <div className={styles.statItem}>
                         <div className={styles.label}>방문 국가</div>
-                        <div className={styles.value}>{data.countryVisitCount}</div>
+                        <Link to={`/profile/${userId}/countries`} className={styles.value}>
+                            <div className={styles.value}>{data.countryVisitCount}</div>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -14,13 +14,14 @@ import { jwtDecode } from 'jwt-decode';
 import ReportModal from '../common/Modal/ReportModal';
 import Modal from '../common/Modal/Modal';
 
-export default function FeedComment({comment, feedId, onCommentDelete}) {
+export default function FeedComment({comment, feedId, onCommentDelete, setCommentCount}) {
     const [hasLiked, setHasLiked] = useState(comment.likeStatus);
     const [likeCount, setLikeCount] = useState(comment.likeCount);
     const [sessionUserId, setSessionUserId] = useState();
 
     const [showReplies, setShowReplies] = useState(false);
     const [replies, setReplies] = useState([]);
+    const [replyCount, setReplyCount] = useState(comment.replyCount);
 
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,7 +47,7 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
     }
 
     const toggleReplies = async() => {
-        if (comment.replyCount > 0 && replies.length === 0) {
+        if (replyCount > 0 && replies.length === 0) {
             try {
                 const response = await api.get(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/comments/${comment.id}/replies`);
                 setReplies(response.data.comments || []);
@@ -75,6 +76,8 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
             setShowReplyInput(false);
             setReplyText("");
             setReplies((prev) => [response.data.comment, ...prev]);
+            setReplyCount(prev => prev + 1);
+            setCommentCount(prev => prev + 1);
         } catch (err) {
             console.error("Failed to post reply", err);
         }
@@ -102,6 +105,7 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
             await api.delete(`${API_ENDPOINTS.FEED.PRIVATE}/${feedId}/comments/${comment.id}`);
             setShowDeleteModal(false);
             onCommentDelete(comment.id);
+            setCommentCount(prev => prev - (replyCount + 1));
         } catch(err) {
             console.error("Failed to delete comment", err);
         }
@@ -109,6 +113,8 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
 
     const onReplyDelete = (id) => {
         setReplies((prev) => prev.filter(c => c.id !== id));
+        setReplyCount(prev => prev - 1);
+        setCommentCount(prev => prev - 1);
     }
 
     useEffect(() => {
@@ -178,6 +184,7 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
                         disabled={isSubmitting}
+                        autoFocus
                     />
                     <button 
                         onClick={handleReplySubmit} 
@@ -189,9 +196,9 @@ export default function FeedComment({comment, feedId, onCommentDelete}) {
                 </div>
             )}
 
-            {comment.replyCount > 0 ? (
+            {replyCount > 0 ? (
                 <button onClick={toggleReplies} className={styles.viewReplies}>
-                    {showReplies ? '답글 숨기기' : `답글 보기 (${comment.replyCount || replies.length})`}
+                    {showReplies ? '답글 숨기기' : `답글 보기 (${replyCount || replies.length})`}
                 </button>
             ) : null}
 

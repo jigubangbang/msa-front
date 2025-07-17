@@ -80,7 +80,7 @@ export default function FeedFilter({onSubmit, setFilter, onReset}) {
         <div className={styles.wrapper}>
             <div className={styles.formGroup}>
                 {/* Country Dropdown */}
-                <div className={styles.dropdownWrapper}>
+                <div className={`${styles.dropdownWrapper} ${styles.countryDropdownWrapper}`}>
                     <div
                         className={styles.dropdownSelector}
                         onClick={() => setShowCountryDropdown((prev) => !prev)}

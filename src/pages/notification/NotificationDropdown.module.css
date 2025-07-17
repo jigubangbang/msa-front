@@ -14,7 +14,7 @@
 }
 
 .notificationButton:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.03);
 }
 
 .badge {
@@ -165,8 +165,8 @@
 
 .notificationImage {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   display: flex;
   align-items: center;

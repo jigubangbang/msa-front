@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../apis/api";
 import API_ENDPOINTS from "../../utils/constants";
 import styles from "./PasswordChange.module.css";
@@ -26,6 +26,7 @@ export default function PasswordChange() {
   const [messageType, setMessageType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSocialUser, setIsSocialUser] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -176,6 +177,20 @@ export default function PasswordChange() {
     });
   };
 
+  // 소셜 로그인 여부 확인
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setIsSocialUser(payload.provider !== null && payload.provider !== undefined);
+      } catch (error) {
+        console.error("토큰 파싱 오류:", error);
+        setIsSocialUser(false);
+      }
+    }
+  }, []);
+
   return (
     <div className={styles.section}>
       <h2 className={styles.sectionTitle}>비밀번호 변경</h2>
@@ -195,6 +210,7 @@ export default function PasswordChange() {
               name="currentPassword"
               value={form.currentPassword}
               onChange={handleChange}
+              disabled={isSocialUser}
               onFocus={() => {
                 setFocusedField("currentPassword");
                 setMessage("");
@@ -232,6 +248,7 @@ export default function PasswordChange() {
               name="newPassword"
               value={form.newPassword}
               onChange={handleChange}
+              disabled={isSocialUser}
               onFocus={() => {
                 setFocusedField("newPassword");
                 setMessage("");
@@ -275,6 +292,7 @@ export default function PasswordChange() {
               name="confirmNewPassword"
               value={form.confirmNewPassword}
               onChange={handleChange}
+              disabled={isSocialUser}
               onFocus={() => {
                 setFocusedField("confirmNewPassword");
                 setMessage("");
@@ -322,7 +340,7 @@ export default function PasswordChange() {
             )}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isSocialUser} 
               className={styles.submitButton}
             >
               {isLoading ? (

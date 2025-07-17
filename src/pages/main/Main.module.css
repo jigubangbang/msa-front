@@ -19,9 +19,20 @@
 }
 
 /* === Typography === */
+/* 스크롤바 숨기기 (Chrome, Safari, Opera) */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* 스크롤바 숨기기 (IE, Edge, Firefox) */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 body {
   font-family: 'Pretendard', sans-serif; 
-  background-color: #f0f2f5; /* 전체 배경색 살짝 변경 */
+  background-color: #f8f9fa; /* Consistent background color */
   color: var(--color-text-primary);
 }
 
@@ -110,24 +121,24 @@ p.bodyPrimary {
   color: var(--color-text-primary);
 }
 
-/* === Buttons === */
+/* === Buttons (Unified) === */
 .btn {
   padding: 0.5rem 1.25rem;
   font-size: 0.875rem;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 8px; /* Unified border-radius */
   cursor: pointer;
   border: none;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btnPrimary {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-accent-blue); /* Unified accent color */
   color: white;
 }
 
 .btnPrimary:hover {
-    opacity: 0.8;
+    filter: brightness(1.1);
 }
 
 .btnSecondary {
@@ -140,15 +151,14 @@ p.bodyPrimary {
 }
 
 .btnOutline {
-  border: 1px solid black;
+  border: 1px solid var(--color-border);
   background: white;
   color: var(--color-text-primary);
-  transition: all 0.2s ease;
 }
 
 .btnOutline:hover {
-    background-color: black;
-    color: white;
+    background-color: var(--color-tag-bg);
+    border-color: #d0d0d0;
 }
 
 /* === Tags / Pills === */
@@ -168,18 +178,18 @@ p.bodyPrimary {
   background-color: transparent;
 }
 
-/* === Utility Classes === */
+/* === Utility Classes (Unified) === */
 .section {
   margin-bottom: 4rem;
-  padding: 2rem;
-  border-radius: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+  padding: 2.5rem; /* Increased padding */
+  border-radius: 16px; /* Unified border-radius */
+  background-color: var(--color-background);
 }
 
 .section.transparentBg {
   background-color: transparent;
   box-shadow: none;
+  border: none;
   padding: 0;
 }
 
@@ -187,49 +197,109 @@ p.bodyPrimary {
   margin-bottom: 0;
 }
 
-/* === 로그인 상태 토글 (임시) === */
-.loginToggle {
-  position: fixed;
-  top: 100px;
-  right: 20px;
-  z-index: 1000;
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem; /* Increased margin */
 }
 
-/* === 퀘스트 섹션 === */
-.questGrid {
+.sectionFooter {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.centeredText {
+  text-align: center;
+}
+
+.centeredText {
+  text-align: center;
+}
+
+.sectionDivider {
+  border-bottom: 1px solid var(--color-border);
+  margin: 2.5rem auto;
+  width: 80%;
+}
+
+/* === 뱃지 컬렉션 섹션 === */
+.badgeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px;
   margin-top: 1.5rem;
+  text-align: center;
 }
 
-.questCard {
+.badgeCard {
   background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  border: 1px solid var(--color-border);
+  border-radius: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.questCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+.badgeCard:hover {
+  transform: translateY(-8px);
 }
 
-.questCard h3 {
-  font-size: 1.2rem;
-  margin-top: 0;
+.badgeIcon {
+  width: 100px;
+  height: 100px;
   margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.badgeCard:hover .badgeIcon {
+  transform: scale(1.1);
+}
+
+.badgeDifficulty {
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.difficultyEasy {
+  color: #388e3c; /* Darker Green */
+  background-color: #e8f5e9; /* Light Green */
+}
+
+.difficultyNormal {
+  color: #1976d2; /* Darker Blue */
+  background-color: #e3f2fd; /* Light Blue */
+}
+
+.difficultyHard {
+  color: #d32f2f; /* Darker Red */
+  background-color: #ffebee; /* Light Red */
+}
+
+.difficultySeasonal {
+  color: #f57c00; /* Darker Orange */
+  background-color: #fff3e0; /* Light Orange */
+}
+
+.badgeTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--color-text-primary);
+  margin: 0 0 5px 0;
 }
 
-.questCard p {
-  font-size: 0.95rem;
+.badgeAcquired {
+  font-size: 0.9rem;
   color: var(--color-text-secondary);
-  margin-bottom: 15px;
+  margin: 0;
 }
 
-/* === 커뮤니티 섹션 === */
+/* === 커뮤니티 섹션 (Unified) === */
 .communityContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -237,36 +307,103 @@ p.bodyPrimary {
   margin-top: 1.5rem;
 }
 
+.communityColumn {
+  background-color: #f8f9fa; /* Light background for columns */
+  padding: 20px;
+  border-radius: 12px;
+
+}
+
 .postList {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .postItem {
   padding: 15px;
   border-radius: 8px;
-  transition: background-color 0.3s ease;
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
-  border-bottom: 1px solid var(--color-border);
-}
-.postItem:last-child {
-  border-bottom: none;
 }
 
 .postItem:hover {
-  background-color: #f9f9f9;
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  border-color: var(--color-accent-blue);
 }
 
 .postItem h4 {
-  margin: 0 0 5px 0;
-  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 .postMeta {
   font-size: 0.85rem;
   color: var(--color-text-secondary);
 }
+
+/* === 유저 랭킹 (Unified) === */
+.rankingList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rankingItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.rankingItem:hover {
+    background-color: #fff;
+}
+
+.rankingItem .rank {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    width: 40px;
+    text-align: center;
+}
+
+.rankingItem .userAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.rankingItem .userInfo {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.rankingItem .userNickname {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.rankingItem .userLevel {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
 
 /* === 마이페이지 섹션 === */
 .myPageSummary {

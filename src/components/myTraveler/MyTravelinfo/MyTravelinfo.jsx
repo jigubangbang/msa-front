@@ -4,13 +4,14 @@ import styles from './MyTravelinfo.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import { useNavigate } from 'react-router-dom';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
+import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
 
-export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
+export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, isLogin}) {
   const navigate = useNavigate();
 
   const [selectedInfo, setSelectedInfo] = useState(null);
@@ -18,9 +19,8 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
-  // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
+  const { openChat, closeChat, chatRooms } = useChatContext();
+  const { leaveChatRoom, isLeaving } = useChatLeave();
 
   const themeMap = {
       1: '후기/팁',
@@ -41,8 +41,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
       if (!themeIds || themeIds.length === 0) return '';
       return themeIds.map(id => themeMap[id] || `테마 ${id}`).join(', ');
     };
-
-    
 
     const handleJoinClick = (travelinfo) => {
   
@@ -66,8 +64,13 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
@@ -103,6 +106,42 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
     }
   };
 
+  // 공유방 나가기
+  const handleLeaveGroup = async (travelinfoId) => {
+    if (!isLogin) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    try {
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+        groupType: "TRAVELINFO",
+        groupId: travelinfoId
+      });
+      
+      const chatRoomId = response.data.chatRoomId;
+      
+      if (chatRoomId) {
+        const success = await leaveChatRoom(chatRoomId, {
+          skipConfirmation: false, // 확인 모달 표시
+          showAlert: (title, message) => alert(message),
+          onSuccess: () => {
+            if (chatRooms[chatRoomId]) {
+              closeChat(chatRoomId);
+            }
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }
+        });
+      } else {
+        alert('채팅방 정보를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('Failed to get chat room info:', error);
+      alert('채팅방 정보를 가져오는데 실패했습니다.');
+    }
+  };
   
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -192,15 +231,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
     });
   };
 
-  
-  const handleExitClick = async (groupId) => {
-    console.log(groupId,"그룹 나가기");
-    //나가기 버튼
-    //TODO 나가기 버튼 구현
-  }
-
-
-
   const renderTravelInfoList = (travelInfos, title, sectionType) => (
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>{title}</h3>
@@ -240,14 +270,15 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
                                 채팅방 삭제하기
                               </button>
                             ) : (
-                              <button
-                                className={styles.chatButton}
+                              <button 
+                                className={styles.leaveButton}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleExitClick(info.id);
+                                  handleLeaveGroup(info.id);
                                 }}
+                                disabled={isLeaving}
                               >
-                                나가기
+                                {isLeaving ? '나가는 중...' : '채팅방 나가기'}
                               </button>
                             )}
                           </div>
@@ -264,7 +295,12 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
                         )}
                   </div>
                 <div className={styles.travelInfoContent}>
+                  <div className={styles.titleContainer}>
+                    {info.blindStatus === 'BLINDED' && (
+                    <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                  )}
                   <h4 className={styles.travelInfoTitle}>{info.title}</h4>
+                </div>
                   <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
                   
                   <div className={styles.creatorInfo}>
@@ -359,14 +395,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId}) {
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
-
-    {chatModalOpen && selectedChatId && (
-        <ChatModal
-          isOpen={chatModalOpen}
-          chatId={selectedChatId}
-          currentUserId={currentUserId}
-        />
-      )}
 
       <ReportModal
               show={showReportModal}

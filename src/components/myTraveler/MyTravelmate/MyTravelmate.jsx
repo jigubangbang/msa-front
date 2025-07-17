@@ -4,7 +4,8 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import {useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
+import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
 
 export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }) {
@@ -12,11 +13,8 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
-  
-
-    // 채팅방 입장
-    const [chatModalOpen, setChatModalOpen] = useState(false);
-    const [selectedChatId, setSelectedChatId] = useState(null);
+  const { openChat, closeChat, chatRooms } = useChatContext();
+  const { leaveChatRoom, isLeaving } = useChatLeave();
 
   const navigate = useNavigate();
 
@@ -89,6 +87,8 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
+
+  
    const handleReport = (travel) => {
     setShowReportModal(true);
     setReportInfo(travel);
@@ -132,7 +132,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     const handleChatClick = async (groupId) => {
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELINFO",
+        groupType: "TRAVELMATE",
         groupId: groupId
       });
       
@@ -140,8 +140,13 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelerData) {
+              fetchTravelerData();
+            }
+          }
+        });
       } else {
         alert('채팅방 정보를 가져오는데 실패했습니다.');
       }
@@ -152,12 +157,38 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     }
   };
 
-  const handleExitClick = async (groupId) => {
-    console.log(groupId,"그룹 나가기");
-    //나가기 버튼
-  }
-
-
+  // 채팅방 나가기
+  const handleLeaveGroup = async (travelId) => {
+    try {
+      // chatId 불러오기
+      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+        groupType: "TRAVELMATE",
+        groupId: travelId
+      });     
+      const chatRoomId = response.data.chatRoomId;
+      
+      if (chatRoomId) {
+        // 모임 나가기
+        const success = await leaveChatRoom(chatRoomId, {
+          skipConfirmation: false, // 확인 모달 표시
+          showAlert: (title, message) => alert(message),
+          onSuccess: () => {
+            if (chatRooms[chatRoomId]) {
+              closeChat(chatRoomId);
+            }
+            if (fetchTravelerData){
+              fetchTravelerData();
+            }
+          }
+        });
+      } else {
+        alert('채팅방 정보를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('Failed to get chat room info:', error);
+      alert('채팅방 정보를 가져오는데 실패했습니다.');
+    }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ko-KR', {
@@ -172,6 +203,10 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   const handleTravelmateRowClick = (travelmate) => {
     navigate(`/traveler/mate/${travelmate.id}`);
   };
+
+  const handleUserClick = (userId) => {
+    navigate(`/my-quest/profile/${userId}`);
+  }
 
   const renderTravelList = (travels, title, sectionType) => (
     <div className={styles.section}>
@@ -189,7 +224,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                   className={styles.thumbnail}
                 />
                 <div className={styles.travelInfo}>
-                  <h4 className={styles.travelTitle}>{travel.title}</h4>
+                  <div className={styles.titleContainer}>
+                    {travel.blindStatus === 'BLINDED' && (
+                      <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                    )}
+                    <h4 className={styles.travelTitle}>{travel.title}</h4>
+                  </div>
                   <p className={styles.travelDescription}>{travel.simpleDescription}</p>
                   <div className={styles.travelMeta}>
                     <span>일정: {formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
@@ -229,7 +269,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       </button>
                       
                     )}
-                    {sectionType === 'hosted' && (
+                    {sectionType === 'hosted' && (<>
                       <button
                         className={styles.chatButton}
                         onClick={(e) => {
@@ -238,18 +278,21 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         }}
                       >
                         그룹 삭제하기
-                      </button>                                           
+                      </button>  
+                      </>                                         
                     )}
                     {sectionType === 'joined' && (
-                      <button
-                        className={styles.chatButton}
+                      <button 
+                        className={styles.leaveButton}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleExitClick(travel.id);
+                          handleLeaveGroup(travel.id);
                         }}
+                         disabled={isLeaving}
                       >
-                        나가기
-                      </button>                                           
+                        {isLeaving ? '나가는 중...' : '모임 나가기'}
+                      </button>
+                      
                     )}
                 </div>
               </div>
@@ -281,7 +324,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         <div key={application.id} className={styles.applicationCard}>
                           <div className={styles.applicationInfo}>
                             <div className={styles.applicantInfo}>
-                              <div className={styles.applicantUser}>
+                              <div className={styles.applicantUser} onClick={() => handleUserClick(application.userId)}>
                                 <span className={styles.nickname}>{application.userNickname}</span>
                                 <span className={styles.userId}>({application.userId})</span>
                               </div>
@@ -383,20 +426,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
       {/* 완료된 여행 */}
       {data.completedTravelmates && renderTravelList(data.completedTravelmates, '완료된 여행', 'completed')}
-
-      {chatModalOpen && selectedChatId && (
-              <ChatModal
-                isOpen={chatModalOpen}
-                chatId={selectedChatId}
-                currentUserId={currentUserId}
-              />
-            )}
       
-            <ReportModal
-                    show={showReportModal}
-                    onClose={handleReportClose}
-                    onSubmit={handleReportSubmit}
-                  />
+      <ReportModal
+        show={showReportModal}
+        onClose={handleReportClose}
+        onSubmit={handleReportSubmit}
+      />
     </div>
 
     

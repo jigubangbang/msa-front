@@ -373,7 +373,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     
     // 필터 검사
     if (formData.locations.length === 0) {
-      errors.locations = '지역은 최소 1개 이상 선택해야 합니다';
+      errors.locations = '지역은 최소 1개 이상 선택해야 합니다. 적용 버튼을 눌러주세요';
       hasErrors = true;
     }
     
@@ -574,7 +574,35 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         <div className={styles.fullWidthSection}>
         <div className={styles.sectionHeader}>
             <label className={styles.sectionLabel}>모임 카테고리</label>
-            <div className={styles.currentInfo}>
+            
+              {/* 수정 모드일 때 기존 필터 정보 표시 */}
+              {mode === 'edit' && initialData && (
+                <div className={styles.existingInfo}>
+                  <span className={styles.existingLabel}>기존 설정:</span>
+                  {initialData.locationNames && (
+                    <span className={styles.existingTag}>
+                      지역: {initialData.locationNames}
+                    </span>
+                  )}
+                  {initialData.targetNames && (
+                    <span className={styles.existingTag}>
+                      대상: {initialData.targetNames}
+                    </span>
+                  )}
+                  {initialData.themeNames && (
+                    <span className={styles.existingTag}>
+                      테마: {initialData.themeNames}
+                    </span>
+                  )}
+                  {initialData.styleNames && (
+                    <span className={styles.existingTag}>
+                      스타일: {initialData.styleNames}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className={styles.currentInfo}>
+                <span className={styles.currentLabel}>현재 선택:</span>
             {displayFilters.locationNames && (
                 <span className={styles.currentTag}>
                 지역: {displayFilters.locationNames}
@@ -609,7 +637,17 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         <div className={styles.fullWidthSection}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>여행 기간</h3>
+            {/* 수정 모드일 때 기존 기간 정보 표시 */}
+            {mode === 'edit' && initialData && initialData.startAt && initialData.endAt && (
+              <div className={styles.existingInfo}>
+                <span className={styles.existingLabel}>기존 설정:</span>
+                <span className={styles.existingTag}>
+                  {initialData.startAt.split('T')[0]} ~ {initialData.endAt.split('T')[0]}
+                </span>
+              </div>
+            )}
             <div className={styles.currentInfo}>
+              <span className={styles.currentLabel}>현재 선택:</span>
               {dateData.startDate && dateData.endDate && (
                 <span className={styles.currentTag}>
                   {dateData.startDate.dateString} ~ {dateData.endDate.dateString}

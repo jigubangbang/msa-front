@@ -1,4 +1,4 @@
-// FeedMenu.jsx
+import { useEffect, useRef } from "react";
 import styles from "./FeedMenu.module.css";
 
 export default function FeedMenu({ 
@@ -8,6 +8,23 @@ export default function FeedMenu({
         setShowDeleteModal,
         setShowPrivacyModal}) {
     const isOwner = sessionUserId === userId;
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                onClose();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [onClose])
+
+
 
     const onReportClick = () => {
         setShowReportModal(true);
@@ -30,22 +47,21 @@ export default function FeedMenu({
     }
 
     return (
-        <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
+        <div ref={menuRef} className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
             {isOwner ? (
                 <>
-                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onDeleteClick}>삭제</button>
+                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onDeleteClick}>삭제하기</button>
                     {type === "post" && (
                         <>
-                            <button className={styles.dropdownItem} onClick={onEditClick}>수정</button>
+                            <button className={styles.dropdownItem} onClick={onEditClick}>수정하기</button>
                             <button className={styles.dropdownItem} onClick={onPrivacyClick}>공개 설정</button>
                         </>
                     )}
                 </>
                 ) : (
-                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onReportClick}>신고</button>
+                    <button className={`${styles.dropdownItem} ${styles.warning}`} onClick={onReportClick}>신고하기</button>
                 )
             }
-            <button className={styles.dropdownItem} onClick={onClose}>닫기</button>
         </div>
     );
 }

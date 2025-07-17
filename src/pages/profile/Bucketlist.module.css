@@ -1,4 +1,18 @@
 /* BucketlistItem.jsx */
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif; 
+  background-color: #f0f2f5; /* 전체 배경색 살짝 변경 */
+  color: var(--color-text-primary);
+}
+
+
 #checklist {
   max-width: 100%;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
@@ -190,6 +204,10 @@
     color: white;
 }
 
+.disabled {
+  cursor: auto;
+}
+
 .deleteIcon {
   cursor: pointer;
   display: flex;
@@ -257,6 +275,7 @@
   margin-top: 3px;
   margin-bottom: 1rem;
   font-size: 0.95rem;
+  font-family: 'Pretendard', sans-serif; 
 }
 
 /* FORM STYLING */
@@ -281,6 +300,7 @@
   transition: border-color 0.3s ease;
   box-sizing: border-box;
   color: black;
+  font-family: 'Pretendard', sans-serif; 
 }
 
 .formInput:focus {

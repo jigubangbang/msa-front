@@ -112,6 +112,7 @@ export default function FeedSearch() {
                 )}
             </div>
             <div className={styles.feedContainer}>
+                {tag && <p className={styles.tagHeading}>#{tag}</p>}
                 <CommonFeed key={endpoint} endpoint={endpoint}/>
             </div>
         </FeedTemplate>

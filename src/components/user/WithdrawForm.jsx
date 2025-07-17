@@ -180,11 +180,10 @@ export default function WithdrawForm() {
         <div className={styles.noticeContent}>
           <div className={styles.noticeText}>
             <p className={styles.redText}>
-              회원탈퇴 시 개인정보 및 [지구방방]에서 만들어진 모든 데이터는
-              삭제됩니다.
+              회원 탈퇴 시 계정은 즉시 비활성화되며, 일부 콘텐츠는 탈퇴 후에도 일정 기간 노출될 수 있습니다.
             </p>
             <p className={styles.redText} style={{ marginBottom: "30px" }}>
-              (단, 아래 항목은 표기된 법률에 따라 특정 기간 동안 보관됩니다.)
+              (단, 개인정보 및 서비스 이용 기록은 관련 법령 및 정책에 따라 안전하게 보관됩니다.)
             </p>
             {noticeText.split("\n").map((line, index) => (
               <p key={index} className={styles.blackText}>

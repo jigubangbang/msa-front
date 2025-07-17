@@ -180,15 +180,32 @@
 /* image carousel */
 .imageCarousel {
   position: relative;
+  overflow: hidden;
   width: 100%;
   height: 100%;
+  display: flex;
+}
+
+.sliderTrack {
+  display: flex;
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.imageSlide {
+  flex: 0 0 100%; /* Each slide takes full container width */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .postImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* or 'cover' depending on what you want */
 }
+
 
 .navButton {
   width: 35px;
@@ -240,6 +257,7 @@
   transition: border-color 0.3s ease;
   box-sizing: border-box;
   color: black;
+  font-family: 'Pretendard', sans-serif; 
 }
 
 .formInput:focus {
