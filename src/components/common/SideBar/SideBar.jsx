@@ -1,6 +1,5 @@
 
-import React, { useState } from "react";
-
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import LoginConfirmModal from "../LoginConfirmModal/LoginConfirmModal";
@@ -9,10 +8,28 @@ import LoginConfirmModal from "../LoginConfirmModal/LoginConfirmModal";
 export default function Sidebar({ menuItems = [], isLogin = false}) {
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationRef = useRef(null);
+
   const [loginModal, setLoginModal] = useState({
     isOpen: false,
     targetPath: ''
   });
+
+  const scrollToActiveMenu = () => {
+    if (!navigationRef.current) return;
+    
+    const activeElement = navigationRef.current.querySelector(`.${styles.active}`);
+    if (activeElement) {
+      activeElement.scrollIntoView({ 
+        behavior: 'instant', 
+        block: 'center' 
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToActiveMenu();
+  }, [location.pathname]);
 
   const handleMenuClick = (path, needLogin = false) => {
     if (needLogin && !isLogin) {
@@ -77,7 +94,7 @@ export default function Sidebar({ menuItems = [], isLogin = false}) {
     <>
       <div className={styles.sidebar}>
         {/* Menu Items */}
-        <nav className={styles.navigation}>
+        <nav className={styles.navigation} ref={navigationRef}>
           {menuItems.map((item, index) => (
             <div key={index} className={styles.menuGroup}>
               {/* 메인 메뉴 */}
