@@ -307,9 +307,6 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
 
       console.log("Badge created successfully:", response.data);
       setShowSuccessModal(true);
-
-      if (onSave) onSave();
-      if (onClose) onClose();
     } catch (error) {
       console.error("Failed to create badge:", error);
 
