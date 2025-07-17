@@ -1,5 +1,6 @@
-
-import { useState, useEffect, useCallback, useRef } from "react";
+import SearchBar from '../../components/common/SearchBar';
+import Header from '../../components/main/Header';
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from 'react-dom';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { scroller } from 'react-scroll';
