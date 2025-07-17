@@ -7,32 +7,34 @@
 }
 
 .content {
-
+  font-family: 'Pretendard';  
+  flex: 1;
   margin-left: 180px; /* sidebar 때문에 필수 */
   padding: 20px 40px;
   transition: margin-left 0.3s ease;
   min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
+  background-color: #ffffff;
 }
 
 .contentWrapper {
-  max-width: 1200px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  font-family: 'Pretendard';
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px; 
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.emptyContainer {
+  text-align: center;
   padding: 60px 20px;
-  color: #666;
+}
+
+.emptyText {
+  font-family: 'Pretendard';
   font-size: 16px;
+  font-weight: 500;
+  color: #6c757d;
+  margin: 0;
 }
