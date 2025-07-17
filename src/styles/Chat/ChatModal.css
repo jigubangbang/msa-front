@@ -3,7 +3,6 @@
 /* 최소화된 채팅창 스타일 */
 .minimized-chat {
   position: fixed;
-  bottom: 20px;
   right: 20px;
   width: 320px;     /*기본: 42vh*/
   height: 120px;    /*기본: 63vh*/
@@ -11,7 +10,6 @@
   border-radius: 8px;
   border: var(--color-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  z-index: 9999;
   transition: all 0.3s ease;
   cursor: pointer;
   overflow: hidden;

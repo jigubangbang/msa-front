@@ -17,7 +17,9 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
   const { getMinimizedPosition, minimizeChat, restoreChat, minimizedChats, updateChatRoom } = useChatContext();
   const {info, members} = useChatRoomInfo(chatId);
   const [alertInfo, setAlertInfo] = useState({ show: false, title: '', message: '' });
-  const isMinimized = minimizedChats.includes(chatId);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const { chatRooms } = useChatContext();
+  const isMinimized = chatRooms[chatId]?.isMinimized || false;
 
   const showAlert = (title, message) => {
     setAlertInfo({ show: true, title, message });
@@ -40,6 +42,17 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
     restoreChat(chatId);
   }
 
+  useEffect(() => {
+    if (isMinimized) {
+      const currentIndex = minimizedChats.indexOf(chatId);
+      const currentPosition = currentIndex * 130;
+      console.log(`[ChatModal] ${chatId} 위치 업데이트: index=${currentIndex}, position=${currentPosition}px`);
+      console.log(`[ChatModal] 현재 최소화 목록:`, minimizedChats);
+
+      setForceUpdate(prev => prev + 1);
+    }
+  }, [minimizedChats, chatId, isMinimized]);
+
   // 채팅방 정보 업데이트
   useEffect(() => {
     if (isOpen && info) {
@@ -56,23 +69,26 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
 
   // 최소화된 채팅창 컴포넌트
   const MinimizedChat = () => {
-    const lastMessage = messages[messages.length - 1];
-    const isSystemMessage = lastMessage && (lastMessage.senderId === 'System' || lastMessage.nickname === 'System');
-    const senderProfile = members?.find(member => 
-        member.userId === lastMessage?.senderId || member.nickname === lastMessage?.nickname
-      )?.profileImage;
+  const lastMessage = messages[messages.length - 1];
+  const isSystemMessage = lastMessage && (lastMessage.senderId === 'System' || lastMessage.nickname === 'System');
+  const senderProfile = members?.find(member => 
+      member.userId === lastMessage?.senderId || member.nickname === lastMessage?.nickname
+    )?.profileImage;
 
-    const position = getMinimizedPosition(chatId);
-    console.log(`[MinimizedChat] ${chatId} 위치: ${position}px`);
-
+  const position = getMinimizedPosition(chatId);
+  const zIndexValue = 1000 + minimizedChats.length - minimizedChats.indexOf(chatId);
+  
+  console.log(`[MinimizedChat] ${chatId} 위치: ${position}px, z-index: ${zIndexValue}`);
 
     return (
       <div 
+        key={forceUpdate}
         className="minimized-chat" 
-        style={{ 
-          bottom: `${18 + position}px`,
-          zIndex: `${1000 + minimizedChats.length - minimizedChats.indexOf(chatId)}`, // 위에 있는 창일수록 높은 z-index
-          position: 'fixed !important'
+        style={{
+          bottom: `${20 + position}px`,
+          zIndex: zIndexValue,
+          position: 'fixed',
+          right: '20px'
         }}
         onClick={handleRestore}
       >
@@ -154,15 +170,13 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
           console.error("[ChatModal] unsubscribe 에러:", error);
         }
       }
-      setIsMinimized(false);
+      if (isMinimized) {
+        restoreChat(chatId);
+      }
     }
   }, [isOpen, unsubscribeChatRoom]);
 
   if (!isOpen) return null;
-
-  const handleClose = () => {
-    onClose();
-  };
 
   return ReactDOM.createPortal(
     <>
