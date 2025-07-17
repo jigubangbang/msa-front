@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardMainList.module.css';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
-const BoardMainList = (isLogin) => {
+const BoardMainList = ({isLogin}) => {
   const navigate = useNavigate();
   const [boardData, setBoardData] = useState({});
   const [loading, setLoading] = useState(false);
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const boardCategories = [
     { value: 1, label: '정보', navigate: 'info' },
@@ -54,9 +57,14 @@ const BoardMainList = (isLogin) => {
     }
   };
 
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
   const handlePostClick = (postId) => {
     if (!isLogin) {
-      alert('로그인이 필요한 서비스 입니다');
+      setIsModalOpen(true);
       return;
     }
     navigate(`/board/${postId}`);
@@ -154,6 +162,12 @@ const BoardMainList = (isLogin) => {
           </div>
         );
       })}
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 };
