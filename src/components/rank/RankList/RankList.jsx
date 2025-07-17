@@ -4,6 +4,8 @@ import styles from './RankList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import api from '../../../apis/api';
+import { useNavigate } from 'react-router-dom';
+
 
 const RankingList = ({ myUserId }) => {
   const [rankings, setRankings] = useState([]);
@@ -14,6 +16,8 @@ const RankingList = ({ myUserId }) => {
   
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  const navigate=useNavigate();
 
   useEffect(() => {
     fetchRankings();
@@ -50,6 +54,10 @@ const RankingList = ({ myUserId }) => {
         setCurrentPage(pageNum);
     };
 
+    const handleTableRowClick = (userId) => {
+      navigate(`/my-quest/profile/${userId}`);
+    }
+
   if (loading) {
     return (
       <div className={styles.rankingList}>
@@ -64,7 +72,10 @@ const RankingList = ({ myUserId }) => {
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
-          현재 {totalCount}명의 방방이들의 퀘스트 챌린지가 진행 중 입니다.
+          {searchTerm 
+            ? `"${searchTerm}"의 검색 결과... ${totalCount}명의 방방이들을 찾았습니다.`
+            : `현재 ${totalCount}명의 방방이들의 퀘스트 챌린지가 진행 중 입니다.`
+          }
         </p>
         <SearchBar
           placeholder="USER ID"
@@ -95,6 +106,7 @@ const RankingList = ({ myUserId }) => {
             <div 
               key={user.user_id || index} 
               className={`${styles.tableRow} ${isMyUser ? styles.highlighted : ''}`}
+              onClick={() => {handleTableRowClick(user.user_id)}}
             >
               <div className={styles.cell}>{rank}</div>
               <div className={styles.cell}>

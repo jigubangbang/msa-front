@@ -17,8 +17,7 @@ const ModalUserList = ({
     
   
   const handleUserClick = (userId) => {
-    console.log(userId);
-    //#NeedToChange
+    navigate(`/my-quest/profile/${userId}`);
   };
 
   const renderUserRow = (user) => (

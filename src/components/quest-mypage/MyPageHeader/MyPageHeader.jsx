@@ -59,15 +59,7 @@ const MyPageHeader = ({
   const { currentXp, xpRequiredForCurrentLevel, xpRequiredForNextLevel } = levelInfo;
   
   const progress = ((currentXp - xpRequiredForCurrentLevel) / (xpRequiredForNextLevel - xpRequiredForCurrentLevel)) * 100;
-  
-  console.log('Progress Calculation:', {
-    currentXp,
-    xpRequiredForCurrentLevel,
-    xpRequiredForNextLevel,
-    numerator: currentXp - xpRequiredForCurrentLevel,
-    denominator: xpRequiredForNextLevel - xpRequiredForCurrentLevel,
-    progress
-  });
+
   
   return Math.max(0, Math.min(100, progress));
 };
