@@ -4,7 +4,7 @@ import styles from './MyTravelinfo.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import { useNavigate } from 'react-router-dom';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
-import { useChatLeave } from '../../../hooks/chat/useChatLeave';
+import { useChatLeave } from '../../../hooks/Chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
 import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
