@@ -91,7 +91,7 @@ export default function Header({onOpenChat}) {
           <span>
             <Link
               to="/quest"
-              className={location.pathname.startsWith('/quest') ? styles.activeLink : ''}
+              className={(location.pathname.startsWith('/quest') || location.pathname.startsWith('/my-quest')) ? styles.activeLink : ''}
             >
               퀘스트
             </Link>

@@ -118,8 +118,8 @@
 }
 
 .defaultBadge img {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 80px;
   opacity: 0.5;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .statLabel {
-  font-size: 11px;
+  font-size: 14px;
   color: #6b7280;
   font-weight: 500;
   line-height: 1.2;
@@ -291,7 +291,7 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(90deg, #fbeab3, #d4bf79);
   border-radius: 6px;
   transition: width 0.3s ease;
   position: relative;

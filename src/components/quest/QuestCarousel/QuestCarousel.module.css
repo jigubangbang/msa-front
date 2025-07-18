@@ -13,14 +13,13 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .carouselTitle {
-   margin-top: 0px;
- font-family: 'Pixelify Sans', sans-serif;
-  font-size: 30px;
-  text-transform: uppercase;
- font-weight: 700;
+  margin-top: 0px;
+  font-family: Pretendard, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
   text-align: left;
- margin-bottom: 5px;
- color: #000;
+  margin-bottom: 5px;
+  color: #000;
 }
 
 .emptyState {
@@ -161,7 +160,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   font-family: 'DNFBitBitv2', sans-serif;
   font-size: 40px;
   font-weight: bold;
-  color: #ccc;
+  color: white;
   margin-bottom: 16px;
   line-height: 1.5;
   flex-grow: 1;
@@ -254,7 +253,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .btnSecondary {
-  background: #ccc;
+  background: white;
   border-color: #000;
   color: #000;
 }

@@ -32,7 +32,7 @@ const ProgressBar = ({ data }) => {
     <div className={styles.container}>
 
       <ProgressBarItem
-        title="Quest"
+        title="퀘스트"
         completed={data.quest.count_completed}
         total={data.quest.count_total_quest}
         progress={totalProgress}
@@ -40,7 +40,7 @@ const ProgressBar = ({ data }) => {
       />
       
       <ProgressBarItem
-        title="Badge"
+        title="뱃지"
         completed={data.badge.count_awarded_badge}
         total={data.badge.count_total_badge}
         progress={badgeProgress}
