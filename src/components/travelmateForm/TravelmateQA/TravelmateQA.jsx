@@ -8,6 +8,7 @@ import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import { useNavigate } from 'react-router-dom';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [questions, setQuestions] = useState([]);
@@ -310,7 +311,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   if (loading) {
     return (
       <div className={styles.travelmateQA}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -349,12 +350,13 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                   <img 
                     src={question.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (question.profileImage || '/icons/common/default_profile.png')} 
                     alt="프로필"
+                    onClick={() => (question.blindStatus !== 'BLINDED' && navigate(`/profile/${question.userId}`))}
                   />
                 </div>
                 <div className={styles.questionBubble}>
                   <div className={styles.bubbleHeader}>
                     <div className={styles.userDetails}>
-                      <span className={styles.nickname}>
+                      <span className={styles.nickname} onClick={() => (question.blindStatus !== 'BLINDED' && navigate(`/profile/${question.userId}`))}>
                         {question.blindStatus === 'BLINDED' ? '블라인드 사용자' : question.nickname}
                       </span>
                       <span className={styles.timeAgo}>{formatTimeAgo(question.createdAt)}</span>
@@ -375,7 +377,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                   {editingId === question.id && (
                       <div className={styles.editForm}>
                         <textarea
-                          className={styles.editInput}
+                          className={styles.questionInput}
                           value={editingText}
                           onChange={(e) => setEditingText(e.target.value)}
                           rows={3}
@@ -399,7 +401,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                     )}
                   <div className={styles.bubbleActions}>
                     <button 
-                    className={styles.replyButton}
+                    className={styles.submitButton}
                     onClick={() => handleReplyClick(question.id)}
                     disabled={question.blindStatus === 'BLINDED' || question.isDeleted}
                   >
@@ -418,12 +420,13 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                         <img 
                           src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/default_profile.png')} 
                           alt="프로필"
+                          onClick={() => {navigate(`/profile/${reply.userId}`)}}
                         />
                       </div>
                       <div className={styles.replyBubble}>
                         <div className={styles.bubbleHeader}>
                           <div className={styles.userDetails}>
-                            <span className={styles.nickname}>
+                            <span className={styles.nickname} onClick={() => navigate(`/profile/${reply.userId}`)}>
                               {reply.blindStatus === 'BLINDED' ? '블라인드 사용자' : reply.nickname}
                             </span>
                             <span className={styles.timeAgo}>{formatTimeAgo(reply.createdAt)}</span>
@@ -444,7 +447,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                         {editingId === reply.id && (
                           <div className={styles.editForm}>
                             <textarea
-                              className={styles.editInput}
+                              className={styles.questionInput}
                               value={editingText}
                               onChange={(e) => setEditingText(e.target.value)}
                               rows={2}
@@ -484,7 +487,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                   </div>
                   <div className={styles.replyInputContainer}>
                     <textarea
-                      className={styles.replyInput}
+                      className={styles.questionInput}
                       placeholder="답변을 작성해주세요..."
                       value={replyTexts[question.id] || ''}
                       onChange={(e) => setReplyTexts(prev => ({ 

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TravelmateMembers.module.css';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const TravelmateMembers = ({ postId }) => {
   const [members, setMembers] = useState([]);
@@ -40,7 +41,7 @@ const TravelmateMembers = ({ postId }) => {
   if (loading) {
     return (
       <div className={styles.travelmateMembers}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -73,15 +74,18 @@ const TravelmateMembers = ({ postId }) => {
           members.map((member) => (
             <div key={member.userId} className={styles.memberCard}>
               <div className={styles.profileSection} onClick={() => {handleProfileClick(member.userId)}}>
-                <div className={styles.profileImage}>
+                <div className={styles.profileImageWrapper}>
                   <img 
                     src={member.profileImage || '/icons/common/default_profile.png'} 
                     alt="프로필"
+                    className={styles.profileImage}
                   />
+                  {member.travelStyle && (
+                    <span className={styles.travelBadge}>{member.travelStyle}</span>
+                  )}
                 </div>
                 <div className={styles.memberInfo}>
                   <div className={styles.memberName}>
-                    <span className={styles.style}>[{member.travelStyle}]</span>
                     <span className={styles.nickname}>{member.nickname}</span>
                     <span className={styles.userId}>({member.userId})</span>
                   </div>

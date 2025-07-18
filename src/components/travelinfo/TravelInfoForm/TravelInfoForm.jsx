@@ -86,7 +86,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     thumbnailImage: null
   });
 
-  // 정보방 카테고리 정의
+  // 공유방 카테고리 정의
   const themes = [
     { id: 1, label: '후기/팁' },
     { id: 2, label: '질문/답변' },
@@ -143,17 +143,17 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '정보방 제목은 필수입니다' };
+          return { isValid: false, error: '공유방 제목은 필수입니다' };
         } else if (value.length > 100) {
-          return { isValid: false, error: '정보방 제목은 100자를 초과할 수 없습니다' };
+          return { isValid: false, error: '공유방 제목은 100자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'simpleDescription':
         if (!value.trim()) {
-          return { isValid: false, error: '정보방 설명은 필수입니다' };
+          return { isValid: false, error: '공유방 설명은 필수입니다' };
         } else if (value.length > 500) {
-          return { isValid: false, error: '정보방 설명은 500자를 초과할 수 없습니다' };
+          return { isValid: false, error: '공유방 설명은 500자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
@@ -376,7 +376,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       
     } catch (error) {
       console.error('Failed to submit form:', error);
-      showAlertModal('정보방 저장에 실패했습니다.');
+      showAlertModal('공유방 저장에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -386,7 +386,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     <div className={styles.travelInfoForm}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          {mode === 'create' ? '정보방 생성' : '정보방 수정'}
+          {mode === 'create' ? '공유방 생성' : '공유방 수정'}
         </h2>
         <button className={styles.closeButton} onClick={onClose}>✕</button>
       </div>
@@ -396,7 +396,9 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         <div className={styles.basicInfoSection}>
           <div className={styles.leftColumn}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>정보방 제목</label>
+              <label className={styles.label}>
+                공유방 제목 <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="title"
@@ -406,7 +408,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="정보방 제목을 입력하세요"
+                placeholder="공유방 제목을 입력하세요"
                 required
               />
               {validationErrors.title && (
@@ -415,7 +417,9 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>정보방 설명</label>
+              <label className={styles.label}>
+                공유방 설명 <span className={styles.required}>*</span>
+              </label>
               <textarea
                 name="simpleDescription"
                 value={formData.simpleDescription}
@@ -424,7 +428,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                   fieldValidation.simpleDescription === 'valid' ? styles.validInput : 
                   fieldValidation.simpleDescription === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="정보방에 대한 간단한 설명을 작성해주세요"
+                placeholder="공유방에 대한 간단한 설명을 작성해주세요"
                 rows="4"
                 required
               />
@@ -436,7 +440,9 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
 
           <div className={styles.rightColumn}>
             <div className={styles.thumbnailUpload}>
-              <label className={styles.label}>썸네일 이미지</label>
+              <label className={styles.label}>
+                썸네일 이미지 <span className={styles.required}>*</span>
+              </label>
               <div 
                 className={`${styles.thumbnailImageUpload} ${
                   fieldValidation.thumbnailImage === 'invalid' ? styles.invalidUpload : ''
@@ -477,7 +483,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         {/* 카테고리 선택 섹션 */}
         <div className={styles.fullWidthSection}>
           <div className={styles.sectionHeader}>
-            <label className={styles.sectionLabel}>정보방 카테고리</label>
+            <label className={styles.label}>공유방 카테고리</label>
             <div className={styles.currentInfo}>
               {selectedThemes.map(theme => (
                 <span key={theme.id} className={styles.currentTag}>
@@ -550,7 +556,9 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
 
         {/* 참여 안내 메시지 */}
         <div className={styles.fullWidthSection}>
-          <h3 className={styles.sectionTitle}>참여 안내 메시지</h3>
+          <label className={styles.label}>
+            참여 안내 메시지 <span className={styles.required}>*</span>
+          </label>
           <textarea
             name="enterDescription"
             value={formData.enterDescription}
@@ -559,7 +567,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
               fieldValidation.enterDescription === 'valid' ? styles.validInput : 
               fieldValidation.enterDescription === 'invalid' ? styles.invalidInput : ''
             }`}
-            placeholder="정보방 참여자에게 전달할 안내 메시지를 작성해주세요"
+            placeholder="공유방 참여자에게 전달할 안내 메시지를 작성해주세요"
             rows="6"
             required
           />
@@ -569,13 +577,15 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
-            취소
-          </button>
-          <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '저장 중...' : mode === 'create' ? '정보방 생성' : '정보방 수정'}
-          </button>
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button type="button" className={styles.cancelButton} onClick={onClose}>
+              취소
+            </button>
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading ? '저장 중...' : mode === 'create' ? '공유방 생성' : '공유방 수정'}
+            </button>
+          </div>
         </div>
       </form>
 

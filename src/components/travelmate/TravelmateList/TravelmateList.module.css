@@ -54,7 +54,7 @@
 }
 
 .totalCount {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   margin: 0;
 }
@@ -363,7 +363,7 @@
 .checkbox {
   width: 16px;
   height: 16px;
-  accent-color: #007bff;
+  accent-color: black;
   cursor: pointer;
 }
 
