@@ -109,11 +109,16 @@ export const USER_SIDEBAR = [
 
 export const TRAVELER_SIDEBAR = [
   {
-    label: '여행 메이트 모집',
+    label: '여행 메이트',
     icon: '/icons/sidebar/travelmate.svg',
     path: '/traveler/mate',
     needLogin: false,
     submenus: [
+      {
+        label: '모임 둘러보기',
+        path: '/traveler/mate',
+        needLogin: false
+      },
       {
         label: '모임 생성',
         path: '/traveler/mate/new',
@@ -122,16 +127,39 @@ export const TRAVELER_SIDEBAR = [
     ]
   },
   {
-    label: '여행 정보공유방',
+    label: '여행 정보 공유',
     icon: '/icons/sidebar/travelinfo.svg',
     path: '/traveler/info',
     needLogin: false,
     submenus: [
       {
-        label: '정보공유방 생성',
+        label: '공유방 둘러보기',
+        path: '/traveler/info',
+        needLogin: false
+      },
+      {
+        label: '공유방 생성',
         path: '/traveler/info/new',
         needLogin: true
       }
+    ]
+  },
+  {
+    label: '자유 게시판',
+    icon: '/icons/sidebar/board.svg',
+    path: '/board/popular',
+    needLogin: false,
+    submenus: [
+      {
+        label: '게시글 작성',
+        path: '/board/new',
+        needLogin: true
+      },
+      {
+        label: '내 글 관리',
+        path: '/board/my',
+        needLogin: true
+      },
     ]
   },
   {
@@ -146,56 +174,11 @@ export const TRAVELER_SIDEBAR = [
         needLogin: true
       },
       {
-        label: '내 정보공유방',
+        label: '내 정보 공유방',
         path: '/traveler/my/travelinfo',
         needLogin: true
       }
     ]
-  },
-  {
-    label: '게시판',
-    icon: '/icons/sidebar/board.svg',
-    path: '/board/popular',
-    needLogin: false,
-    submenus: [
-      {
-        label: '인기글',
-        path: '/board/popular',
-        needLogin: false
-      },
-      {
-        label: '정보글',
-        path: '/board/info',
-        needLogin: false
-      },
-      {
-        label: '추천글',
-        path: '/board/recommend',
-        needLogin: false
-      },
-      {
-        label: '잡담글',
-        path: '/board/chat',
-        needLogin: false
-      },
-      {
-        label: '질문글',
-        path: '/board/question',
-        needLogin: false
-      }
-    ]
-  },
-  {
-    label: '내 글 관리',
-    icon: '/icons/sidebar/my_board.svg',
-    path: '/board/my',
-    needLogin: true
-  },
-  {
-    label: '게시글 작성',
-    icon: '/icons/sidebar/write.svg',
-    path: '/board/new',
-    needLogin: true
   }
 ];
 
