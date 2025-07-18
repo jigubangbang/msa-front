@@ -101,7 +101,7 @@
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 25px;
 }
 
 .formGroup {
@@ -188,33 +188,44 @@
 }
 
 /* =================
-   ICON PREVIEW
+   ICON UPLOAD (생성폼과 동일)
    ================= */
-.iconPreview {
+.iconUpload {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 16px;
 }
 
-.iconClickArea {
-  position: relative;
+.iconUploadArea {
+  width: 110px;
+  height: 110px;
+  border: 2px dashed #ced4da;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.iconClickArea:hover {
-  transform: scale(1.05);
+.iconUploadArea:hover {
+  border-color: #007bff;
+  background: #f8f9fa;
 }
 
-.iconClickArea:hover .iconOverlay {
-  opacity: 1;
+.iconPreviewContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .previewImage {
-  width: 80px;
-  height: 90px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 .iconOverlay {
@@ -232,12 +243,31 @@
   transition: opacity 0.2s ease;
 }
 
+.iconPreviewContainer:hover .iconOverlay {
+  opacity: 1;
+}
+
 .iconChangeText {
   color: white;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-align: center;
-  white-space: nowrap;
+}
+
+.iconPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.iconPlaceholderText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .hiddenFileInput {
@@ -267,15 +297,15 @@
 }
 
 .infoLabel {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #6c757d;
 }
 
 .infoValue {
   font-size: 14px;
-  color: #495057;
-  font-weight: 500;
+  color: #000;
+  font-weight: 600;
 }
 
 .awardedValue {
@@ -285,30 +315,37 @@
 }
 
 .difficultyTag {
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
+  text-transform: capitalize;
+  text-align: center;    
+  display: inline-block;
 }
 
 .difficultyTag.difficulty1 {
-  background: #d1edcc;
-  color: #2e7d32;
+  background: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .difficultyTag.difficulty2 {
-  background: #d1ecf1;
-  color: #0c5460;
+  background-color: #e6f3ff; 
+  color: #0066cc;            
+  border: 1px solid #b3d9ff;  
 }
 
 .difficultyTag.difficulty3 {
-  background: #fff3cd;
-  color: #f57c00;
+  background: #fff8e1;
+  color: #f57f17;
+  border: 1px solid #ffcc02;
 }
 
 .difficultyTag.difficulty4 {
-  background: #f8d7da;
-  color: #d32f2f;
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
 }
 
 /* =================

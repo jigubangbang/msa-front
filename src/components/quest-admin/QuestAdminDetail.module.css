@@ -692,3 +692,11 @@
   background: #c82333;
   transform: translateY(-1px);
 }
+
+.emptyText {
+  font-family: 'Pretendard';
+  font-size: 16px;
+  font-weight: 500;
+  color: #6c757d;
+  margin: 0;
+}

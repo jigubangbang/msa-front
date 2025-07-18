@@ -291,7 +291,7 @@ const QuestAdminDetail = ({ questId }) => {
   if (!questDetail) {
     return (
       <div className={styles.questAdminDetail}>
-        <div className={styles.error}>퀘스트 정보를 불러올 수 없습니다.</div>
+        <div className={styles.emptyText}>퀘스트 정보를 불러올 수 없습니다</div>
       </div>
     );
   }

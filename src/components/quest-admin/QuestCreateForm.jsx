@@ -27,6 +27,7 @@ const QuestCreateForm = ({ onClose, onSave }) => {
   const [messageType, setMessageType] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
   // 유효성 검사 상태
@@ -344,6 +345,11 @@ const QuestCreateForm = ({ onClose, onSave }) => {
       return;
     }
 
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmModal(false);
     setLoading(true);
 
     try {
@@ -802,6 +808,18 @@ const QuestCreateForm = ({ onClose, onSave }) => {
         <div style={{ whiteSpace: 'pre-line' }}>
           {modalMessage}
         </div>
+      </Modal>
+
+      {/* 생성 확인 모달 */}
+      <Modal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onSubmit={handleConfirmSubmit}
+        heading="퀘스트 생성 확인"
+        firstLabel="확인"
+        secondLabel="취소"
+      >
+        정말 퀘스트를 생성하시겠습니까?
       </Modal>
     </div>
   );
