@@ -258,7 +258,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
     }
 
     if (idCheckStatus !== "available") {
-      setMessage("ID 확인을 해주세요");
+      setMessage("뱃지 ID 확인을 해주세요");
       setMessageType("error");
       return;
     }
@@ -345,7 +345,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
             <div className={styles.leftColumn}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  ID <span className={styles.required}>*</span>
+                  뱃지 ID <span className={styles.required}>*</span>
                   <span className={styles.idNote}> (생성 후 변경 불가)</span>
                 </label>
                 <div className={styles.idInputGroup}>
@@ -772,6 +772,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
           </div>
         </div>
       )}
+      
       {/* 성공 모달 */}
       <Modal
         show={showSuccessModal}
