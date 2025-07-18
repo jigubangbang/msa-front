@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import CirclesSpinner from '../../../components/common/Spinner/CirclesSpinner';
 import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
 import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
 
@@ -311,7 +312,7 @@ useEffect(() => {
   const isBlind = detail?.blindStatus === 'BLINDED';
 
   if (loading) {
-    return <div className={styles.loading}>로딩 중...</div>;
+    return <CirclesSpinner/>
   }
 
   if (!detail) {

@@ -57,17 +57,18 @@
 .backgroundImageUpload {
   width: 100%;
   height: 300px;
-  border: 2px dashed #ddd;
+  border: 1px dashed #ddd;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
+  background: #fafafa;
 }
 
 .backgroundImageUpload:hover {
-  border-color: #007bff;
-  background: #f8f9ff;
+  border-color: #888;
+  background: white;
 }
 
 .backgroundImageUpload.invalidUpload {
@@ -131,7 +132,6 @@
 
 .placeholderText {
   font-size: 18px;
-  font-weight: 600;
   margin-bottom: 8px;
 }
 
@@ -153,38 +153,47 @@
 }
 
 .rightColumn {
-  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .formGroup {
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .label {
-  display: block;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 4px;
 }
 
 .input {
+  font-family: 'Pretendard';
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 16px;
-  transition: all 0.3s ease;
-  font-family: inherit;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
 }
 
 .input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-color: #000;
+  background-color: #fff;
+}
+
+.input::placeholder {
+  color: #6c757d;
 }
 
 .input.validInput {
@@ -199,24 +208,26 @@
 .thumbnailUpload {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
 }
 
 .thumbnailImageUpload {
   width: 200px;
   height: 150px;
-  border: 2px dashed #ddd;
+  border: 1px dashed #ddd;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
+  background: #fafafa;
 }
 
 .thumbnailImageUpload:hover {
-  border-color: #007bff;
-  background: #f8f9ff;
+  border-color: #888;
+  background: white;
 }
 
 .thumbnailImageUpload.invalidUpload {
@@ -270,8 +281,8 @@
 }
 
 .placeholderText {
-  font-size: 16px;
-  font-weight: 600;
+  color: #6c757d;
+  font-size: 14px;
 }
 
 /* 필터 섹션 */
@@ -279,28 +290,25 @@
   background: #f8f9fa;
   border-radius: 8px;
   padding: 16px;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   transition: border-color 0.3s ease;
-}
-
-.filterSection:focus-within {
-  border-color: #007bff;
 }
 
 /* 섹션 제목 */
 .sectionTitle {
-  font-size: 18px;
-  font-weight: 700;
-  color: #333;
-  margin: 0 0 16px 0;
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 4px;
 }
 
 .sectionLabel {
   display: block;
-  font-size: 18px;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 4px;
 }
 
 /* 섹션 헤더 - 새로 추가 */
@@ -387,22 +395,28 @@
 
 /* 텍스트 에어리어 */
 .textarea {
-  box-sizing: border-box;
+  font-family: 'Pretendard';
   width: 100%;
-  padding: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 16px;
-  font-family: inherit;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
   resize: vertical;
   min-height: 120px;
-  transition: all 0.3s ease;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-color: #000;
+  background-color: #fff;
+}
+
+.textareaInput::placeholder {
+  color: #6c757d;
 }
 
 .textarea.validInput {
@@ -415,19 +429,20 @@
 
 /* 도움말 텍스트 */
 .helpText {
-  font-size: 14px;
+  font-size: 12px;
   color: #666;
   margin-top: 8px;
 }
 
 /* 에러 메시지 */
 .errorMessage {
-  color: #dc3545;
-  font-size: 14px;
-  margin-top: 8px;
   display: flex;
-  align-items: center;
-  gap: 4px;
+  flex-direction: row;
+  gap: 8px;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #dc3545;
+  font-weight: 500;
 }
 
 .errorMessage::before {
@@ -440,54 +455,70 @@
   display: none;
 }
 
+.required {
+  color: #dc3545;
+  font-weight: 600;
+}
+
 /* 액션 버튼 */
-.actions {
+.buttonRow {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  position: relative;
+}
+
+.centerButtons {
+  display: flex;
+  justify-content: center;
   gap: 16px;
-  padding-top: 32px;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 40px;
 }
 
 .cancelButton {
-  padding: 12px 32px;
-  background: #f8f9fa;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  color: #333;
+  font-family: 'Pretendard';
+  padding: 12px 20px;
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
 }
 
-.cancelButton:hover {
-  background: #e9ecef;
-  border-color: #6c757d;
-}
-
-.saveButton {
-  padding: 12px 32px;
-  background: #007bff;
-  border: 2px solid #007bff;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.saveButton:hover {
-  background: #0056b3;
-  border-color: #0056b3;
+.cancelButton:hover:not(:disabled) {
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
   transform: translateY(-1px);
 }
 
-.saveButton:disabled {
-  background: #6c757d;
-  border-color: #6c757d;
+.submitButton {
+  font-family: 'Pretendard';
+  padding: 12px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #333;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  background-color: #6c757d;
   cursor: not-allowed;
   transform: none;
 }

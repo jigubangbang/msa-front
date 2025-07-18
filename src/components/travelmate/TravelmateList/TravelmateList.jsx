@@ -4,6 +4,9 @@ import styles from './TravelmateList.module.css';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 import api from '../../../apis/api';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
 
 const TravelmateList = ({
   onOpenPost,
@@ -406,7 +409,7 @@ const formatSearchConditions = (searchSectionData, filters) => {
   if (loading) {
     return (
       <div className={styles.travelmateList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -561,7 +564,7 @@ const formatSearchConditions = (searchSectionData, filters) => {
                         }}
                         disabled={!isLogin}
                       >
-                        {isLiked ? '❤️' : '🤍'}
+                        <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요"/>
                       </button>
                       <span className={styles.likeCount}>{travelmate.likeCount}</span>
                     </>

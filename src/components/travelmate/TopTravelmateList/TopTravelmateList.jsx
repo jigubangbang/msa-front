@@ -5,6 +5,7 @@ import api from '../../../apis/api';
 import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
 import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
 import userIcon from '../../../../public/icons/sidebar/user.svg';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const TopTravelmateList = ({ 
   currentUserId,
@@ -130,7 +131,7 @@ const TopTravelmateList = ({
   if (loading) {
     return (
       <div className={styles.topTravelmateList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }

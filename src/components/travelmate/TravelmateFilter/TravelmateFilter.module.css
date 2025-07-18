@@ -271,12 +271,24 @@
 }
 /* === 다크 버튼 === */
 .darkButton {
-  background-color: #000;
-  color: #fff;
-  border: none;
+  padding: 10px 16px;
+  background-color: #000; 
+  color: #fff;           
+  border: none;         
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease; 
 }
 
-.darkButton:hover {
-  background-color: #333;
-  transform: translateY(-1px);
+.darkButton:hover:not(:disabled) {
+  background-color: #333;     
+  transform: translateY(-1px); 
+}
+
+.darkButton:disabled {
+  background-color: #6c757d;   
+  cursor: not-allowed;
+  transform: none;          
 }

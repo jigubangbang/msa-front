@@ -514,7 +514,7 @@ const showAlertModal = (message) => {
             className={styles.hiddenFileInput}
           />
           {validationErrors.backgroundImage && (
-            <div className={styles.errorMessage}>{validationErrors.backgroundImage}</div>
+            <div className={`${styles.message} ${styles.errorMessage}`}>{validationErrors.backgroundImage}</div>
           )}
         </div>
 
@@ -522,7 +522,9 @@ const showAlertModal = (message) => {
         <div className={styles.basicInfoSection}>
           <div className={styles.leftColumn}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>모임 제목</label>
+              <label className={styles.label}>
+                모임 제목 <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="title"
@@ -541,7 +543,9 @@ const showAlertModal = (message) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>모임 한마디</label>
+              <label className={styles.label}>
+                모임 한마디 <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="simpleDescription"
@@ -562,6 +566,9 @@ const showAlertModal = (message) => {
 
           <div className={styles.rightColumn}>
             <div className={styles.thumbnailUpload}>
+              <label className={styles.label}>
+                썸네일 이미지 <span className={styles.required}>*</span>
+              </label>
               <div 
                 className={`${styles.thumbnailImageUpload} ${
                   fieldValidation.thumbnailImage === 'invalid' ? styles.invalidUpload : ''
@@ -665,7 +672,9 @@ const showAlertModal = (message) => {
         {/* 여행 기간 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>여행 기간</h3>
+            <label className={styles.sectionTitle}>
+              여행 기간 <span className={styles.required}>*</span>
+            </label>
             {/* 수정 모드일 때 기존 기간 정보 표시 */}
             {mode === 'edit' && initialData && initialData.startAt && initialData.endAt && (
               <div className={styles.existingInfo}>
@@ -694,7 +703,9 @@ const showAlertModal = (message) => {
 
         {/* 모임 설명 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
-          <h3 className={styles.sectionTitle}>모임 설명</h3>
+          <label className={styles.sectionTitle}>
+            모임 설명 <span className={styles.required}>*</span>
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -714,7 +725,9 @@ const showAlertModal = (message) => {
 
         {/* 모임 신청 안내 메시지 설명 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
-          <h3 className={styles.sectionTitle}>모임 신청 안내 메시지 설명</h3>
+          <label className={styles.sectionTitle}>
+            모임 신청 안내 메시지 설명 <span className={styles.required}>*</span>
+          </label>
           <textarea
             name="applicationDescription"
             value={formData.applicationDescription}
@@ -733,13 +746,15 @@ const showAlertModal = (message) => {
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
-            취소
-          </button>
-          <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '저장 중...' : (mode === 'create' ? '모임 생성' : '모임 수정')}
-          </button>
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button type="button" className={styles.cancelButton} onClick={onClose}>
+              취소
+            </button>
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading ? '저장 중...' : (mode === 'create' ? '모임 생성' : '모임 수정')}
+            </button>
+          </div>
         </div>
       </form>
 
