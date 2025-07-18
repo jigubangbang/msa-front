@@ -60,7 +60,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
   const fetchBadgeData = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`http://localhost:8080/api/admin-quests/badges/${badgeId}/modify`);
+      const response = await api.get(`http://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com/api/admin-quests/badges/${badgeId}/modify`);
       const data = response.data;
       setBadgeData(data);
       setFormData({
@@ -163,7 +163,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
       };
 
       const response = await api.put(
-        `http://localhost:8080/api/admin-quests/badges/${badgeId}`, 
+        `http://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com/api/admin-quests/badges/${badgeId}`, 
         updateData,
         {
           headers: {

@@ -296,7 +296,7 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
       };
 
       const response = await api.post(
-        `http://localhost:8080/api/admin-quests/badges`,
+        `http://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com/api/admin-quests/badges`,
         createData,
         {
           headers: {
