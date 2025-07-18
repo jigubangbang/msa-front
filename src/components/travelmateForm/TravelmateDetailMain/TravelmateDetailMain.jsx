@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
 
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
@@ -353,7 +355,8 @@ useEffect(() => {
                 onClick={handleLikeToggle}
                 disabled={!isLogin || isBlind}
               >
-                {isLiked ? '❤️' : '🤍'} {isBlind ? '-' : detail.likeCount}
+                <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요"/>
+                {isBlind ? '-' : detail.likeCount}
               </button>
               
               <button 
@@ -371,19 +374,23 @@ useEffect(() => {
       {/* 작성자 정보 */}
       <div className={styles.creatorSection}>
         <div className={styles.creatorInfo}>
-          <div className={styles.profileImage}>
+          <div className={styles.profileImageWrapper}>
             <img 
               src={isBlind ? '/icons/common/warning.png' : (detail.creatorProfileImage || '/icons/common/default_profile.png')} 
               alt="프로필"
+              onClick={() => navigate(`/profile/${detail.creatorId}`)}
+              className={styles.profileImage}
             />
+            {!isBlind && detail.creatorStyle && (
+              <span className={styles.travelBadge}>
+                {detail.creatorStyle}
+              </span>
+            )}
           </div>
           <div className={styles.creatorDetails}>
             <div className={styles.creatorName}>
-              {!isBlind && detail.creatorStyle && (
-                <span className={styles.style}>[{detail.creatorStyle}]</span>
-              )}
-              <span className={styles.nickname}>{isBlind ? '블라인드 사용자' : detail.creatorNickname}</span>
-              <span className={styles.userId}>({isBlind ? '-' : detail.creatorId})</span>
+              <span className={styles.nickname}  onClick={() => {!isBlind && navigate(`/profile/${detail.creatorId}`)}}>{isBlind ? '블라인드 사용자' : detail.creatorNickname}</span>
+              <span className={styles.userId}  onClick={() => {!isBlind && navigate(`/profile/${detail.creatorId}`)}}>({isBlind ? '-' : detail.creatorId})</span>
             </div>
           </div>
         </div>

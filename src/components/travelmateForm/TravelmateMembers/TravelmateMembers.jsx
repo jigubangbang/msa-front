@@ -8,21 +8,23 @@ import styles from './TravelmateMembers.module.css';
 const TravelmateMembers = ({ postId }) => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isBlind, setIsBlind] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (postId) {
       fetchMembers();
-      console.log(postId);
     }
   }, [postId]);
 
   const fetchMembers = async () => {
     setLoading(true);
     try {
+      const statusResponse = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/status`);
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}/members`);
       setMembers(response.data || []);
+      setIsBlind(statusResponse.data.blindStatus !== "VISIBLE");
     } catch (error) {
       console.error('Failed to fetch members:', error);
       setMembers([]);
@@ -39,6 +41,19 @@ const TravelmateMembers = ({ postId }) => {
     return (
       <div className={styles.travelmateMembers}>
         <div className={styles.loading}>로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (isBlind) {
+    return (
+      <div className={styles.travelmateMembers}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>참여하는 멤버들 ({members.length}명)</h3>
+        </div>
+        <div className={styles.blindedMessage}>
+          <p>블라인드 처리된 게시글로 참여 멤버를 확인할 수 없습니다.</p>
+        </div>
       </div>
     );
   }
