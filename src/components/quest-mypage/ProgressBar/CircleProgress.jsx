@@ -15,6 +15,7 @@ const CircleProgressItem = ({ title, subtitle, completed, total }) => {
     size={100}
     borderWidth={6}
     colorCircle="#ededed"
+    colorSlice="black"
     borderBgColor="#e5e7eb"
     borderColor="#1f2937"
     fontColor="#1f2937"

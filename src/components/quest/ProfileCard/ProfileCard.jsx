@@ -40,7 +40,7 @@ const ProfileCard = ({
 
         <div className={styles.profileText}>
           <p className={styles.nickname}>{nickname}</p>
-          <p className={styles.questCount}>달성 수 : {count || 0}</p>
+          <p className={styles.questCount}>레벨업: {count || 0}</p>
         </div>
       </div>
     </div>

@@ -91,14 +91,14 @@ const RankBadgeList = ({
 
   return (
     <div className={styles.badgeList}>
-        <h2 className={styles.badgeListTitle}>Badges</h2>
+        <h2 className={styles.badgeListTitle}>뱃지 목록</h2>
       {/* Search */}
             <div className={styles.searchSection}>
               <p className={styles.totalCount}>
                 현재 {totalCount}개의 뱃지에 도전할 수 있습니다.
               </p>
               <SearchBar
-                placeholder="뱃지명"
+                placeholder="뱃지명으로 검색"
                 value={searchTerm}
                 onSearchChange={handleSearchChange}
                 barWidth="200px"
@@ -162,16 +162,6 @@ const RankBadgeList = ({
                   <span className={styles.acquiredCount}>
                     {badge.acquired_count}명
                   </span>
-                </div>
-              </div>
-
-              {/* 행2 */}
-              <div className={`${styles.tableRow} ${styles.secondRow} ${isMyUser ? styles.highlighted : ''}`}>
-                <div className={styles.cell}></div> 
-                <div className={`${styles.cell} ${styles.descriptionCell}`}>
-                  <div className={styles.badgeDescription}>
-                    {badge.description}
-                  </div>
                 </div>
               </div>
             </div>

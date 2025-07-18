@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .Container {
   display: flex;
@@ -20,7 +20,6 @@
   justify-content: center;
 }
 
-
 .contentWrapper {
   max-width: 1100px;
   display: flex;
@@ -31,8 +30,6 @@
   padding: 10px;
   box-sizing: border-box;
 }
-
-
 
 .loading {
   display: flex;
@@ -45,7 +42,7 @@
 
 .tabSection {
   width: 1100px;
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-family: Pretendard, sans-serif;
   padding: 10px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -66,16 +63,12 @@
   display: flex;
   padding: 0.5rem 0;
   color: #555;
+  font-size: 16px;
   cursor: pointer;
   position: relative;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
   background: none;
   border: none;
-  font-size: 16px;
   font-family: inherit;
-  text-decoration: none;
   border-radius: none;
 }
 
@@ -83,7 +76,8 @@
   color: black;
   font-weight: bold;
   border-radius: 0%;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid rgb(96, 96, 96);
+  margin-bottom: -2px;
 }
 
 .tabButton:hover {
@@ -93,6 +87,7 @@
 /* 컨텐츠 영역 */
 .contentArea {
   min-height: 500px;
+  max-width: 1100px;
 }
 
 .travelmateSection,

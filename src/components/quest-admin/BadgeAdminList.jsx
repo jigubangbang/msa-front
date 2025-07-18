@@ -9,14 +9,15 @@ import Pagination from "../common/Pagination/Pagination";
 import CirclesSpinner from "../common/Spinner/CirclesSpinner";
 
 const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
-  const [badges, setBadges] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [allBadges, setAllBadges] = useState([]);
+  const [filteredBadges, setFilteredBadges] = useState([]);
+  const [badges, setBadges] = useState([]);   
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const totalPages = Math.ceil(filteredBadges.length / itemsPerPage);
 
   const formatDate = (dateString) => {
     try {
@@ -36,26 +37,30 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
     }
   };
 
+  // 전체 뱃지 처음 한 번만 불러오기
   useEffect(() => {
     fetchBadges();
-  }, [searchTerm, currentPage]);
+  }, []);
+
+  useEffect(() => {
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const currentPageBadges = filteredBadges.slice(startIdx, startIdx + itemsPerPage);
+    setBadges(currentPageBadges);
+  }, [currentPage, filteredBadges]);
 
   const fetchBadges = async () => {
     console.log(searchTerm);
     setLoading(true);
     try {
-      const params = {
-        pageNum: currentPage,
-        search: searchTerm,
-        limit: itemsPerPage,
-      };
+      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`);
+      const all = response.data.badges || [];
+      setAllBadges(all);
+      setFilteredBadges(all); 
 
-      const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/badges`, {
-        params,
-      });
-
-      setBadges(response.data.badges || []);
-      setTotalCount(response.data.totalCount || 0);
+      // 현재 페이지 기준으로 자르기
+      const startIdx = (currentPage - 1) * itemsPerPage;
+      const currentPageBadges = all.slice(startIdx, startIdx + itemsPerPage);
+      setBadges(currentPageBadges);
     } catch (err) {
       console.error("Failed to fetch admin badges", err);
       setBadges([]);
@@ -67,9 +72,11 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-    }
+    const filtered = allBadges.filter((badge) =>
+      badge.kor_title.includes(value) || badge.eng_title.includes(value)
+    );
+    setFilteredBadges(filtered);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (pageNum) => {
@@ -83,7 +90,7 @@ const BadgeAdminList = ({ onBadgeClick, onBadgeModify }) => {
   return (
     <div className={styles.badgeAdminList}>
       <div className={styles.header}>
-        <p className={styles.totalCount}>전체 {totalCount}개 뱃지</p>
+        <p className={styles.totalCount}>전체 {filteredBadges.length}개 뱃지</p>
         <h2 className={styles.sectionTitle}>뱃지 관리</h2>
       </div>
 

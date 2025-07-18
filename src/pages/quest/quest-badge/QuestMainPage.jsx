@@ -472,7 +472,7 @@ const response = await api.get(endpoint, {
                   <QuestCarousel 
                   currentUserId={currentUserId}
                     quests={userQuest} 
-                    title="Ongoing Quests" 
+                    title="진행 중인 퀘스트" 
                     onOpenModal={openQuestModal}
                     isLogin={isLogin}
                     onQuestUpdate={handleQuestUpdate}
@@ -492,7 +492,7 @@ const response = await api.get(endpoint, {
           <div className={styles.verticalDivider}></div>
           
           <div className={styles.loginRightContent}>
-            <h2 className={styles.rightTitle}>My Quest Journey</h2>
+            <h2 className={styles.rightTitle}>내 퀘스트 정보</h2>
 
             <div className={styles.card}>
             <ProfileCard 
@@ -532,7 +532,7 @@ const response = await api.get(endpoint, {
         <div className={styles.questContent}>
         {seasonalQuest && (
             <div className={styles.seasonalQuestContainer}>
-                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="Seasonal Events" onOpenModal={openQuestModal}/>
+                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="시즌 이벤트" onOpenModal={openQuestModal}/>
             </div>
           )}
             

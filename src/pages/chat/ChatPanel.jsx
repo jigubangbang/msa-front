@@ -2,6 +2,9 @@
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { ThemeContext } from '../../utils/themeContext';
 import ChatSidebar from './ChatSidebar';
+import API_ENDPOINTS from '../../utils/constants';
+import api from "../../apis/api";
+import { getAccessToken } from '../../utils/tokenUtils';
 import menu_vert_white from '../../assets/common/more_vert_white.svg';
 import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
 import minimize from '../../assets/chat/hide.svg';
@@ -17,11 +20,13 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
   const [input, setInput] = useState('');
   // 인코딩 관리
   const [isComposing, setIsComposing] = useState(false);
-
   const messagesEndRef = useRef(null);
   const chatMessagesDisplayRef = useRef(null);
+  const accessToken = getAccessToken();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
+  const [originalCreatorId, setOriginalCreatorId] = useState(null);
+  const [creatorLoading, setCreatorLoading] = useState(true);
   const {info} = useChatRoomInfo(chatId);
 
   /*
@@ -102,6 +107,34 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
   };
 
   const isKicked = localStorage.getItem(`kicked:${chatId}`) === 'true';
+
+  // 생성자 조회
+  const getOriginalCreator = async () => {
+    try {
+      const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/original-creator`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("[ChatPanel] 최초 생성자 조회 실패:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchOriginalCreator = async () => {
+      if (chatId && accessToken) {
+        setCreatorLoading(true);
+        const creatorId = await getOriginalCreator();
+        setOriginalCreatorId(creatorId);
+        setCreatorLoading(false);
+      }
+    };
+
+    fetchOriginalCreator();
+  }, [chatId, accessToken]);
   
   return (
     <div className={`chat-panel-container ${isDark ? 'dark-mode' : ''}`}>
@@ -210,11 +243,13 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         chatId={chatId}
         senderId={senderId}
         nickname={nickname}
+        isOpen={isSidebar}
         onClose={handleSidebar}
         chatInfo={info}
+        originalCreatorId={originalCreatorId}
+        creatorLoading={creatorLoading}
         onForceClose={onForceClose}
         showAlert={showAlert}
-        isDark={isDark}
         onLeave={onLeave}
       />
      )}

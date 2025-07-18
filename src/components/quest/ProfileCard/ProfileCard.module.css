@@ -23,7 +23,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   font-size: 18px;
   font-weight: 700;
   color: #333333;
@@ -34,6 +33,7 @@
   height: 24px;
   width: auto;
   vertical-align: middle;
+  margin-bottom: 5px;
 }
 .profileInfo {
   display: flex;
@@ -41,7 +41,7 @@
   justify-content: flex-start;
   gap: 25px; /* spacing between image and text */
   text-align: left;
-  margin-top: 8px;
+  margin-top: 5px;
 }
 
 .profileText {
@@ -54,8 +54,8 @@
 
 .profileImageWrapper {
   position: relative;
-  width: 75px;
-  height: 75px;
+  width: 70px;
+  height: 70px;
   display: inline-block;
 }
 
@@ -75,10 +75,10 @@
   border-radius: 999px;
   border: 2px solid transparent;
   background: linear-gradient(#fff, #fff) padding-box,
-              linear-gradient(to right, #d4bf79, #daa520) border-box;
+              linear-gradient(to right, #fbeab3, #d4bf79) border-box;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #daa520;
+  color: #d4bf79;
   text-transform: uppercase;
   white-space: nowrap;
 }

@@ -79,14 +79,47 @@ export default function Header({onOpenChat}) {
 
         <nav className={styles.menu}>
           {isLoggedIn && (
-            <span><Link to={`/profile/${userId}/map`}>지도</Link></span>
+            <span>
+              <Link
+                to={`/profile/${userId}/map`}
+                className={location.pathname===`/profile/${userId}/map` ? styles.activeLink : ''}
+              >
+                  세계지도
+              </Link>
+            </span>
           )}
-          <span><Link to="/style-guide">스타일가이드</Link></span>
-          <span><Link to="/quest">퀘스트</Link></span>
-          <span><Link to="/traveler/mate">커뮤니티</Link><span className={styles.badge}>New</span></span>
-          <span><Link to="/feed">여행기록</Link></span>
-          <span><Link to={`/profile/${userId}/diary`}>나의 여행일지</Link></span>
-          <span onClick={() => {console.log(localStorage.getItem("accessToken"))}}>JWT 토큰</span>
+          <span>
+            <Link
+              to="/quest"
+              className={(location.pathname.startsWith('/quest') || location.pathname.startsWith('/my-quest')) ? styles.activeLink : ''}
+            >
+              도전 챌린지
+            </Link>
+          </span>
+          <span>
+            <Link
+              to="/traveler/mate"
+              className={location.pathname.startsWith('/traveler') ? styles.activeLink : ''}
+            >
+              커뮤니티
+            </Link>
+          </span>
+          <span>
+            <Link
+              to="/feed"
+              className={location.pathname.startsWith('/feed') ? styles.activeLink : ''}
+            >
+              여행 피드
+            </Link>
+          </span>
+          <span>
+            <Link
+              to={`/profile/${userId}/diary`}
+              className={location.pathname.startsWith(`/profile/${userId}/diary`) ? styles.activeLink : ''}
+            >
+              내 여행 일지
+            </Link>
+          </span>
         </nav>
         <div className={styles.authButtons}>
           {isLoggedIn ? (

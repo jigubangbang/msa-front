@@ -1,7 +1,7 @@
 export const QUEST_SIDEBAR = (isAdmin = false) => {
   const basicMenus = [
     {
-      label: '퀘스트와 뱃지',
+      label: '챌린지 목록',
       icon: '/icons/sidebar/badge.svg',
       path: '/quest',
       needLogin: false,
@@ -19,7 +19,7 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       ]
     },
     {
-      label: '내 퀘스트/뱃지',
+      label: '내 챌린지 기록',
       icon: '/icons/sidebar/record.svg',
       path: '/my-quest',
       needLogin: true,
@@ -30,14 +30,14 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
           needLogin: true
         },
         {
-          label: '내 퀘스트 기록',
+          label: '내 퀘스트',
           path: '/my-quest/record',
           needLogin: true
         }
       ]
     },
     {
-      label: '유저들',
+      label: '사용자 랭킹',
       icon: '/icons/sidebar/user_search.svg',
       path: '/rank/list',
       needLogin: false
@@ -109,13 +109,13 @@ export const USER_SIDEBAR = [
 
 export const TRAVELER_SIDEBAR = [
   {
-    label: '여행자 동행 모집',
+    label: '여행 메이트 모집',
     icon: '/icons/sidebar/travelmate.svg',
     path: '/traveler/mate',
     needLogin: false,
     submenus: [
       {
-        label: '모집 글쓰기',
+        label: '모임 생성',
         path: '/traveler/mate/new',
         needLogin: true
       }
@@ -128,25 +128,25 @@ export const TRAVELER_SIDEBAR = [
     needLogin: false,
     submenus: [
       {
-        label: '공유방 만들기',
+        label: '정보공유방 생성',
         path: '/traveler/info/new',
         needLogin: true
       }
     ]
   },
   {
-    label: '내 여행자 모임',
+    label: '내 그룹 관리',
     icon: '/icons/sidebar/my_traveler.svg',
     path: '/traveler/my',
     needLogin: true,
     submenus: [
       {
-        label: '내 여행자 동행',
+        label: '내 여행 모임',
         path: '/traveler/my/travelmate',
         needLogin: true
       },
       {
-        label: '내 여행 정보공유방',
+        label: '내 정보공유방',
         path: '/traveler/my/travelinfo',
         needLogin: true
       }
@@ -186,13 +186,13 @@ export const TRAVELER_SIDEBAR = [
     ]
   },
   {
-    label: '내 게시판',
+    label: '내 글 관리',
     icon: '/icons/sidebar/my_board.svg',
     path: '/board/my',
     needLogin: true
   },
   {
-    label: '글쓰기',
+    label: '게시글 작성',
     icon: '/icons/sidebar/write.svg',
     path: '/board/new',
     needLogin: true
@@ -219,7 +219,7 @@ export const ADMIN_SIDEBAR = [
         path: '/admin/content/comments'
       },
       {
-        label: '모임 관리',
+        label: '그룹 관리',
         path: '/admin/content/groups'
       }
     ]

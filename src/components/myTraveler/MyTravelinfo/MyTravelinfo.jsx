@@ -167,40 +167,44 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       return;
     }
 
-    try {
-      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELINFO",
-        groupId: travelinfoId
-      });
-      
-      const chatRoomId = response.data.chatRoomId;
-      
-      if (chatRoomId) {
-        const success = await leaveChatRoom(chatRoomId, {
-          skipConfirmation: false, // 확인 모달 표시
-          showAlert: (title, message) => showAlertModal(message),
-          onSuccess: () => {
-            if (chatRooms[chatRoomId]) {
-              closeChat(chatRoomId);
-            }
-
-             showAlertModal('공유방에서 나갔습니다.');
-            if (fetchTravelinfos) {
-              fetchTravelinfos();
-            }
-
-           
-          }
+    customConfirm(
+    '정말로 공유방에서 나가시겠습니까?',
+    async () => {
+      try {
+        const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+          groupType: "TRAVELINFO",
+          groupId: travelinfoId
         });
-      } else {
-        showAlertModal('채팅방 정보를 찾을 수 없습니다.');
+        
+        const chatRoomId = response.data.chatRoomId;
+        
+          if (chatRoomId) {
+            const success = await leaveChatRoom(chatRoomId, {
+              showAlert: (title, message) => showAlertModal(message),
+              onSuccess: () => {
+                if (chatRooms[chatRoomId]) {
+                  closeChat(chatRoomId);
+                }
+
+                showAlertModal('공유방에서 나갔습니다.');
+                if (fetchTravelinfos) {
+                  fetchTravelinfos();
+                }
+
+              
+              }
+            });
+          } else {
+            showAlertModal('채팅방 정보를 찾을 수 없습니다.');
+          }
+        } catch (error) {
+          console.error('Failed to get chat room info:', error);
+          showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
+        }
       }
-    } catch (error) {
-      console.error('Failed to get chat room info:', error);
-      showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
-    }
+    );
   };
-  
+    
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedInfo(null);

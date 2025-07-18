@@ -183,7 +183,7 @@
   background-color: #fff;
 }
 
-fileHint {
+.fileHint {
   font-size: 12px;
   font-style: italic;
   font-weight: 500;
@@ -568,8 +568,7 @@ fileHint {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
-  padding-top: 60px;  /* 헤더 높이만큼 아래로 */
+  z-index: 1000;
 }
 
 .modalContent {
