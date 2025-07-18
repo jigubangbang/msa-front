@@ -308,7 +308,7 @@ useEffect(() => {
     <div className={styles.questList}>
       {/* 헤더와 필터 */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Available Quests</h2>
+        <h2 className={styles.title}>도전 가능한 퀘스트</h2>
         <Dropdown 
           defaultOption={getSortDisplayText()}
           options={sortOptions}

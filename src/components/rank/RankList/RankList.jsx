@@ -70,7 +70,7 @@ const RankingList = ({ myUserId }) => {
 
   return (
     <div className={styles.rankingList}>
-        <h2 className={styles.rankingListTitle}>Users Ranking (Lv)</h2>
+        <h2 className={styles.rankingListTitle}>사용자 랭킹 (LV)</h2>
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
@@ -80,7 +80,7 @@ const RankingList = ({ myUserId }) => {
           }
         </p>
         <SearchBar
-          placeholder="회원 아이디"
+          placeholder="회원 아이디로 검색"
           value={searchTerm}
           onSearchChange={handleSearchChange}
           barWidth="200px"

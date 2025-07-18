@@ -152,14 +152,14 @@ const RankQuestList = ({
 
   return (
     <div className={styles.questList}>
-        <h2 className={styles.questListTitle}>Quests</h2>
+        <h2 className={styles.questListTitle}>퀘스트 목록</h2>
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
           현재 {totalCount}개의 퀘스트에 도전할 수 있습니다.
         </p>
         <SearchBar
-          placeholder="퀘스트명"
+          placeholder="퀘스트명으로 검색"
           value={searchTerm}
           onSearchChange={handleSearchChange}
           barWidth="200px"
