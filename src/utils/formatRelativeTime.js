@@ -1,7 +1,8 @@
 export function formatRelativeTime(dateString) {
   const date = new Date(dateString);
   const now = new Date();
-  const diff = (now - date) / 1000; // in seconds
+  const nowUtc = new Date(now.getTime() + (now.getTimezoneOffset() * 60 * 1000));
+  const diff = (nowUtc - date) / 1000; // in seconds
 
   console.log('--- formatRelativeTime Debug ---');
   console.log('dateString:', dateString);
