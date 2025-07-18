@@ -166,7 +166,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
                   className={`chat-message-bubble ${isMine ? 'my-message' : 'other-message'}`}
                 >
                   <p className="message-text">{msg.message}</p>
-                  L169: <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt + 'Z').toLocaleTimeString() : ''}</span>
+                  L169: <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</span>
                 </div>
               </>
               )}
