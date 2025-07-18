@@ -332,7 +332,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
 
   if (!badgeData) {
     return (
-      <div className={styles.section}>
+      <div className={styles.emptyContainer}>
         <div className={styles.emptyText}>뱃지 정보를 불러올 수 없습니다</div>
       </div>
     );

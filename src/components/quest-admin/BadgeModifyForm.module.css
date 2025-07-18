@@ -737,6 +737,11 @@
   font-size: 16px;
 }
 
+.emptyContainer {
+  text-align: center;
+  padding: 60px 20px;
+}
+
 .emptyText {
   font-family: 'Pretendard';
   font-size: 16px;
