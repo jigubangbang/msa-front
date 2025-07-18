@@ -84,7 +84,7 @@ export default function Header({onOpenChat}) {
                 to={`/profile/${userId}/map`}
                 className={location.pathname===`/profile/${userId}/map` ? styles.activeLink : ''}
               >
-                  지도
+                  세계지도
               </Link>
             </span>
           )}
@@ -93,7 +93,7 @@ export default function Header({onOpenChat}) {
               to="/quest"
               className={location.pathname.startsWith('/quest') ? styles.activeLink : ''}
             >
-              퀘스트
+              챌린지
             </Link>
           </span>
           <span>
@@ -103,14 +103,13 @@ export default function Header({onOpenChat}) {
             >
               커뮤니티
             </Link>
-            <span className={styles.badge}>New</span>
           </span>
           <span>
             <Link
               to="/feed"
               className={location.pathname.startsWith('/feed') ? styles.activeLink : ''}
             >
-              여행기록
+              여행 피드
             </Link>
           </span>
           <span>
@@ -118,7 +117,7 @@ export default function Header({onOpenChat}) {
               to={`/profile/${userId}/diary`}
               className={location.pathname.startsWith(`/profile/${userId}/diary`) ? styles.activeLink : ''}
             >
-              나의 여행일지
+              내 여행 일지
             </Link>
           </span>
         </nav>
