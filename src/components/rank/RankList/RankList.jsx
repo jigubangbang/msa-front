@@ -5,6 +5,7 @@ import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import api from '../../../apis/api';
 import { useNavigate } from 'react-router-dom';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 
 const RankingList = ({ myUserId }) => {
@@ -62,14 +63,14 @@ const RankingList = ({ myUserId }) => {
   if (loading) {
     return (
       <div className={styles.rankingList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
 
   return (
     <div className={styles.rankingList}>
-        <h2 className={styles.rankingListTitle}>Rank(Level)</h2>
+        <h2 className={styles.rankingListTitle}>Users Ranking (Lv)</h2>
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
@@ -79,7 +80,7 @@ const RankingList = ({ myUserId }) => {
           }
         </p>
         <SearchBar
-          placeholder="USER ID"
+          placeholder="회원 아이디"
           value={searchTerm}
           onSearchChange={handleSearchChange}
           barWidth="200px"
@@ -89,12 +90,12 @@ const RankingList = ({ myUserId }) => {
       {/* header */}
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Profile</div>
-        <div className={styles.headerCell}>ID / Nickname</div>
-        <div className={styles.headerCell}>Level</div>
-        <div className={styles.headerCell}>Quests Completed</div>
+        <div className={styles.headerCell}>프로필</div>
+        <div className={styles.headerCell}>ID / 닉네임</div>
+        <div className={styles.headerCell}>레벨</div>
+        <div className={styles.headerCell}>완료 퀘스트</div>
         <div className={styles.headerCell}>XP</div>
-        <div className={styles.headerCell}>Performance</div>
+        <div className={styles.headerCell}>진행률</div>
       </div>
 
       {/* table */}

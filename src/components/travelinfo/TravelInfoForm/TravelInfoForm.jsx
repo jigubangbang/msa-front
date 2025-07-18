@@ -2,10 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './TravelInfoForm.module.css';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 
 const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose }) => {
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
   const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
 
   // 파일 유효성 검사 함수 추가
   const validateFile = (file) => {
@@ -34,6 +40,26 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
   };
 
   const [formData, setFormData] = useState({
@@ -323,7 +349,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      alert('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요.');
       return;
     }
 
@@ -350,7 +376,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       
     } catch (error) {
       console.error('Failed to submit form:', error);
-      alert('정보방 저장에 실패했습니다.');
+      showAlertModal('정보방 저장에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -552,6 +578,15 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
           </button>
         </div>
       </form>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
     </div>
   );
 };

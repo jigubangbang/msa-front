@@ -135,7 +135,7 @@
 .difficultyTag.easy {
   background: #f8fff9;
   color: #28a745;
-  border: 1px solid #c3e6cb
+  border: 1px solid #c3e6cb;
 }
 
 .difficultyTag.medium {
@@ -163,7 +163,7 @@
 .statusTag.active {
   background: #f8fff9;
   color: #28a745;
-  border: 1px solid #c3e6cb
+  border: 1px solid #c3e6cb;
 }
 
 .statusTag.inactive {

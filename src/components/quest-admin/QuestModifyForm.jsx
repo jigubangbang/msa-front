@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './QuestModifyForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
+import ConfirmModal from '../common/ErrorModal/ConfirmModal';
 
 const QuestModifyForm = ({ questId, onClose, onSave }) => {
   const [questData, setQuestData] = useState(null);
@@ -18,6 +19,11 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
   });
   const [badgeList, setBadgeList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
   
   // 유효성 검사 상태
   const [validationErrors, setValidationErrors] = useState({});
@@ -52,6 +58,28 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       return '';
     }
   };
+
+  
+const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   const parseDescription = (description) => {
     if (!description) return { description: '', quest_conditions: '' };
@@ -296,7 +324,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      alert('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요.');
       return;
     }
 
@@ -332,7 +360,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       );
       
       console.log('Quest updated successfully:', response.data);
-      alert('퀘스트가 성공적으로 수정되었습니다.');
+      showAlertModal('퀘스트가 성공적으로 수정되었습니다.');
       
       if (onSave) onSave();
       if (onClose) onClose(questId);
@@ -341,9 +369,9 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
       console.error('Failed to update quest:', error);
       
       if (error.response && error.response.data && error.response.data.error) {
-        alert(`퀘스트 수정에 실패했습니다: ${error.response.data.error}`);
+        showAlertModal(`퀘스트 수정에 실패했습니다: ${error.response.data.error}`);
       } else {
-        alert('퀘스트 수정에 실패했습니다.');
+        showAlertModal('퀘스트 수정에 실패했습니다.');
       }
     } finally {
       setLoading(false);
@@ -695,6 +723,16 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
           </button>
         </div>
       </form>
+
+      
+<ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
     </div>
   );
 };

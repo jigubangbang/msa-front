@@ -6,6 +6,8 @@ import styles from './QuestAdminDetail.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import Pagination from '../common/Pagination/Pagination';
 import api from '../../apis/api';
+import ConfirmModal from '../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../common/ErrorModal/SimpleConfirmModal';
 
 const QuestAdminDetail = ({ questId }) => {
   const [questDetail, setQuestDetail] = useState(null);
@@ -17,11 +19,102 @@ const QuestAdminDetail = ({ questId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  
+  // Alert 모달 상태
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
+  // 퀘스트 삭제 확인 모달 상태들
+  const [showFirstConfirm, setShowFirstConfirm] = useState(false);
+  const [showSecondConfirm, setShowSecondConfirm] = useState(false);
+  const [firstConfirmMessage, setFirstConfirmMessage] = useState('');
+  const [secondConfirmMessage, setSecondConfirmMessage] = useState('');
+
+  // 퀘스트 인증 취소 확인 모달 상태
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [cancelConfirmMessage, setCancelConfirmMessage] = useState('');
+  const [cancelConfirmCallback, setCancelConfirmCallback] = useState(null);
+
   const itemsPerPage = 5;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const navigate = useNavigate();
+
+  // Alert 모달 관련 함수들
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+  // 퀘스트 삭제 - 첫 번째 모달 함수들
+  const handleFirstConfirm = () => {
+    setShowFirstConfirm(false);
+    setSecondConfirmMessage('⚠️ 주의: 퀘스트를 삭제하면 모든 사용자와 뱃지에게서 해당 퀘스트가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?');
+    setShowSecondConfirm(true);
+  };
+
+  const handleFirstCancel = () => {
+    setShowFirstConfirm(false);
+  };
+
+  // 퀘스트 삭제 - 두 번째 모달 함수들
+  const handleSecondConfirm = async () => {
+    setShowSecondConfirm(false);
+    
+    try {
+      await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
+      showAlertModal('퀘스트가 성공적으로 삭제되었습니다.');
+      navigate('/quest-admin/quest');
+    } catch (error) {
+      console.error('Failed to delete quest:', error);
+      
+      if (error.response && error.response.data && error.response.data.error) {
+        showAlertModal(`퀘스트 삭제에 실패했습니다: ${error.response.data.error}`);
+      } else {
+        showAlertModal('퀘스트 삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleSecondCancel = () => {
+    setShowSecondConfirm(false);
+  };
+
+  // 퀘스트 인증 취소 확인 모달 함수들
+  const customCancelConfirm = (message, callback) => {
+    setCancelConfirmMessage(message);
+    setCancelConfirmCallback({ fn: callback });
+    setShowCancelConfirm(true);
+  };
+
+  const handleCancelConfirm = () => {
+    if (cancelConfirmCallback && cancelConfirmCallback.fn) {
+      cancelConfirmCallback.fn();
+    }
+    setShowCancelConfirm(false);
+    setCancelConfirmCallback(null);
+  };
+
+  const handleCancelCancel = () => {
+    setShowCancelConfirm(false);
+    setCancelConfirmCallback(null);
+  };
 
   const formatDate = (dateString) => {
     try {
@@ -116,72 +209,53 @@ const QuestAdminDetail = ({ questId }) => {
     }
   };
 
-    const handleDelete = async () => {
-  if (!window.confirm(`정말로 "${questDetail.title}" 퀘스트를 삭제하시겠습니까?`)) {
-    return;
-  }
-
-  if (!window.confirm('⚠️ 주의: 뱃지를 삭제하면 모든 사용자와 뱃지에게서 해당 퀘스트가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?')) {
-    return;
-  }
-
-  try {
-    await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
-    
-    alert('퀘스트가 성공적으로 삭제되었습니다.');
-    navigate('/quest-admin/quest');
-  } catch (error) {
-    console.error('Failed to delete badge:', error);
-    
-    if (error.response && error.response.data && error.response.data.error) {
-      alert(`퀘스트 삭제에 실패했습니다: ${error.response.data.error}`);
-    } else {
-      alert('퀘스트 삭제에 실패했습니다.');
-    }
-  }
-};
+  // 퀘스트 삭제 함수
+  const handleDelete = () => {
+    setFirstConfirmMessage(`정말로 "${questDetail.title}" 퀘스트를 삭제하시겠습니까?`);
+    setShowFirstConfirm(true);
+  };
 
   const handleRowClick = (user) => {
-  setSelectedUser(user);
-};
+    setSelectedUser(user);
+  };
 
-const handleCloseUserDetail = () => {
-  setSelectedUser(null);
-};
+  const handleCloseUserDetail = () => {
+    setSelectedUser(null);
+  };
 
-const handleCancelUserQuest = async (user) => {
-  if (!window.confirm('정말로 이 사용자의 퀘스트 인증을 취소하시겠습니까?')) {
-    return;
-  }
-  
-  try {
-    const response = await api.put(
-      `${API_ENDPOINTS.QUEST.ADMIN}/quests-certi/${user.quest_user_id}/reject`,
-      {
-        quest_id: questDetail.quest_id,
-        xp: questDetail.xp,  
-        user_id: user.user_id
+  const handleCancelUserQuest = async (user) => {
+    customCancelConfirm(
+      '정말로 이 사용자의 퀘스트 인증을 취소하시겠습니까?',
+      async () => {
+        try {
+          const response = await api.put(
+            `${API_ENDPOINTS.QUEST.ADMIN}/quests-certi/${user.quest_user_id}/reject`,
+            {
+              quest_id: questDetail.quest_id,
+              xp: questDetail.xp,  
+              user_id: user.user_id
+            }
+          );
+          
+          console.log('Cancel quest response:', response.data);
+          
+          // 성공 시 사용자 목록 새로고침
+          fetchQuestUsers();
+          setSelectedUser(null);
+          showAlertModal('퀘스트 인증이 취소되었습니다.');
+        } catch (error) {
+          console.error('Failed to cancel user quest:', error);
+          showAlertModal('퀘스트 인증 취소에 실패했습니다.');
+        }
       }
     );
-    
-    console.log('Cancel quest response:', response.data);
-    
-    // 성공 시 사용자 목록 새로고침
-    fetchQuestUsers();
-    setSelectedUser(null);
-    alert('퀘스트 인증이 취소되었습니다.');
-  } catch (error) {
-    console.error('Failed to cancel user quest:', error);
-    alert('퀘스트 인증 취소에 실패했습니다.');
-  }
-};
+  };
 
-
-const truncateText = (text, maxLength = 100) => {
-  if (!text) return '-';
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '...';
-};
+  const truncateText = (text, maxLength = 100) => {
+    if (!text) return '-';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
 
   useEffect(() => {
     if (questId) {
@@ -197,7 +271,7 @@ const truncateText = (text, maxLength = 100) => {
   }, [questId, currentPage]);
 
   const onClose = () => {
-          window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
     navigate('/quest-admin/quest')
   }
 
@@ -320,9 +394,7 @@ const truncateText = (text, maxLength = 100) => {
                       />
                       <p className={styles.badgeTitle}>No.{badge.badge_id}</p>
                       <p className={styles.badgeTitle}>{badge.kor_title}</p>
-
                       <p className={styles.badgeSubTitle}> {badge.eng_title}</p>
-
                     </div>
                   ))}
                 </div>
@@ -533,6 +605,39 @@ const truncateText = (text, maxLength = 100) => {
           </div>
         </div>
       )}
+
+      {/* 첫 번째 확인 모달 */}
+      <SimpleConfirmModal
+        isOpen={showFirstConfirm}
+        message={firstConfirmMessage}
+        onConfirm={handleFirstConfirm}
+        onCancel={handleFirstCancel}
+      />
+
+      {/* 두 번째 확인 모달 */}
+      <SimpleConfirmModal
+        isOpen={showSecondConfirm}
+        message={secondConfirmMessage}
+        onConfirm={handleSecondConfirm}
+        onCancel={handleSecondCancel}
+      />
+
+      {/* 퀘스트 인증 취소 확인 모달 */}
+      <SimpleConfirmModal
+        isOpen={showCancelConfirm}
+        message={cancelConfirmMessage}
+        onConfirm={handleCancelConfirm}
+        onCancel={handleCancelCancel}
+      />
+
+      {/* Alert 모달 */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

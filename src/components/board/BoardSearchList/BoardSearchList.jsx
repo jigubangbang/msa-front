@@ -16,6 +16,7 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOption, setSortOption] = useState('latest');
+
    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -105,6 +106,7 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
 
   const handlePostClick = (postId) => {
     if(!isLogin){
+        setIsModalOpen(true);
         setIsModalOpen(true);
         return;
     }
@@ -268,6 +270,7 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleLoginConfirm}
       />
+
     </div>
   );
 };

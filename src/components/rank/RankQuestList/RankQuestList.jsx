@@ -4,6 +4,7 @@ import styles from './RankQuestList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 import api from '../../../apis/api';
 
 const RankQuestList = ({  
@@ -43,11 +44,11 @@ const RankQuestList = ({
   ];
 
   const sortOptions = [
-    { value: 'default', label: 'As Listed'},
-    { value: 'latest', label: 'Newest first' },
-    { value: 'oldest', label: 'Oldest first' },
-    { value: 'xp_high', label: 'XP High to Low' },
-    { value: 'xp_low', label: 'XP Low to High' }
+    { value: 'default', label: '등록순'},
+    { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된순' },
+    { value: 'xp_high', label: 'XP (높은순)' },
+    { value: 'xp_low', label: 'XP (낮은순)' }
   ];
 
 
@@ -144,7 +145,7 @@ const RankQuestList = ({
   if (loading) {
     return (
       <div className={styles.questList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -158,7 +159,7 @@ const RankQuestList = ({
           현재 {totalCount}개의 퀘스트에 도전할 수 있습니다.
         </p>
         <SearchBar
-          placeholder="Quest"
+          placeholder="퀘스트명"
           value={searchTerm}
           onSearchChange={handleSearchChange}
           barWidth="200px"
@@ -214,13 +215,13 @@ const RankQuestList = ({
       {/* header */}
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Category</div>
-        <div className={styles.headerCell}>Title</div>
-        <div className={styles.headerCell}>Difficulty/XP</div>
-        <div className={styles.headerCell}>Peroid</div>
-        <div className={styles.headerCell}>Badge</div>
-        <div className={styles.headerCell}>In Progress</div>
-        <div className={styles.headerCell}>Completed</div>
+        <div className={styles.headerCell}>카테고리</div>
+        <div className={styles.headerCell}>제목</div>
+        <div className={styles.headerCell}>난이도 / XP</div>
+        <div className={styles.headerCell}>기간</div>
+        <div className={styles.headerCell}>뱃지</div>
+        <div className={styles.headerCell}>진행 중</div>
+        <div className={styles.headerCell}>완료</div>
       </div>
 
       {/* table */}

@@ -2,18 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardForm.module.css';
-import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null, onSubmit, onClose }) => {
   const MAX_IMAGE_COUNT = 10;
   const fileInputRefs = useRef([]);
 
   // ConfirmModal 관련 상태 추가
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmMessage, setConfirmMessage] = useState('');
-  const [confirmType, setConfirmType] = useState('alert'); // 'alert' | 'confirm'
-  const [confirmAction, setConfirmAction] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -21,7 +17,6 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     boardId: '3'
   });
 
-   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   const CATEGORY_OPTIONS = [
@@ -34,6 +29,13 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   // 유효성 검사 상태
   const [validationErrors, setValidationErrors] = useState({});
@@ -93,32 +95,6 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const showAlert = (message) => {
-    setConfirmMessage(message);
-    setConfirmType('alert');
-    setConfirmAction(null);
-    setShowConfirmModal(true);
-  };
-
-  const showConfirm = (message, action) => {
-    setConfirmMessage(message);
-    setConfirmType('confirm');
-    setConfirmAction(() => action);
-    setShowConfirmModal(true);
-  };
-
-  const hideConfirm = () => {
-    setShowConfirmModal(false);
-    setConfirmMessage('');
-    setConfirmAction(null);
-  };
-
-  const handleConfirmAction = () => {
-    if (confirmAction) {
-      confirmAction();
-    }
-    hideConfirm();
-  };
 
 
   // 유효성 검사 함수
@@ -144,6 +120,27 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         return { isValid: true, error: null };
     }
   };
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   // 입력 변경 핸들러
   const handleInputChange = (e) => {
@@ -173,12 +170,12 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     if (file) {
       // 파일 검증
       if (file.size > 10 * 1024 * 1024) {
-        showAlert('파일 크기는 10MB 이하여야 합니다.');
+        showAlertModal('파일 크기는 10MB 이하여야 합니다.');
         return;
       }
       
       if (!file.type.startsWith('image/')) {
-        showAlert('이미지 파일만 업로드 가능합니다.');
+        showAlertModal('이미지 파일만 업로드 가능합니다.');
         return;
       }
 
@@ -266,18 +263,21 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return !hasErrors;
   };
 
+
+
   // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!isLogin) {
       setIsModalOpen(true);
+
       return;
     }
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      showAlert('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요.');
       return;
     }
 
@@ -502,12 +502,6 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         </div>
       </form>
 
-      <LoginConfirmModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleLoginConfirm}
-      />
-
       <ConfirmModal
         isOpen={showConfirmModal}
         onClose={hideConfirm}
@@ -515,6 +509,13 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         message={confirmMessage}
         type={confirmType}
       />
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
+
     </div>
   );
 };

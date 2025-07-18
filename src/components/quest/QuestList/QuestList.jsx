@@ -165,11 +165,11 @@ const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId, onLogi
   ];
 
   const sortOptions = [
-    { value: '', label: 'Default' },
-    { value: 'latest', label: 'Newest first' },
-    { value: 'oldest', label: 'Oldest first' },
-    { value: 'xp_high', label: 'XP High to Low' },
-    { value: 'xp_low', label: 'XP Low to High' }
+    { value: '', label: '기본' },
+    { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된순' },
+    { value: 'xp_high', label: 'XP (높은순)' },
+    { value: 'xp_low', label: 'XP (낮은순)' }
   ];
 
 useEffect(() => {
@@ -228,9 +228,9 @@ useEffect(() => {
   };
 
    const getSortDisplayText = () => {
-    if (!filters.sortOption) return "Sort by";
+    if (!filters.sortOption) return "정렬";
     const selected = sortOptions.find(opt => opt.value === filters.sortOption);
-    return selected ? selected.label : "Sort by";
+    return selected ? selected.label : "정렬";
   };
 
   const handleJoinQuest = (quest) => {

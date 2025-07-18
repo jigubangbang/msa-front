@@ -45,6 +45,10 @@
   }
 }
 
+.activeLink {
+  font-weight: bold;
+}
+
 
 /* Main Header */
 .mainHeader {
