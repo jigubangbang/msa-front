@@ -29,7 +29,7 @@
 }
 
 .progressLabel {
-  font-size: 0.875rem;
+  font-size: 16px;
   font-weight: 500;
   color: #374151;
 }
@@ -38,7 +38,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: white;
-  background-color: #3b82f6;
+  background-color: black;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
 }
@@ -58,14 +58,14 @@
 }
 
 .progressFill.quest {
-  background-color: #3b82f6;
+  background-color: black;
 }
 
 .progressFill.badge {
-  background-color: #10b981;
+  background-color: black;
 }
 
 .progressDescription {
-  font-size: 0.75rem;
+  font-size: 16px;
   color: #6b7280;
 }

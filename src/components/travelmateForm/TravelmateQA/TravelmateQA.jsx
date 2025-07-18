@@ -4,6 +4,10 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TravelmateQA.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import { useNavigate } from 'react-router-dom';
 
 const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [questions, setQuestions] = useState([]);
@@ -20,6 +24,59 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [editingText, setEditingText] = useState('');
 
   const [isBlind, setIsBlind] = useState(false);
+
+  // Alert 모달 상태 (ConfirmModal)
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  // 삭제 확인 모달 상태 (SimpleConfirmModal)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmMessage, setDeleteConfirmMessage] = useState('');
+  const [deleteConfirmCallback, setDeleteConfirmCallback] = useState(null);
+
+  // 로그인 확인 모달 상태 (LoginConfirmModal)
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
+
+  const navigate = useNavigate();
+
+  // 모달 관련 함수들
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const hideAlert = () => {
+    setShowAlertModal(false);
+    setAlertMessage('');
+  };
+
+  const customDeleteConfirm = (message, callback) => {
+    setDeleteConfirmMessage(message);
+    setDeleteConfirmCallback({ fn: callback });
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirmCallback && deleteConfirmCallback.fn) {
+      deleteConfirmCallback.fn();
+    }
+    setShowDeleteConfirm(false);
+    setDeleteConfirmCallback(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    setDeleteConfirmCallback(null);
+  };
+
+  const handleLoginConfirm = () => {
+    setShowLoginConfirm(false);
+    navigate('/login');
+  };
+
+  const handleLoginCancel = () => {
+    setShowLoginConfirm(false);
+  };
 
   useEffect(() => {
     if (postId) {
@@ -85,11 +142,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       
       setNewQuestion('');
       fetchQuestions(); 
-      alert('질문이 등록되었습니다.');
+      showAlert('질문이 등록되었습니다.');
     } catch (error) {
       console.error('Failed to submit question:', error);
       const errorMessage = error.response?.data?.error || '질문 등록에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -111,11 +168,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       setReplyTexts(prev => ({ ...prev, [questionId]: '' }));
       setActiveReplyId(null);
       fetchQuestions(); 
-      alert('답변이 등록되었습니다.');
+      showAlert('답변이 등록되었습니다.');
     } catch (error) {
       console.error('Failed to submit reply:', error);
       const errorMessage = error.response?.data?.error || '답변 등록에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -158,11 +215,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       
       setShowReportModal(false);
       setReportTarget(null);
-      alert('신고가 접수되었습니다.');
+      showAlert('신고가 접수되었습니다.');
     } catch (error) {
       console.error('Failed to submit report:', error);
       const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -188,11 +245,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       setEditingId(null);
       setEditingText('');
       fetchQuestions();
-      alert('댓글이 수정되었습니다.');
+      showAlert('댓글이 수정되었습니다.');
     } catch (error) {
       console.error('Failed to update comment:', error);
       const errorMessage = error.response?.data?.error || '댓글 수정에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -201,33 +258,36 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     setEditingText('');
   };
 
-const handleDelete = async (commentId) => {
-  if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) return;
-  
-  try {
-    await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${commentId}`, {
-      headers: {
-        'User-Id': currentUserId,
-      },
-    });
-    
-    fetchQuestions(); // 새로고침
-    alert('댓글이 삭제되었습니다.');
-  } catch (error) {
-    console.error('Failed to delete comment:', error);
-    const errorMessage = error.response?.data?.error || '댓글 삭제에 실패했습니다.';
-    alert(errorMessage);
-  }
-};
+  const handleDelete = async (commentId) => {
+    customDeleteConfirm(
+      '정말로 댓글을 삭제하시겠습니까?',
+      async () => {
+        try {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${commentId}`, {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          });
+          
+          fetchQuestions(); // 새로고침
+          showAlert('댓글이 삭제되었습니다.');
+        } catch (error) {
+          console.error('Failed to delete comment:', error);
+          const errorMessage = error.response?.data?.error || '댓글 삭제에 실패했습니다.';
+          showAlert(errorMessage);
+        }
+      }
+    );
+  };
 
   const handleReport = (id, userId) => {
-  if (!isLogin) {
-    alert('로그인이 필요합니다.');
-    return;
-  }
-  setReportTarget({ id, userId });
-  setShowReportModal(true);
-};
+    if (!isLogin) {
+      setShowLoginConfirm(true);
+      return;
+    }
+    setReportTarget({ id, userId });
+    setShowReportModal(true);
+  };
 
   const formatTimeAgo = (dateString) => {
     const date = new Date(dateString);
@@ -246,7 +306,6 @@ const handleDelete = async (commentId) => {
     }
     return `${diffInMonths}월전`;
   };
-
 
   if (loading) {
     return (
@@ -269,15 +328,11 @@ const handleDelete = async (commentId) => {
     );
   }
 
-  
-
   return (
     <div className={styles.travelmateQA}>
       <div className={styles.header}>
         <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
       </div>
-
-      
 
       {/* 질문 목록 */}
       <div className={styles.questionsList}>
@@ -491,10 +546,34 @@ const handleDelete = async (commentId) => {
         </div>
       )}
 
+      {/* 신고 모달 (ReportModal) */}
       <ReportModal
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         onSubmit={handleReportSubmit}
+      />
+
+      {/* 로그인 확인 모달 (LoginConfirmModal) */}
+      <LoginConfirmModal
+        isOpen={showLoginConfirm}
+        onClose={handleLoginCancel}
+        onConfirm={handleLoginConfirm}
+      />
+
+      {/* 삭제 확인 모달 (SimpleConfirmModal) */}
+      <SimpleConfirmModal
+        isOpen={showDeleteConfirm}
+        message={deleteConfirmMessage}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
+      {/* Alert 모달 (ConfirmModal) */}
+      <ConfirmModal
+        isOpen={showAlertModal}
+        onClose={hideAlert}
+        message={alertMessage}
+        type="alert"
       />
     </div>
   );

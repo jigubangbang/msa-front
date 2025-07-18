@@ -45,7 +45,7 @@ const QuestSliderCard = ({ quest, onClick }) => {
       
       <div className={styles.questBottom}>
         <div className={styles.questIcon}>
-          <img src={quest.icon} alt="quest icon" />
+          <img src={quest.icon || "/icons/common/unknwon_badge.png"} alt="quest icon" />
         </div>
         <div className={styles.questStats}>
           <div className={styles.statItem}>

@@ -1,169 +1,95 @@
 /* QuestAdminList.module.css */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .questAdminList {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  font-family: Pretendard, sans-serif;
-  padding: 20px;
+  font-family: 'Pretendard';
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 25px 25px 35px 25px;
+  margin-bottom: 5px;
 }
 
-
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: relative;
   margin-bottom: 20px;
 }
 
 .questListTitle {
-  margin: 0;
-  font-family: Pretendard, sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  text-align: left;
-  color: #000;
-}
-
-.updateButton {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  font-family: 'Pretendard';
+  font-size: 20px;
   font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  color: #000;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f8f9fa;
+  text-align: center;
 }
 
-.updateButton:hover {
-  background: #0056b3;
-}
-
-/* 검색 섹션 */
-.searchSection {
+/* 검색 및 필터 영역 */
+.filterContainer {
   display: flex;
   justify-content: space-between;
-  height: 50px;
   align-items: flex-end;
   margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  gap: 16px;
+}
+
+.dropdownContainer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 6px;
 }
 
 .totalCount {
   font-size: 14px;
-  color: #666;
+  color: #000;
   margin: 0;
+  margin-left: 10px;
+  position: absolute;                      
 }
 
-/* 필터 */
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 12px;
+/* 테이블 */
+.tableContainer {
+  overflow-x: auto;
   margin-bottom: 20px;
 }
 
-.filterGroup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.table {
+  font-family: 'Pretendard';
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
 }
 
-.filterLabel {
+.table thead th {
+  background-color: #f8f9fa;
+  color: #000;
   font-weight: 600;
-  color: #333;
-  min-width: 60px;
-}
-
-.filterButtons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.filterButton {
-  padding: 8px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 20px;
-  background: #fff;
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.filterButton:hover {
-  border-color: #ccc;
-  background: #fafafa;
-}
-
-.filterButton.active {
-  background: #000;
-  border-color: #000;
-  color: #fff;
-}
-
-.dropdown {
-  display: flex;
-  margin: 10px 0px;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-/* 테이블 헤더 */
-.tableHeader {
-  display: grid;
-  grid-template-columns: 60px 140px 240px 100px 80px 100px 160px 100px 120px;
-  gap: 10px;
-  padding: 12px 15px;
-  background: #f8f9fa;
-  border-radius: 8px 8px 0 0;
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-}
-
-.headerCell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 16px;
+  padding: 16px 12px;
   text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
 }
 
-.tableBody {
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  overflow: hidden;
-}
+.table thead th:nth-child(1) { width: 80px; }   /* 퀘스트 ID */
+.table thead th:nth-child(2) { width: 100px; }  /* 카테고리 */
+.table thead th:nth-child(3) { width: 170px; }  /* 퀘스트명 */
+.table thead th:nth-child(4) { width: 80px; }  /* 난이도 */
+.table thead th:nth-child(5) { width: 80px; }   /* XP */
+.table thead th:nth-child(6) { width: 80px; }  /* 시즌 퀘스트 */
+.table thead th:nth-child(7) { width: 170px; }  /* 기간 */
+.table thead th:nth-child(8) { width: 100px; }  /* 상태 */
+.table thead th:nth-child(9) { width: 100px; }  /* 생성일 */
 
 .tableRow {
-  display: grid;
-  grid-template-columns: 60px 140px 240px 100px 80px 100px 160px 100px 120px;
-  gap: 10px;
-  padding: 12px 15px;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.2s ease;
-  align-items: center;
   cursor: pointer;
-  min-height: 60px;
+  transition: background-color 0.2s ease;
 }
 
 .tableRow:hover {
-  background: #f8f9fa;
-}
-
-.tableRow:last-child {
-  border-bottom: none;
+  background-color: #f8f9fa;
 }
 
 .tableRow.inactive {
@@ -171,136 +97,103 @@
   opacity: 0.8;
 }
 
-.cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.table tbody td {
+  padding: 20px 12px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
   text-align: center;
-  font-size: 13px;
-  color: #333;
 }
 
+/* 제목 셀 */
 .titleCell {
-  text-overflow: ellipsis;
+  text-align: left !important;
+  padding-left: 16px !important;
+  max-width: 200px;
   overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 180px;
-  text-align: left;
+}
+
+.titleCell:hover {
+  color: #0056b3;
+  cursor: pointer;
 }
 
 /* 태그 스타일 */
-.typeTag {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.typeTag.auth {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.typeTag.check {
-  background: #f3e5f5;
-  color: #7b1fa2;
-}
-
 .difficultyTag {
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   text-transform: capitalize;
+  text-align: center;    
+  display: inline-block;
 }
 
 .difficultyTag.easy {
-  background: #e8f5e8;
-  color: #2e7d32;
+  background: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .difficultyTag.medium {
-  background: #fff3e0;
-  color: #f57c00;
+  background-color: #e6f3ff; 
+  color: #0066cc;            
+  border: 1px solid #b3d9ff;  
 }
 
 .difficultyTag.hard {
-  background: #ffebee;
-  color: #d32f2f;
-}
-
-.seasonalTag {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.seasonalTag.seasonal {
-  background: #fff8e1;
-  color: #f57f17;
-}
-
-.seasonalTag.permanent {
-  background: #e8f5e8;
-  color: #388e3c;
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
 }
 
 .statusTag {
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   text-transform: uppercase;
+  text-align: center;    
+  display: inline-block;
 }
 
 .statusTag.active {
-  background: #e8f5e8;
-  color: #2e7d32;
+  background: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .statusTag.inactive {
-  background: #ffebee;
-  color: #d32f2f;
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
 }
 
 .xpValue {
-  font-weight: 600;
-  color: #1976d2;
+  font-weight: 500;
+  color: #f57c00;
 }
 
 .dateRange {
   text-align: center;
-  font-size: 11px;
-  line-height: 1.2;
+  font-size: 12px;
 }
 
-/* 로딩 */
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
-  color: #666;
-  font-size: 16px;
+/* 리셋 */
+.resetIcon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  align-self: center;
 }
 
-/* 반응형 */
-@media (max-width: 1024px) {
-  .questAdminList {
-    padding: 15px;
-  }
-  
-  .tableHeader,
-  .tableRow {
-    grid-template-columns: 50px 70px 100px 150px 80px 50px 70px 120px 70px 90px;
-    gap: 8px;
-    padding: 10px 12px;
-    font-size: 12px;
-  }
-  
-  .titleCell {
-    max-width: 130px;
-  }
+.resetIcon:hover {
+  opacity: 0.5;
+  transform: rotate(90deg);
 }

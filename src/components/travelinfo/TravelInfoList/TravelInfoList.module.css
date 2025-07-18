@@ -414,3 +414,22 @@
     font-size: 10px;
   }
 }
+
+.searchConditions {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.searchConditionsLabel {
+  font-weight: 600;
+  color: #333;
+}
+
+.searchCondition {
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 4px;
+  font-size: 12px;
+}

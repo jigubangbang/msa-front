@@ -152,7 +152,7 @@ export default function ProfileSidebar() {
             <div className={styles.container}>
                 <div className={styles.profileImageWrapper}>
                     {
-                        data.profileImage ? (
+                        profileImage ? (
                             <img
                                 className={styles.profileImage}
                                 src={profileImage}
@@ -195,7 +195,9 @@ export default function ProfileSidebar() {
                 </div>
 
                 <span className={styles.nickname}>
-                    {data.nickname}
+                    <Link to={`/profile/${userId}`} className={styles.value}>
+                        {data.nickname}
+                    </Link>
                     {nationality && findFlagUrlByIso3Code(nationality) && <img className={styles.flagIcon} src={findFlagUrlByIso3Code(nationality)} alt="flag"/>}
                     {data.premium && <img className={styles.premiumIcon} src={premiumIcon}/>}
                 </span>
@@ -256,7 +258,9 @@ export default function ProfileSidebar() {
                     </div>
                     <div className={styles.statItem}>
                         <div className={styles.label}>방문 국가</div>
-                        <div className={styles.value}>{data.countryVisitCount}</div>
+                        <Link to={`/profile/${userId}/countries`} className={styles.value}>
+                            <div className={styles.value}>{data.countryVisitCount}</div>
+                        </Link>
                     </div>
                 </div>
             </div>

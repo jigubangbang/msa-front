@@ -3,25 +3,18 @@
 
 .sidebar {
   font-family: "Pretendard";
-  width: 180px; /* 항상 펼쳐진 상태 */
-  height: 100%;
+  width: 200px;
+  height: 100%; 
   background-color: #ffffff;
   border-right: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
+  top: 0; /* 화면 최상단 */
   left: 0;
-  top: 0;
-  z-index: 10;
-  overflow: hidden;
-  
-}
-
-/* Navigation */
-.navigation {
-  flex: 1;
-  padding: 8px 0;
-  overflow-y: auto;
+  z-index: 10; /* 헤더보다 낮게 */
+  padding-top: 140px; /* 헤더 + 배너 높이만큼 내부 여백 줌 */
+  box-sizing: border-box;
 }
 
 .menuGroup {
@@ -137,6 +130,12 @@
 }
 
 /* Scrollbar */
+.navigation {
+  flex: 1;
+  padding: 8px 0;
+  overflow-y: auto;
+}
+
 .navigation::-webkit-scrollbar {
   width: 4px;
 }
@@ -146,10 +145,15 @@
 }
 
 .navigation::-webkit-scrollbar-thumb {
-  background: #dee2e6;
+  background: transparent;  /* 기본적으로 투명 */
   border-radius: 2px;
 }
 
-.navigation::-webkit-scrollbar-thumb:hover {
+/* hover 시에만 스크롤바 보이게 */
+.navigation:hover::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+}
+
+.navigation:hover::-webkit-scrollbar-thumb:hover {
   background: #ced4da;
 }

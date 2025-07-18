@@ -68,7 +68,7 @@ export default function PostInfoStep({setPostInfo, title, publicStatus, errorMes
                             className={styles.formInput}
                             required
                         >
-                            <option value="" disabled selected>국가를 선택하세요</option>
+                            <option value="" disabled>국가를 선택하세요</option>
                             {countries.map((country) => (
                                 <option key={country.id} value={country.id}>{country.name}</option>
                             ))}
@@ -84,7 +84,7 @@ export default function PostInfoStep({setPostInfo, title, publicStatus, errorMes
                         onChange={(e) => setSelectedCity(e.target.value)}
                         className={styles.formInput}
                     >
-                        <option value="" disabled selected>도시를 선택하세요</option>
+                        <option value="" disabled>도시를 선택하세요</option>
                         {cities && cities.map((city) => (
                             <option key={city.id} value={city.id}>{city.cityName}</option>
                         ))}

@@ -106,7 +106,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
               <span className={styles.questTitle}>{quest.title}</span>
             </div>
             <div className={styles.questStatus}>
-              <div className={styles.questIcon}>🎯</div>
+              <div className={styles.questIcon}></div>
             </div>
           </div>
         ))}

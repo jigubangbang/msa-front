@@ -62,7 +62,7 @@ export default function ProfileDropdown({ onLogout }) {
           </Link>
           <Link to={`/profile/${userId}/diary`} onClick={handleCloseDropdown}>
             <div className={styles.dropdownItem}>
-              <img src={inkpenIcon} alt="여행일지" /> 여행일지
+              <img src={inkpenIcon} alt="여행일지" /> 여행 일지
             </div>
           </Link>
 

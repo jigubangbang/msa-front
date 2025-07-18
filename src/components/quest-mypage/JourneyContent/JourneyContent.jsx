@@ -10,6 +10,7 @@ import CircleProgress from "../ProgressBar/CircleProgress";
 import UserTimeline from "../UserTimeline/UserTimeline";
 import CompactLevelChart from "../CompactLevelChart/CompactLevelChart";
 import api from "../../../apis/api";
+import CirclesSpinner from "../../common/Spinner/CirclesSpinner";
 
 export default function JourneyContent({
       userInfo,
@@ -125,7 +126,7 @@ export default function JourneyContent({
       return (
         <div className={styles.container}>
           <div className={styles.content}>
-            <div className={styles.loading}>로딩 중...</div>
+            <CirclesSpinner/>
           </div>
         </div>
       );

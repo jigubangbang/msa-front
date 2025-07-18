@@ -305,6 +305,10 @@ body {
   position: relative;
 }
 
+.tab:hover {
+  color: black;
+}
+
 .active {
   color: black;
   font-weight: bold;

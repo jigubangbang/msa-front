@@ -1,6 +1,11 @@
 
+import api from '../../../apis/api';
+import API_ENDPOINTS from '../../../utils/constants';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import styles from './MyPageHeader.module.css';
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 
 const MyPageHeader = ({ 
@@ -12,9 +17,66 @@ const MyPageHeader = ({
   inProgressQuests,
   completedQuests,
   awardedBadges,
-  onBadgeClick
+  onBadgeClick,
+  isLogin
 }) => {
     const [badgeHover, setBadgeHover] = useState(false);
+    const [levelHover, setLevelHover] = useState(false); 
+  const [levelInfo, setLevelInfo] = useState({
+    currentLevel: 1,
+    currentXp: 0,
+    nextLevel: 2,
+    xpRequiredForNextLevel: 100,
+    xpNeededForNextLevel: 100,
+    isMaxLevel: false
+  });
+    const navigate=useNavigate();
+
+     const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+
+  useEffect(() => {
+    const fetchUserLevel = async () => {
+      try {
+        const response = await api.get(`${API_ENDPOINTS.QUEST.PUBLIC}/user-level/${userId}`);
+        if (response.data) {
+          setLevelInfo({
+            currentLevel: response.data.currentLevel,
+            currentXp: response.data.currentXp,
+            nextLevel: response.data.nextLevel,
+            xpRequiredForNextLevel: response.data.xpRequiredForNextLevel,
+            xpRequiredForCurrentLevel: response.data.xpRequiredForCurrentLevel,
+            xpNeededForNextLevel: response.data.xpNeededForNextLevel,
+            isMaxLevel: response.data.maxLevel
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch user level:', error);
+      }
+    };
+
+    if (userId) {
+      fetchUserLevel();
+    }
+  }, [userId]);
+
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
+ const getProgressPercentage = () => {
+  if (levelInfo.isMaxLevel) return 100;
+  
+  const { currentXp, xpRequiredForCurrentLevel, xpRequiredForNextLevel } = levelInfo;
+  
+  const progress = ((currentXp - xpRequiredForCurrentLevel) / (xpRequiredForNextLevel - xpRequiredForCurrentLevel)) * 100;
+
+  
+  return Math.max(0, Math.min(100, progress));
+};
+  
 
   const handleBadgeClick = () => {
     if (pinnedBadgeInfo && onBadgeClick) {
@@ -32,9 +94,20 @@ const MyPageHeader = ({
     setBadgeHover(false);
   };
 
+  const handleLevelMouseEnter = () => {
+    setLevelHover(true);
+  };
+
+  const handleLevelMouseLeave = () => {
+    setLevelHover(false);
+  };
+
   const handleProfileClick = () => {
-    //#NeedToChange
-    console.log(userId);
+    if (!isLogin) {
+      setIsModalOpen(true);
+      return;
+    }
+    navigate(`/profile/${userId}`);
   }
 
   return (
@@ -48,9 +121,7 @@ const MyPageHeader = ({
               {profileImage ? (
                 <img src={profileImage} alt="프로필" className={styles.img} />
               ) : (
-                <div className={styles.defaultAvatar}>
-                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지"/>
-              </div>
+                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지" className={styles.img}/>
               )}
             </div>
           </div>
@@ -91,6 +162,51 @@ const MyPageHeader = ({
           <div className={styles.userInfo}>
             <span className={styles.nickname}>{nickname}</span>
             <span className={styles.userId}>({userId})</span>
+            
+          </div>
+
+            {/*  레벨 프로그레스 바 */}
+            <div 
+              className={styles.levelSection}
+              onMouseEnter={handleLevelMouseEnter}
+              onMouseLeave={handleLevelMouseLeave}
+            >
+              <div className={styles.levelInfo}>
+                <span className={styles.levelText}>Lv. {levelInfo.currentLevel}</span>
+                <div className={styles.progressBarContainer}>
+                  <div className={styles.progressBar}>
+                    <div 
+                      className={styles.progressFill}
+                      style={{ width: `${getProgressPercentage()}%` }}
+                    />
+                  </div>
+                </div>
+            </div>
+
+            {/* 레벨 호버 툴팁 */}
+            {levelHover && (
+              <div className={styles.levelTooltip}>
+                <div className={styles.levelTooltipHeader}>
+                  <span className={styles.currentLevelText}>Level {levelInfo.currentLevel}</span>
+                  {!levelInfo.isMaxLevel && <span className={styles.nextLevelText}>→ Level {levelInfo.nextLevel}</span>}
+                </div>
+                <div className={styles.xpInfo}>
+                  <div className={styles.xpCurrent}>현재 XP: <strong>{levelInfo.currentXp.toLocaleString()}</strong></div>
+                  {!levelInfo.isMaxLevel && (
+                    <>
+                      <div className={styles.xpNeeded}>다음 레벨까지: <strong>{levelInfo.xpNeededForNextLevel.toLocaleString()} XP</strong></div>
+                      <div className={styles.xpTotal}>다음 레벨 필요 XP: {levelInfo.xpRequiredForNextLevel.toLocaleString()}</div>
+                    </>
+                  )}
+                  {levelInfo.isMaxLevel && (
+                    <div className={styles.maxLevel}>🎉 최고 레벨 달성!</div>
+                  )}
+                </div>
+                <div className={styles.progressInfo}>
+                  다음 레벨까지 <strong>{getProgressPercentage().toFixed(1)}%</strong>
+                </div>
+              </div>
+            )}
           </div>
 
                 {/* 통계 섹션 */}
@@ -115,6 +231,12 @@ const MyPageHeader = ({
 
 
       </div>
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 };

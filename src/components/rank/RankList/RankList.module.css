@@ -11,7 +11,7 @@
 .rankingListTitle {
   margin: 0;
   font-family: Pretendard, sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   text-align: left;
   color: #000;
@@ -68,6 +68,7 @@
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s ease;
   align-items: center;
+  cursor: pointer;
 }
 
 .tableRow:hover {

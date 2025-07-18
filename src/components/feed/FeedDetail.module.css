@@ -257,6 +257,7 @@
   transition: border-color 0.3s ease;
   box-sizing: border-box;
   color: black;
+  font-family: 'Pretendard', sans-serif; 
 }
 
 .formInput:focus {

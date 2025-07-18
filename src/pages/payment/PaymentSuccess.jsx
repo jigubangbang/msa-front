@@ -36,8 +36,8 @@ const PaymentSuccess = () => {
     verifyPayment();
   }, [location]);
 
-  const goToHome = () => {
-    navigate('/');
+  const goToPremiumPage = () => {
+    navigate('/user/premium');
   };
 
   if (isLoading) {
@@ -51,7 +51,7 @@ const PaymentSuccess = () => {
           <div className="error-icon">!</div>
           <h1>결제 처리 오류</h1>
           <p>{error}</p>
-          <button onClick={goToHome} className="confirm-button">홈으로 돌아가기</button>
+          <button onClick={goToPremiumPage} className="confirm-button">프리미엄 페이지로 돌아가기</button>
         </div>
       </div>
     );
@@ -63,7 +63,7 @@ const PaymentSuccess = () => {
         <div className="success-icon">✓</div>
         <h1>결제가 완료되었습니다</h1>
         <p>이제부터 지구방방의 모든 프리미엄 혜택을 누릴 수 있습니다!</p>
-        <button onClick={goToHome} className="confirm-button">
+        <button onClick={goToPremiumPage} className="confirm-button">
           프리미엄 서비스 즐기러 가기
         </button>
       </div>

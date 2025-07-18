@@ -1,3 +1,5 @@
+import ReactDOM from "react-dom";
+import modalRoot from "../../utils/modalRoot";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./FeedDetail.module.css";
@@ -172,7 +174,7 @@ export default function FeedDetail() {
         }
     }, []);
 
-    return (
+    return ReactDOM.createPortal(
         <>
             {data && (
                 <div className={styles.overlay} onClick={() => navigate(-1)}>
@@ -366,6 +368,7 @@ export default function FeedDetail() {
                     )}
                 </div>
             )}
-        </>
+        </>,
+        modalRoot
     );
 }

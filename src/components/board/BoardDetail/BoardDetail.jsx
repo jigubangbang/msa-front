@@ -448,11 +448,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   };
 
   const handleGoBack = () => {
-    if (location.state?.from) {
-      navigate(location.state.from, { replace: true });
-    } else {
-      navigate('/board/popular', { replace: true });
-    }
+    navigate(-1);
   };
 
   const handlePostDropdownAction = (type) => {

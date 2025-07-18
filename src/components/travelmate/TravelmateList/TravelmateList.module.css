@@ -41,6 +41,13 @@
   justify-content: space-between;
   height: 50px;
   align-items: flex-end;
+  padding-bottom: 20px;
+}
+
+.searchValSection{
+  display: flex;
+  justify-content: space-between;
+  height: 30px;
   margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid #f0f0f0;

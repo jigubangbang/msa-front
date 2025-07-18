@@ -51,7 +51,6 @@ const TravelmateDetailPage = () => {
                 localStorage.removeItem("accessToken");
                 setIsLogin(false);
                 setCurrentUserId(null);
-                alert("로그인이 만료되었습니다.");
                 navigate('/login');
                 return;
             }
@@ -64,15 +63,12 @@ const TravelmateDetailPage = () => {
             localStorage.removeItem("accessToken");
             setIsLogin(false);
             setCurrentUserId(null);
-            alert("로그인 정보가 유효하지 않습니다.");
             navigate('/login');
             return;
         }
     } else {
-        // 토큰이 없으면 즉시 리다이렉트
         setIsLogin(false);
         setCurrentUserId(null);
-        alert("로그인이 필요한 서비스입니다.");
         navigate('/login');
         return;
     }

@@ -8,6 +8,7 @@ import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 import BadgeItem from "./BadgeItem/BadgeItem";
 import api from "../../../apis/api";
+import CirclesSpinner from "../../common/Spinner/CirclesSpinner";
 
 
 export default function BadgesContent({
@@ -124,7 +125,7 @@ const handleQuestClickFromBadge = (quest_id) => {
     return (
       <div className={styles.container}>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

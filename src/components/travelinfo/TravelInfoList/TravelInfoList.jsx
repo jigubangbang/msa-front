@@ -6,8 +6,12 @@ import styles from './TravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import { useNavigate } from 'react-router-dom';
 
 const TravelInfoList = ({
   currentUserId,
@@ -23,14 +27,26 @@ const TravelInfoList = ({
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [joinedChats, setJoinedChats] = useState(new Set());
   const [selectedInfo, setSelectedInfo] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
-    const [showReportModal, setShowReportModal] = useState(false);
-    const [reportInfo, setReportInfo] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportInfo, setReportInfo] = useState(null);
+
+  // Alert 모달 상태 (ConfirmModal)
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  // 삭제 확인 모달 상태 (SimpleConfirmModal)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmMessage, setDeleteConfirmMessage] = useState('');
+  const [deleteConfirmCallback, setDeleteConfirmCallback] = useState(null);
+
+  // 로그인 확인 모달 상태 (LoginConfirmModal)
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
 
   // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
+  const { openChat, closeChat, chatRooms } = useChatContext();
+  const navigate = useNavigate();
   
   // 내부에서 카테고리와 정렬 관리
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
@@ -38,6 +54,45 @@ const TravelInfoList = ({
 
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  // 모달 관련 함수들
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const hideAlert = () => {
+    setShowAlertModal(false);
+    setAlertMessage('');
+  };
+
+  const customDeleteConfirm = (message, callback) => {
+    setDeleteConfirmMessage(message);
+    setDeleteConfirmCallback({ fn: callback });
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirmCallback && deleteConfirmCallback.fn) {
+      deleteConfirmCallback.fn();
+    }
+    setShowDeleteConfirm(false);
+    setDeleteConfirmCallback(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    setDeleteConfirmCallback(null);
+  };
+
+  const handleLoginConfirm = () => {
+    setShowLoginConfirm(false);
+    navigate('/login');
+  };
+
+  const handleLoginCancel = () => {
+    setShowLoginConfirm(false);
+  };
 
   // 카테고리 정의 (Quest와 동일한 스타일)
   const categories = [
@@ -109,7 +164,7 @@ const TravelInfoList = ({
           return newSet;
         });
       } else {
-        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${chatId}`, 
+        await api.post(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/like/${postId}`, 
           {},
           {
             headers: {
@@ -134,9 +189,7 @@ const TravelInfoList = ({
     event.stopPropagation();
     
     if (!isLogin) {
-      if (window.confirm('로그인이 필요한 서비스입니다. 로그인하시겠습니까?')) {
-        window.location.href = '/login';
-      }
+      setShowLoginConfirm(true);
       return;
     }
 
@@ -144,7 +197,7 @@ const TravelInfoList = ({
       handleChatClick(travelinfo.id);
     } else {
       setSelectedInfo(travelinfo);
-      setIsModalOpen(true);
+      setIsJoinModalOpen(true);
     }
   };
 
@@ -160,16 +213,20 @@ const TravelInfoList = ({
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }
+        });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlert('채팅방 정보를 가져오는데 실패했습니다.');
       }
-      
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방을 불러오는데 실패했습니다.');
+      showAlert('채팅방을 불러오는데 실패했습니다.');
     }
   };
 
@@ -192,17 +249,17 @@ const TravelInfoList = ({
           : info
       ));
 
-      alert('참여가 완료되었습니다!');
-      setIsModalOpen(false);
+      showAlert('참여가 완료되었습니다!');
+      setIsJoinModalOpen(false);
       setSelectedInfo(null);
     } catch (error) {
       console.error('Failed to join chat:', error);
-      alert('참여에 실패했습니다.');
+      showAlert('참여에 실패했습니다.');
     }
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  const handleJoinModalClose = () => {
+    setIsJoinModalOpen(false);
     setSelectedInfo(null);
   };
 
@@ -216,7 +273,7 @@ const TravelInfoList = ({
     console.log('신고하기:', travelinfo);
     // 신고 로직 구현
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      showAlert('로그인이 필요합니다.');
       return;
     }
     setShowReportModal(true);
@@ -247,15 +304,14 @@ const TravelInfoList = ({
         
         setShowReportModal(false);
         setReportInfo(null);
-        alert('신고가 접수되었습니다.');
+        showAlert('신고가 접수되었습니다.');
         
       } catch (error) {
         console.error('Failed to submit report:', error);
         const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-        alert(errorMessage);
+        showAlert(errorMessage);
       }
     };
-
 
   const handleEdit = (travelinfoId) => {
     console.log('수정하기:', travelinfoId);
@@ -264,24 +320,25 @@ const TravelInfoList = ({
   };
 
   const handleDelete = async (travelinfoId) => {
-    if (!window.confirm('정말로 이 정보방을 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
-      {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
-      alert('정보방이 삭제되었습니다.');
-      // 목록 새로고침
-      fetchTravelinfos();
-    } catch (error) {
-      console.error('Failed to delete travelinfo:', error);
-      alert('삭제에 실패했습니다.');
-    }
+    customDeleteConfirm(
+      '정말로 이 정보방을 삭제하시겠습니까?',
+      async () => {
+        try {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          });
+          showAlert('정보방이 삭제되었습니다.');
+          // 목록 새로고침
+          fetchTravelinfos();
+        } catch (error) {
+          console.error('Failed to delete travelinfo:', error);
+          showAlert('삭제에 실패했습니다.');
+        }
+      }
+    );
   };
 
   // 카테고리, 정렬, 검색어, 페이지 변경시 데이터 fetch
@@ -360,8 +417,23 @@ const TravelInfoList = ({
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
     setCurrentPage(pageNum);
   };
+
+  const getSelectedCategoryNames = () => {
+  if (selectedCategories.length === 0) return null;
+  
+  return selectedCategories.map(categoryId => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.label : categoryId;
+  });
+};
+
+const getSortDisplayText = () => {
+  const selected = sortOptions.find(opt => opt.value === sortOption);
+  return selected ? selected.label : "정렬 기준";
+};
 
   if (loading) {
     return (
@@ -377,7 +449,7 @@ const TravelInfoList = ({
       {/* 헤더와 정렬 */}
       <div className={styles.header}>
         <Dropdown
-          defaultOption="정렬 기준"
+          defaultOption={getSortDisplayText()}
           options={sortOptions}
           onSelect={handleSortChange}
         />
@@ -405,11 +477,27 @@ const TravelInfoList = ({
       </div>
 
       {/* 검색 결과 정보 */}
-      <div className={styles.searchSection}>
-        <p className={styles.totalCount}>
-          현재 {totalCount}개의 정보 공유방이 있습니다.
-        </p>
-      </div>
+    <div className={styles.searchSection}>
+      <p className={styles.totalCount}>
+        {searchTerm 
+          ? `"${searchTerm}"의 검색 결과... ${totalCount}개의 정보 공유방을 찾았습니다.`
+          : `현재 ${totalCount}개의 정보 공유방이 있습니다.`
+        }
+      </p>
+      
+      {/* 카테고리 선택 결과 표시 */}
+      {selectedCategories.length > 0 && (
+        <div className={styles.searchConditions}>
+          <span className={styles.searchConditionsLabel}>카테고리 선택: </span>
+          {getSelectedCategoryNames().map((categoryName, index) => (
+            <span key={index} className={styles.searchCondition}>
+              {categoryName}
+              {index < getSelectedCategoryNames().length - 1 && ', '}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
 
       {/* Table Header */}
       <div className={styles.tableHeader}>
@@ -531,28 +619,44 @@ const TravelInfoList = ({
         />
       )}
 
+      {/* 참여 모달 (JoinChatModal) */}
       <JoinChatModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
+        isOpen={isJoinModalOpen}
+        onClose={handleJoinModalClose}
         onSubmit={handleJoinSubmit}
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
       />
 
-      {chatModalOpen && selectedChatId && (
-          <ChatModal
-            isOpen={chatModalOpen}
-            onClose={() => setChatModalOpen(false)}
-            chatId={selectedChatId}
-            currentUserId={currentUserId}
-          />
-        )}
-      
+      {/* 신고 모달 (ReportModal) */}
       <ReportModal
-              show={showReportModal}
-              onClose={handleReportClose}
-              onSubmit={handleReportSubmit}
-            />
+        show={showReportModal}
+        onClose={handleReportClose}
+        onSubmit={handleReportSubmit}
+      />
+
+      {/* 로그인 확인 모달 (LoginConfirmModal) */}
+      <LoginConfirmModal
+        isOpen={showLoginConfirm}
+        onClose={handleLoginCancel}
+        onConfirm={handleLoginConfirm}
+      />
+
+      {/* 삭제 확인 모달 (SimpleConfirmModal) */}
+      <SimpleConfirmModal
+        isOpen={showDeleteConfirm}
+        message={deleteConfirmMessage}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
+      {/* Alert 모달 (ConfirmModal) */}
+      <ConfirmModal
+        isOpen={showAlertModal}
+        onClose={hideAlert}
+        message={alertMessage}
+        type="alert"
+      />
     </div>
   );
 };

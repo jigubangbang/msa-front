@@ -1,144 +1,153 @@
 /* BadgeAdminList.module.css */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 .badgeAdminList {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  font-family: Pretendard, sans-serif;
-  padding: 20px;
+  font-family: 'Pretendard';
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 25px 25px 35px 25px;
+  margin-bottom: 5px;
 }
 
 .header {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-family: 'Pretendard';
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f8f9fa;
+  text-align: center;
+}
+
+.filterContainer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.badgeListTitle {
-  margin: 0;
-  font-family: Pretendard, sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  text-align: left;
-  color: #000;
-}
-
-/* 카운트 섹션 */
-.countSection {
-  display: flex;
-  justify-content: flex-start;
-  height: 50px;
   align-items: flex-end;
   margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  gap: 16px;
 }
 
 .totalCount {
   font-size: 14px;
-  color: #666;
+  color: #000;
   margin: 0;
+  margin-left: 10px;
+  position: absolute;                      
 }
 
-/* 테이블 헤더 */
-.tableHeader {
-  display: grid;
-  grid-template-columns:60px 80px 200px 200px 120px 150px 120px 100px;
-  gap: 10px;
-  padding: 12px 15px;
-  background: #f8f9fa;
-  border-radius: 8px 8px 0 0;
+/* 테이블 */
+.tableContainer {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.table {
+  font-family: 'Pretendard';
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  color: #000;
   font-weight: 600;
-  font-size: 14px;
-  color: #333;
-}
-
-.headerCell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 16px;
+  padding: 16px 12px;
   text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
 }
 
-.tableBody {
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  overflow: hidden;
-}
+.table thead th:nth-child(1) { width: 80px; }   /* 뱃지 ID */
+.table thead th:nth-child(2) { width: 120px; }  /* 아이콘 */
+.table thead th:nth-child(3) { width: 150px; }  /* 한국어 제목 */
+.table thead th:nth-child(4) { width: 150px; }  /* 영어 제목 */
+.table thead th:nth-child(5) { width: 120px; }  /* 난이도 */
+.table thead th:nth-child(6) { width: 120px; }  /* 연결 퀘스트 */
+.table thead th:nth-child(7) { width: 120px; }  /* 생성일 */
+.table thead th:nth-child(8) { width: 100px; }  /* 액션 */
 
 .tableRow {
-  display: grid;
-  grid-template-columns: 60px 80px 200px 200px 120px 150px 120px 100px;
-  gap: 10px;
-  padding: 12px 15px;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.2s ease;
-  align-items: center;
   cursor: pointer;
-  min-height: 70px;
+  transition: background-color 0.2s ease;
 }
 
 .tableRow:hover {
-  background: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
-.tableRow:last-child {
-  border-bottom: none;
-}
-
-.cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.table tbody td {
+  padding: 16px 8px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
   text-align: center;
-  font-size: 13px;
-  color: #333;
 }
 
+/* 제목 셀 */
 .titleCell {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  text-align: left !important;
+  padding-left: 16px !important;
   max-width: 180px;
-  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleCell:hover {
+  color: #0056b3;
+  cursor: pointer;
 }
 
 /* 뱃지 아이콘 */
 .badgeIcon {
   width: 50px;
-  height: 50px;
+  height: 60px;
 
 }
 
 /* 난이도 태그 */
 .difficultyTag {
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   text-transform: capitalize;
+  text-align: center;    
+  display: inline-block;
 }
 
 .difficultyTag.difficulty1 {
-  background: #e8f5e8;
-  color: #2e7d32;
+  background: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .difficultyTag.difficulty2 {
-  background: #e3f2fd;
-  color: #1976d2;
+  background-color: #e6f3ff; 
+  color: #0066cc;            
+  border: 1px solid #b3d9ff;  
 }
 
 .difficultyTag.difficulty3 {
-  background: #fff3e0;
-  color: #f57c00;
+  background: #fff8e1;
+  color: #f57f17;
+  border: 1px solid #ffcc02;
 }
 
 .difficultyTag.difficulty4 {
-  background: #ffebee;
-  color: #d32f2f;
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
 }
 
 /* 퀘스트 관련 */
@@ -150,13 +159,16 @@
 }
 
 .questCount {
-  padding: 4px 8px;
-  background: #e3f2fd;
-  color: #1976d2;
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+  text-align: center;    
+  display: inline-block;
 }
 
 .questCount:hover + .questTooltip {
@@ -185,10 +197,10 @@
 }
 
 .questItem {
-  padding: 2px 0;
-  font-size: 12px;
+  padding: 3px 0;
+  font-size: 13px;
   color: #333;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .questItem:last-child {
@@ -196,38 +208,35 @@
 }
 
 .noQuests {
-  color: #999;
-  font-style: italic;
-  font-size: 11px;
-}
-
-/* 로딩 */
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
-  color: #666;
-  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;    
+  display: inline-block;
 }
 
 .modifyButton {
-  padding: 6px 12px;
-  background: #007bff;
-  color: white;
-  border: none;
+  font-family: 'Pretendard';
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 4px 8px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.modifyButton:hover {
-  background: #0056b3;
-}
-
+.modifyButton:hover,
+.modifyButton:focus,
 .modifyButton:active {
-  transform: translateY(1px);
+  background-color: #e9ecef;
+  color: #495057;
+  outline: none !important;
+  border: 1px solid #dee2e6 !important; 
 }
-

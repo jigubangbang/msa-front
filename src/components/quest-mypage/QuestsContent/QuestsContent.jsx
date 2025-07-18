@@ -6,6 +6,7 @@ import BadgeModal from "../../modal/BadgeModal/BadgeModal";
 import QuestModal from "../../modal/QuestModal/QuestModal";
 import QuestCertificationViewModal from "../../modal/QuestCertificationViewModal/QuestCertificationViewModal";
 import api from "../../../apis/api";
+import CirclesSpinner from "../../common/Spinner/CirclesSpinner";
 
 
 const QuestsContent = ({ userInfo, isLogin, onUpdate, currentUserId }) => {
@@ -120,10 +121,10 @@ const handleQuestClickFromBadge = (quest_id) => {
   ];
 
   const statusOptions = [
-    { value: 'all', label: 'All' },
-    { value: 'IN_PROGRESS', label: 'In Progress' },
-    { value: 'COMPLETED', label: 'Completed' },
-    { value: 'GIVEN_UP', label: 'Given Up' }
+    { value: 'all', label: '전체' },
+    { value: 'IN_PROGRESS', label: '진행 중' },
+    { value: 'COMPLETED', label: '완료' },
+    { value: 'GIVEN_UP', label: '포기' }
   ];
 
   const getCategoryLabel = (categoryValue) => {
@@ -231,7 +232,7 @@ const handleViewModalClose = () => {
     return (
       <div className={styles.container}>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );
@@ -281,15 +282,15 @@ const handleViewModalClose = () => {
 
       {/* 테이블 헤더 */}
       <div className={styles.tableHeader}>
-        <div className={styles.headerCell}>Quest ID</div>
-        <div className={styles.headerCell}>Status</div>
-        <div className={styles.headerCell}>Category</div>
-        <div className={styles.headerCell}>Title</div>
-        <div className={styles.headerCell}>Difficulty/XP</div>
-        <div className={styles.headerCell}>Started</div>
-        <div className={styles.headerCell}>Completed</div>
-        <div className={styles.headerCell}>Description</div>
-        <div className={styles.headerCell}>Action</div>
+        <div className={styles.headerCell}>퀘스트 ID</div>
+        <div className={styles.headerCell}>상태</div>
+        <div className={styles.headerCell}>카테고리</div>
+        <div className={styles.headerCell}>제목</div>
+        <div className={styles.headerCell}>난이도/XP</div>
+        <div className={styles.headerCell}>시작</div>
+        <div className={styles.headerCell}>완료</div>
+        <div className={styles.headerCell}>설명</div>
+        <div className={styles.headerCell}>액션</div>
       </div>
 
       {/* 테이블 바디 */}

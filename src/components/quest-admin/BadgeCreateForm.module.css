@@ -1,52 +1,49 @@
 /* BadgeCreateForm.module.css */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 /* =================
    BASE STYLES
    ================= */
-.badgeCreateForm {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  font-family: Pretendard, sans-serif;
-  padding: 24px;
+.section {
+  font-family: 'Pretendard';
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 25px 25px 35px 25px;
+  margin-bottom: 5px;
+}
+
+.formSection {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 24px;
+  border: 1px solid #e9ecef;
 }
 
 /* =================
    HEADER
    ================= */
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #e9ecef;
+  position: relative;
+  margin-bottom: 20px;
 }
 
-.title {
-  margin: 0;
-  font-size: 24px;
+.sectionTitle {
+  font-family: 'Pretendard';
+  font-size: 20px;
   font-weight: 600;
-  color: #212529;
+  color: #000;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f8f9fa;
+  text-align: center;
 }
 
-.closeButton {
-  padding: 8px 12px;
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.closeButton:hover {
-  background: #5a6268;
+.formSectionTitle {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #495057;
 }
 
 /* =================
@@ -56,20 +53,6 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-}
-
-.section {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 24px;
-  border: 1px solid #e9ecef;
-}
-
-.sectionTitle {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #495057;
 }
 
 .required {
@@ -82,7 +65,7 @@
    ================= */
 .basicInfo {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
 }
 
@@ -90,13 +73,12 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
 }
 
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .formGroup {
@@ -106,9 +88,11 @@
 }
 
 .label {
+  font-family: 'Pretendard';
   font-size: 14px;
-  font-weight: 600;
-  color: #495057;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 4px;
 }
 
 .idNote,
@@ -119,36 +103,52 @@
   font-style: italic;
 }
 
-.input {
-  padding: 10px 12px;
-  border: 1px solid #ced4da;
+.textInput {
+  font-family: 'Pretendard';
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.2s ease;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
 }
 
-.input:focus {
+.textInput:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #000;
+  background-color: #fff;
 }
 
-.textarea {
-  flex: 1;
-  padding: 10px 12px;
-  border: 1px solid #ced4da;
+.textInput::placeholder {
+  color: #6c757d;
+}
+
+.textareaInput {
+  font-family: 'Pretendard';
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 14px;
-  resize: none;
-  min-height: 100px;
-  font-family: inherit;
-  transition: border-color 0.2s ease;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
+  resize: vertical;
+  min-height: 130px;
 }
 
-.textarea:focus {
+.textareaInput:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #000;
+  background-color: #fff;
+}
+
+.textareaInput::placeholder {
+  color: #6c757d;
 }
 
 .formGroup.textareaGroup {
@@ -157,26 +157,45 @@
   flex-direction: column;
 }
 
-.select {
-  padding: 10px 12px;
-  border: 1px solid #ced4da;
+.selectInput {
+  font-family: 'Pretendard';
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 14px;
-  background: white;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  color: #000;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  appearance: none;
+  background-image: url('../../assets/user/dropdown.svg');  
+  background-repeat: no-repeat;                            
+  background-position: right 12px center;                  
+  background-size: 25px;                                     
+  padding-right: 50px;                                       
 }
 
-.select:focus {
+.selectInput:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #000;
+  background-color: #fff;
 }
 
 .fileHint {
   font-size: 12px;
-  color: #6c757d;
   font-style: italic;
+  font-weight: 500;
+  color: #6c757d
+}
+
+.fileHintValid {
+  color: #28a745;  
+}
+
+.fileHintInvalid {
+  color: #dc3545;  
 }
 
 /* =================
@@ -188,30 +207,32 @@
   align-items: center;
 }
 
-.idInput {
-  flex: 1;
-}
-
 .idCheckButton {
   padding: 10px 16px;
-  background: #007bff;
-  color: white;
-  border: none;
+  background-color: #000; 
+  color: #fff;           
+  border: none;         
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease; 
   white-space: nowrap;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .idCheckButton:hover:not(:disabled) {
-  background: #0056b3;
+  background-color: #333;     
+  transform: translateY(-1px); 
 }
 
 .idCheckButton:disabled {
-  background: #6c757d;
+  background-color: #6c757d;   
   cursor: not-allowed;
+  transform: none;          
 }
 
 /* =================
@@ -219,10 +240,11 @@
    ================= */
 .validationMessage {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: row;
+  gap: 8px;
   font-size: 12px;
   margin-top: 4px;
+  align-items: center;
 }
 
 .validMessage {
@@ -395,7 +417,7 @@
 
 .questTableHeader {
   display: grid;
-  grid-template-columns: 60px 1fr 120px 80px 60px 80px 60px;
+  grid-template-columns: 70px 100px 1fr 80px 60px 80px 80px 60px;
   gap: 12px;
   padding: 12px 16px;
   background: #f8f9fa;
@@ -411,7 +433,7 @@
 
 .questTableRow {
   display: grid;
-  grid-template-columns: 60px 1fr 120px 80px 60px 80px 60px;
+  grid-template-columns: 70px 100px 1fr 80px 60px 80px 80px 60px;
   gap: 12px;
   padding: 12px 16px;
   border-bottom: 1px solid #f0f0f0;
@@ -434,7 +456,7 @@
   text-align: center;
 }
 
-.questHeaderCell:nth-child(2) {
+.questHeaderCell:nth-child(3) {
   justify-content: flex-start;
 }
 
@@ -447,7 +469,7 @@
   color: #495057;
 }
 
-.questCell:nth-child(2) {
+.questCell:nth-child(3) {
   justify-content: flex-start;
 }
 
@@ -459,44 +481,53 @@
 }
 
 .questDifficultyTag {
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  text-align: center;    
+  display: inline-block;
 }
 
 .questDifficultyTag.easy {
-  background: #d1edcc;
-  color: #2e7d32;
+  background: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .questDifficultyTag.medium {
-  background: #fff3cd;
-  color: #f57c00;
+  background-color: #e6f3ff; 
+  color: #0066cc;            
+  border: 1px solid #b3d9ff;  
 }
 
 .questDifficultyTag.hard {
-  background: #f8d7da;
-  color: #d32f2f;
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
 }
 
 .questStatusTag {
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
+  text-align: center;    
+  display: inline-block;
 }
 
 .questStatusTag.active {
-  background: #d1edcc;
-  color: #2e7d32;
+  background: #f8fff9;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .questStatusTag.inactive {
-  background: #f8d7da;
-  color: #d32f2f;
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
 }
 
 .removeButton {
@@ -531,8 +562,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -593,9 +624,9 @@
 
 .questModalTableHeader {
   display: grid;
-  grid-template-columns: 60px 1fr 120px 80px 60px 80px;
+  grid-template-columns: 70px 100px 1fr 80px 60px 80px 80px 60px;
   gap: 12px;
-  padding: 12px 38px 12px 16px;
+  padding: 12px 16px;
   background: #f8f9fa;
   font-weight: 600;
   font-size: 13px;
@@ -609,7 +640,7 @@
 
 .questModalTableRow {
   display: grid;
-  grid-template-columns: 60px 1fr 120px 80px 60px 80px;
+  grid-template-columns: 70px 100px 1fr 80px 60px 80px 80px 60px;
   gap: 12px;
   padding: 12px 16px;
   border-bottom: 1px solid #f0f0f0;
@@ -626,82 +657,136 @@
 }
 
 .addQuestButton {
-  padding: 4px 12px;
-  background: #007bff;
-  color: white;
-  border: none;
+  font-family: 'Pretendard';
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 4px 8px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.addQuestButton:hover {
-  background: #0056b3;
+.addQuestButton:hover,
+.addQuestButton:focus,
+.addQuestButton:active {
+  background-color: #e9ecef;
+  color: #495057;
+  outline: none !important;
+  border: 1px solid #dee2e6 !important; 
 }
 
 /* =================
    ACTIONS
    ================= */
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid #e9ecef;
-}
-
-.cancelButton {
-  padding: 10px 20px;
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.cancelButton:hover {
-  background: #5a6268;
-}
-
-.saveButton {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.saveButton:hover:not(:disabled) {
-  background: #0056b3;
-}
-
-.saveButton:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-}
-
-/* =================
-   LOADING & ERROR
-   ================= */
-.loading,
-.error {
+.buttonRow {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
-  color: #6c757d;
-  font-size: 16px;
+  margin-top: 5px;
+  position: relative;
 }
 
-.error {
+.centerButtons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.cancelButton {
+  font-family: 'Pretendard';
+  padding: 12px 20px;
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+}
+
+.cancelButton:hover:not(:disabled) {
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
+  transform: translateY(-1px);
+}
+
+.submitButton {
+  font-family: 'Pretendard';
+  padding: 12px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #333;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 뒤로가기 */
+.backButton {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: transform 0.3s ease;
+  color: #000;
+  margin-left: -10px;
+}
+
+.backButton:hover {
+  transform: scale(1.1);
+  color: #666;
+}
+
+.backIcon {
+  width: 25px;
+  height: 25px;
+}
+
+/* 에러 메시지 */
+.message {
+  font-family: 'Pretendard';
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  margin: 0;
+  width: fit-content;
+  position: absolute;         
+  left: calc(50% + 90px);
+}
+
+.message.error {
+  background-color: #fff5f5;
   color: #dc3545;
+  border: 1px solid #f5c6cb;
+}
+
+.errorIcon {
+  font-weight: bold;
+  font-size: 16px;
 }

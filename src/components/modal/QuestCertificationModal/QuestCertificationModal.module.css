@@ -297,12 +297,15 @@
   resize: vertical;
   font-family: 'Pretendard', sans-serif;
   box-sizing: border-box;
+  background-color: #fafafa;
+  color: black;
 }
 
 .descriptionInput:focus {
   outline: none;
   border-color: #4CAF50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  background-color: #fff;
 }
 
 .buttonSection {

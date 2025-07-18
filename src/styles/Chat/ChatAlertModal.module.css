@@ -10,10 +10,15 @@
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  align-items: flex-start; 
-  padding-top: 45%;
+  align-items: flex-start;
+  padding-left: 3px; 
+  padding-top: 30%;
   z-index: 1002;
-  border-radius: 8px; /* 부모 컨테이너에 맞게 둥근 모서리 추가 */
+}
+
+.overlay.bottom {
+  align-items: flex-start;
+  padding-top: 32%;
 }
 
 .center {

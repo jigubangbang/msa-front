@@ -266,13 +266,9 @@ export default function ReportManage() {
     if (searchTerm) {
       filtered = filtered.filter(
         (report) =>
-          report.reporterNickname
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
+          report.reporterNickname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           report.reporterId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          report.targetNickname
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
+          report.targetNickname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           report.targetUserId?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -396,18 +392,10 @@ export default function ReportManage() {
       if (searchTerm) {
         filtered = filtered.filter(
           (report) =>
-            report.reporterNickname
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            report.reporterId
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            report.targetNickname
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            report.targetUserId
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase())
+            report.reporterNickname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            report.reporterId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            report.targetNickname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            report.targetUserId?.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
 
@@ -456,7 +444,7 @@ export default function ReportManage() {
           placeholder="신고자, 신고 대상으로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown

@@ -30,6 +30,15 @@ export default function TravelMateListPage() {
       sortOption: 'default'
     });
 
+    const defaultFilters = {
+      locations: [],
+      targets: [],
+      themes: [],
+      styles: [],
+      continent: [],
+      sortOption: 'default'
+    };
+
     //흠
     const showCompleted = false;
 
@@ -101,30 +110,36 @@ export default function TravelMateListPage() {
       return newFilters;
     });
     setCurrentPage(1);
+    setIsSearching(true);
+    setSearchSectionData(null);
 }
 
 const handleSearchSectionSubmit = (searchData) => {
-    console.log('SearchSection에서 받은 데이터:', searchData);
-    
-    // SearchSection 데이터를 filters 형태로 변환
-    const newFilters = {
-      ...filters,
-      locations: searchData.locations || [],
-    };
-    setSearchSectionData(searchData);
-    setFilters(newFilters);
-    setIsSearching(true);
-    setCurrentPage(1);
-    setSearchTerm('');
+  console.log('SearchSection에서 받은 데이터:', searchData);
+  
+  const newFilters = {
+    ...defaultFilters,
+    sortOption: filters.sortOption || 'default'
   };
+  
+  setSearchSectionData(searchData); 
+  setFilters(newFilters); 
+  setIsSearching(true);
+  setCurrentPage(1);
+  setSearchTerm('');
+};
 
   const handleCategorySelect = (filterData) => {
+    window.scroll(0,0);
   console.log('카테고리에서 받은 필터 데이터:', filterData);
   
-  setFilters(prev => {
-    const newFilters = { ...prev, ...filterData };
-    return newFilters;
-  });
+  const newFilters = {
+    ...defaultFilters,
+    ...filterData,
+    sortOption: filters.sortOption || 'default' // 정렬 옵션 유지
+  };
+  
+  setFilters(newFilters);
   
   setIsSearching(true);
   setCurrentPage(1);
@@ -136,13 +151,18 @@ const handleSearchSectionSubmit = (searchData) => {
 
   const handleSearchStart = () => {
     setCurrentPage(1);
+    setFilters(defaultFilters);
+    setFilters({});
     setSearchSectionData(null);
   }
 
   const handleViewAll = () => {
+    window.scroll(0,0);
     setIsSearching(true);
     setCurrentPage(1);
     setSearchTerm('');
+    setSearchSectionData(null);
+    setFilters(defaultFilters);
   }
 
   const handlePostClick = (postId) => {
@@ -164,7 +184,7 @@ const handleSearchSectionSubmit = (searchData) => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems}isLogin={isLogin}/>
+      <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
