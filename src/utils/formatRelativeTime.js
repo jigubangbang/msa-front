@@ -6,9 +6,8 @@ export function formatRelativeTime(dateString) {
 
   console.log('--- formatRelativeTime Debug ---');
   console.log('dateString:', dateString);
-  console.log('date (parsed):', date, '(', date.getTime(), ')');
+  console.log('date (parsed):', date);
   console.log('now (current):', now);
-  console.log('now (current UTC):', nowUtc, '(', nowUtc.getTime(), ')');
   console.log('diff (seconds):', diff);
   console.log('------------------------------');
 
