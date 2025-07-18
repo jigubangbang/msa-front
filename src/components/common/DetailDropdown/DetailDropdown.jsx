@@ -5,7 +5,9 @@ const DetailDropdown = ({
   isCreator = false, 
   onReport, 
   onEdit, 
-  onDelete
+  onDelete,
+  onLeave,
+  showLeave
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -50,6 +52,14 @@ const DetailDropdown = ({
           >
             신고하기
           </div>)}
+          {showLeave && onLeave && (
+            <div 
+              className={styles.dropdownItem}
+              onClick={() => handleItemClick(onLeave)}
+            >
+              모임 나가기
+            </div>
+          )}
           
           {isCreator && (
             <>
