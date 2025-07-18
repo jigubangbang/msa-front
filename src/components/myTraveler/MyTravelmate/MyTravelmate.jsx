@@ -208,35 +208,37 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
   // 채팅방 나가기
   const handleLeaveGroup = async (travelId) => {
-    try {
-      // chatId 불러오기
-      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELMATE",
-        groupId: travelId
-      });     
-      const chatRoomId = response.data.chatRoomId;
-      
-      if (chatRoomId) {
-        // 모임 나가기
-        const success = await leaveChatRoom(chatRoomId, {
-          skipConfirmation: false, // 확인 모달 표시
-          showAlert: (title, message) => showAlertModal(message),
-          onSuccess: () => {
-            if (chatRooms[chatRoomId]) {
-              closeChat(chatRoomId);
-            }
-            if (fetchTravelerData){
-              fetchTravelerData();
-            }
+    customConfirm(
+      '정말로 모임에서 나가시겠습니까?',
+      async () => {
+        try {
+          const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+            groupType: "TRAVELMATE",
+            groupId: travelId
+          });     
+          const chatRoomId = response.data.chatRoomId;
+          
+          if (chatRoomId) {
+            const success = await leaveChatRoom(chatRoomId, {
+              showAlert: (title, message) => showAlertModal(message),
+              onSuccess: () => {
+                if (chatRooms[chatRoomId]) {
+                  closeChat(chatRoomId);
+                }
+                if (fetchTravelerData) {
+                  fetchTravelerData();
+                }
+              }
+            });
+          } else {
+            showAlertModal('채팅방 정보를 찾을 수 없습니다.');
           }
-        });
-      } else {
-        showAlertModal('채팅방 정보를 찾을 수 없습니다.');
+        } catch (error) {
+          console.error('Failed to get chat room info:', error);
+          showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
+        }
       }
-    } catch (error) {
-      console.error('Failed to get chat room info:', error);
-      showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
-    }
+    );
   };
 
   const formatDate = (dateString) => {

@@ -14,7 +14,7 @@ import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
 import '../../styles/Chat/ChatSidebar.css';
 
-export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, onForceClose, showAlert, isDark, onLeave }) {
+export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInfo, originalCreatorId, creatorLoading, onForceClose, showAlert, onLeave }) {
   const { subscribe, unsubscribe } = useStomp();
   const { info, members, loading, error, refetch} = useChatRoomInfo(chatId);
   const {removeSubscription, getSubscription} = useChatSubscriptionStore();
@@ -23,8 +23,8 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   const [showReportModal, setShowReportModal] = useState(false);
   const [confirmModalInfo, setConfirmModalInfo] = useState({ show: false, title: '', message: '', onConfirm: () => {}, position: 'top' });
   const [sidebarTopOffset, setSidebarTopOffset] = useState(58);
-  const [originalCreatorId, setOriginalCreatorId] = useState(null);
   const sidebarRef = useRef(null);
+  const isOriginalCreator = originalCreatorId && senderId === originalCreatorId;
   const groupType = chatInfo?.groupType || info?.groupType;
   const navigate = useNavigate();
 
@@ -80,21 +80,6 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     setShowReportModal(true);
   };
 
-  // 최초 생성자 조회
-  const getOriginalCreator = async () => {
-    try {
-      const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/original-creator`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        }
-      });
-      return response.data;
-    } catch (error) {
-      console.error("[ChatSidebar] 최초 생성자 조회 실패:", error);
-      throw error;
-    }
-  };
-
   const getMemberRole = (member) => {
     if (member.isCreator === 1) {
       // 최초 생성자인지 확인
@@ -109,14 +94,12 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
 
   // 신고 제출 핸들러
   const handleReportSubmit = async (reportData) => {
-    try {
-      console.log("[ChatSidebar] 최초 생성자 조회 시작");
-      const originalCreatorId = await getOriginalCreator();
-      console.log("[ChatSidebar] 최초 생성자 ID:", originalCreatorId);
+    console.log("[ChatSidebar] 최초 생성자 ID:", originalCreatorId);
 
+    try {
       const reportPayload = {
         reporterId: senderId,
-        targetUserId: originalCreatorId, // 최초 생성자 받아와서 넣기?
+        targetUserId: originalCreatorId,
         contentType: "GROUP",
         contentSubtype: info?.groupType,
         contentId: parseInt(info?.groupId),
@@ -125,7 +108,6 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       };
 
       console.log("[ChatSidebar] 신고 데이터:", reportPayload);
-      console.log("[ChatSidebar] Access Token:", accessToken);
 
       const response = await api.post(`${API_ENDPOINTS.USER}/reports`, reportPayload, {
         headers: {
@@ -138,36 +120,31 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       if (response.status === 200 || response.status === 201) {
         showAlert("알림", "신고가 접수되었습니다.");
         setShowReportModal(false);
+        refetch();
       } else {
         showAlert("오류", "신고 접수에 실패했습니다.");
       }
     } catch (error) {
       console.error("[ChatSidebar] 채팅방 신고 실패:", error);
     
-    if (error.response) {
-      console.error("응답 데이터:", error.response.data);
-      console.error("응답 상태:", error.response.status);
-    
-      if (error.response.status === 404) {
-        showAlert("오류", "신고 API를 찾을 수 없습니다. 관리자에게 문의하세요.");
-      } else if (error.response.status === 400) {
-        showAlert("오류", "잘못된 신고 데이터입니다.");
+      if (error.response) {
+        console.error("응답 데이터:", error.response.data);
+        console.error("응답 상태:", error.response.status);
+      
+        if (error.response.status === 404) {
+          showAlert("오류", "신고 API를 찾을 수 없습니다. 관리자에게 문의하세요.");
+        } else if (error.response.status === 400) {
+          showAlert("오류", "잘못된 신고 데이터입니다.");
+        } else {
+          showAlert("오류", `신고 처리 중 오류가 발생했습니다. (${error.response.status})`);
+        }
       } else {
-        showAlert("오류", `신고 처리 중 오류가 발생했습니다. (${error.response.status})`);
+        showAlert("오류", "신고 처리 중 네트워크 오류가 발생했습니다.");
       }
-    } else {
-      showAlert("오류", "신고 처리 중 네트워크 오류가 발생했습니다.");
     }
-  }
-};
+  };
 
   const handleLeaveGroup = () => {
-
-    if (originalCreatorId && senderId === originalCreatorId) {
-      showAlert("알림", "방장은 채팅방을 탈퇴할 수 없습니다.");
-      return;
-    }
-
     showConfirmModal("그룹 탈퇴", "정말로 그룹을 탈퇴하시겠습니까?", async () => {
       try {
         await fetch(`${API_ENDPOINTS.CHAT}/${chatId}/members/me`, {
@@ -185,6 +162,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         }
   
         removeSubscription(chatId);
+        refetch();
         showAlert("알림", "채팅방을 성공적으로 탈퇴했습니다.");
         if (onLeave) {
           onLeave();
@@ -198,60 +176,18 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     }, 'top');
   };
 
-  const handleDeleteChatRoom = () => {
-    const confirmMessage = groupType === 'TRAVELMATE' 
-      ? "정말로 그룹을 삭제하시겠습니까? 삭제된 그룹은 복구할 수 없습니다."
-      : "정말로 채팅방을 삭제하시겠습니까? 삭제된 채팅방은 복구할 수 없습니다.";
-
-    showConfirmModal("채팅방 삭제", confirmMessage, async () => {
-      try {
-
-        if (groupType === 'TRAVELINFO') {
-          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${info?.groupId}`, {
-            headers: {
-              'User-Id': senderId,
-            },
-          });
-        } else if (groupType === 'TRAVELMATE') {
-          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${info?.groupId}`, {
-            headers: {
-              'User-Id': senderId,
-            },
-          });
-        }
-        
-        const response = await fetch(`${API_ENDPOINTS.CHAT}/${chatId}`, {
-          method: "DELETE",
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-            'User-Id': senderId,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`채팅방 삭제 실패: ${response.status}`);
-        }
-  
-        const sub = getSubscription(chatId);
-        if (sub) {
-          sub.unsubscribe();
-          console.log(`[ChatSidebar] 채팅방 ${chatId} 구독 해제 완료`);
-        }
-  
-        removeSubscription(chatId);
-        if (onLeave) {
-          onLeave();
-        }
-        showAlert("알림", "채팅방이 성공적으로 삭제되었습니다.");
-        onClose?.();
-        onForceClose?.();
-        
-      } catch (error) {
-        console.error("[ChatSidebar] 채팅방 삭제 실패:", error);
-        showAlert("오류", "채팅방 삭제 중 오류가 발생했습니다.");
+  const handleCreatorLeave = () => {
+    try {
+      if (onLeave) {
+        onLeave();
       }
-    }, 'top');
+      onForceClose?.(); 
+      onClose?.();
+      
+    } catch (error) {
+      console.error("[ChatSidebar] 채팅방 나가기 실패:", error);
+      showAlert("오류", "나가기 처리 중 오류가 발생했습니다.");
+    }
   };
 
   const handleReportTab = (userId) => {
@@ -262,6 +198,10 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     try {
       await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/promote/${userId}`, {});
       await refetch();
+
+      setTimeout(() => {
+        refetch();
+      }, 1000);
       setSelectedUserId(null);
     } catch (err) {
       console.error(err);
@@ -317,6 +257,10 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         });
         if (response.ok) {
           await refetch();
+
+          setTimeout(() => {
+            refetch();
+          }, 1000);
           setSelectedUserId(null);
         } else {
         }
@@ -332,6 +276,10 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
       try {
         await api.post(`${API_ENDPOINTS.CHAT}/${chatId}/demote/${userId}`);
         await refetch();
+
+        setTimeout(() => {
+          refetch();
+        }, 1000);
         setSelectedUserId(null);
       } catch (err) {
         console.error(err);
@@ -340,36 +288,19 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
   };
 
   const getButtonTexts = () => {
-    const isOriginalCreator = originalCreatorId && senderId === originalCreatorId;
-    
     if (groupType === 'TRAVELMATE') {
       return {
         report: '그룹 신고',
-        leave: isOriginalCreator ? '그룹 삭제' : '그룹 탈퇴'
+        leave: '그룹 탈퇴'
       };
     } 
       return {
         report: '채팅방 신고',
-        leave: isOriginalCreator ? '채팅방 삭제' : '채팅 탈퇴'
+        leave: '채팅 탈퇴'
       };
   };
 
   const buttonTexts = getButtonTexts();
-
-  useEffect(() => {
-    const fetchOriginalCreator = async () => {
-      try {
-        const creatorId = await getOriginalCreator();
-        setOriginalCreatorId(creatorId);
-      } catch (error) {
-        console.error("[ChatSidebar] 최초 생성자 조회 실패:", error);
-      }
-    };
-
-    if (chatId && accessToken) {
-      fetchOriginalCreator();
-    }
-  }, [chatId, accessToken]);
 
   // 새 멤버 감지
   useEffect(() => {
@@ -378,7 +309,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
     // 새 멤버 입장 구독
     subscriptionRef.current = subscribe(`/topic/chat/${chatId}/join`, (message) => {
       console.log("새 멤버 입장 이벤트 수신:", message);
-      refetch(); // useChatRoomInfo에서 받은 refetch
+      refetch();
     });
 
     return () => {
@@ -438,7 +369,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
                   </div>
                 </div>
 
-                {isManager && member.userId !== senderId && (
+                {isManager && member.userId !== senderId && member.userId !== originalCreatorId && (
                   <div className="member-actions">
                     <span 
                       className="member-action-dots"
@@ -466,15 +397,26 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
           )}
         </div>
       </div>
-        <div className="sidebar-footer">
-          <button className="report-button" onClick={handleReport}>{buttonTexts.report}</button>
-          <button 
-            className="leave-button" 
-            onClick={originalCreatorId && senderId === originalCreatorId ? handleDeleteChatRoom : handleLeaveGroup}
-          >
-            {buttonTexts.leave}
-          </button>
-        </div>
+         {!creatorLoading && (
+          <>
+            {!isOriginalCreator && (
+              <div className="sidebar-footer">
+                <button className="report-button" onClick={handleReport}>{buttonTexts.report}</button>
+                <button className="leave-button" onClick={handleLeaveGroup}>
+                  {buttonTexts.leave}
+                </button>
+              </div>
+            )}
+
+            {isOriginalCreator && (
+              <div className="sidebar-footer">
+                <button className="leave-button" onClick={handleCreatorLeave}>
+                  채팅방 나가기
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <ChatReportModal
