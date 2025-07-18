@@ -93,7 +93,7 @@ export default function Header({onOpenChat}) {
               to="/quest"
               className={(location.pathname.startsWith('/quest') || location.pathname.startsWith('/my-quest')) ? styles.activeLink : ''}
             >
-              챌린지
+              도전 챌린지
             </Link>
           </span>
           <span>

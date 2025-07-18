@@ -1,7 +1,7 @@
 export const QUEST_SIDEBAR = (isAdmin = false) => {
   const basicMenus = [
     {
-      label: '퀘스트와 뱃지',
+      label: '챌린지 목록',
       icon: '/icons/sidebar/badge.svg',
       path: '/quest',
       needLogin: false,
@@ -19,7 +19,7 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       ]
     },
     {
-      label: '내 퀘스트/뱃지',
+      label: '내 챌린지 기록',
       icon: '/icons/sidebar/record.svg',
       path: '/my-quest',
       needLogin: true,
@@ -30,14 +30,14 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
           needLogin: true
         },
         {
-          label: '내 퀘스트 기록',
+          label: '내 퀘스트',
           path: '/my-quest/record',
           needLogin: true
         }
       ]
     },
     {
-      label: '유저들',
+      label: '사용자 랭킹',
       icon: '/icons/sidebar/user_search.svg',
       path: '/rank/list',
       needLogin: false
