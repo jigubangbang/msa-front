@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './MyTravelmate.module.css';
+import cards from '../MyTravelCard.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import {useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
@@ -9,6 +10,10 @@ import { useChatLeave } from '../../../hooks/chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import arrow from "../../../assets/community/arrow_right.svg";
+import location from "../../../assets/community/location_on.svg";
+import drop from "../../../assets/community/arrow_drop.svg";
+import drop_down from "../../../assets/community/arrow_drop_down.svg";
 
 export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }) {
   const [expandedApplications, setExpandedApplications] = useState({});
@@ -259,203 +264,261 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     navigate(`/my-quest/profile/${userId}`);
   }
 
-  const renderTravelList = (travels, title, sectionType) => (
-    <div className={styles.section}>
-      <h3 className={styles.sectionTitle}>{title}</h3>
-      {travels.length === 0 ? (
-        <div className={styles.emptyState}>등록된 여행이 없습니다.</div>
-      ) : (
-        <div className={styles.travelList}>
-          {travels.map((travel) => (
-            <div key={travel.id} className={styles.travelCard} onClick={() => handleTravelmateRowClick(travel)}>
-              <div className={styles.travelHeader}>
-                <img 
-                  src={travel.thumbnailImage} 
-                  alt={travel.title}
-                  className={styles.thumbnail}
-                />
-                <div className={styles.travelInfo}>
-                  <div className={styles.titleContainer}>
+  const renderTravelList = (travels, title, sectionType) => {
+    // 좋아요한 여행은 카드 스타일로 렌더링
+    if (sectionType === 'liked' || sectionType === 'applied') {
+    return renderTravelCards(travels, title, sectionType);
+  }
+    
+    return (
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>{title}</h3>
+        {travels.length === 0 ? (
+          <div className={styles.emptyState}>등록된 여행이 없습니다.</div>
+        ) : (
+          <div className={styles.travelList}>
+            {travels.map((travel) => (
+              <div key={travel.id} className={styles.travelCard} onClick={() => handleTravelmateRowClick(travel)}>
+                <div className={styles.travelHeader}>
+                   <div className={styles.thumbnailContainer}>
+                      <img
+                        src={travel.thumbnailImage}
+                        alt={travel.title}
+                        className={styles.thumbnail}
+                      />
+                      {travel.locationNames && (
+                        <div className={styles.locations}>
+                          <img src={location} alt="location"/>
+                          <span>{travel.locationNames}</span>
+                        </div>
+                      )}
+                    </div>
+                  <div className={styles.travelInfo}>
                     {travel.blindStatus === 'BLINDED' && (
                       <span className={styles.blindedBadge}>블라인드 처리됨</span>
                     )}
                     <h4 className={styles.travelTitle}>{travel.title}</h4>
-                  </div>
-                  <p className={styles.travelDescription}>{travel.simpleDescription}</p>
-                  <div className={styles.travelMeta}>
-                    <span>일정: {formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
-                    <span>좋아요: {travel.likeCount}</span>
-                    <span>멤버: {travel.memberCount}명</span>
-                    <span>조회수: {travel.viewCount}</span>
-                  </div>
-                  {travel.locationNames && (
-                    <div className={styles.locations}>
-                      <span>위치: {travel.locationNames}</span>
+                    <p className={styles.travelDescription}>{travel.simpleDescription}</p>
+                    <div className={styles.travelSchedule}>
+                      <span>일정: {formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
                     </div>
-                  )}
-                  {travel.themeNames && (
-                    <div className={styles.themes}>
-                      <span>테마: {travel.themeNames}</span>
+                    <div className={styles.travelMeta}>
+                      <span>좋아요: {travel.likeCount}</span>
+                      <span>멤버: {travel.memberCount}명</span>
+                      <span>조회수: {travel.viewCount}</span>
                     </div>
-                  )}
+                    {travel.themeNames && (
+                      <div className={styles.themes}>
+                        {travel.themeNames.split(',').map((theme, index) => (
+                          <span key={index} className={styles.themeTag}>
+                            {theme.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className={styles.chatButtonContainer}>
+                      <button className={styles.chatButton}>
+                        채팅 바로가기
+                        <img src={arrow}/>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 드롭다운 메뉴 */}
+                  <div className={styles.dropdownContainer} onClick={(e) => e.stopPropagation()}>
+                    <DetailDropdown
+                        isCreator={sectionType === 'hosted'}
+                        onReport={() => handleReport(travel)}
+                        onEdit={() => handleEdit(travel.id)}
+                        onDelete={() => handleDelete(travel.id)}
+                        onLeave={sectionType === 'joined' ? () => handleLeaveGroup(travel.id) : undefined}
+                        showLeave={sectionType === 'joined'}
+                      />
+                  </div>
                 </div>
 
-                {/* 드롭다운 메뉴 */}
-                <div className={styles.dropdownContainer} onClick={(e) => e.stopPropagation()}>
-                  <DetailDropdown
-                      isCreator={sectionType === 'hosted'}
+                {/* 동행 신청 목록 (호스팅 여행이고 신청이 있는 경우에만 표시) */}
+                {sectionType==='hosted' && travel.applications && travel.applications.length > 0 && (
+                  <div 
+                    className={styles.applicationsSection}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className={styles.applicationsHeader}>
+                      <button
+                        className={styles.toggleButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleApplications(travel.id);
+                        }}
+                      >
+                        동행 신청 ({travel.applications.length}명)
+                        <span className={expandedApplications[travel.id] ? styles.expanded : ''}>
+                          <img src={expandedApplications[travel.id] ? drop : drop_down}/>
+                        </span>
+                      </button>
+                    </div>
+
+                    {expandedApplications[travel.id] && (
+                      <div className={styles.applicationsList}>
+                        {travel.applications.map((application) => (
+                          <div key={application.id} className={styles.applicationCard}>
+                            <div className={styles.applicationInfo}>
+                              <div className={styles.applicantInfo}>
+                                <div className={styles.applicantUser} onClick={() => handleUserClick(application.userId)}>
+                                  <span className={styles.nickname}>{application.userNickname}</span>
+                                  <span className={styles.userId}>({application.userId})</span>
+                                </div>
+                                {application.status !== 'PENDING' && (
+                                  <img src={"/icons/common/delete.svg"} alt="지우기" className={styles.bin}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleApplicationDelete(travel.id, application.id);
+                                  }}/>
+                                )}
+                              </div>
+                              <div className={styles.applicationComment}>
+                                {application.applicationComment || '신청 메시지가 없습니다.'}
+                              </div>
+                              <div className={styles.applicationDate}>
+                                신청일: {formatDate(application.appliedAt)}
+
+                              {application.status === 'PENDING' && (
+                              <div className={styles.actionButtons}>
+                                <button
+                                  className={`${styles.actionButton} ${styles.accept}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleApplicationAction(travel.id, application.id, 'accept');
+                                  }}
+                                >
+                                  수락
+                                </button>
+                                <button
+                                  className={`${styles.actionButton} ${styles.reject}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleApplicationAction(travel.id, application.id, 'reject');
+                                  }}
+                                >
+                                  거절
+                                </button>
+                              </div>
+                            )}
+
+                            {application.status === 'ACCEPTED' && (
+                              <div className={styles.statusBadge}>
+                                <span className={styles.accepted}>수락됨</span>
+                              </div>
+                            )}
+
+                            {application.status === 'REJECTED' && (
+                              <div className={styles.statusBadge}>
+                                <span className={styles.rejected}>거절됨</span>
+                              </div>
+                            )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 신청한 여행의 경우 신청 상태 표시 */}
+                {travel.applicationStatus && (
+                  <div className={styles.myApplicationStatus}>
+                    <span className={`${styles.statusBadge} ${styles[travel.applicationStatus.toLowerCase()]}`}>
+                      {travel.applicationStatus === 'PENDING' ? '대기중' : 
+                      travel.applicationStatus === 'ACCEPTED' ? '수락됨' : '거절됨'}
+                    </span>
+                    {travel.appliedAt && (
+                      <span className={styles.appliedDate}>
+                        신청일: {formatDate(travel.appliedAt)}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderTravelCards = (travels, title, sectionType) => (
+    <div className={cards.section}>
+      <h3 className={cards.sectionTitle}>{title}</h3>
+      {travels.length === 0 ? (
+        <div className={cards.emptyState}>좋아요한 여행이 없습니다.</div>
+      ) : (
+        <div className={cards.cardContainer}>
+          {travels.map((travel) => {
+            const isBlind = travel.blindStatus === 'BLINDED';
+            
+            return (
+              <div 
+                key={travel.id} 
+                className={cards.card}
+                onClick={() => handleTravelmateRowClick(travel)}
+              >
+                <div className={cards.imageContainer}>
+                  <img 
+                    src={isBlind ? '/icons/common/warning.png' : (travel.thumbnailImage || '/images/default-thumbnail.jpg')} 
+                    alt="썸네일"
+                    className={cards.thumbnail}
+                  />
+                  <div className={cards.cardDropdown} onClick={(e) => e.stopPropagation()}>
+                    <DetailDropdown
+                      isCreator={false}
                       onReport={() => handleReport(travel)}
                       onEdit={() => handleEdit(travel.id)}
                       onDelete={() => handleDelete(travel.id)}
                     />
-                    {(sectionType==='hosted' || sectionType==='joined') && (
-                      <button 
-                        className={styles.chatButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleChatClick(travel.id);
-                        }}
-                      >
-                        채팅하기
-                      </button>
-                      
-                    )}
-                    {sectionType === 'hosted' && (<>
-                      <button
-                        className={styles.chatButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(travel.id);
-                        }}
-                      >
-                        그룹 삭제하기
-                      </button>  
-                      </>                                         
-                    )}
-                    {sectionType === 'joined' && (
-                      <button 
-                        className={styles.leaveButton}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLeaveGroup(travel.id);
-                        }}
-                         disabled={isLeaving}
-                      >
-                        {isLeaving ? '나가는 중...' : '모임 나가기'}
-                      </button>
-                      
-                    )}
-                </div>
-              </div>
-
-              {/* 동행 신청 목록 (호스팅 여행이고 신청이 있는 경우에만 표시) */}
-              {sectionType==='hosted' && travel.applications && travel.applications.length > 0 && (
-                <div 
-                  className={styles.applicationsSection}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className={styles.applicationsHeader}>
-                    <button
-                      className={styles.toggleButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleApplications(travel.id);
-                      }}
-                    >
-                      동행 신청 ({travel.applications.length}명)
-                      <span className={expandedApplications[travel.id] ? styles.expanded : ''}>
-                        ▼
-                      </span>
-                    </button>
                   </div>
-
-                  {expandedApplications[travel.id] && (
-                    <div className={styles.applicationsList}>
-                      {travel.applications.map((application) => (
-                        <div key={application.id} className={styles.applicationCard}>
-                          <div className={styles.applicationInfo}>
-                            <div className={styles.applicantInfo}>
-                              <div className={styles.applicantUser} onClick={() => handleUserClick(application.userId)}>
-                                <span className={styles.nickname}>{application.userNickname}</span>
-                                <span className={styles.userId}>({application.userId})</span>
-                              </div>
-                              {application.status !== 'PENDING' && (
-                                <img src={"/icons/common/delete.svg"} alt="지우기" className={styles.bin}
-                              onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleApplicationDelete(travel.id, application.id);
-                                }}/>
-                              )}
-                            </div>
-                            <div className={styles.applicationComment}>
-                              {application.applicationComment || '신청 메시지가 없습니다.'}
-                            </div>
-                            <div className={styles.applicationDate}>
-                              신청일: {formatDate(application.appliedAt)}
-
-                            {application.status === 'PENDING' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                className={`${styles.actionButton} ${styles.accept}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleApplicationAction(travel.id, application.id, 'accept');
-                                }}
-                              >
-                                수락
-                              </button>
-                              <button
-                                className={`${styles.actionButton} ${styles.reject}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleApplicationAction(travel.id, application.id, 'reject');
-                                }}
-                              >
-                                거절
-                              </button>
-                            </div>
-                          )}
-
-                          {application.status === 'ACCEPTED' && (
-                            <div className={styles.statusBadge}>
-                              <span className={styles.accepted}>수락됨</span>
-                            </div>
-                          )}
-
-                          {application.status === 'REJECTED' && (
-                            <div className={styles.statusBadge}>
-                              <span className={styles.rejected}>거절됨</span>
-                            </div>
-                          )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                </div>
+                
+                <div className={cards.content}>
+                  <h4 className={cards.cardTitle}>
+                    {isBlind ? '블라인드 처리된 게시글입니다' : travel.title}
+                  </h4>
+                  <p className={cards.description}>
+                    {isBlind ? '' : travel.simpleDescription}
+                  </p>
+                  
+                  {!isBlind && (
+                    <div className={cards.likedTravelMeta}>
+                      <span>일정: {formatDate(travel.startAt)}{'\n      '}~ {formatDate(travel.endAt)}</span>
                     </div>
                   )}
-                </div>
-              )}
 
-              {/* 신청한 여행의 경우 신청 상태 표시 */}
-              {travel.applicationStatus && (
-                <div className={styles.myApplicationStatus}>
-                  <span className={`${styles.statusBadge} ${styles[travel.applicationStatus.toLowerCase()]}`}>
-                    {travel.applicationStatus === 'PENDING' ? '대기중' : 
-                     travel.applicationStatus === 'ACCEPTED' ? '수락됨' : '거절됨'}
-                  </span>
-                  {travel.appliedAt && (
-                    <span className={styles.appliedDate}>
-                      신청일: {formatDate(travel.appliedAt)}
-                    </span>
+                  {!isBlind && (
+                    <div className={cards.travelMeta}>
+                      <span>좋아요: {travel.likeCount}</span>
+                      <span>멤버: {travel.memberCount}명</span>
+                      <span>조회수: {travel.viewCount}</span>
+                    </div>
                   )}
+
+                  {/* 블라인드된 게시글의 경우 */}
+                  {isBlind && (
+                    <div className={cards.travelMeta}>
+                      <span>좋아요: -</span>
+                      <span>멤버: -명</span>
+                      <span>조회수: -</span>
+                    </div>
+                  )}
+                  
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
   );
+
 
   return (
     <div className={styles.container}>
