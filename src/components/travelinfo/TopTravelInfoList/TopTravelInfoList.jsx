@@ -4,6 +4,9 @@ import styles from './TopTravelInfoList.module.css';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
 import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import { useNavigate } from 'react-router-dom';
 
 const TopTravelInfoList = ({ 
   currentUserId,
@@ -17,7 +20,20 @@ const TopTravelInfoList = ({
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [joinedChats, setJoinedChats] = useState(new Set());
   const [selectedInfo, setSelectedInfo] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // 참여 모달 상태 (JoinChatModal)
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  
+  // 로그인 모달 상태 (LoginConfirmModal)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // Alert 모달 상태 (ConfirmModal)
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
+  const navigate = useNavigate();
   
   // 채팅방 입장
   const { openChat, closeChat, chatRooms } = useChatContext();
@@ -32,6 +48,26 @@ const TopTravelInfoList = ({
       fetchJoinedChats();
     }
   }, [isLogin]);
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
 
   const fetchLikedPosts = async () => {
     if (!isLogin) return;
@@ -140,23 +176,34 @@ const TopTravelInfoList = ({
     }
   };
 
-
   const handleViewAllClick = () => {
     if (onViewAll) {
       onViewAll();
     }
   };
 
+  // 로그인 모달 관련 함수들
+  const handleLoginConfirm = () => {
+    setIsLoginModalOpen(false);
+    navigate('/login');
+  };
+
+  const handleLoginCancel = () => {
+    setIsLoginModalOpen(false);
+  };
+
+  // 참여 모달 관련 함수들
+  const handleJoinModalClose = () => {
+    setIsJoinModalOpen(false);
+    setSelectedInfo(null);
+  };
+
   const handleJoinClick = (travelinfo, event) => {
     event.stopPropagation();
     
     if (!isLogin) {
-      // 로그인 확인 모달 띄우기
-      if (window.confirm('로그인이 필요한 서비스입니다. 로그인하시겠습니까?')) {
-        // 로그인 페이지로 이동하는 로직
-        window.location.href = '/login';
-        // 또는 router.push('/login');
-      }
+      // 로그인 모달 열기
+      setIsLoginModalOpen(true);
       return;
     }
 
@@ -167,7 +214,7 @@ const TopTravelInfoList = ({
     } else {
       // 참여하기 모달 열기
       setSelectedInfo(travelinfo);
-      setIsModalOpen(true);
+      setIsJoinModalOpen(true);
     }
   };
 
@@ -184,12 +231,12 @@ const TopTravelInfoList = ({
         openChat(response.data.chatRoomId, currentUserId, {
         });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
       }
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방에 접속할 수 없습니다.');
+      showAlertModal('채팅방에 접속할 수 없습니다.');
     }
   };
 
@@ -219,18 +266,13 @@ const TopTravelInfoList = ({
           : info
       ));
 
-      alert('참여가 완료되었습니다!');
-      setIsModalOpen(false);
+      showAlertModal('참여가 완료되었습니다!');
+      setIsJoinModalOpen(false);
       setSelectedInfo(null);
     } catch (error) {
       console.error('Failed to join chat:', error);
-      alert('참여에 실패했습니다.');
+      showAlertModal('참여에 실패했습니다.');
     }
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedInfo(null);
   };
 
   if (loading) {
@@ -313,11 +355,29 @@ const TopTravelInfoList = ({
         })}
       </div>
 
+      {/* 참여 모달 (JoinChatModal) */}
       <JoinChatModal
-        isOpen={isModalOpen}
+        isOpen={isJoinModalOpen}
+        onClose={handleJoinModalClose}
         onSubmit={handleJoinSubmit}
         chatTitle={selectedInfo?.title}
         message={selectedInfo?.enterDescription}
+      />
+
+      {/* 로그인 모달 (LoginConfirmModal) */}
+      <LoginConfirmModal
+        isOpen={isLoginModalOpen}
+        onClose={handleLoginCancel}
+        onConfirm={handleLoginConfirm}
+      />
+      
+      {/* Alert 모달 (ConfirmModal) */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
       />
     </div>
   );

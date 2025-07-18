@@ -14,6 +14,7 @@ import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 import api from "../../../apis/api";
 import { jwtDecode } from 'jwt-decode';
+import CirclesSpinner from "../../../components/common/Spinner/CirclesSpinner";
 
 
 
@@ -298,7 +299,7 @@ const handleQuestClickFromBadge = (quest_id) => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import StyleGuidePage from "../pages/temp/StyleGuidePage";
 import TravelTypeTest from "../pages/feed/travel-style/TravelStyleTest";
-import TestPage from "../pages/temp/TestPage";
 
 import Main from "../pages/main/Main";
 import Profile from "../pages/profile/Profile";
@@ -84,7 +83,6 @@ const AppRouter = () => {
         <Routes>
           <Route path="/" element={<Main/>} />
           <Route path="/style-guide" element={<StyleGuidePage/>}/>
-          <Route path="/test-page" element={<TestPage/>}/>
 
           {/* Profile */}
           <Route path="/profile/:userId" element={<Profile/>}/>

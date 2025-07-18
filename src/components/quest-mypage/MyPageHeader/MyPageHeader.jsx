@@ -1,6 +1,7 @@
 
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import styles from './MyPageHeader.module.css';
 import React, {useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +18,7 @@ const MyPageHeader = ({
   completedQuests,
   awardedBadges,
   onBadgeClick,
-  
+  isLogin
 }) => {
     const [badgeHover, setBadgeHover] = useState(false);
     const [levelHover, setLevelHover] = useState(false); 
@@ -30,6 +31,9 @@ const MyPageHeader = ({
     isMaxLevel: false
   });
     const navigate=useNavigate();
+
+     const [isModalOpen, setIsModalOpen] = useState(false);
+
 
 
   useEffect(() => {
@@ -56,6 +60,11 @@ const MyPageHeader = ({
       fetchUserLevel();
     }
   }, [userId]);
+
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
 
  const getProgressPercentage = () => {
   if (levelInfo.isMaxLevel) return 100;
@@ -94,6 +103,10 @@ const MyPageHeader = ({
   };
 
   const handleProfileClick = () => {
+    if (!isLogin) {
+      setIsModalOpen(true);
+      return;
+    }
     navigate(`/profile/${userId}`);
   }
 
@@ -108,9 +121,7 @@ const MyPageHeader = ({
               {profileImage ? (
                 <img src={profileImage} alt="프로필" className={styles.img} />
               ) : (
-                <div className={styles.defaultAvatar}>
-                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지"/>
-              </div>
+                <img src="/icons/common/default_profile.png" alt="기본 뱃지 이미지" className={styles.img}/>
               )}
             </div>
           </div>
@@ -220,6 +231,12 @@ const MyPageHeader = ({
 
 
       </div>
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 };

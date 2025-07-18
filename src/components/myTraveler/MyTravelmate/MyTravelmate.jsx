@@ -7,6 +7,8 @@ import API_ENDPOINTS from '../../../utils/constants';
 import { useChatContext } from '../../../utils/ChatContext';
 import { useChatLeave } from '../../../hooks/Chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
 
 export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }) {
   const [expandedApplications, setExpandedApplications] = useState({});
@@ -16,6 +18,16 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   const { openChat, closeChat, chatRooms } = useChatContext();
   const { leaveChatRoom, isLeaving } = useChatLeave();
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
+  // SimpleConfirmModal 상태
+  const [showSimpleConfirm, setShowSimpleConfirm] = useState(false);
+  const [simpleConfirmMessage, setSimpleConfirmMessage] = useState('');
+  const [simpleConfirmCallback, setSimpleConfirmCallback] = useState(null);
+
   const navigate = useNavigate();
 
   const toggleApplications = (id) => {
@@ -23,6 +35,46 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       ...prev,
       [id]: !prev[id]
     }));
+  };
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+  // SimpleConfirmModal 관련 함수들
+  const customConfirm = (message, callback) => {
+    setSimpleConfirmMessage(message);
+    setSimpleConfirmCallback({ fn: callback });
+    setShowSimpleConfirm(true);
+  };
+
+  const handleSimpleConfirm = () => {
+    if (simpleConfirmCallback && simpleConfirmCallback.fn) {
+      simpleConfirmCallback.fn();
+    }
+    setShowSimpleConfirm(false);
+    setSimpleConfirmCallback(null);
+  };
+
+  const handleSimpleCancel = () => {
+    setShowSimpleConfirm(false);
+    setSimpleConfirmCallback(null);
   };
 
   const handleApplicationDelete = async (travelId, applicationId) => {
@@ -38,7 +90,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       }
     } catch (error) {
       console.error('Failed to process application:', error);
-      alert('처리 중 오류가 발생했습니다.');
+      showAlertModal('처리 중 오류가 발생했습니다.');
     }
   }
 
@@ -49,15 +101,13 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           'User-Id': currentUserId,
         },
       });
-
+      showAlertModal(`신청을 ${action === 'accept' ? '수락' : '거절'}했습니다.`);
       if (fetchTravelerData) {
         fetchTravelerData();
       }
-
-      alert(`신청을 ${action === 'accept' ? '수락' : '거절'}했습니다.`);
     } catch (error) {
       console.error('Failed to process application:', error);
-      alert('처리 중 오류가 발생했습니다.');
+      showAlertModal('처리 중 오류가 발생했습니다.');
     }
   };
 
@@ -66,30 +116,29 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   };
 
   const handleDelete = async (travelId) => {
-    if (!window.confirm('정말로 이 여행 모임을 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${travelId}`, {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
-      alert('여행 모임이 삭제되었습니다.');
-      
-      if (fetchTravelerData) {
-        fetchTravelerData();
+    customConfirm(
+      '정말로 이 여행 모임을 삭제하시겠습니까?',
+      async () => {
+        try {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${travelId}`, {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          });
+          showAlertModal('여행 모임이 삭제되었습니다.');
+          
+          if (fetchTravelerData) {
+            fetchTravelerData();
+          }
+        } catch (error) {
+          console.error('Failed to delete travelmate:', error);
+          showAlertModal('삭제에 실패했습니다.');
+        }
       }
-    } catch (error) {
-      console.error('Failed to delete travelmate:', error);
-      alert('삭제에 실패했습니다.');
-    }
+    );
   };
 
-
-  
-   const handleReport = (travel) => {
+  const handleReport = (travel) => {
     setShowReportModal(true);
     setReportInfo(travel);
   };
@@ -119,12 +168,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       
       setShowReportModal(false);
       setReportInfo(null);
-      alert('신고가 접수되었습니다.');
+      showAlertModal('신고가 접수되었습니다.');
       
     } catch (error) {
       console.error('Failed to submit report:', error);
       const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-      alert(errorMessage);
+      showAlertModal(errorMessage);
     }
   };
 
@@ -148,12 +197,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           }
         });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
       }
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방을 불러오는데 실패했습니다.');
+      showAlertModal('채팅방을 불러오는데 실패했습니다.');
     }
   };
 
@@ -171,7 +220,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
         // 모임 나가기
         const success = await leaveChatRoom(chatRoomId, {
           skipConfirmation: false, // 확인 모달 표시
-          showAlert: (title, message) => alert(message),
+          showAlert: (title, message) => showAlertModal(message),
           onSuccess: () => {
             if (chatRooms[chatRoomId]) {
               closeChat(chatRoomId);
@@ -182,11 +231,11 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           }
         });
       } else {
-        alert('채팅방 정보를 찾을 수 없습니다.');
+        showAlertModal('채팅방 정보를 찾을 수 없습니다.');
       }
     } catch (error) {
       console.error('Failed to get chat room info:', error);
-      alert('채팅방 정보를 가져오는데 실패했습니다.');
+      showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
     }
   };
 
@@ -377,11 +426,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                             </div>
                           )}
                             </div>
-
-                            
                           </div>
-                          
-
                         </div>
                       ))}
                     </div>
@@ -432,8 +477,22 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
         onClose={handleReportClose}
         onSubmit={handleReportSubmit}
       />
-    </div>
 
-    
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
+      {/* SimpleConfirmModal 추가 */}
+      <SimpleConfirmModal
+        isOpen={showSimpleConfirm}
+        message={simpleConfirmMessage}
+        onConfirm={handleSimpleConfirm}
+        onCancel={handleSimpleCancel}
+      />
+    </div>
   );
 }

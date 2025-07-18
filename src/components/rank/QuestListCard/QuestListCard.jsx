@@ -54,7 +54,7 @@ const QuestListCard = ({
       
       {isLogin ? (
         <button className={`${styles.btn} ${styles.btnSecondary}`}
-          onClick={handleButtonClick}>View My Quests →</button>
+          onClick={handleButtonClick}>내 퀘스트 보기 →</button>
       ) : (<button className={`${styles.btn} ${styles.btnSecondary}`}
           onClick={handleLoginClick}>로그인 하러 가기 →</button>)}
     </div>

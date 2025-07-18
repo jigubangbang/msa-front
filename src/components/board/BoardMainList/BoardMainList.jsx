@@ -5,7 +5,7 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardMainList.module.css';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
-const BoardMainList = ({isLogin=false}) => {
+const BoardMainList = ({isLogin}) => {
   const navigate = useNavigate();
   const [boardData, setBoardData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -57,11 +57,16 @@ const BoardMainList = ({isLogin=false}) => {
     }
   };
 
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
   const handlePostClick = (postId) => {
     console.log("handlePostClick");
     console.log(isLogin)
     if (!isLogin) {
-       setIsModalOpen(true);
+      setIsModalOpen(true);
       return;
     }
     navigate(`/board/${postId}`);
@@ -69,11 +74,6 @@ const BoardMainList = ({isLogin=false}) => {
 
   const handleCategoryClick = (path) => {
     navigate(`/board/${path}`);
-  };
-
-   const handleLoginConfirm = () => {
-    setIsModalOpen(false);
-    navigate('/login');
   };
 
 
@@ -165,12 +165,12 @@ const BoardMainList = ({isLogin=false}) => {
           </div>
         );
       })}
+
       <LoginConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleLoginConfirm}
       />
-
     </div>
   );
 };
