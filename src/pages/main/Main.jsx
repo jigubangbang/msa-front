@@ -196,7 +196,7 @@ export default function Main() {
 
     const handlePostClick = (postId) => {
         //이거 이상 없는지 확인좀 
-        if (!isLogin){
+        if (!isLoggedIn){
             setShowLoginConfirmModal(true);
             return;
         }
