@@ -44,6 +44,11 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: relative;
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -55,8 +60,6 @@
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: #007bff;
 }
 
 .imageContainer {
@@ -73,25 +76,20 @@
 }
 
 .likeButton {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.9);
+  background-color: transparent;
   border: none;
   border-radius: 50%;
   width: 32px;
   height: 32px;
+  padding: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
 }
 
 .likeButton:hover {
-  background: rgba(255, 255, 255, 1);
   transform: scale(1.1);
 }
 
@@ -112,6 +110,9 @@
 
 .content {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .cardTitle {
@@ -141,17 +142,32 @@
 
 .stats {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  justify-content: right;
   align-items: center;
   font-size: 12px;
   color: #666;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 10px;
 }
 
 .members,
 .likes {
   display: flex;
   align-items: center;
-  gap: 4px;
+  font-size: 15px;
+  cursor: auto;
+}
+
+.icon {
+  cursor: pointer;
+  height: 20px;
+  padding: 0px;
+}
+
+.memberIcon {
+  cursor: auto;
 }
 
 .loading {
