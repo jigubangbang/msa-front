@@ -30,7 +30,7 @@ export function formatRelativeTime(dateString) {
       const count = Math.round(diff / units[i].value);
       const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
       // diff가 양수면 과거, 음수면 미래
-      return rtf.format(count, units[i].unit); // count에 -를 붙이지 않음
+      return rtf.format(-count, units[i].unit);
     }
   }
   return ''; // Fallback
