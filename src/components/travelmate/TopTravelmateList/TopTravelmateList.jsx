@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TopTravelmateList.module.css';
 import api from '../../../apis/api';
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
+import userIcon from '../../../../public/icons/sidebar/user.svg';
 
 const TopTravelmateList = ({ 
   currentUserId,
@@ -158,13 +161,6 @@ const TopTravelmateList = ({
                   alt="썸네일"
                   className={styles.thumbnail}
                 />
-                <button 
-                  className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
-                  onClick={(e) => handleLikeToggle(travelmate.id, e)}
-                  disabled={!isLogin || isBlind}
-                >
-                  {isLiked ? '❤️' : '🤍'}
-                </button>
               </div>
               
               <div className={styles.content}>
@@ -177,10 +173,18 @@ const TopTravelmateList = ({
                 
                 <div className={styles.stats}>
                   <span className={styles.members}>
-                    👥 {isBlind ? '-' : (travelmate.memberCount || 0)}명
+                    <img src={userIcon} alt="인원 수" className={`${styles.icon} ${styles.memberIcon}`}/>
+                    {isBlind ? '-' : (travelmate.memberCount || 0)}
                   </span>
                   <span className={styles.likes}>
-                    ❤️ {isBlind ? '-' : travelmate.likeCount}
+                    <button 
+                      className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
+                      onClick={(e) => handleLikeToggle(travelmate.id, e)}
+                      disabled={!isLogin || isBlind}
+                    >
+                      <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요" className={styles.icon}/>
+                    </button>
+                    {isBlind ? '' : travelmate.likeCount}
                   </span>
                 </div>
               </div>
