@@ -411,7 +411,7 @@ const handleViewModalClose = () => {
               <div className={styles.statsSection}>
                 <span>현재 {questData.count_in_progress}명 도전 중</span>
                 <span className={styles.separator}>|</span>
-                <span>완수율 {calculateCompletionRate()}%</span>
+                <span>완료율 {calculateCompletionRate()}%</span>
               </div>
               
               {/* 설명 */}

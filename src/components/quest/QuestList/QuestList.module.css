@@ -161,7 +161,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .questMeta {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
   margin-bottom: 12px;
 }
@@ -170,6 +170,13 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   font-size: 14px;
   font-weight: 400; 
   color: #495057;
+}
+
+.label2 {
+  font-size: 14px;
+  font-weight: 400; 
+  color: #495057;
+  margin-left: 10px;
 }
 
 .value {

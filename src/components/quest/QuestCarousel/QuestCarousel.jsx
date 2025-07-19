@@ -73,7 +73,7 @@ const QuestCard = ({ quest, isSelected, onClick, isLarge, onOpenModal, onActionC
             <div className={styles.progressText}>
               {quest.quest_status == 'INACTIVE' 
                 ? '시즌이 종료된 퀘스트입니다.' 
-                : `${quest.badge} 뱃지 획득까지 ${quest.progress}% 진행되었습니다.`
+                : `${quest.badge} 뱃지 획득까지 ${quest.progress}% 진행되었습니다`
               }
             </div>
           </div>
