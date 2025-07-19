@@ -57,8 +57,6 @@
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: #007bff;
 }
 
 .imageContainer {
@@ -75,25 +73,20 @@
 }
 
 .likeButton {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.9);
+  background-color: transparent;
   border: none;
   border-radius: 50%;
   width: 32px;
   height: 32px;
+  padding: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
 }
 
 .likeButton:hover {
-  background: rgba(255, 255, 255, 1);
   transform: scale(1.1);
 }
 
@@ -148,9 +141,14 @@
 
 .stats {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: flex-end;
+  justify-content: right;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+  gap: 5px;
   margin-top: auto;
+  padding-top: 10px;
 }
 
 .statsRow {
@@ -162,36 +160,61 @@
 }
 
 .members,
-.likes,
-.chatCount {
+.likes, .chatCount {
   display: flex;
   align-items: center;
-  gap: 4px;
+  font-size: 15px;
+  cursor: auto;
+}
+
+.icon {
+  cursor: pointer;
+  height: 20px;
+  padding-right: 0px;
+  padding-left: 10px;
+}
+
+
+.memberIcon {
+  cursor: auto;
+}
+
+.chatIcon {
+  cursor: auto;
+  padding-right: 3px;
 }
 
 .joinButton {
   width: 100%;
   padding: 8px 12px;
-  background-color: #007bff;
+  background-color: black;
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 5px;
 }
 
 .joinButton:hover {
-  background-color: #0056b3;
+  background: #333;
+  transform: translateY(-1px);
 }
 
 .joinButton.chatButton {
-  background-color: #28a745;
+  color: black;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 .joinButton.chatButton:hover {
-  background-color: #1e7e34;
+  border-color: #000;
+  color: #000;
+  background-color: #fafafa;
+  transform: translateY(-1px);
 }
 
 .leaveButton {

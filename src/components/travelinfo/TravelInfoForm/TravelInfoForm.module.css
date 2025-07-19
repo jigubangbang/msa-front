@@ -119,6 +119,7 @@
   transition: border-color 0.3s;
   box-sizing: border-box;
   color: #000;
+  margin-top: 4px;
 }
 
 .input:focus {
@@ -268,7 +269,7 @@
 
 .dropdownButton {
   width: 100%;
-  padding: 12px 16px;
+  padding: 8px 16px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
@@ -283,15 +284,16 @@
 }
 
 .dropdownButton:focus,
-.dropdownButton:hover {
+.dropdownButton:hover, .active {
   outline: none;
-  border-color: #007bff;
+  border-color: black;
   background-color: #fff;
 }
 
 .arrow {
   font-size: 12px;
   color: #666;
+  margin-left: 5px;
 }
 
 .themeList {
@@ -346,35 +348,26 @@
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
-  background: #e3f2fd;
-  color: #1976d2;
+  background: #F3F3F3;
+  color: black;
   border-radius: 16px;
-  border: 1px solid #bbdefb;
+  border: 1px solid #ccc;
   flex: 0 0 calc(25% - 6px); 
   min-width: 120px; 
   box-sizing: border-box;
 }
 
 .btn {
-  font-size: 0.875rem;
-  border-radius: 5px;
+  border: 0px;
   cursor: pointer;
   border: none;
-  padding: 7px 7px;
-  min-width: 35px;
-  height: 35px;
+  padding: 0px 0px;
+  height: 20px;
+  width: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
-}
-
-.btnOutline {
-  border: 1px solid #1976d2;
-}
-
-.btn:hover {
-  background: rgba(25, 118, 210, 0.1);
 }
 
 .resetButton {
@@ -393,7 +386,7 @@
 
 .resetButton:hover {
   border: none;
-  background-color: #e4e4e4;
+  rotate: 90deg;
 }
 
 /* 섹션 제목 */
@@ -432,12 +425,12 @@
 .currentTag {
   display: inline-block;
   padding: 4px 12px;
-  background: #e3f2fd;
-  color: #1976d2;
+  background: #FFF;
+  color: #333;
   border-radius: 16px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid #bbdefb;
+  border: 1px solid #555;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -463,6 +456,7 @@
   color: #000;
   resize: vertical;
   min-height: 120px;
+  margin-top: 4px;
 }
 
 .textarea:focus {

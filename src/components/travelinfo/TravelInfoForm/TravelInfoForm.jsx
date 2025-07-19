@@ -483,7 +483,9 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         {/* 카테고리 선택 섹션 */}
         <div className={styles.fullWidthSection}>
           <div className={styles.sectionHeader}>
-            <label className={styles.label}>공유방 카테고리</label>
+            <label className={styles.label}>
+              공유방 카테고리 <span className={styles.required}>*</span>
+            </label>
             <div className={styles.currentInfo}>
               {selectedThemes.map(theme => (
                 <span key={theme.id} className={styles.currentTag}>
@@ -499,7 +501,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                 <div className={styles.formGroup}>
                   <div ref={themeRef} className={styles.dropdown}>
                     <div 
-                      className={styles.dropdownButton}
+                      className={`${styles.dropdownButton} ${showThemeDropdown ? styles.active : ''}`}
                       onClick={() => setShowThemeDropdown(!showThemeDropdown)}
                     >
                       카테고리 추가
@@ -538,7 +540,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                     {theme.label}
                     <button 
                       type="button"
-                      className={styles.btn + ' ' + styles.btnOutline}
+                      className={`${styles.btn} ${styles.btnOutline}`}
                       onClick={() => removeTheme(theme.id)}
                     >
                       <img src="/icons/common/close.svg" alt="close"/>
