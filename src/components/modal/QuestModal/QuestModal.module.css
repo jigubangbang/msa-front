@@ -4,7 +4,6 @@ font-family:'DNFBitBitv2';
 font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
 
 .modalOverlay {
-  
   position: fixed;
   top: 0;
   left: 0;
@@ -32,6 +31,24 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   flex-direction: column;
 }
 
+.questModal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.questModal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.questModal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+}
+
+.questModal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
 .modalHeader {
   min-height: 32px;
   display: flex;
@@ -50,32 +67,41 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   cursor: pointer;
   width: 40px;
   height: 40px;
-
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   outline: none;
+  color: #fff;
+  font-size: 20px;
 }
 
 .closeBtn:hover {
-  background: rgba(0, 0, 0, 0.1);
-  color: #333;
-}
-
-.closeBtn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-}
-
-.closeBtn img {
-  filter: brightness(0) invert(1);
+  transform: scale(1.1);
 }
 
 .modalContent {
   padding: 0 20px 20px;
   flex: 1;
   overflow-y: auto;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modalContent::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .modalLayout {
@@ -88,13 +114,13 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .leftColumn {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 15px;
 }
 
 .questTitle {
@@ -147,7 +173,6 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   justify-content: center;
   margin: 10px 0;
 }
-
 
 .badgesContainer {
   display: flex;
@@ -249,13 +274,16 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .badgeKorTitle {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px; 
+  color: white;
 }
 
 .badgeEngTitle {
-  font-size: 14px;
-  opacity: 0.8;
+  font-weight: bold;
+  font-size: 14px; 
+  opacity: 1 !important;
   margin-top: 4px;
+  color: white !important;
 }
 
 .badgeClickHint {
@@ -263,6 +291,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   opacity: 0.7;
   margin-top: 4px;
   font-style: italic;
+  color: white;
 }
 
 .badgeIndicators {
@@ -348,13 +377,31 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   border: 1px solid #ccc;
   font-size: 16px;
   font-weight: 400;
-  min-height: 300px;
-  max-height: 500px; 
+  min-height: 150px;
+  max-height: 300px; 
   overflow-y: auto;
-flex-direction: column;
-    display: flex;
+  flex-direction: column;
+  display: flex;
   align-items: center; 
   justify-content: center; 
+}
+
+.questDescription::-webkit-scrollbar {
+  width: 10px;
+}
+
+.questDescription::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.questDescription::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.questDescription::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .descriptionInner {
@@ -363,29 +410,25 @@ flex-direction: column;
   align-items: center;
 }
 
-.questDescription::-webkit-scrollbar {
-  width: 6px;
+.questConditions {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
 }
 
-.questDescription::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
+.questConditions h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
 }
 
-.questDescription::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.questDescription::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-
-.conditionLine {
-  margin-top: 16px;
+.conditionText {
   font-weight: 600;
   color: #4CAF50;
   font-size: 16px;
+  line-height: 1.5;
 }
 
 .statsSection {
@@ -525,13 +568,11 @@ flex-direction: column;
 
 .challengeBtn:focus, .retryBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .verifyBtn {
   background: #000;
   color: #fff;
-  border: 1px solid #000;
 }
 
 .verifyBtn:hover {
@@ -541,7 +582,6 @@ flex-direction: column;
 
 .verifyBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .giveUpBtn {
@@ -558,7 +598,6 @@ flex-direction: column;
 
 .giveUpBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .viewCertBtn {
@@ -573,5 +612,4 @@ flex-direction: column;
 
 .viewCertBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }

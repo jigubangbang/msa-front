@@ -6,10 +6,10 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
 .questCarousel {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   font-family: Pretendard, sans-serif;
-  min-width: 700px;
+  min-width: 800px;
 }
 
 .carouselTitle {
@@ -40,7 +40,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .questGrid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
   min-height: 450px;
   padding: 10px;
   margin-bottom: 8px;
@@ -53,7 +53,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .otherQuestsArea {
  display: flex;
  gap: 12px;
- justify-content: space-between;
+ justify-content: flex-start;
  overflow: visible;
  padding: 4px 0;
 }
@@ -89,9 +89,9 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .otherQuestsArea .questCard {
- flex: 1;
+ flex: none;
  min-height: 80px;
- max-width: calc(33.333% - 8px);
+ width: 217px; /* 고정 픽셀 너비 */
  padding: 16px;
 }
 
@@ -210,7 +210,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .progressText {
   font-size: 12px;
-  color: #666;
+  color: #bbb;
   text-align: center;
   font-weight: 400;
 }
