@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import {jwtDecode} from "jwt-decode";
 
 import styles from "./QuestAdminPage.module.css";
@@ -12,7 +12,6 @@ import BadgeAdminDetail from "../../../components/quest-admin/BadgeAdminDetail";
 export default function BadgeAdminDetailPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const navigate = useNavigate();
   const {badgeId} = useParams();
 
   
@@ -82,9 +81,9 @@ export default function BadgeAdminDetailPage() {
     return (
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
-        <div className={styles.content}>
-          <div className={styles.loading}>접근 권한이 없습니다</div>
-        </div>
+        <div className={styles.emptyContainer}>
+          <p className={styles.emptyText}>접근 권한이 없습니다</p>
+        </div>  
       </div>
     );
   }
