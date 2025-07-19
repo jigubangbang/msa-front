@@ -9,23 +9,6 @@
   margin-bottom: 30px;
 }
 
-.dropdownContainer{
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: flex-end;
-  width: fit-content;
-}
-
-.applicantUser{
-  display: flex;
-  gap: 10px;
-  cursor: pointer;
-}
-
 .bin{
   cursor: pointer;
 }
@@ -165,7 +148,7 @@
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 400;
   margin-bottom: 8px;
 }
 
@@ -179,18 +162,19 @@
 .travelDescription {
   color: #666;
   margin: 0 0 8px 0;
-  line-height: 1.4;
   font-size: 16px;
   font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 15px;
 }
 
 .travelSchedule, .travelMeta {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  font-size: 14x;
+  font-size: 14px;
   color: #666;
-  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .travelSchedule span, travelMeta span {
@@ -198,15 +182,9 @@
 }
 
 .themes {
-  font-size: 14px;
-  color: #666;
+  padding-top: 10px;
   margin-bottom: 8px;
   display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.themes {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 6px;
@@ -220,7 +198,7 @@
   font-size: 12px;
   padding: 3px 8px;
   border-radius: 12px;
-  font-weight: 500;
+  font-weight: 400;
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
@@ -228,6 +206,17 @@
 .themeTag:hover {
   background-color: rgba(76, 175, 80, 0.15);
   border-color: rgba(76, 175, 80, 0.4);
+}
+
+.dropdownContainer{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-end;
+  width: fit-content;
 }
 
 /* 동행 신청 관련 스타일 */
@@ -238,24 +227,28 @@
 }
 
 .applicationsHeader {
+  font-family: 'Pretendard', 'sans-serif';
+  font-size:16px;
+  font-weight: 400px;
+  display: flex; 
+  justify-content: flex-end;
+  padding-right: 10px;
   margin-bottom: 12px;
 }
 
 .toggleButton {
+  font-weight: 600;
   background: none;
   border: none;
-  font-size: 16px;
-  font-weight: 600;
   color: #2e7d32;
   cursor: pointer;
   display: flex;
-  align-items: center;
   gap: -2px;
   padding: 0;
 }
 
 .toggleButton:hover {
-  color: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
 }
 
 .toggleButton span {
@@ -272,6 +265,8 @@
 }
 
 .applicationCard {
+  font-family: 'Pretendard', 'sans-serif';
+  font-size: 16px;
   background: #f8f9fa;
   border: 1px solid #e9ecef;
   border-radius: 8px;
@@ -294,24 +289,40 @@
   justify-content: space-between;
 }
 
+.applicantUser{
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+  cursor: pointer;
+}
+
+
 .nickname {
   font-weight: 600;
   color: #333;
 }
 
 .userId {
-  color: #666;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 12px;
+  color: #888; 
+}
+
+.bin {
+  width: 18px;
+  height: 18px;
+  padding-right: 10px;
 }
 
 .applicationComment {
+  font-size: 16px;
   color: #555;
   line-height: 1.4;
   margin-bottom: 8px;
   background: white;
   padding: 8px;
   border-radius: 4px;
-  border-left: 3px solid #2196f3;
+  border-left: 3px solid #2e7d32;
 }
 
 .applicationDate {
@@ -345,7 +356,7 @@
 }
 
 .actionButton.accept:hover {
-  background-color: #45a049;
+  background-color: #2e7d32;
 }
 
 .actionButton.reject {

@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
 .container {
   padding: 20px;
   width: 1100px;
@@ -12,6 +14,10 @@
   font-weight: 600;
   color: #333;
   margin: 0;
+}
+
+.section {
+  margin-bottom: 40px;
 }
 
 .sectionTitle {
@@ -33,6 +39,7 @@
 }
 
 .travelInfoList {
+  font-family: 'Pretendard', 'sans-serif';
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -102,14 +109,6 @@
   flex: 1;
 }
 
-.titleContainer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
 .blindedBadge {
   display: inline-block;
   background-color: #ff4444;
@@ -122,31 +121,33 @@
 }
 
 .travelInfoTitle {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: #333;
-  margin: 0;
-  flex: 1;
-  min-width: 0;
+  margin: 0 0 8px 0;
 }
 
 .travelInfoDescription {
   color: #666;
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
   line-height: 1.4;
+  margin-bottom: 15px;
 }
 
 .travelSchedule, .travelInfoMeta {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  font-size: 14px;
+  font-size: 14px;     
   color: #666;
   margin-bottom: 8px;
+  line-height: 1.4;     
 }
 
 .travelSchedule span, .travelInfoMeta span {
-  font-weight: 500;
+  font-weight: 500;      
 }
 
 .themes {
@@ -268,19 +269,31 @@
   color: #888;
 }
 
-/* 최근 메시지 정보 */
-.latestMessage {
-  background-color: #f8f9fa;
-  padding: 10px;
-  border-radius: 6px;
-  border-left: 4px solid #28a745;
-  margin-top: 12px;
-  font-size: 14px;
-  line-height: 1.4;
+/* 🔄 TravelMate applicationsSection 스타일을 기반으로 한 최근메시지 섹션 */
+.latestMessageSection {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+  margin-top: 16px;
 }
 
-.latestMessage strong {
-  color: #155724;
+.latestMessageHeader {
+  font-family: 'Pretendard', 'sans-serif';
+  font-size: 16px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 12px;
+  padding-left: 5px;  
+}
+
+.latestMessage {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  border-left: 3px solid #2e7d32;
 }
 
 /* 반응형 */

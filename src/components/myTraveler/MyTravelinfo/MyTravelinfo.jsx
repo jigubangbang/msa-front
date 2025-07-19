@@ -294,10 +294,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     });
   };
 
-  const handleTravelinfoRowClick = (travelinfo) => {
-    navigate(`/traveler/info/${travelinfo.id}`);
-  };
-
   const renderTravelInfoList = (travelInfos, title, sectionType) => {
     // 좋아요한 정보공유방은 카드 스타일로 렌더링
     if (sectionType === 'liked') {
@@ -314,46 +310,31 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
             {travelInfos.map((info) => (
               <div key={info.id} className={styles.travelInfoCard}>
                 <div className={styles.travelInfoHeader}>
-                    <div className={styles.actionButtonContainer}>
-                      <img 
-                        src={info.thumbnailImage} 
-                        alt={info.title}
-                        className={styles.thumbnail}
-                      />
-                      <div className={styles.infoDetails}>
-                        <span>작성자: {info.creatorNickname}</span>
-                      </div>
-                      {info.joinedAt && (
-                        <div className={styles.joinedInfo}>
-                          <span className={styles.joinedBadge}>참가중</span>
-                          <span className={styles.joinedDate}>
-                            참가일: {formatDate(info.joinedAt)}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* 좋아요한 정보의 경우 좋아요 날짜 표시 */}
-                      {info.likedAt && (
-                        <div className={styles.likedInfo}>
-                          <span className={styles.likedBadge}>♥ 좋아요</span>
-                          <span className={styles.likedDate}>
-                            {formatDate(info.likedAt)}
-                          </span>
-                        </div>
-                      )}
+                  <div className={styles.thumbnailContainer}>
+                    <img 
+                      src={info.thumbnailImage} 
+                      alt={info.title}
+                      className={styles.thumbnail}
+                    />
+                    {/* 🔄 썸네일 아래에 작성자 정보 + 참가/좋아요 상태 표시 */}
+                    <div className={styles.infoDetails}>
+                      <span>작성자: {info.creatorNickname}</span>
                     </div>
-                 <div className={styles.travelInfoContent}>
+                  </div>
+
+                  <div className={styles.travelInfoContent}>
                     {info.blindStatus === 'BLINDED' && (
                       <span className={styles.blindedBadge}>블라인드 처리됨</span>
                     )}
                     <h4 className={styles.travelInfoTitle}>{info.title}</h4>
                     <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
-
+                    
                     <div className={styles.travelInfoMeta}>
                       <span>좋아요: {info.likeCount}</span>
                       <span>멤버: {info.memberCount}명</span>
                       {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
                     </div>
+
                     <div className={styles.travelSchedule}>
                       <span>작성일: {formatDate(info.createdAt)}</span>
                     </div>
@@ -368,40 +349,45 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                       </div>
                     )}
 
-                    {/* 최근 메시지 정보 */}
-                    {info.latestMessage && (
-                      <div className={styles.latestMessage}>
-                        <strong>최근 메시지:</strong> {info.latestMessage}
+                    {/* 🔄 참가중/좋아요 상태를 썸네일 아래로 이동 */}
+                    {info.joinedAt && (
+                      <div className={styles.thumbnailStatus}>
+                        <span className={styles.joinedBadge}>참가중</span>
+                        <span className={styles.joinedDate}>
+                          {formatDate(info.joinedAt)}
+                        </span>
+                      </div>
+                    )}
+                    {info.likedAt && (
+                      <div className={styles.thumbnailStatus}>
+                        <span className={styles.likedBadge}>♥ 좋아요</span>
+                        <span className={styles.likedDate}>
+                          {formatDate(info.likedAt)}
+                        </span>
                       </div>
                     )}
 
-                    {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
-                      <div className={styles.buttonContainer}>
-                        <button
-                          className={styles.chatButton}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleChatClick(info.id);
-                          }}
-                        >
+                    {/* TravelMate 스타일로 채팅 버튼 컨테이너 추가 */}
+                    <div className={styles.chatButtonContainer}>
+                      {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
+                        <button className={styles.chatButton} onClick={(e) => {
+                          e.stopPropagation();
+                          handleChatClick(info.id);
+                        }}>
                           채팅 바로가기
-                          <img src={arrow}/>
+                          <img src={arrow} alt="arrow"/>
                         </button>
-                      </div>
-                    ) : (
-                      <button
-                        className={styles.joinButton}
-                        onClick={(e) => {
+                      ) : (
+                        <button className={styles.joinButton} onClick={(e) => {
                           e.stopPropagation();
                           handleJoinClick(info, e);
-                        }}
-                      >
-                        참가하기
-                      </button>
-                    )}
-
+                        }}>
+                          참가하기
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  
+
                   <div className={styles.dropdownContainer} onClick={(e) => e.stopPropagation()}>
                     <DetailDropdown
                       isCreator={sectionType === 'hosted'}
@@ -413,6 +399,17 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                     />
                   </div>
                 </div>
+
+                {info.latestMessage && (
+                  <div className={styles.latestMessageSection} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.latestMessageHeader}>
+                      <span>최근 메시지</span>
+                    </div>
+                    <div className={styles.latestMessage}>
+                      {info.latestMessage}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
