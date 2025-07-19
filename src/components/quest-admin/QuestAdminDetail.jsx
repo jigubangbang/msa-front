@@ -6,8 +6,11 @@ import styles from './QuestAdminDetail.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import Pagination from '../common/Pagination/Pagination';
 import api from '../../apis/api';
-import ConfirmModal from '../common/ErrorModal/ConfirmModal';
-import SimpleConfirmModal from '../common/ErrorModal/SimpleConfirmModal';
+import Modal from '../common/Modal/Modal';
+import backIcon from "../../assets/admin/back.svg";
+import closeIcon from "../../assets/common/close.svg";
+import CirclesSpinner from '../common/Spinner/CirclesSpinner';
+import { Circles } from 'react-loader-spinner';
 
 const QuestAdminDetail = ({ questId }) => {
   const [questDetail, setQuestDetail] = useState(null);
@@ -19,103 +22,39 @@ const QuestAdminDetail = ({ questId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Alert 모달 상태
+  // 모달 상태
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmMessage, setConfirmMessage] = useState('');
-  const [confirmType, setConfirmType] = useState('alert');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [confirmAction, setConfirmAction] = useState(null);
 
-  // 퀘스트 삭제 확인 모달 상태들
-  const [showFirstConfirm, setShowFirstConfirm] = useState(false);
-  const [showSecondConfirm, setShowSecondConfirm] = useState(false);
-  const [firstConfirmMessage, setFirstConfirmMessage] = useState('');
-  const [secondConfirmMessage, setSecondConfirmMessage] = useState('');
+  // 삭제 확인 모달 (2단계)
+  const [showDeleteFirstModal, setShowDeleteFirstModal] = useState(false);
+  const [showDeleteSecondModal, setShowDeleteSecondModal] = useState(false);
 
-  // 퀘스트 인증 취소 확인 모달 상태
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [cancelConfirmMessage, setCancelConfirmMessage] = useState('');
-  const [cancelConfirmCallback, setCancelConfirmCallback] = useState(null);
-
+  const navigate = useNavigate();
   const itemsPerPage = 5;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const navigate = useNavigate();
-
-  // Alert 모달 관련 함수들
-  const showAlertModal = (message) => {
-    setConfirmMessage(message);
-    setConfirmType('alert');
-    setConfirmAction(null);
+  // 모달 헬퍼 함수들
+  const openConfirmModal = (message, action) => {
+    setModalMessage(message);
+    setConfirmAction(() => action);
     setShowConfirmModal(true);
   };
 
-  const hideConfirm = () => {
-    setShowConfirmModal(false);
-    setConfirmMessage('');
-    setConfirmAction(null);
+  const openSuccessModal = (message) => {
+    setModalMessage(message);
+    setShowSuccessModal(true);
   };
 
-  const handleConfirmAction = () => {
-    if (confirmAction) {
-      confirmAction();
-    }
-    hideConfirm();
+  const openErrorModal = (message) => {
+    setModalMessage(message);
+    setShowErrorModal(true);
   };
 
-  // 퀘스트 삭제 - 첫 번째 모달 함수들
-  const handleFirstConfirm = () => {
-    setShowFirstConfirm(false);
-    setSecondConfirmMessage('⚠️ 주의: 퀘스트를 삭제하면 모든 사용자와 뱃지에게서 해당 퀘스트가 제거되며, 이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?');
-    setShowSecondConfirm(true);
-  };
-
-  const handleFirstCancel = () => {
-    setShowFirstConfirm(false);
-  };
-
-  // 퀘스트 삭제 - 두 번째 모달 함수들
-  const handleSecondConfirm = async () => {
-    setShowSecondConfirm(false);
-    
-    try {
-      await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
-      showAlertModal('퀘스트가 성공적으로 삭제되었습니다.');
-      navigate('/quest-admin/quest');
-    } catch (error) {
-      console.error('Failed to delete quest:', error);
-      
-      if (error.response && error.response.data && error.response.data.error) {
-        showAlertModal(`퀘스트 삭제에 실패했습니다: ${error.response.data.error}`);
-      } else {
-        showAlertModal('퀘스트 삭제에 실패했습니다.');
-      }
-    }
-  };
-
-  const handleSecondCancel = () => {
-    setShowSecondConfirm(false);
-  };
-
-  // 퀘스트 인증 취소 확인 모달 함수들
-  const customCancelConfirm = (message, callback) => {
-    setCancelConfirmMessage(message);
-    setCancelConfirmCallback({ fn: callback });
-    setShowCancelConfirm(true);
-  };
-
-  const handleCancelConfirm = () => {
-    if (cancelConfirmCallback && cancelConfirmCallback.fn) {
-      cancelConfirmCallback.fn();
-    }
-    setShowCancelConfirm(false);
-    setCancelConfirmCallback(null);
-  };
-
-  const handleCancelCancel = () => {
-    setShowCancelConfirm(false);
-    setCancelConfirmCallback(null);
-  };
-
+  // 날짜 포맷팅
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
@@ -124,7 +63,7 @@ const QuestAdminDetail = ({ questId }) => {
       const day = String(date.getDate()).padStart(2, '0');
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${year}-${month}-${day} ${hours}:${minutes}`;
+      return `${year}.${month}.${day} ${hours}:${minutes}`;
     } catch (error) {
       return dateString;
     }
@@ -137,16 +76,15 @@ const QuestAdminDetail = ({ questId }) => {
       const end = new Date(endDate);
       
       const formatShortDate = (date) => {
-        const year = String(date.getFullYear()).slice(-2); 
-        const month = date.getMonth() + 1; 
-        const day = date.getDate();
-        return `${year}년 ${month}월 ${day}일`;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}.${month}.${day}`;
       };
       
       return (
         <div className={styles.dateRange}>
-          <div>{formatShortDate(start)}</div>
-          <div>~{formatShortDate(end)}</div>
+          <div>{formatShortDate(start)} ~ {formatShortDate(end)}</div>
         </div>
       );
     } catch (error) {
@@ -154,14 +92,13 @@ const QuestAdminDetail = ({ questId }) => {
     }
   };
 
-  const handlePageChange = (pageNum) => {
-    setCurrentPage(pageNum);
+  const truncateText = (text, maxLength = 100) => {
+    if (!text) return '-';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
   };
 
-  const handleEdit = () => {
-    navigate(`/quest-admin/quest/${questId}/modify`);
-  };
-
+  // API 호출 함수들
   const fetchQuestDetail = async () => {
     setLoading(true);
     try {
@@ -169,6 +106,7 @@ const QuestAdminDetail = ({ questId }) => {
       setQuestDetail(response.data.questDetail);
     } catch (err) {
       console.error("Failed to fetch quest detail", err);
+      openErrorModal('퀘스트 정보를 불러오는데 실패했습니다');
       setQuestDetail(null);
     } finally {
       setLoading(false);
@@ -176,15 +114,12 @@ const QuestAdminDetail = ({ questId }) => {
   };
 
   const fetchQuestBadges = async () => {
-    setLoading(true);
     try {
       const response = await api.get(`${API_ENDPOINTS.QUEST.ADMIN}/detail/${questId}/badges`);
       setQuestBadges(response.data.questBadges || []);
     } catch (err) {
-      console.error("Failed to fetch quest detail", err);
+      console.error("Failed to fetch quest badges", err);
       setQuestBadges([]);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -209,10 +144,40 @@ const QuestAdminDetail = ({ questId }) => {
     }
   };
 
-  // 퀘스트 삭제 함수
+  // 이벤트 핸들러들
+  const handlePageChange = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+
+  const handleEdit = () => {
+    navigate(`/quest-admin/quest/${questId}/modify`);
+  };
+
   const handleDelete = () => {
-    setFirstConfirmMessage(`정말로 "${questDetail.title}" 퀘스트를 삭제하시겠습니까?`);
-    setShowFirstConfirm(true);
+    setShowDeleteFirstModal(true);
+  };
+
+  const handleDeleteFirstConfirm = () => {
+    setShowDeleteFirstModal(false);
+    setShowDeleteSecondModal(true);
+  };
+
+  const handleDeleteSecondConfirm = async () => {
+    setShowDeleteSecondModal(false);
+    
+    try {
+      await api.delete(`${API_ENDPOINTS.QUEST.ADMIN}/quests/${questId}`);
+      openSuccessModal('퀘스트가 성공적으로 삭제되었습니다!');
+      setConfirmAction(() => () => navigate('/quest-admin/quest'));
+    } catch (error) {
+      console.error('Failed to delete quest:', error);
+      
+      if (error.response?.data?.error) {
+        openErrorModal(`퀘스트 삭제에 실패했습니다: ${error.response.data.error}`);
+      } else {
+        openErrorModal('퀘스트 삭제에 실패했습니다.');
+      }
+    }
   };
 
   const handleRowClick = (user) => {
@@ -223,12 +188,12 @@ const QuestAdminDetail = ({ questId }) => {
     setSelectedUser(null);
   };
 
-  const handleCancelUserQuest = async (user) => {
-    customCancelConfirm(
-      '정말로 이 사용자의 퀘스트 인증을 취소하시겠습니까?',
+  const handleCancelUserQuest = (user) => {
+    openConfirmModal(
+      '정말 사용자의 퀘스트 인증을 취소하시겠습니까?',
       async () => {
         try {
-          const response = await api.put(
+          await api.put(
             `${API_ENDPOINTS.QUEST.ADMIN}/quests-certi/${user.quest_user_id}/reject`,
             {
               quest_id: questDetail.quest_id,
@@ -237,26 +202,29 @@ const QuestAdminDetail = ({ questId }) => {
             }
           );
           
-          console.log('Cancel quest response:', response.data);
-          
-          // 성공 시 사용자 목록 새로고침
           fetchQuestUsers();
           setSelectedUser(null);
-          showAlertModal('퀘스트 인증이 취소되었습니다.');
+          setModalMessage('퀘스트 인증이 취소되었습니다');
+          setShowSuccessModal(true);
         } catch (error) {
           console.error('Failed to cancel user quest:', error);
-          showAlertModal('퀘스트 인증 취소에 실패했습니다.');
+          openErrorModal('퀘스트 인증 취소에 실패했습니다');
         }
       }
     );
   };
 
-  const truncateText = (text, maxLength = 100) => {
-    if (!text) return '-';
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+  const onClose = () => {
+    window.scrollTo(0, 0);
+    navigate('/quest-admin/quest');
   };
 
+  const handleBadgeClick = (badgeId) => {
+    window.scrollTo(0, 0);
+    navigate(`/quest-admin/badge/${badgeId}`);
+  };
+
+  // useEffect들
   useEffect(() => {
     if (questId) {
       fetchQuestDetail();
@@ -270,28 +238,16 @@ const QuestAdminDetail = ({ questId }) => {
     }
   }, [questId, currentPage]);
 
-  const onClose = () => {
-    window.scrollTo(0, 0);
-    navigate('/quest-admin/quest')
-  }
-
-  const handleBadgeClick = (badgeId) => {
-    window.scrollTo(0, 0);
-    navigate(`/quest-admin/badge/${badgeId}`);
-  }
-
   if (loading) {
-    return (
-      <div className={styles.questAdminDetail}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
-    );
+    return <CirclesSpinner />;
   }
 
   if (!questDetail) {
     return (
       <div className={styles.questAdminDetail}>
-        <div className={styles.emptyText}>퀘스트 정보를 불러올 수 없습니다</div>
+        <div className={styles.emptyContainer}>
+          <p className={styles.emptyText}>퀘스트 정보를 불러올 수 없습니다</p>
+        </div>
       </div>
     );
   }
@@ -300,170 +256,200 @@ const QuestAdminDetail = ({ questId }) => {
     <div className={styles.questAdminDetail}>
       {/* Header */}
       <div className={styles.header}>
-        <h2 className={styles.detailTitle}>Quest Detail</h2>
-        <button className={styles.closeButton} onClick={onClose}>
-          목록으로 돌아가기
+        <button className={styles.backButton} onClick={onClose}>
+          <img src={backIcon} alt="뒤로가기" className={styles.backIcon} />
         </button>
+        <h2 className={styles.sectionTitle}>퀘스트 상세</h2>
       </div>
 
-      {/* Quest Info Section */}
-      <div className={styles.questInfo}>
-        <div className={styles.infoGrid}>
-          {/* Basic Info */}
-          <div className={styles.basicInfo}>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>ID</label>
-              <span className={styles.infoValue}>{questDetail.quest_id}</span>
+      {/* 1. 기본 정보 & 설명 섹션 (좌우 배치) */}       
+      <div className={styles.infoGrid}>
+        {/* 왼쪽: 기본 정보 */}
+        <div className={styles.basicInfoSection}>
+          <div className={styles.basicInfoCard}>
+            <div className={styles.cardItem}>
+              <label>퀘스트 ID :</label>
+              <span>{questDetail.quest_id}</span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Category</label>
-              <span className={styles.infoValue}>{questDetail.category}</span>
+            <div className={styles.cardItem}>
+              <label>카테고리 :</label>
+              <span>{questDetail.category}</span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Title</label>
-              <span className={styles.infoValue}>{questDetail.title}</span>
+            <div className={styles.cardItem}>
+              <label>퀘스트명 :</label>
+              <span>{questDetail.title}</span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Difficulty</label>
+            <div className={styles.cardItem}>
+              <label>난이도 :</label>
               <span className={`${styles.difficultyTag} ${styles[questDetail.difficulty?.toLowerCase()]}`}>
                 {questDetail.difficulty}
               </span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>XP</label>
+            <div className={styles.cardItem}>
+              <label>XP :</label>
               <span className={styles.xpValue}>{questDetail.xp}</span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Seasonal</label>
-              <span className={`${styles.seasonalTag} ${questDetail.is_seasonal ? styles.seasonal : styles.permanent}`}>
-                {questDetail.is_seasonal ? 'Yes' : 'No'}
+            <div className={styles.cardItem}>
+              <label>시즌 퀘스트 :</label>
+              <span className={`${questDetail.is_seasonal ? styles.seasonal : styles.permanent}`}>
+                {questDetail.is_seasonal ? 'O' : '-'}
               </span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Period</label>
-              <span className={styles.infoValue}>
+            <div className={styles.cardItem}>
+              <label>기간 :</label>
+              <span>
                 {questDetail.is_seasonal 
                   ? formatDateRange(questDetail.season_start, questDetail.season_end)
                   : '-'
                 }
               </span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Status</label>
+            <div className={styles.cardItem}>
+              <label>상태 :</label>
               <span className={`${styles.statusTag} ${styles[questDetail.status?.toLowerCase()]}`}>
                 {questDetail.status}
               </span>
             </div>
-            <div className={styles.infoItem}>
-              <label className={styles.infoLabel}>Created</label>
-              <span className={styles.infoValue}>{formatDate(questDetail.created_at)}</span>
+            <div className={styles.cardItem}>
+              <label>생성일 :</label>
+              <span>{formatDate(questDetail.created_at)}</span>
             </div>
           </div>
+        </div>
 
-          {/* Description Section */}
-          <div className={styles.descriptionSection}>
-            <label className={styles.infoLabel}>Description</label>
+        {/* 오른쪽: 설명 & 뱃지 */}
+        <div className={styles.descriptionSection}>
+          {/* 설명 */}
+          <div className={styles.descriptionContainer}>
+            <label className={styles.infoLabel}>퀘스트 설명</label>
             <div className={styles.descriptionContent}>
               {questDetail.description 
-                  ? questDetail.description.replace(/✅ 퀘스트 조건:/g, '\n\n✅ 퀘스트 조건:\n')
-                      .split('\n').map((line, idx) => (
-                        <React.Fragment key={idx}>
-                          {line}
-                          <br/>
-                        </React.Fragment>
-                      ))
-                  : '-'
-                }
-            </div>
-            
-            {/* Badges Section */}
-            <div className={styles.badgesSection}>
-              <label className={styles.infoLabel}>Badges</label>
-              {questBadges.length > 0 ? (
-                <div className={styles.badgesGrid}>
-                  {questBadges.map((badge) => (
-                    <div key={badge.id} className={styles.badgeItem} title={badge.eng_title}
-                    onClick={() => {handleBadgeClick(badge.badge_id)}}>
-                      <img 
-                        src={badge.icon} 
-                        alt={badge.kor_title}
-                        className={styles.badgeIcon}
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                      <p className={styles.badgeTitle}>No.{badge.badge_id}</p>
-                      <p className={styles.badgeTitle}>{badge.kor_title}</p>
-                      <p className={styles.badgeSubTitle}> {badge.eng_title}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className={styles.noBadges}>배지가 설정되지 않았습니다</div>
-              )}
+                ? questDetail.description
+                    .split('✅ 퀘스트 조건:')[0]  // 조건 부분 전까지만
+                    .split('\n').map((line, idx) => (
+                      <React.Fragment key={idx}>
+                        {line}
+                        <br/>
+                      </React.Fragment>
+                    ))
+                : '-'
+              }
             </div>
 
-            {/* Action Buttons */}
-            <div className={styles.actionButtons}>
-              <button className={styles.editButton} onClick={handleEdit}>
-                ✏️ 수정하기
-              </button>
-              <button className={styles.deleteButton} onClick={handleDelete}>
-                🗑️ 삭제하기
-              </button>
+            {/* 퀘스트 조건 */}
+            <div className={styles.conditionsContainer}>
+              <label className={styles.infoLabel}>퀘스트 조건</label>
+              <div className={styles.conditionsContent}>
+                {questDetail.description && questDetail.description.includes('✅ 퀘스트 조건:')
+                    ? questDetail.description
+                        .split('✅ 퀘스트 조건:')[1]  // 조건 부분만
+                        ?.split('\n').map((line, idx) => (
+                          <React.Fragment key={idx}>
+                            {line}
+                            <br/>
+                          </React.Fragment>
+                        ))
+                    : '조건이 설정되지 않았습니다'
+                  }
+              </div>
             </div>
+          </div>
+
+          {/* 뱃지 */}
+          <div className={styles.badgesContainer}>
+            <label className={styles.infoLabel}>연결된 뱃지</label>
+            {questBadges.length > 0 ? (
+              <div className={styles.badgesGrid}>
+                {questBadges.map((badge) => (
+                  <div key={badge.id} className={styles.badgeItem} title={badge.eng_title}
+                  onClick={() => handleBadgeClick(badge.badge_id)}>
+                    <img 
+                      src={badge.icon} 
+                      alt={badge.kor_title}
+                      className={styles.badgeIcon}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                    <p className={styles.badgeTitle}>No.{badge.badge_id}</p>
+                    <p className={styles.badgeTitle}>{badge.kor_title}</p>
+                    <p className={styles.badgeSubTitle}> {badge.eng_title}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.noBadges}>배지가 설정되지 않았습니다</div>
+            )}
+          </div>
+
+          {/* 액션 버튼 */}
+          <div className={styles.actionButtons}>
+            <button className={styles.editButton} onClick={handleEdit}>
+              수정
+            </button>
+            <button className={styles.deleteButton} onClick={handleDelete}>
+              삭제
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Statistics Section */}
-      <div className={styles.statsSection}>
-        <h3 className={styles.sectionTitle}>Statistics</h3>
+      {/* 2. 통계 섹션 */}
+      <div className={styles.formSection}>
+        <h3 className={styles.formSectionTitle}>| 통계 |</h3>
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
-            <div className={styles.statValue}>{questDetail.count_completed}</div>
-            <div className={styles.statLabel}>Completed</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{questDetail.count_in_progress}</div>
-            <div className={styles.statLabel}>In Progress</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statValue}>{questDetail.count_given_up}</div>
-            <div className={styles.statLabel}>Given Up</div>
-          </div>
-          <div className={styles.statCard}>
             <div className={styles.statValue}>
-              {questDetail.count_completed + questDetail.count_in_progress + questDetail.count_given_up}
+              <div className={styles.statLabel}>전체 참여자</div>
+              {questDetail.count_completed + questDetail.count_in_progress + questDetail.count_given_up}명
             </div>
-            <div className={styles.statLabel}>Total Participants</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statLabel}>완료자 수</div>
+            <div className={styles.statValue1}>{questDetail.count_completed}명</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statLabel}>진행 중</div>
+            <div className={styles.statValue2}>{questDetail.count_in_progress}명</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statLabel}>포기자 수</div>
+            <div className={styles.statValue3}>{questDetail.count_given_up}명</div>
           </div>
         </div>
       </div>
 
-      {/* Participants Section */}
-      <div className={styles.participantsSection}>
+      {/* 3. 참여자 목록 섹션 */}
+      <div className={styles.participantsContainer}>
         <div className={styles.participantsHeader}>
-          <h3 className={styles.sectionTitle}>Participants</h3>
-          <span className={styles.participantsCount}>Total {totalCount} participants</span>
+          <h3 className={styles.formSectionTitle}>| 참여자 목록 |</h3>
+          <span className={styles.participantsCount}>전체 {totalCount}명 참여자</span>
         </div>
 
-        {/* Participants Table Header */}
+        {/* 참여자 테이블 헤더 */}
         <div className={styles.tableHeader}>
-          <div className={styles.headerCell}>User ID</div>
-          <div className={styles.headerCell}>Status</div>
-          <div className={styles.headerCell}>Description</div>
-          <div className={styles.headerCell}>Started</div>
-          <div className={styles.headerCell}>Completed</div>
-          <div className={styles.headerCell}>Images</div>
+          <div className={styles.headerCell}>사용자 ID</div>
+          <div className={styles.headerCell}>진행 상태</div>
+          <div className={styles.headerCell}>설명</div>
+          <div className={styles.headerCell}>시작일시</div>
+          <div className={styles.headerCell}>종료일시</div>
+          <div className={styles.headerCell}>인증 사진</div>
         </div>
 
-        {/* Participants Table Body */}
+        {/* 참여자 테이블 바디 */}
         <div className={styles.tableBody}>
           {usersLoading ? (
-            <div className={styles.usersLoading}>Loading participants...</div>
+            <div className={styles.usersLoading}>
+              <Circles
+                height="50"
+                width="50"
+                color="#000"
+                ariaLabel="circles-loading"
+                visible={true}
+              />
+            </div>
           ) : questUsers.length === 0 ? (
-            <div className={styles.noUsers}>No participants found</div>
+            <div className={styles.noUsers}>참여자 정보가 없습니다</div>
           ) : (
             questUsers.map((user, index) => {
               const uniqueKey = user.quest_user_id ? `user-${user.quest_user_id}` : `user-${currentPage}-${index}`;
@@ -519,71 +505,73 @@ const QuestAdminDetail = ({ questId }) => {
             })
           )}
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className={styles.paginationContainer}>
-            <Pagination
-              currentPage={currentPage}
-              pageBlock={5}
-              pageCount={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        )}
       </div>
+
+      {/* 페이지네이션 */}
+      {totalPages > 1 && (
+        <div className={styles.paginationContainer}>
+          <Pagination
+            currentPage={currentPage}
+            pageBlock={5}
+            pageCount={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
 
       {/* User Detail Modal */}
       {selectedUser && (
         <div className={styles.userDetailModal} onClick={handleCloseUserDetail}>
           <div className={styles.userDetailContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.userDetailHeader}>
-              <h3> 상세 인증 정보</h3>
+              <h3>상세 인증 정보</h3>
               <button className={styles.closeModalButton} onClick={handleCloseUserDetail}>
-                ✕
+                <img src={closeIcon} alt="닫기" className={styles.closeIcon} />
               </button>
             </div>
             
             <div className={styles.userDetailBody}>
-              <div className={styles.userDetailItem}>
-                <label>User ID</label>
-                <span>{selectedUser.user_id}</span>
-              </div>
-              
-              <div className={styles.userDetailItem}>
-                <label>Status</label>
-                <span className={`${styles.userStatusTag} ${styles[selectedUser.status?.toLowerCase()]}`}>
-                  {selectedUser.status}
-                </span>
-              </div>
-              
-              <div className={styles.userDetailItem}>
-                <label>Description</label>
-                <div className={styles.fullDescription}>
-                  {selectedUser.description || '-'}
+              {/* 기본 정보 카드 */}
+              <div className={styles.userInfoCard}>
+                <div className={styles.userCardItem}>
+                  <label>사용자 ID :</label>
+                  <span>{selectedUser.user_id}</span>
+                </div>
+                <div className={styles.userCardItem}>
+                  <label>진행 상태 :</label>
+                  <span className={`${styles.userStatusTag} ${styles[selectedUser.status?.toLowerCase()]}`}>
+                    {selectedUser.status}
+                  </span>
+                </div>
+                <div className={styles.userCardItem}>
+                  <label>시작일시 :</label>
+                  <span>{formatDate(selectedUser.started_at)}</span>
+                </div>
+                <div className={styles.userCardItem}>
+                  <label>종료일시 :</label>
+                  <span>{selectedUser.completed_at ? formatDate(selectedUser.completed_at) : '-'}</span>
                 </div>
               </div>
-              
-              <div className={styles.userDetailItem}>
-                <label>Started</label>
-                <span>{formatDate(selectedUser.started_at)}</span>
+
+              {/* 설명 섹션 */}
+              <div className={styles.userDescriptionSection}>
+                <label className={styles.userSectionLabel}>인증 설명</label>
+                <div className={styles.userDescriptionContent}>
+                  {selectedUser.description || '설명이 없습니다'}
+                </div>
               </div>
-              
-              <div className={styles.userDetailItem}>
-                <label>Completed</label>
-                <span>{selectedUser.completed_at ? formatDate(selectedUser.completed_at) : '-'}</span>
-              </div>
-              
+
+              {/* 이미지 섹션 */}
               {selectedUser.images && selectedUser.images.length > 0 && (
-                <div className={styles.userDetailItem}>
-                  <label>Images ({selectedUser.images.length})</label>
-                  <div className={styles.userDetailImages}>
+                <div className={styles.userImagesSection}>
+                  <label className={styles.userSectionLabel}>인증 사진 ({selectedUser.images.length}장)</label>
+                  <div className={styles.userImagesGrid}>
                     {selectedUser.images.map((image, idx) => (
                       <img
                         key={idx}
                         src={image}
                         alt={`User ${selectedUser.user_id} image ${idx + 1}`}
-                        className={styles.userDetailImage}
+                        className={styles.userModalImage}
                         onClick={() => window.open(image, '_blank')}
                       />
                     ))}
@@ -592,52 +580,83 @@ const QuestAdminDetail = ({ questId }) => {
               )}
             </div>
             
-            {selectedUser.status=='COMPLETED' &&
+            {selectedUser.status === 'COMPLETED' && (
               <div className={styles.userDetailActions}>
                 <button 
                   className={styles.cancelQuestButton}
                   onClick={() => handleCancelUserQuest(selectedUser)}
                 >
-                  🚫 퀘스트 인증 취소하기
+                  퀘스트 인증 취소
                 </button>
               </div>
-            }
+            )}
           </div>
         </div>
       )}
 
-      {/* 첫 번째 확인 모달 */}
-      <SimpleConfirmModal
-        isOpen={showFirstConfirm}
-        message={firstConfirmMessage}
-        onConfirm={handleFirstConfirm}
-        onCancel={handleFirstCancel}
-      />
+      {/* 삭제 확인 모달 (1단계) */}
+      <Modal
+        show={showDeleteFirstModal}
+        onClose={() => setShowDeleteFirstModal(false)}
+        onSubmit={handleDeleteFirstConfirm}
+        heading="퀘스트 삭제 확인"
+        firstLabel="확인"
+        secondLabel="취소"
+      >
+        정말 "{questDetail.title}" 퀘스트를 삭제하시겠습니까?
+      </Modal>
 
-      {/* 두 번째 확인 모달 */}
-      <SimpleConfirmModal
-        isOpen={showSecondConfirm}
-        message={secondConfirmMessage}
-        onConfirm={handleSecondConfirm}
-        onCancel={handleSecondCancel}
-      />
+      {/* 삭제 확인 모달 (2단계) */}
+      <Modal
+        show={showDeleteSecondModal}
+        onClose={() => setShowDeleteSecondModal(false)}
+        onSubmit={handleDeleteSecondConfirm}
+        heading="퀘스트 삭제 최종 확인"
+        firstLabel="삭제"
+        secondLabel="취소"
+      >
+        <div>
+          퀘스트 삭제 시 모든 사용자 및 뱃지와의 연결이 해제됩니다.<br/>
+          또한, 삭제 후 복구가 불가합니다. 정말 삭제하시겠습니까?
+        </div>
+      </Modal>
 
-      {/* 퀘스트 인증 취소 확인 모달 */}
-      <SimpleConfirmModal
-        isOpen={showCancelConfirm}
-        message={cancelConfirmMessage}
-        onConfirm={handleCancelConfirm}
-        onCancel={handleCancelCancel}
-      />
+      {/* 일반 확인 모달 */}
+      <Modal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onSubmit={() => {
+          setShowConfirmModal(false);
+          if (confirmAction) confirmAction();
+        }}
+        heading="인증 취소 확인"
+        firstLabel="확인"
+        secondLabel="취소"
+      >
+        {modalMessage}
+      </Modal>
 
-      {/* Alert 모달 */}
-      <ConfirmModal
-        isOpen={showConfirmModal}
-        onClose={hideConfirm}
-        onConfirm={confirmAction ? handleConfirmAction : null}
-        message={confirmMessage}
-        type={confirmType}
-      />
+      {/* 성공 모달 */}
+      <Modal
+        show={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)} 
+        onSubmit={() => setShowSuccessModal(false)}  
+        heading="인증 취소 완료"
+        firstLabel="확인"
+      >
+        {modalMessage}
+      </Modal>
+
+      {/* 에러 모달 */}
+      <Modal
+        show={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        onSubmit={() => setShowErrorModal(false)}
+        heading="인증 취소 실패"
+        firstLabel="확인"
+      >
+        <div style={{ whiteSpace: 'pre-line' }}>{modalMessage}</div>
+      </Modal>
     </div>
   );
 };
