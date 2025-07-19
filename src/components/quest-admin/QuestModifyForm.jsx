@@ -603,7 +603,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
                 <span className={styles.statValue}>{new Date(questData.created_at).toLocaleDateString()}</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>완료자 수</span>
+                <span className={styles.statLabel}>완료</span>
                 <span className={styles.statCompletedValue}>{questData.count_completed}명</span>
               </div>
               <div className={styles.statItem}>
@@ -611,7 +611,7 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
                 <span className={styles.statInProgressValue}>{questData.count_in_progress}명</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>포기자 수</span>
+                <span className={styles.statLabel}>포기</span>
                 <span className={styles.statGivenUpValue}>{questData.count_given_up}명</span>
               </div>
             </div>

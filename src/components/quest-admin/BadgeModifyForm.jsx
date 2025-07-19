@@ -532,7 +532,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
                   <span className={styles.infoValue}>{formatDate(badgeData.created_at)}</span>
                 </div>
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>획득자 수 :</span>
+                  <span className={styles.infoLabel}>획득한 사용자 수 :</span>
                   <span className={styles.awardedValue}>{badgeData.count_awarded}명</span>
                 </div>
               </div>

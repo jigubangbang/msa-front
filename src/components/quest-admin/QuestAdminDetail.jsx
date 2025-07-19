@@ -405,7 +405,7 @@ const QuestAdminDetail = ({ questId }) => {
             </div>
           </div>
           <div className={styles.statCard}>
-            <div className={styles.statLabel}>완료자 수</div>
+            <div className={styles.statLabel}>완료</div>
             <div className={styles.statValue1}>{questDetail.count_completed}명</div>
           </div>
           <div className={styles.statCard}>
@@ -413,7 +413,7 @@ const QuestAdminDetail = ({ questId }) => {
             <div className={styles.statValue2}>{questDetail.count_in_progress}명</div>
           </div>
           <div className={styles.statCard}>
-            <div className={styles.statLabel}>포기자 수</div>
+            <div className={styles.statLabel}>포기</div>
             <div className={styles.statValue3}>{questDetail.count_given_up}명</div>
           </div>
         </div>
