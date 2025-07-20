@@ -53,7 +53,7 @@ const TravelmateMembers = ({ postId }) => {
           <h3 className={styles.title}>참여하는 멤버들 ({members.length}명)</h3>
         </div>
         <div className={styles.blindedMessage}>
-          <p>블라인드 처리된 게시글로 참여 멤버를 확인할 수 없습니다.</p>
+          <p>블라인드 처리된 게시글로 참여 멤버를 확인할 수 없습니다</p>
         </div>
       </div>
     );
@@ -68,7 +68,7 @@ const TravelmateMembers = ({ postId }) => {
       <div className={styles.membersList}>
         {members.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>아직 참여한 멤버가 없습니다.</p>
+            <p>아직 참여한 멤버가 없습니다</p>
           </div>
         ) : (
           members.map((member) => (

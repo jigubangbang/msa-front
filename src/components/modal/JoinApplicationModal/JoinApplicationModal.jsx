@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './JoinApplicationModal.module.css';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import { Circles } from "react-loader-spinner";
 
 const JoinApplicationModal = ({ 
   isOpen, 
@@ -78,7 +79,7 @@ const showAlertModal = (message) => {
         <div className={styles.formGroup}>
           <textarea
             className={styles.textArea}
-            placeholder="참여 신청 사유를 입력해주세요"
+            placeholder="참가 신청 사유를 입력해주세요"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={6}
@@ -91,7 +92,11 @@ const showAlertModal = (message) => {
             onClick={handleSubmit}
             disabled={isSubmitting || !description.trim()}
           >
-            {isSubmitting ? '신청 중...' : '참여 신청'}
+            {isSubmitting ? (
+              <Circles height="20" width="20" color="#fff" />
+            ) : (
+              '참가 신청'
+            )}
           </button>
           <button 
             className={`${styles.btn} ${styles.outlineButton}`}

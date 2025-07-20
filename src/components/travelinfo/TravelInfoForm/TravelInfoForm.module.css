@@ -232,10 +232,6 @@
   transition: border-color 0.3s ease;
 }
 
-.themeSelector:focus-within {
-  border-color: #007bff;
-}
-
 .row {
   display: flex;
   gap: 16px;

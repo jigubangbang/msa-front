@@ -20,6 +20,9 @@
   font-size: 16px;
   background-color: #f9f9f9;
   border-radius: 8px;
+  width: 100%;
+  min-width: 1060px; 
+  box-sizing: border-box;
 }
 
 .cardContainer {
@@ -152,11 +155,12 @@
   color: #9ca3af;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
   margin-top: auto;
   padding-top: 8px;
   border-top: 1px solid #f0f0f0;
   flex-shrink: 0; /* 크기 고정 */
+  justify-content: center;
 }
 
 /* 반응형 디자인 */

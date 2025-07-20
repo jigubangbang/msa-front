@@ -2,7 +2,9 @@
 
 .container {
   padding: 20px;
-  width: 1100px;
+  width: 100%;
+  max-width: 1100px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -14,8 +16,7 @@
 }
 
 .chatButtonContainer {
-  margin-top: 12px;
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid #f0f0f0;
 }
 
@@ -89,7 +90,8 @@
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  padding: 30px;
+  padding: 30px 30px;
+  padding-bottom: 10px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   cursor: pointer;
@@ -128,6 +130,7 @@
   color: #666;
   font-weight: 500;
   width: 245px;
+  margin-top: 8px;
 }
 
 .locations img {
@@ -170,19 +173,24 @@
 .travelSchedule, .travelMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 15px;
   font-size: 14px;
   color: #666;
   line-height: 1.4;
+  font-weight: 500;
 }
 
 .travelSchedule span, travelMeta span {
   font-weight: 500;
 }
 
+.travelSchedule {
+  margin-bottom: 5px;
+}
+
 .themes {
   padding-top: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 90px;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
