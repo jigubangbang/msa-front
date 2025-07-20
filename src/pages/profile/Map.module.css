@@ -83,14 +83,14 @@
 
 .btnBottomContainer {
     position: absolute;
-    left: 5vw;
-    bottom: 30vh;
+    left: 5%;
+    bottom: 30%;
 }
 
 .btnBottomRightContainer {
     position: absolute;
-    right: 5vw;
-    bottom: 30vh; 
+    right: 5%;
+    bottom: 30%; 
 }
 
 .tooltip {
