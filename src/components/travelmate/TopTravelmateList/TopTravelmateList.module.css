@@ -79,9 +79,8 @@
   background-color: transparent;
   border: none;
   border-radius: 50%;
-  width: 32px;
   height: 32px;
-  padding: 0px;
+  padding: 0px 3px;
   display: flex;
   align-items: center;
   justify-content: center;

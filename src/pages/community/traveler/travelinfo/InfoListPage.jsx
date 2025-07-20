@@ -8,6 +8,7 @@ import InfoCategoryBrowse from "../../../../components/travelinfo/InfoCategoryBr
 import TopTravelInfoList from "../../../../components/travelinfo/TopTravelInfoList/TopTravelInfoList";
 import TravelInfoList from "../../../../components/travelinfo/TravelInfoList/TravelInfoList";
 import { jwtDecode } from "jwt-decode";
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 export default function InfoListPage() {
@@ -110,7 +111,7 @@ useEffect(() => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

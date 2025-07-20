@@ -12,6 +12,9 @@ import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import { useNavigate } from 'react-router-dom';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
 
 const TravelInfoList = ({
   currentUserId,
@@ -438,8 +441,7 @@ const getSortDisplayText = () => {
   if (loading) {
     return (
       <div className={styles.travelInfoList}>
-        
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -575,7 +577,7 @@ const getSortDisplayText = () => {
                         onClick={(e) => handleLikeToggle(travelinfo.id, e)}
                         disabled={!isLogin}
                       >
-                        {isLiked ? '❤️' : '🤍'}
+                        <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요"/>
                       </button>
                       <span className={styles.likeCount}>{travelinfo.likeCount}</span>
                     </>
