@@ -483,7 +483,7 @@ const getSortDisplayText = () => {
       <p className={styles.totalCount}>
         {searchTerm 
           ? `"${searchTerm}"의 검색 결과... ${totalCount}개의 정보 공유방을 찾았습니다.`
-          : `현재 ${totalCount}개의 정보 공유방이 있습니다.`
+          : `현재 ${totalCount}개의 정보 공유방이 있습니다`
         }
       </p>
       
