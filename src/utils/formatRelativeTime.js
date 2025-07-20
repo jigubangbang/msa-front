@@ -1,5 +1,6 @@
 export function formatRelativeTime(dateString) {
-  const date = new Date(dateString);
+  // Append 'Z' to ensure the date string is parsed as UTC
+  const date = new Date(dateString + 'Z');
   const now = new Date();
   // The subtraction of two Date objects correctly yields the difference in milliseconds,
   // as both are internally represented as UTC timestamps.
