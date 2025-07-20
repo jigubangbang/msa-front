@@ -103,7 +103,8 @@ useEffect(() => {
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`);
       setDetail(response.data.travelmate);
 
-      if (currentUserId == response.data.travelmate.creatorId){
+      // 타입 안전한 비교로 수정 (== 대신 ===, 문자열로 변환)
+      if (String(currentUserId) === String(response.data.travelmate.creatorId)){
         setMemberStatus('CREATOR')    
       }
     } catch (error) {
@@ -112,6 +113,7 @@ useEffect(() => {
       setLoading(false);
     }
   };
+
 
   const fetchLikeStatus = async () => {
     try {
@@ -290,9 +292,18 @@ useEffect(() => {
     if (response.data.success && response.data.chatRoomId) {
         openChat(response.data.chatRoomId, currentUserId, {
           onLeave: () => {
-            fetchTravelmateDetail();
-            if (isLogin) {
-              fetchMemberStatus();
+            const isCreator = detail && String(currentUserId) === String(detail.creatorId);
+          
+            if (isCreator) {
+              // 방장인 경우: memberStatus 유지하고 fetchMemberStatus 호출 안함
+              setMemberStatus('CREATOR');
+              fetchTravelmateDetail();
+            } else {
+              // 일반 멤버인 경우: 기존 로직 그대로
+              fetchTravelmateDetail();
+              if (isLogin) {
+                fetchMemberStatus();
+              }
             }
           }
         });
