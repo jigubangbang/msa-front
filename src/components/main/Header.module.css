@@ -8,7 +8,7 @@
 
 .headerWrapper {
   position: relative;
-  z-index: 1000; /* 사이드바보다 높게 */
+  z-index: 998; /* 사이드바보다 높게 */
   font-family: 'Pretendard', sans-serif;
   max-width: 100vw;
   padding: 0;

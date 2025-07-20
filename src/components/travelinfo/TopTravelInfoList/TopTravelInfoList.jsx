@@ -7,6 +7,13 @@ import api from '../../../apis/api';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import { useNavigate } from 'react-router-dom';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
+
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
+import userIcon from '../../../../public/icons/sidebar/user.svg';
+import chatIcon from '../../../assets/feed/comment_grey.svg';
+
 
 const TopTravelInfoList = ({ 
   currentUserId,
@@ -278,7 +285,7 @@ const TopTravelInfoList = ({
   if (loading) {
     return (
       <div className={styles.topTravelInfoList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -309,13 +316,6 @@ const TopTravelInfoList = ({
                   alt="썸네일"
                   className={styles.thumbnail}
                 />
-                <button 
-                  className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
-                  onClick={(e) => handleLikeToggle(travelinfo.id, e)}
-                  disabled={!isLogin || isBlind}
-                >
-                  {isLiked ? '❤️' : '🤍'}
-                </button>
               </div>
               
               <div className={styles.content}>
@@ -327,28 +327,37 @@ const TopTravelInfoList = ({
                 </p>
                 
                 <div className={styles.stats}>
-                  <div className={styles.statsRow}>
-                    <span className={styles.members}>
-                      👥 {isBlind ? '-' : (travelinfo.memberCount || 0)}명
-                    </span>
-                    <span className={styles.likes}>
-                      ❤️ {isBlind ? '-' : travelinfo.likeCount}
-                    </span>
-                    {option === 'active' && (
-                      <span className={styles.chatCount}>
-                        💬 {isBlind ? '-' : (travelinfo.chatCount || 0)}
-                      </span>
-                    )}
-                  </div>
-                  {!isBlind && (
+                <div className={styles.statsRow}>
+                  <span className={styles.members}>
+                    <img src={userIcon} alt="인원 수" className={`${styles.icon} ${styles.memberIcon}`}/>
+                    {isBlind ? '-' : (travelinfo.memberCount || 0)}
+                  </span>
+                  <span className={styles.likes}>
                     <button 
-                      className={`${styles.joinButton} ${isJoined ? styles.chatButton : ''}`}
-                      onClick={(e) => handleJoinClick(travelinfo, e)}
+                      className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
+                      onClick={(e) => handleLikeToggle(travelinfo.id, e)}
+                      disabled={!isLogin || isBlind}
                     >
-                      {isJoined ? '채팅하기' : '참여하기'}
+                      <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요" className={styles.icon}/>
                     </button>
+                    {isBlind ? '-' : travelinfo.likeCount}
+                  </span>
+                  {option === 'active' && (
+                    <span className={styles.chatCount}>
+                      <img src={chatIcon} alt="채팅 수" className={`${styles.icon} ${styles.chatIcon}`}/>
+                      {isBlind ? '-' : (travelinfo.chatCount || 0)}
+                    </span>
                   )}
                 </div>
+                </div>
+                {!isBlind && (
+                  <button 
+                    className={`${styles.joinButton} ${isJoined ? styles.chatButton : ''}`}
+                    onClick={(e) => handleJoinClick(travelinfo, e)}
+                  >
+                    {isJoined ? '채팅하기' : '참여하기'}
+                  </button>
+                )}
               </div>
             </div>
           );

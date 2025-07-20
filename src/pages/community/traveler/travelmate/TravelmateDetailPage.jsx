@@ -7,6 +7,7 @@ import TravelmateDetailMain from '../../../../components/travelmateForm/Travelma
 import TravelmateMembers from '../../../../components/travelmateForm/TravelmateMembers/TravelmateMembers';
 import TravelmateQA from '../../../../components/travelmateForm/TravelmateQA/TravelmateQA';
 import { jwtDecode } from 'jwt-decode';
+import CirclesSpinner from '../../../../components/common/Spinner/CirclesSpinner';
 
 
 const TravelmateDetailPage = () => {
@@ -81,7 +82,7 @@ const TravelmateDetailPage = () => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

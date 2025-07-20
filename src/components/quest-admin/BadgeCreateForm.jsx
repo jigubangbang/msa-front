@@ -25,9 +25,13 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
   const [suggestedId, setSuggestedId] = useState(null);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  
+  // 모달 상태
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [confirmAction, setConfirmAction] = useState(null);
 
   // 유효성 검사 상태
   const [validationErrors, setValidationErrors] = useState({});
@@ -43,6 +47,23 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
     { value: "2", label: "Normal" },
     { value: "3", label: "Hard" },
   ];
+
+  // 모달 헬퍼 함수들
+  const openConfirmModal = (message, action) => {
+    setModalMessage(message);
+    setConfirmAction(() => action); 
+    setShowConfirmModal(true);
+  };
+
+  const openSuccessModal = (message) => {
+    setModalMessage(message);
+    setShowSuccessModal(true);
+  };
+
+  const openErrorModal = (message) => {
+    setModalMessage(message);
+    setShowErrorModal(true);
+  };
 
   // 유효성 검사 함수들
   const validateField = (name, value) => {
@@ -263,6 +284,12 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
       return;
     }
 
+    // 확인 모달 띄우기
+    openConfirmModal('정말 뱃지를 생성하시겠습니까?', actualSubmit);
+  };
+
+  // 실제 제출 함수
+  const actualSubmit = async () => {
     setLoading(true);
     let iconUrl = null;
 
@@ -306,18 +333,15 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
       );
 
       console.log("Badge created successfully:", response.data);
-      setShowSuccessModal(true);
+      openSuccessModal('뱃지가 성공적으로 생성되었습니다!');
     } catch (error) {
       console.error("Failed to create badge:", error);
 
       if (error.response && error.response.data && error.response.data.error) {
-        setModalMessage(
-          `뱃지 생성에 실패했습니다\n${error.response.data.error}`
-        );
+        openErrorModal(`뱃지 생성에 실패했습니다\n${error.response.data.error}`);
       } else {
-        setModalMessage("뱃지 생성에 실패했습니다");
+        openErrorModal('뱃지 생성에 실패했습니다');
       }
-      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }
@@ -773,6 +797,21 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
         </div>
       )}
       
+      {/* 확인 모달 */}
+      <Modal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onSubmit={() => {
+          setShowConfirmModal(false);
+          if (confirmAction) confirmAction();
+        }}
+        heading="뱃지 생성 확인"
+        firstLabel="확인"
+        secondLabel="취소"
+      >
+        {modalMessage}
+      </Modal>
+
       {/* 성공 모달 */}
       <Modal
         show={showSuccessModal}
@@ -789,10 +828,10 @@ const BadgeCreateForm = ({ onClose, onSave }) => {
         heading="뱃지 생성 완료"
         firstLabel="확인"
       >
-        뱃지가 성공적으로 생성되었습니다!
+        {modalMessage}
       </Modal>
 
-      {/* 실패 모달 */}
+      {/* 에러 모달 */}
       <Modal
         show={showErrorModal}
         onClose={() => setShowErrorModal(false)}

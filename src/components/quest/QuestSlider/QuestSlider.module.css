@@ -49,7 +49,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .questGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(200px, 1fr));
   padding: 5px;
   gap: 16px;
   width: 100%;
@@ -105,32 +105,36 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .questInfo {
   display: flex;
-  gap: 8px;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.difficulty {
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
-  background: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  align-self: flex-start;
-}
-
-.xp {
+.label {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400; 
   color: #495057;
-  align-self: flex-start;
+}
+
+.label2 {
+  font-size: 14px;
+  font-weight: 400; 
+  color: #495057;
+  margin-left: 10px;
+}
+
+.value {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #495057;
 }
 
 .questBottom {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 10px;
   gap: 12px;
 }
 
@@ -141,8 +145,6 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border: 1px solid #e9ecef;
   flex-shrink: 0;
 }
 

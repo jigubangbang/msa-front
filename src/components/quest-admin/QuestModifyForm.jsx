@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import styles from './QuestModifyForm.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import api from '../../apis/api';
-import ConfirmModal from '../common/ErrorModal/ConfirmModal';
+import backIcon from '../../assets/admin/back.svg';
+import { Circles } from 'react-loader-spinner';
+import Modal from '../common/Modal/Modal';
+import CirclesSpinner from "../common/Spinner/CirclesSpinner";
 
 const QuestModifyForm = ({ questId, onClose, onSave }) => {
   const [questData, setQuestData] = useState(null);
@@ -19,12 +22,14 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
   });
   const [badgeList, setBadgeList] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmMessage, setConfirmMessage] = useState('');
-  const [confirmType, setConfirmType] = useState('alert');
-  const [confirmAction, setConfirmAction] = useState(null);
-  
+  const [modalMessage, setModalMessage] = useState('');
+
   // 유효성 검사 상태
   const [validationErrors, setValidationErrors] = useState({});
   const [fieldValidation, setFieldValidation] = useState({
@@ -59,28 +64,6 @@ const QuestModifyForm = ({ questId, onClose, onSave }) => {
     }
   };
 
-  
-const showAlertModal = (message) => {
-    setConfirmMessage(message);
-    setConfirmType('alert');
-    setConfirmAction(null);
-    setShowConfirmModal(true);
-  };
-
-  const hideConfirm = () => {
-    setShowConfirmModal(false);
-    setConfirmMessage('');
-    setConfirmAction(null);
-  };
-
-  const handleConfirmAction = () => {
-    if (confirmAction) {
-      confirmAction();
-    }
-    hideConfirm();
-  };
-
-
   const parseDescription = (description) => {
     if (!description) return { description: '', quest_conditions: '' };
     
@@ -111,27 +94,27 @@ const showAlertModal = (message) => {
   };
 
   // 유효성 검사 함수들
-  const validateField = (name, value) => {
+  const validateField = (name, value, currentFormData = formData) => {
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '제목은 필수입니다' };
+          return { isValid: false, error: '퀘스트명을 입력해 주세요' };
         } else if (value.length > 200) {
-          return { isValid: false, error: '제목은 200자를 초과할 수 없습니다' };
+          return { isValid: false, error: '퀘스트명은 200자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'description':
         if (!value.trim()) {
-          return { isValid: false, error: '설명은 필수입니다' };
+          return { isValid: false, error: '퀘스트 설명을 입력해 주세요' };
         } else if (value.length > 500) {
-          return { isValid: false, error: '설명은 500자를 초과할 수 없습니다' };
+          return { isValid: false, error: '퀘스트 설명은 500자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'quest_conditions':
         if (!value.trim()) {
-          return { isValid: false, error: '퀘스트 조건은 필수입니다' };
+          return { isValid: false, error: '퀘스트 조건을 입력해 주세요' };
         } else if (value.length > 500) {
           return { isValid: false, error: '퀘스트 조건은 500자를 초과할 수 없습니다' };
         }
@@ -140,25 +123,25 @@ const showAlertModal = (message) => {
       case 'xp':
         const xpValue = parseInt(value);
         if (!value.trim()) {
-          return { isValid: false, error: 'XP는 필수입니다' };
+          return { isValid: false, error: 'XP를 입력해 주세요' };
         } else if (isNaN(xpValue) || xpValue <= 0) {
-          return { isValid: false, error: 'XP는 양수여야 합니다' };
+          return { isValid: false, error: 'XP는 양수값만 가능합니다' };
         } else if (xpValue > 10000) {
           return { isValid: false, error: 'XP는 10000을 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'season_start':
-        if (formData.is_seasonal && !value.trim()) {
-          return { isValid: false, error: '시즌 퀘스트는 시작일이 필수입니다' };
+        if (currentFormData.is_seasonal && !value.trim()) {
+          return { isValid: false, error: '시즌 퀘스트의 시작일을 입력해 주세요' };
         }
         return { isValid: true, error: null };
         
       case 'season_end':
-        if (formData.is_seasonal && !value.trim()) {
-          return { isValid: false, error: '시즌 퀘스트는 종료일이 필수입니다' };
+        if (currentFormData.is_seasonal && !value.trim()) {
+          return { isValid: false, error: '시즌 퀘스트의 종료일을 입력해 주세요' };
         }
-        if (formData.is_seasonal && value && formData.season_start && new Date(value) <= new Date(formData.season_start)) {
+        if (currentFormData.is_seasonal && value && currentFormData.season_start && new Date(value) <= new Date(currentFormData.season_start)) {
           return { isValid: false, error: '종료일은 시작일보다 나중이어야 합니다' };
         }
         return { isValid: true, error: null };
@@ -201,6 +184,8 @@ const showAlertModal = (message) => {
       
     } catch (err) {
       console.error("Failed to fetch quest data", err);
+      setModalMessage('퀘스트 정보를 불러올 수 없습니다');
+      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }
@@ -210,18 +195,24 @@ const showAlertModal = (message) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
     
-    setFormData(prev => ({
-      ...prev,
+    const updatedFormData = {
+      ...formData,
       [name]: newValue
-    }));
+    };
+
+    setFormData(updatedFormData);
+
+    setMessage('');
+    setMessageType('');
     
     // 시즌 체크박스가 해제되면 시즌 날짜 초기화
     if (name === 'is_seasonal' && !checked) {
-      setFormData(prev => ({
-        ...prev,
+      const resetFormData = {
+        ...updatedFormData,
         season_start: '',
         season_end: ''
-      }));
+      };
+      setFormData(resetFormData);
       setFieldValidation(prev => ({
         ...prev,
         season_start: null,
@@ -232,11 +223,12 @@ const showAlertModal = (message) => {
         season_start: null,
         season_end: null
       }));
+      return;
     }
     
     // 실시간 유효성 검사
     if (['title', 'description', 'quest_conditions', 'xp', 'season_start', 'season_end'].includes(name)) {
-      const validation = validateField(name, newValue);
+      const validation = validateField(name, newValue, updatedFormData);
       setFieldValidation(prev => ({
         ...prev,
         [name]: validation.isValid ? 'valid' : 'invalid'
@@ -245,6 +237,31 @@ const showAlertModal = (message) => {
         ...prev,
         [name]: validation.error
       }));
+
+      // 시즌 날짜 필드가 변경될 때 상대방 필드도 재검증
+      if (name === 'season_start' && updatedFormData.season_end) {
+        const endValidation = validateField('season_end', updatedFormData.season_end, updatedFormData);
+        setFieldValidation(prev => ({
+          ...prev,
+          season_end: endValidation.isValid ? 'valid' : 'invalid'
+        }));
+        setValidationErrors(prev => ({
+          ...prev,
+          season_end: endValidation.error
+        }));
+      }
+      
+      if (name === 'season_end' && updatedFormData.season_start) {
+        const startValidation = validateField('season_start', updatedFormData.season_start, updatedFormData);
+        setFieldValidation(prev => ({
+          ...prev,
+          season_start: startValidation.isValid ? 'valid' : 'invalid'
+        }));
+        setValidationErrors(prev => ({
+          ...prev,
+          season_start: startValidation.error
+        }));
+      }
     }
   };
 
@@ -253,12 +270,12 @@ const showAlertModal = (message) => {
     let hasErrors = false;
     
     // 필수 필드 검사
-    const titleValidation = validateField('title', formData.title);
-    const descriptionValidation = validateField('description', formData.description);
-    const questConditionsValidation = validateField('quest_conditions', formData.quest_conditions);
-    const xpValidation = validateField('xp', formData.xp);
-    const seasonStartValidation = validateField('season_start', formData.season_start);
-    const seasonEndValidation = validateField('season_end', formData.season_end);
+    const titleValidation = validateField('title', formData.title, formData);
+    const descriptionValidation = validateField('description', formData.description, formData);
+    const questConditionsValidation = validateField('quest_conditions', formData.quest_conditions, formData);
+    const xpValidation = validateField('xp', formData.xp, formData);
+    const seasonStartValidation = validateField('season_start', formData.season_start, formData);
+    const seasonEndValidation = validateField('season_end', formData.season_end, formData);
     
     if (!titleValidation.isValid) {
       errors.title = titleValidation.error;
@@ -324,11 +341,17 @@ const showAlertModal = (message) => {
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      showAlertModal('입력값을 확인해주세요.');
+      setMessage('입력값을 확인해 주세요');
+      setMessageType('error');
       return;
     }
 
-    setLoading(true);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmModal(false);
+    setSubmitting(true);
     
     try {
       const difficulty = getDifficultyFromXP(formData.xp);
@@ -360,27 +383,23 @@ const showAlertModal = (message) => {
       );
       
       console.log('Quest updated successfully:', response.data);
-      showAlertModal('퀘스트가 성공적으로 수정되었습니다.');
-      
-      if (onSave) onSave();
-      if (onClose) onClose(questId);
+      setModalMessage('퀘스트가 성공적으로 수정되었습니다!');
+      setShowSuccessModal(true);
       
     } catch (error) {
       console.error('Failed to update quest:', error);
       
       if (error.response && error.response.data && error.response.data.error) {
-        showAlertModal(`퀘스트 수정에 실패했습니다: ${error.response.data.error}`);
+        setModalMessage(`퀘스트 수정에 실패했습니다\n${error.response.data.error}`);
       } else {
-        showAlertModal('퀘스트 수정에 실패했습니다.');
+        setModalMessage('퀘스트 수정에 실패했습니다');
       }
+      
+      setShowErrorModal(true);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
-
-  const handleClose = () => {
-    if (onClose) onClose(questId);
-  }
 
   useEffect(() => {
     if (questId) {
@@ -388,45 +407,47 @@ const showAlertModal = (message) => {
     }
   }, [questId]);
 
-  if (loading && !questData) {
+  if (loading) {
     return (
-      <div className={styles.questModifyForm}>
-        <div className={styles.loading}>로딩 중...</div>
+      <div className={styles.section}>
+        <CirclesSpinner />
       </div>
     );
   }
 
   if (!questData) {
     return (
-      <div className={styles.questModifyForm}>
-        <div className={styles.error}>퀘스트 정보를 불러올 수 없습니다.</div>
+      <div className={styles.emptyContainer}>
+        <div className={styles.emptyText}>퀘스트 정보를 불러올 수 없습니다</div>
       </div>
     );
   }
 
   return (
-    <div className={styles.questModifyForm}>
+    <div className={styles.section}>
       <div className={styles.header}>
-        <h2 className={styles.title}>퀘스트 수정</h2>
-        <button className={styles.closeButton} onClick={handleClose}>✕</button>
+        <button className={styles.backButton} onClick={onClose}>
+          <img src={backIcon} alt="뒤로가기" className={styles.backIcon} />
+        </button>
+        <h2 className={styles.sectionTitle}>퀘스트 수정</h2>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
         {/* 기본 정보 섹션 */}
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>기본 정보</h3>
+        <div className={styles.formSection}>
+          <h3 className={styles.formSectionTitle}>| 기본 정보 |</h3>
           
           <div className={styles.basicInfo}>
             <div className={styles.leftColumn}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  ID
-                  <span className={styles.idNote}>(수정 불가)</span>
+                  퀘스트 ID
+                  <span className={styles.idNote}> (수정 불가)</span>
                 </label>
                 <input
                   type="text"
                   value={questData.quest_id}
-                  className={`${styles.input} ${styles.disabledInput}`}
+                  className={`${styles.textInput} ${styles.disabledInput}`}
                   disabled
                 />
               </div>
@@ -439,7 +460,7 @@ const showAlertModal = (message) => {
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className={styles.select}
+                  className={styles.selectInput}
                   required
                 >
                   {categories.map(category => (
@@ -452,14 +473,14 @@ const showAlertModal = (message) => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  제목 <span className={styles.required}>*</span>
+                  퀘스트명 <span className={styles.required}>*</span>
                 </label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className={`${styles.input} ${
+                  className={`${styles.textInput} ${
                     fieldValidation.title === 'valid' ? styles.validInput : 
                     fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                   }`}
@@ -467,7 +488,7 @@ const showAlertModal = (message) => {
                 />
                 {fieldValidation.title === 'valid' && (
                   <div className={styles.validationMessage}>
-                    <span className={styles.validMessage}>✓ 올바른 형식입니다</span>
+                    <span className={styles.validMessage}>✓ 올바른 형식의 퀘스트명입니다</span>
                   </div>
                 )}
                 {fieldValidation.title === 'invalid' && (
@@ -491,7 +512,7 @@ const showAlertModal = (message) => {
                   name="xp"
                   value={formData.xp}
                   onChange={handleInputChange}
-                  className={`${styles.input} ${
+                  className={`${styles.textInput} ${
                     fieldValidation.xp === 'valid' ? styles.validInput : 
                     fieldValidation.xp === 'invalid' ? styles.invalidInput : ''
                   }`}
@@ -500,11 +521,11 @@ const showAlertModal = (message) => {
                   max="10000"
                 />
                 <small className={styles.xpHint}>
-                  150 XP 미만: Easy, 150-299 XP: Normal, 300 XP 이상: Hard
+                  150 XP 미만 : Easy / 150-299 XP : Normal / 300 XP 이상 : Hard
                 </small>
                 {fieldValidation.xp === 'valid' && (
                   <div className={styles.validationMessage}>
-                    <span className={styles.validMessage}>✓ 올바른 형식입니다</span>
+                    <span className={styles.validMessage}>✓ 올바른 형식의 XP입니다</span>
                   </div>
                 )}
                 {fieldValidation.xp === 'invalid' && (
@@ -524,17 +545,17 @@ const showAlertModal = (message) => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className={`${styles.textarea} ${
+                  className={`${styles.textareaInput} ${
                     fieldValidation.description === 'valid' ? styles.validInput : 
                     fieldValidation.description === 'invalid' ? styles.invalidInput : ''
                   }`}
                   rows="4"
-                  placeholder="퀘스트에 대한 전반적인 설명을 입력하세요..."
+                  placeholder="퀘스트에 대한 전반적인 설명을 입력해 주세요"
                   required
                 />
                 {fieldValidation.description === 'valid' && (
                   <div className={styles.validationMessage}>
-                    <span className={styles.validMessage}>✓ 올바른 형식입니다</span>
+                    <span className={styles.validMessage}>✓ 올바른 형식의 퀘스트 설명입니다</span>
                   </div>
                 )}
                 {fieldValidation.description === 'invalid' && (
@@ -552,17 +573,17 @@ const showAlertModal = (message) => {
                   name="quest_conditions"
                   value={formData.quest_conditions}
                   onChange={handleInputChange}
-                  className={`${styles.textarea} ${
+                  className={`${styles.textareaInput} ${
                     fieldValidation.quest_conditions === 'valid' ? styles.validInput : 
                     fieldValidation.quest_conditions === 'invalid' ? styles.invalidInput : ''
                   }`}
                   rows="4"
-                  placeholder="퀘스트 완료를 위한 구체적인 조건들을 입력하세요..."
+                  placeholder="퀘스트 완료를 위한 구체적인 조건을 입력해 주세요"
                   required
                 />
                 {fieldValidation.quest_conditions === 'valid' && (
                   <div className={styles.validationMessage}>
-                    <span className={styles.validMessage}>✓ 올바른 형식입니다</span>
+                    <span className={styles.validMessage}>✓ 올바른 형식의 퀘스트 조건입니다</span>
                   </div>
                 )}
                 {fieldValidation.quest_conditions === 'invalid' && (
@@ -582,7 +603,7 @@ const showAlertModal = (message) => {
                 <span className={styles.statValue}>{new Date(questData.created_at).toLocaleDateString()}</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>완료자 수</span>
+                <span className={styles.statLabel}>완료</span>
                 <span className={styles.statCompletedValue}>{questData.count_completed}명</span>
               </div>
               <div className={styles.statItem}>
@@ -590,7 +611,7 @@ const showAlertModal = (message) => {
                 <span className={styles.statInProgressValue}>{questData.count_in_progress}명</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>포기자 수</span>
+                <span className={styles.statLabel}>포기</span>
                 <span className={styles.statGivenUpValue}>{questData.count_given_up}명</span>
               </div>
             </div>
@@ -598,8 +619,8 @@ const showAlertModal = (message) => {
         </div>
 
         {/* 시즌 설정 섹션 */}
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>시즌 설정</h3>
+        <div className={styles.formSection}>
+          <h3 className={styles.formSectionTitle}>| 시즌 퀘스트 설정 |</h3>
           
           <div className={styles.seasonalSection}>
             <div className={styles.formGroup}>
@@ -626,7 +647,7 @@ const showAlertModal = (message) => {
                     name="season_start"
                     value={formData.season_start}
                     onChange={handleInputChange}
-                    className={`${styles.input} ${
+                    className={`${styles.textInput} ${
                       fieldValidation.season_start === 'valid' ? styles.validInput : 
                       fieldValidation.season_start === 'invalid' ? styles.invalidInput : ''
                     }`}
@@ -634,7 +655,7 @@ const showAlertModal = (message) => {
                   />
                   {fieldValidation.season_start === 'valid' && (
                     <div className={styles.validationMessage}>
-                      <span className={styles.validMessage}>✓ 올바른 형식입니다</span>
+                      <span className={styles.validMessage}>✓ 올바른 형식의 시작일입니다</span>
                     </div>
                   )}
                   {fieldValidation.season_start === 'invalid' && (
@@ -653,7 +674,7 @@ const showAlertModal = (message) => {
                     name="season_end"
                     value={formData.season_end}
                     onChange={handleInputChange}
-                    className={`${styles.input} ${
+                    className={`${styles.textInput} ${
                       fieldValidation.season_end === 'valid' ? styles.validInput : 
                       fieldValidation.season_end === 'invalid' ? styles.invalidInput : ''
                     }`}
@@ -661,7 +682,7 @@ const showAlertModal = (message) => {
                   />
                   {fieldValidation.season_end === 'valid' && (
                     <div className={styles.validationMessage}>
-                      <span className={styles.validMessage}>✓ 올바른 형식입니다</span>
+                      <span className={styles.validMessage}>✓ 올바른 형식의 종료일입니다</span>
                     </div>
                   )}
                   {fieldValidation.season_end === 'invalid' && (
@@ -677,11 +698,11 @@ const showAlertModal = (message) => {
             <div className={styles.statusPreview}>
               <label className={styles.label}>예상 상태</label>
               <span className={`${styles.statusTag} ${styles[calculateStatus().toLowerCase()]}`}>
-                {calculateStatus()}
+                {calculateStatus() === 'ACTIVE' ? '활성' : '비활성'}
               </span>
               {formData.is_seasonal && (
                 <small className={styles.statusHint}>
-                  시작일이 미래이거나 종료일이 과거일 경우 INACTIVE 상태가 됩니다
+                  시작일이 미래 또는 종료일이 과거일 경우 '비활성' 상태로 변경됩니다
                 </small>
               )}
             </div>
@@ -689,8 +710,8 @@ const showAlertModal = (message) => {
         </div>
 
         {/* 연결된 뱃지 섹션 */}
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>연결된 뱃지 ({badgeList.length}개)</h3>
+        <div className={styles.formSection}>
+          <h3 className={styles.formSectionTitle}>| 연결된 뱃지 {badgeList.length}개 |</h3>
 
           {badgeList.length > 0 ? (
             <div className={styles.badgeGrid}>
@@ -709,30 +730,78 @@ const showAlertModal = (message) => {
               ))}
             </div>
           ) : (
-            <div className={styles.noBadges}>연결된 뱃지가 없습니다.</div>
+            <div className={styles.noBadges}>연결된 뱃지가 없습니다</div>
           )}
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={handleClose}>
-            취소
-          </button>
-          <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '수정 중...' : '수정'}
-          </button>
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button type="button" className={styles.cancelButton} onClick={onClose}>
+              취소
+            </button>
+            <button type="submit" className={styles.submitButton} disabled={submitting}>
+              {submitting ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                '수정'
+              )}
+            </button>
+          </div>
+          {message && (
+            <div className={`${styles.message} ${styles[messageType]}`}>
+              {messageType === 'error' && (
+                <span className={styles.errorIcon}>!</span>
+              )}
+              {message}
+            </div>
+          )}
         </div>
       </form>
 
-      
-<ConfirmModal
-        isOpen={showConfirmModal}
-        onClose={hideConfirm}
-        onConfirm={confirmAction ? handleConfirmAction : null}
-        message={confirmMessage}
-        type={confirmType}
-      />
+      {/* 성공 모달 */}
+      <Modal
+        show={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          if (onSave) onSave();
+          if (onClose) onClose();
+        }}
+        onSubmit={() => {
+          setShowSuccessModal(false);
+          if (onSave) onSave();
+          if (onClose) onClose();
+        }}
+        heading="퀘스트 수정 완료"
+        firstLabel="확인"
+      >
+        {modalMessage}
+      </Modal>
 
+      {/* 실패 모달 */}
+      <Modal
+        show={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        onSubmit={() => setShowErrorModal(false)}
+        heading="퀘스트 수정 실패"
+        firstLabel="확인"
+      >
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {modalMessage}
+        </div>
+      </Modal>
+
+      {/* 수정 확인 모달 */}
+      <Modal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onSubmit={handleConfirmSubmit}
+        heading="퀘스트 수정 확인"
+        firstLabel="확인"
+        secondLabel="취소"
+      >
+        정말 퀘스트를 수정하시겠습니까?
+      </Modal>
     </div>
   );
 };

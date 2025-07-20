@@ -59,7 +59,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin, onLoginClick}) => {
           <div className={styles.questMeta}>
             <span className={styles.label}>난이도</span>
             <span className={styles.value}>{getDifficultyText(quest.difficulty)}</span>
-            <span className={styles.label}>XP</span>
+            <span className={styles.label2}>XP</span>
             <span className={styles.value}>{quest.xp}</span>
           </div>
 
@@ -69,7 +69,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin, onLoginClick}) => {
                 현재 {quest.count_in_progress}명 도전 중
               </div>
               <div className={styles.statText}>
-                완수율 {calculateCompletionRate()}%
+                완료율 {calculateCompletionRate()}%
               </div>
             </div>
 
@@ -367,7 +367,7 @@ useEffect(() => {
           ))
         ) : (
           <div className={styles.emptyState}>
-            <p>조건에 맞는 퀘스트가 없습니다.</p>
+            <p>조건에 맞는 퀘스트가 없습니다</p>
           </div>
         )}
       </div>

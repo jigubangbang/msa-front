@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
 import styles from './MyTravelinfo.module.css';
+import cards from '../MyTravelCard.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import { useNavigate } from 'react-router-dom';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
@@ -11,7 +11,7 @@ import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
-
+import arrow from "../../../assets/community/arrow_right.svg";
 
 export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, isLogin}) {
   const navigate = useNavigate();
@@ -294,150 +294,202 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     });
   };
 
-  const renderTravelInfoList = (travelInfos, title, sectionType) => (
-    <div className={styles.section}>
-      <h3 className={styles.sectionTitle}>{title}</h3>
-      {travelInfos.length === 0 ? (
-        <div className={styles.emptyState}>등록된 정보가 없습니다.</div>
-      ) : (
-        <div className={styles.travelInfoList}>
-          {travelInfos.map((info) => (
-            <div key={info.id} className={styles.travelInfoCard}>
-              <div className={styles.travelInfoHeader}>
-                {/* 참가/채팅 버튼 - 오른쪽 중간 */}
-                  <div className={styles.actionButtonContainer}>
-                        <img 
+  const renderTravelInfoList = (travelInfos, title, sectionType) => {
+    // 좋아요한 정보공유방은 카드 스타일로 렌더링
+    if (sectionType === 'liked') {
+      return renderLikedTravelInfoCards(travelInfos, title);
+    }
+
+    return (
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>{title}</h3>
+        {travelInfos.length === 0 ? (
+          <div className={styles.emptyState}>등록된 정보가 없습니다.</div>
+        ) : (
+          <div className={styles.travelInfoList}>
+            {travelInfos.map((info) => (
+              <div key={info.id} className={styles.travelInfoCard}>
+                <div className={styles.travelInfoHeader}>
+                  <div className={styles.thumbnailContainer}>
+                    <img 
                       src={info.thumbnailImage} 
                       alt={info.title}
                       className={styles.thumbnail}
                     />
-                    {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
-                          <div className={styles.buttonContainer}>
-                            <button
-                              className={styles.chatButton}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleChatClick(info.id);
-                              }}
-                            >
-                              채팅하기
-                            </button>
-                            {sectionType === 'hosted' ? (
-                              <button
-                                className={styles.chatButton}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(info.id);
-                                }}
-                              >
-                                채팅방 삭제하기
-                              </button>
-                            ) : (
-                              <button 
-                                className={styles.leaveButton}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleLeaveGroup(info.id);
-                                }}
-                                disabled={isLeaving}
-                              >
-                                {isLeaving ? '나가는 중...' : '채팅방 나가기'}
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <button
-                            className={styles.joinButton}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleJoinClick(info, e);
-                            }}
-                          >
-                            참가하기
-                          </button>
-                        )}
+                    {/* 🔄 썸네일 아래에 작성자 정보 + 참가/좋아요 상태 표시 */}
+                    <div className={styles.infoDetails}>
+                      <span>작성자: {info.creatorNickname}</span>
+                    </div>
                   </div>
-                <div className={styles.travelInfoContent}>
-                  <div className={styles.titleContainer}>
+
+                  <div className={styles.travelInfoContent}>
                     {info.blindStatus === 'BLINDED' && (
-                    <span className={styles.blindedBadge}>블라인드 처리됨</span>
-                  )}
-                  <h4 className={styles.travelInfoTitle}>{info.title}</h4>
-                </div>
-                  <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
-                  
-                  <div className={styles.creatorInfo}>
-                    <span>작성자: {info.creatorNickname}</span>
-                    {info.creatorId && <span>({info.creatorId})</span>}
+                      <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                    )}
+                    <h4 className={styles.travelInfoTitle}>{info.title}</h4>
+                    <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
+                    
+                    <div className={styles.travelInfoMeta}>
+                      <span>좋아요: {info.likeCount}</span>
+                      <span>멤버: {info.memberCount}명</span>
+                      {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
+                    </div>
+
+                    <div className={styles.travelSchedule}>
+                      <span>작성일: {formatDate(info.createdAt)}</span>
+                    </div>
+
+                    {info.themeIds && info.themeIds.length > 0 && (
+                      <div className={styles.themes}>
+                        {getThemeLabels(info.themeIds).split(', ').map((theme, index) => (
+                          <span key={index} className={styles.themeTag}>
+                            {theme.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 🔄 참가중/좋아요 상태를 썸네일 아래로 이동 */}
+                    {info.joinedAt && (
+                      <div className={styles.thumbnailStatus}>
+                        <span className={styles.joinedBadge}>참가중</span>
+                        <span className={styles.joinedDate}>
+                          {formatDate(info.joinedAt)}
+                        </span>
+                      </div>
+                    )}
+                    {info.likedAt && (
+                      <div className={styles.thumbnailStatus}>
+                        <span className={styles.likedBadge}>♥ 좋아요</span>
+                        <span className={styles.likedDate}>
+                          {formatDate(info.likedAt)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* TravelMate 스타일로 채팅 버튼 컨테이너 추가 */}
+                    <div className={styles.chatButtonContainer}>
+                      {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
+                        <button className={styles.chatButton} onClick={(e) => {
+                          e.stopPropagation();
+                          handleChatClick(info.id);
+                        }}>
+                          채팅 바로가기
+                          <img src={arrow} alt="arrow"/>
+                        </button>
+                      ) : (
+                        <button className={styles.joinButton} onClick={(e) => {
+                          e.stopPropagation();
+                          handleJoinClick(info, e);
+                        }}>
+                          참가하기
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  <div className={styles.travelInfoMeta}>
-                    <span>좋아요: {info.likeCount}</span>
-                    <span>멤버: {info.memberCount}명</span>
-                    {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
-                    <span>작성일: {formatDate(info.createdAt)}</span>
-                  </div>
-
-                  
-                  {/* 테마 정보 표시 */}
-                  {info.themeIds && info.themeIds.length > 0 && (
-                    <div className={styles.themes}>
-                      <span>테마: {getThemeLabels(info.themeIds)}</span>
-                    </div>
-                  )}
-                  {/* 참가한 정보의 경우 참가 날짜 표시 */}
-                  {info.joinedAt && (
-                    <div className={styles.joinedInfo}>
-                      <span className={styles.joinedBadge}>참가중</span>
-                      <span className={styles.joinedDate}>
-                        참가일: {formatDate(info.joinedAt)}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* 좋아요한 정보의 경우 좋아요 날짜 표시 */}
-                  {info.likedAt && (
-                    <div className={styles.likedInfo}>
-                      <span className={styles.likedBadge}>♥ 좋아요</span>
-                      <span className={styles.likedDate}>
-                        {formatDate(info.likedAt)}
-                      </span>
-                    </div>
-                  )}
-
-
-                  {/* 최근 메시지 정보 */}
-                  {info.latestMessage && (
-                    <div className={styles.latestMessage}>
-                      <strong>최근 메시지:</strong> {info.latestMessage}
-                    </div>
-                  )}
-                </div>
-
-                {/* 우측 액션 영역 */}
-                <div className={styles.rightActions}>
-                  {/* 드롭다운 메뉴 - 오른쪽 위 */}
-                  <div 
-                    className={styles.dropdownContainer}
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <div className={styles.dropdownContainer} onClick={(e) => e.stopPropagation()}>
                     <DetailDropdown
                       isCreator={sectionType === 'hosted'}
                       onReport={() => handleReport(info)}
                       onEdit={() => handleEdit(info.id)}
                       onDelete={() => handleDelete(info.id)}
+                      onLeave={sectionType === 'joined' ? () => handleLeaveGroup(info.id) : undefined}
+                      showLeave={sectionType === 'joined'}
                     />
                   </div>
+                </div>
 
+                {info.latestMessage && (
+                  <div className={styles.latestMessageSection} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.latestMessageHeader}>
+                      <span>최근 메시지</span>
+                    </div>
+                    <div className={styles.latestMessage}>
+                      {info.latestMessage}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // 새로운 함수: 카드 스타일로 렌더링
+  const renderLikedTravelInfoCards = (travelInfos, title) => (
+    <div className={cards.section}>
+      <h3 className={cards.sectionTitle}>{title}</h3>
+      {travelInfos.length === 0 ? (
+        <div className={cards.emptyState}>좋아요한 정보공유방이 없습니다.</div>
+      ) : (
+        <div className={cards.cardContainer}>
+          {travelInfos.map((info) => {
+            const isBlind = info.blindStatus === 'BLINDED';
+            
+            return (
+              <div 
+                key={info.id} 
+                className={cards.card}
+                onClick={() => navigate(`/traveler/info/${info.id}`)}
+              >
+                <div className={cards.imageContainer}>
+                  <img 
+                    src={isBlind ? '/icons/common/warning.png' : (info.thumbnailImage || '/images/default-thumbnail.jpg')} 
+                    alt="썸네일"
+                    className={cards.thumbnail}
+                  />
+                  <div className={cards.cardDropdown} onClick={(e) => e.stopPropagation()}>
+                    <DetailDropdown
+                      isCreator={false}
+                      onReport={() => handleReport(info)}
+                      onEdit={() => handleEdit(info.id)}
+                      onDelete={() => handleDelete(info.id)}
+                    />
+                  </div>
+                </div>
+                
+                <div className={cards.content}>
+                  <h4 className={cards.cardTitle}>
+                    {isBlind ? '블라인드 처리된 게시글입니다' : info.title}
+                  </h4>
+                  <p className={cards.description}>
+                    {isBlind ? '' : info.simpleDescription}
+                  </p>
                   
+                  {!isBlind && (
+                    <div className={cards.likedTravelMeta}>
+                      <div>작성자: {info.creatorNickname}</div>
+                      <div>작성일: {formatDate(info.createdAt)}</div>
+                    </div>
+                  )}
+                  
+                  {!isBlind && (
+                    <div className={cards.travelMeta}>
+                      <span>좋아요: {info.likeCount}</span>
+                      <span>멤버: {info.memberCount}명</span>
+                      {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
+                    </div>
+                  )}
+
+                  {isBlind && (
+                    <div className={cards.travelMeta}>
+                      <span>좋아요: -</span>
+                      <span>멤버: -명</span>
+                      <span>채팅: -</span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   );
+
 
   return (<>
     <div className={styles.container}>

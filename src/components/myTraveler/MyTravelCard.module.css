@@ -1,40 +1,25 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+/* MyTravelCard.module.css */
 
-.topTravelmateList {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  font-family: Pretendard, sans-serif;
+.section {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.emptyState {
+  text-align: center;
   padding: 40px 20px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-  margin: 0;
-}
-
-.viewAllButton {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  padding: 0;
-}
-
-.viewAllButton:hover {
-  color: #333;
+  color: #888;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
 .cardContainer {
@@ -46,9 +31,6 @@
 .card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  position: relative;
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -60,6 +42,7 @@
 
 .card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .imageContainer {
@@ -67,6 +50,7 @@
   width: 100%;
   height: 140px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .thumbnail {
@@ -75,39 +59,8 @@
   object-fit: cover;
 }
 
-.likeButton {
-  background-color: transparent;
-  border: none;
-  border-radius: 50%;
-  height: 32px;
-  padding: 0px 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.likeButton:hover {
-  transform: scale(1.1);
-}
-
-.likeButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.likeButton.liked {
-  animation: likeAnimation 0.3s ease;
-}
-
-@keyframes likeAnimation {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
 .content {
+  height: 100%;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -149,10 +102,10 @@
   gap: 5px;
   margin-top: auto;
   padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
 }
 
-.members,
-.likes {
+.members, .likes {
   display: flex;
   align-items: center;
   font-size: 15px;
@@ -165,59 +118,74 @@
   padding: 0px;
 }
 
-.memberIcon {
-  cursor: auto;
+/* 드롭다운 메뉴 스타일 */
+.cardDropdown {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none !important;
+  border: none !important;
+  border-radius: 6px;
+  backdrop-filter: none;
+  z-index: 10;
 }
 
-.loading {
+.cardDropdown * {
+  border-radius: 10px;
+}
+
+.likedTravelMeta {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  white-space: pre-line;
+  text-indent: -30px;
+  padding-left: 30px;
+}
+
+.likedTravelMeta span {
+  word-break: break-all;
+}
+
+.travelMeta {
+  font-size: 12px;
+  color: #9ca3af;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
-  color: #666;
-  font-size: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+  flex-shrink: 0; /* 크기 고정 */
 }
 
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
-  .topTravelmateList {
-    padding: 30px 15px;
-  }
-  
   .cardContainer {
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
   }
-  
-  .title {
-    font-size: 20px;
-  }
 }
 
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
   .cardContainer {
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
   }
-  
+
   .imageContainer {
     height: 120px;
   }
-  
+
   .content {
     padding: 12px;
   }
-  
+
   .cardTitle {
     font-size: 14px;
   }
-  
+
   .description {
     font-size: 12px;
   }
@@ -228,14 +196,8 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
-  
+
   .imageContainer {
     height: 100px;
-  }
-  
-  .likeButton {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
   }
 }

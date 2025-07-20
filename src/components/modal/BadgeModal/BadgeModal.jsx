@@ -172,7 +172,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
       <div className={styles.badgeModal} onClick={e => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <button className={styles.closeBtn} onClick={onClose}>
-            <img src="/icons/common/close.svg" alt="x" />
+            ✕
           </button>
         </div>
         
@@ -186,7 +186,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
                   <img 
                     src={badgeData.icon} 
                     alt="badge" 
-                    className={styles.badgseIcon}
+                    className={styles.badgeIcon}
                   />
                 </div>
               </div>
@@ -222,6 +222,9 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
                 )}
               </div>
 
+              {/* 상태 섹션 */}
+              {renderStatusSection()}
+              
               {/* 퀘스트 목록 */}
               <div className={styles.questSection}>
                 <div className={styles.sectionTitle}>
@@ -229,9 +232,6 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
                 </div>
                 {renderQuestList()}
               </div>
-              
-              {/* 상태 섹션 */}
-              {renderStatusSection()}
             </div>
           </div>
         </div>

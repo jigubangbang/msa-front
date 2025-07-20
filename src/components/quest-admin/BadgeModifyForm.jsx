@@ -19,7 +19,8 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
   const [questList, setQuestList] = useState([]);
   const [availableQuests, setAvailableQuests] = useState([]);
   const [showQuestSelector, setShowQuestSelector] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);        // 전체 화면용 (fetchBadgeData)
+  const [submitting, setSubmitting] = useState(false);  // 버튼용 (actualSubmit)
   const [iconPreview, setIconPreview] = useState('');
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -37,6 +38,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
     kor_title: null,
     eng_title: null,
     description: null,
+    icon: null,
   });
 
   // 유효성 검사 함수들
@@ -119,7 +121,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return `${year}.${month}.${day}`;
     } catch (error) {
       return dateString;
     }
@@ -209,6 +211,16 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
         icon: file
       }));
       
+      // 아이콘 유효성 검사
+      setFieldValidation((prev) => ({
+        ...prev,
+        icon: "valid",
+      }));
+      setValidationErrors((prev) => ({
+        ...prev,
+        icon: null,
+      }));
+      
       // 미리보기 생성
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -242,12 +254,12 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
     }
 
     // 확인 모달 띄우기
-    openConfirmModal('뱃지를 수정하시겠습니까?', actualSubmit);
+    openConfirmModal('정말 뱃지를 수정하시겠습니까?', actualSubmit);
   };
 
   // 실제 제출 함수
   const actualSubmit = async () => {
-    setLoading(true);
+    setSubmitting(true);
     let iconUrl = null;
     
     try {
@@ -299,7 +311,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
         openErrorModal('뱃지 수정에 실패했습니다');
       }
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -320,8 +332,8 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
 
   if (!badgeData) {
     return (
-      <div className={styles.section}>
-        <div className={styles.error}>뱃지 정보를 불러올 수 없습니다.</div>
+      <div className={styles.emptyContainer}>
+        <div className={styles.emptyText}>뱃지 정보를 불러올 수 없습니다</div>
       </div>
     );
   }
@@ -448,17 +460,38 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
             </div>
 
             <div className={styles.rightColumn}>
-              <div className={styles.iconPreview}>
-                <label className={styles.label}>현재 뱃지 아이콘</label>
-                <div className={styles.iconClickArea} onClick={() => document.getElementById('iconFileInput').click()}>
-                  <img 
-                    src={iconPreview} 
-                    alt="Badge Icon" 
-                    className={styles.previewImage}
-                  />
-                  <div className={styles.iconOverlay}>
-                    <span className={styles.iconChangeText}>클릭하여 변경</span>
-                  </div>
+              <div className={styles.iconUpload}>
+                <label className={styles.label}>뱃지 아이콘</label>
+                <div
+                  className={`${styles.iconUploadArea} ${
+                    fieldValidation.icon === "valid"
+                      ? styles.validUpload
+                      : fieldValidation.icon === "invalid"
+                      ? styles.invalidUpload
+                      : ""
+                  }`}
+                  onClick={() => document.getElementById('iconFileInput').click()}
+                >
+                  {iconPreview ? (
+                    <div className={styles.iconPreviewContainer}>
+                      <img
+                        src={iconPreview}
+                        alt="Badge Icon Preview"
+                        className={styles.previewImage}
+                      />
+                      <div className={styles.iconOverlay}>
+                        <span className={styles.iconChangeText}>
+                          클릭하여 변경
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={styles.iconPlaceholder}>
+                      <div className={styles.iconPlaceholderText}>
+                        <span style={{fontSize: '25px'}}>+</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <input
                   id="iconFileInput"
@@ -467,7 +500,20 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
                   onChange={handleIconChange}
                   className={styles.hiddenFileInput}
                 />
-                <small className={styles.fileHint}>클릭하여 뱃지 아이콘을 변경하세요</small>
+                <small className={`${styles.fileHint} ${
+                  fieldValidation.icon === "valid" 
+                    ? styles.fileHintValid
+                    : fieldValidation.icon === "invalid"
+                    ? styles.fileHintInvalid
+                    : ""
+                }`}>
+                  {fieldValidation.icon === "valid" 
+                    ? "✓ 뱃지 아이콘이 선택되었습니다"
+                    : fieldValidation.icon === "invalid"
+                    ? `✗ ${validationErrors.icon}`
+                    : "이미지 파일을 선택하세요"
+                  }
+                </small>
               </div>
               
               <div className={styles.badgeInfo}>
@@ -486,7 +532,7 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
                   <span className={styles.infoValue}>{formatDate(badgeData.created_at)}</span>
                 </div>
                 <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>획득자 수 :</span>
+                  <span className={styles.infoLabel}>획득한 사용자 수 :</span>
                   <span className={styles.awardedValue}>{badgeData.count_awarded}명</span>
                 </div>
               </div>
@@ -583,9 +629,9 @@ const BadgeModifyForm = ({ badgeId, onClose, onSave }) => {
             <button
               type="submit"
               className={styles.submitButton}
-              disabled={loading}
+              disabled={submitting} 
             >
-              {loading ? (
+              {submitting ? (
                 <Circles height="20" width="20" color="#fff" />
               ) : (
                 "수정"

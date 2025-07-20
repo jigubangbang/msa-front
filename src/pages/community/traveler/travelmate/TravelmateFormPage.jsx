@@ -8,6 +8,7 @@ import API_ENDPOINTS from '../../../../utils/constants';
 import TravelmateForm from '../../../../components/travelmate/TravelmateForm/TravelmateForm';
 import { jwtDecode } from 'jwt-decode';
 import ConfirmModal from '../../../../components/common/ErrorModal/ConfirmModal';
+import CirclesSpinner from '../../../../components/common/Spinner/CirclesSpinner';
 
 const TravelmateFormPage = () => {
   const { postId } = useParams();
@@ -211,7 +212,7 @@ const TravelmateFormPage = () => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

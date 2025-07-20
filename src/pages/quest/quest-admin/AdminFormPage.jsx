@@ -127,14 +127,14 @@ export default function AdminFormPage({ page }) {
     }
   };
 
-  const handleQuestClose = (questId) => {
+  const handleQuestClose = () => {
     window.scrollTo(0, 0);
-    console.log("퀘스트 폼 닫기", questId);
+    console.log("퀘스트 폼 닫기");
 
     if (pageType === "quest-create") {
       navigate("/quest-admin/quest");
     } else {
-      navigate(`/quest-admin/quest/${questId || entityId}`);
+      navigate(`/quest-admin/quest/${entityId}`);
     }
   };
 

@@ -27,6 +27,26 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.badgeModal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.badgeModal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.badgeModal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+}
+
+.badgeModal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .modalHeader {
@@ -34,6 +54,11 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   display: flex;
   justify-content: flex-end;
   padding: 16px 20px 0;
+  flex-shrink: 0; 
+  position: sticky;
+  top: 0; 
+  background: #1a1a1a; 
+  z-index: 10;
 }
 
 .closeBtn {
@@ -47,28 +72,41 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   justify-content: center;
   transition: all 0.2s ease;
   outline: none;
+  color: #fff;
+  font-size: 20px;
 }
 
 .closeBtn:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.closeBtn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-}
-
-.closeBtn img {
-  filter: brightness(0) invert(1);
+  transform: scale(1.1);
 }
 
 .modalContent {
   padding: 0 20px 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modalContent::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .modalLayout {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1.5fr;
   gap: 40px;
   padding: 10px 30px 30px;
 }
@@ -83,7 +121,7 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 15px;
 }
 
 .badgeSection {
@@ -94,12 +132,12 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .badgeContainer {
   position: relative;
+  background: transparent;
 }
 
 .badgeIcon {
-  width: 120px;
-  height: 120px;
-  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  width: 170px;
+  height: 180px;
 }
 
 .titleSection {
@@ -117,8 +155,8 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 }
 
 .badgeEngTitle {
-  font-size: 16px;
-  color: #cccccc;
+  font-size: 20px;
+  color: #fafafa;
   margin: 0;
   font-style: italic;
 }
@@ -126,12 +164,13 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 .badgeMeta {
   display: flex;
   justify-content: center;
-  padding: 8px 16px;
+  padding: 10px 16px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   font-size: 14px;
   color: #ebebeb;
   font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .badgeDescription {
@@ -282,13 +321,10 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .statusSection {
   background: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 12px;
   text-align: center;
   border: 1px solid #ccc;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
 }
 
 .statusText {
@@ -367,7 +403,6 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .challengeBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .giveUpBtn {
@@ -384,5 +419,4 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
 
 .giveUpBtn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }

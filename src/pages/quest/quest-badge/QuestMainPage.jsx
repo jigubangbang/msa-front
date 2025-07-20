@@ -532,7 +532,7 @@ const response = await api.get(endpoint, {
         <div className={styles.questContent}>
         {seasonalQuest && (
             <div className={styles.seasonalQuestContainer}>
-                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="시즌 이벤트" onOpenModal={openQuestModal}/>
+                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="시즌 퀘스트" onOpenModal={openQuestModal}/>
             </div>
           )}
             

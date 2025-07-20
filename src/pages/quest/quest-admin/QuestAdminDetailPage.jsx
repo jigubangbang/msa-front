@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import styles from "./QuestAdminPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
@@ -11,7 +11,6 @@ import {jwtDecode} from "jwt-decode";
 export default function QuestAdminDetailPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const navigate = useNavigate();
   const {questId} = useParams();
   
 
@@ -80,8 +79,8 @@ export default function QuestAdminDetailPage() {
     return (
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
-        <div className={styles.content}>
-          <div className={styles.loading}>접근 권한이 없습니다</div>
+        <div className={styles.emptyContainer}>
+          <p className={styles.emptyText}>접근 권한이 없습니다</p>
         </div>
       </div>
     );
