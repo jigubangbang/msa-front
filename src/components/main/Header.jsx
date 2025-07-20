@@ -45,6 +45,11 @@ export default function Header({onOpenChat}) {
     }
   };
 
+  const handleLoginClick = () => {
+    setShowLoginConfirmModal(false);
+    navigate("/login");
+  }
+
 
   return (
     <div className={styles.headerWrapper}>
@@ -138,6 +143,7 @@ export default function Header({onOpenChat}) {
         <LoginConfirmModal
           isOpen={showLoginConfirmModal}
           onClose={() => setShowLoginConfirmModal(false)}
+          onConfirm={handleLoginClick}
         />
       )}
     </div>
