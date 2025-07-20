@@ -1,15 +1,9 @@
 export function formatRelativeTime(dateString) {
   const date = new Date(dateString);
   const now = new Date();
-  const nowUtc = new Date(now.getTime() + (now.getTimezoneOffset() * 60 * 1000));
-  const diff = (nowUtc - date) / 1000; // in seconds
-
-  console.log('--- formatRelativeTime Debug ---');
-  console.log('dateString:', dateString);
-  console.log('date (parsed):', date);
-  console.log('now (current):', now);
-  console.log('diff (seconds):', diff);
-  console.log('------------------------------');
+  // The subtraction of two Date objects correctly yields the difference in milliseconds,
+  // as both are internally represented as UTC timestamps.
+  const diff = (now - date) / 1000; // in seconds
 
   // Invalid Date 체크
   if (isNaN(date.getTime())) {
