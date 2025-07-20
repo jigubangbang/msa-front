@@ -24,7 +24,7 @@
 
 .boardTitle {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   margin: 0;
   color: #333;
   cursor: pointer;
@@ -32,7 +32,7 @@
 }
 
 .boardTitle:hover {
-  color: #007bff;
+  color: #808080;
 }
 
 .postList {
