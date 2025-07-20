@@ -115,13 +115,17 @@
 }
 
 .travelStyle {
-  font-size: 12px;
-  font-weight: 500;
-  background: #e3f2fd;
-  color: #1976d2;
-  padding: 2px 8px;
-  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(to right, #00f5a0, #00d9f5) border-box;
+  color: #00bcd4;
+  letter-spacing: 0.5px;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
   margin-left: 8px;
+  margin-right: 8px;
 }
 
 .author {

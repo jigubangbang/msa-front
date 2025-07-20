@@ -7,6 +7,7 @@ import Dropdown from '../../common/Dropdown';
 import styles from './BoardTravelStyleList.module.css';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const BoardTravelStyleList = ({ category, isLogin, currentUserId }) => {
   const navigate = useNavigate();
@@ -215,7 +216,7 @@ const handleFilterClick = (filterValue) => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -273,7 +274,7 @@ const handleFilterClick = (filterValue) => {
                           
                             {(!isBlinded && post.creatorTravelStyle) && (
                             <span className={styles.travelStyle}>
-                                [{getTravelStyleLabel(post.creatorTravelStyle)}]
+                                {getTravelStyleLabel(post.creatorTravelStyle)}
                             </span>
                             )}
 
