@@ -335,7 +335,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
   if (loading && mode === 'edit' && !initialData) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <div className={styles.loading}>
+          <CirclesSpinner/>
+        </div>
       </div>
     );
   }
@@ -353,7 +355,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         <div className={styles.titleSection}>
           <div className={styles.categoryColumn}>
             <div className={styles.formGroup}>
-            <label className={styles.label}>카테고리</label>
+            <label className={styles.label}>
+              카테고리 <span className={styles.required}>*</span>
+            </label>
             <div className={styles.categoryDropdown} ref={categoryDropdownRef}>
               <button 
                 type="button"
@@ -361,7 +365,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                 onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
               >
                 {CATEGORY_OPTIONS.find(option => option.value === formData.boardId)?.label || '카테고리 선택'}
-                <span className={`${styles.arrow} ${categoryDropdownOpen ? styles.arrowOpen : ''}`}>▾</span>
+                <span className={`${styles.arrow} ${categoryDropdownOpen ? styles.arrowOpen : ''}`}>▼</span>
               </button>
               
               {categoryDropdownOpen && (
@@ -388,7 +392,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
 
           <div className={styles.titleColumn}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>제목</label>
+              <label className={styles.label}>
+                제목 <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="title"
@@ -464,7 +470,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
 
         {/* 내용 입력 */}
         <div className={styles.formGroup}>
-          <label className={styles.label}>내용</label>
+          <label className={styles.label}>
+            내용 <span className={styles.required}>*</span>
+          </label>
           <textarea
             name="content"
             value={formData.content}
@@ -483,22 +491,24 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button 
-            type="button" 
-            className={styles.cancelButton} 
-            onClick={handleCancel}
-            disabled={loading}
-          >
-            취소
-          </button>
-          <button 
-            type="submit" 
-            className={styles.submitButton} 
-            disabled={loading}
-          >
-            {loading ? '저장 중...' : (mode === 'create' ? '작성하기' : '수정하기')}
-          </button>
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button 
+              type="button" 
+              className={styles.cancelButton} 
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              취소
+            </button>
+            <button 
+              type="submit" 
+              className={styles.submitButton} 
+              disabled={loading}
+            >
+              {loading ? '저장 중...' : (mode === 'create' ? '작성하기' : '수정하기')}
+            </button>
+          </div>
         </div>
       </form>
 
