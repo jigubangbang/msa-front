@@ -358,8 +358,8 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         }}
                       >
                         동행 신청 ({travel.applications.length}명)
-                        <span className={expandedApplications[travel.id] ? styles.expanded : ''}>
-                          <img src={expandedApplications[travel.id] ? drop : drop_down}/>
+                        <span>
+                          <img src={expandedApplications[travel.id] ? drop : drop_down} className={expandedApplications[travel.id] ? styles.expanded : ''}/>
                         </span>
                       </button>
                     </div>

@@ -6,6 +6,7 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
 import styles from './BoardDetail.module.css';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const BoardDetail = ({ isLogin, currentUserId }) => {
   const { postId } = useParams();
@@ -512,7 +513,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -543,6 +544,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
               <img 
                 src={isBlinded ? '/icons/common/default_profile.png' : (creatorProfile || '/icons/common/default_profile.png')} 
                 alt="작성자 프로필"
+                onClick={() => navigate(`/profile/${post.userId}`)}
               />
             </div>
             <div className={styles.authorDetails}>
@@ -551,7 +553,10 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
               </h1>
               {!isBlinded && (
                 <div className={styles.postMeta}>
-                  <span className={styles.author}>
+                  <span
+                    className={styles.author}
+                    onClick={() => navigate(`/profile/${post.userId}`)}
+                  >
                     {post.creatorNickname} ({post.userId})
                   </span>
                   <span className={styles.date}>{formatDate(post.createdAt)}</span>
@@ -590,7 +595,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                   src={isLiked ? '/icons/common/heart_fill.svg' : '/icons/common/heart_blank.svg'} 
                   alt="좋아요" 
                 />
-                <span>{likeCount}</span>
+                <span className={styles.stats}>{likeCount}</span>
               </button>
               
               <button 
@@ -601,7 +606,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                   src={isBookmarked ? '/icons/common/bookmark_added.svg' : '/icons/common/bookmark.svg'} 
                   alt="북마크" 
                 />
-                <span>{bookmarkCount}</span>
+                <span className={styles.stats}>{bookmarkCount}</span>
               </button>
             </div>
           )}
@@ -658,12 +663,24 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                     <img 
                       src={comment.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (comment.profileImage || '/icons/common/default_profile.png')} 
                       alt="프로필"
+                      onClick={() => {
+                        if (comment.blindStatus !== 'BLINDED') {
+                          navigate(`/profile/${comment.userId}`);
+                        }
+                      }}
                     />
                   </div>
                   <div className={styles.questionBubble}>
                     <div className={styles.bubbleHeader}>
                       <div className={styles.userDetails}>
-                        <span className={styles.nickname}>
+                        <span
+                          className={styles.nickname}
+                          onClick={() => {
+                            if (comment.blindStatus !== 'BLINDED') {
+                              navigate(`/profile/${comment.userId}`);
+                            }
+                          }}
+                        >
                           {comment.blindStatus === 'BLINDED' ? '블라인드 사용자' : comment.nickname}
                         </span>
                         <span className={styles.timeAgo}>{formatTimeAgo(comment.createdAt)}</span>
@@ -684,7 +701,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                     {editingId === comment.id && (
                         <div className={styles.editForm}>
                           <textarea
-                            className={styles.editInput}
+                            className={styles.commentInput}
                             value={editingText}
                             onChange={(e) => setEditingText(e.target.value)}
                             rows={3}
@@ -727,12 +744,17 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                           <img 
                             src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/default_profile.png')} 
                             alt="프로필"
+                            onClick={() => {
+                              if (reply.blindStatus !== 'BLINDED') {
+                                navigate(`/profile/${reply.userId}`);
+                              }
+                            }}
                           />
                         </div>
                         <div className={styles.replyBubble}>
                           <div className={styles.bubbleHeader}>
                             <div className={styles.userDetails}>
-                              <span className={styles.nickname}>
+                              <span className={styles.nickname} onClick={() => navigate(`/profile/${reply.userId}`)}>
                                 {reply.blindStatus === 'BLINDED' ? '블라인드 사용자' : reply.nickname}
                               </span>
                               <span className={styles.timeAgo}>{formatTimeAgo(reply.createdAt)}</span>

@@ -8,6 +8,7 @@ import MyTravelmate from "../../../../components/myTraveler/MyTravelmate/MyTrave
 import MyTravelinfo from "../../../../components/myTraveler/MyTravelinfo/MyTravelinfo";
 import api from "../../../../apis/api";
 import API_ENDPOINTS from "../../../../utils/constants";
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 export default function MyTravelerPage({page}) {
@@ -122,7 +123,7 @@ const fetchTravelerData = async () => {
       <div className={styles.container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );
