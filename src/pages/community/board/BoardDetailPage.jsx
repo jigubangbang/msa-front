@@ -5,6 +5,7 @@ import styles from "./BoardListPage.module.css";
 import Sidebar from "../../../components/common/SideBar/SideBar";
 import { jwtDecode } from 'jwt-decode';
 import BoardDetail from "../../../components/board/BoardDetail/BoardDetail";
+import CirclesSpinner from "../../../components/common/Spinner/CirclesSpinner";
 
 
 
@@ -83,7 +84,7 @@ export default function BoardDetailPage() {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

@@ -90,15 +90,14 @@
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   cursor: pointer;
   position: relative;
 }
 
 .travelCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
 .travelHeader {
@@ -341,31 +340,62 @@
 }
 
 .actionButton {
+  font-family: 'Pretendard';
   padding: 8px 16px;
+  background-color: #000;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .actionButton.accept {
-  background-color: #4caf50;
-  color: white;
+  font-family: 'Pretendard';
+  padding: 8px 16px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .actionButton.accept:hover {
-  background-color: #2e7d32;
+  background-color: #333;
+  transform: translateY(-1px);
 }
 
 .actionButton.reject {
-  background-color: #f44336;
-  color: white;
+  font-family: 'Pretendard';
+  padding: 6px 12px;
+  background-color: transparent; 
+  color: #666;                   
+  border: 1px solid #ccc;        
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
 }
 
 .actionButton.reject:hover {
-  background-color: #da190b;
+  border-color: #000;           
+  color: #000;                  
+  background-color: #fafafa;    
+  transform: translateY(-1px);
 }
 
 .statusBadge {

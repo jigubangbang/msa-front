@@ -6,6 +6,7 @@ import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
 import styles from './BoardDetail.module.css';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const BoardDetail = ({ isLogin, currentUserId }) => {
   const { postId } = useParams();
@@ -512,7 +513,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -590,7 +591,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                   src={isLiked ? '/icons/common/heart_fill.svg' : '/icons/common/heart_blank.svg'} 
                   alt="좋아요" 
                 />
-                <span>{likeCount}</span>
+                <span className={styles.stats}>{likeCount}</span>
               </button>
               
               <button 
@@ -601,7 +602,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                   src={isBookmarked ? '/icons/common/bookmark_added.svg' : '/icons/common/bookmark.svg'} 
                   alt="북마크" 
                 />
-                <span>{bookmarkCount}</span>
+                <span className={styles.stats}>{bookmarkCount}</span>
               </button>
             </div>
           )}
@@ -684,7 +685,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
                     {editingId === comment.id && (
                         <div className={styles.editForm}>
                           <textarea
-                            className={styles.editInput}
+                            className={styles.commentInput}
                             value={editingText}
                             onChange={(e) => setEditingText(e.target.value)}
                             rows={3}
