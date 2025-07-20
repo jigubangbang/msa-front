@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import styles from './CategoryBrowse.module.css';
+import girl from '../../../assets/community/user/10_girl.png';
+import woman from '../../../assets/community/user/20_woman.png';
+import man from '../../../assets/community/user/30_man.png';
+import oldMan from '../../../assets/community/user/50_man.png';
+import friends from '../../../assets/community/user/friends.png';
+import family from '../../../assets/community/user/family.png';
 
 const CategoryBrowse = ({ onCategorySelect }) => {
   const [activeTab, setActiveTab] = useState('지역');
@@ -14,14 +20,14 @@ const CategoryBrowse = ({ onCategorySelect }) => {
       { id: 'OCEANIA', name: '오세아니아', icon: '🏝️' }
     ],
     대상: [
-      { id: 1, name: '남성 전용 모임', icon: '🚹' },
-      { id: 2, name: '여성 전용 모임', icon: '🚺' },
-      { id: 3, name: '20대 모임', icon: '👩' },
-      { id: 4, name: '30대 모임', icon: '👱' },
-      { id: 5, name: '40대 모임', icon: '👵' },
-      { id: 6, name: '50대 이상 모임', icon: '👨‍🦳' },
-      { id: 7, name: '가족/아이 동반 모임', icon: '👨‍👩‍👧‍👦' },
-      { id: 8, name: '친구 동반 모임', icon: '👫' }
+      { id: 1, name: '남성 전용 모임', image: man },
+      { id: 2, name: '여성 전용 모임', image: woman },
+      { id: 3, name: '20대 모임', image: girl },
+      { id: 4, name: '30대 모임', image: man },
+      { id: 5, name: '40대 모임', image: woman },
+      { id: 6, name: '50대 이상 모임', image: oldMan },
+      { id: 7, name: '가족/아이 동반 모임', image: family },
+      { id: 8, name: '친구 동반 모임', image: friends }
     ],
     테마: [
       { id: 9, name: '맛집 탐방 모임', icon: '🍜' },
