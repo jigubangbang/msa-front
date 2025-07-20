@@ -305,7 +305,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       }
       return `${diffInDays}일전`;
     }
-    return `${diffInMonths}월전`;
+    return `${diffInMonths}개월전`;
   };
 
   if (loading) {
@@ -320,10 +320,10 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     return (
       <div className={styles.travelmateQA}>
         <div className={styles.header}>
-          <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
+          <h3 className={styles.title}>모임 질문 및 답변 ({questions.length})</h3>
         </div>
         <div className={styles.blindedMessage}>
-        <p>블라인드 처리된 게시글로 댓글을 확인할 수 없습니다.</p>
+        <p>블라인드 처리된 게시글로 댓글을 확인할 수 없습니다</p>
       </div>
       </div>
     );
@@ -332,14 +332,14 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   return (
     <div className={styles.travelmateQA}>
       <div className={styles.header}>
-        <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
+        <h3 className={styles.title}>모임 질문 및 답변 ({questions.length})</h3>
       </div>
 
       {/* 질문 목록 */}
       <div className={styles.questionsList}>
         {questions.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>아직 질문이 없습니다. 첫 번째 질문을 남겨보세요!</p>
+            <p>등록된 질문이 없습니다. 첫 번째 질문을 남겨보세요!</p>
           </div>
         ) : (
           questions.map((question) => (
@@ -371,8 +371,8 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                     )}
                   </div>
                   <div className={styles.bubbleContent}>
-                    {question.blindStatus === 'BLINDED' ? '블라인드 된 글입니다.' : 
-                    question.isDeleted ? '삭제된 댓글입니다.' : question.question}
+                    {question.blindStatus === 'BLINDED' ? '블라인드 된 글입니다' : 
+                    question.isDeleted ? '삭제된 댓글입니다' : question.question}
                   </div>
                   {editingId === question.id && (
                       <div className={styles.editForm}>
@@ -405,7 +405,7 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
                     onClick={() => handleReplyClick(question.id)}
                     disabled={question.blindStatus === 'BLINDED' || question.isDeleted}
                   >
-                    댓글
+                    답글
                   </button>
                   </div>
                 </div>
@@ -522,30 +522,25 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       {/* 질문 작성 */}
       {isLogin && (
         <div className={styles.questionForm}>
-          <div className={styles.profileImage}>
-            <img 
-              src={userProfile || '/icons/common/default_profile.png'} 
-              alt="내 프로필"
-            />
-          </div>
-          <div className={styles.inputContainer}>
-            <textarea
-              className={styles.questionInput}
-              placeholder="질문을 작성해주세요..."
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
-              rows={3}
-            />
-            <div className={styles.formActions}>
-              <button 
-                className={styles.submitButton}
-                onClick={handleQuestionSubmit}
-                disabled={!newQuestion.trim()}
-              >
-                질문하기
-              </button>
-            </div>
-          </div>
+          <img 
+            src={userProfile || '/icons/common/default_profile.png'} 
+            alt="내 프로필"
+            className={styles.profileImage}
+          />
+          <textarea
+            className={styles.questionInput}
+            placeholder="질문을 작성해 주세요"
+            value={newQuestion}
+            onChange={(e) => setNewQuestion(e.target.value)}
+            rows={3}
+          />
+          <button 
+            className={styles.submitButton}
+            onClick={handleQuestionSubmit}
+            disabled={!newQuestion.trim()}
+          >
+            질문 등록
+          </button>
         </div>
       )}
 

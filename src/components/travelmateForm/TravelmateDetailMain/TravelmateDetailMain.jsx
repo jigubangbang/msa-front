@@ -188,10 +188,10 @@ useEffect(() => {
         }
       });
       setMemberStatus('PENDING');
-      showAlert('참여 신청이 완료되었습니다.');
+      showAlert('참여 신청이 완료되었습니다!');
     } catch (error) {
       console.error('Failed to request join:', error);
-      const errorMessage = error.response?.data?.error || '참여 신청에 실패했습니다.';
+      const errorMessage = error.response?.data?.error || '참여 신청에 실패했습니다';
       showAlert(errorMessage);
       throw error; 
     }
@@ -226,7 +226,7 @@ useEffect(() => {
   };
 
   const handleDelete = async () => {
-    setDeleteConfirmMessage('정말로 삭제하시겠습니까?');
+    setDeleteConfirmMessage('정말 삭제하시겠습니까?');
     setShowDeleteConfirm(true);
   };
 
@@ -400,21 +400,21 @@ useEffect(() => {
       {/* 여행 정보 */}
       <div className={styles.travelInfo}>
         <div className={styles.infoItem}>
-          <span className={styles.label}>모임 지역:</span>
+          <span className={styles.label}>여헹 장소 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.locationNames || '미정')}</span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>여행 기간:</span>
+          <span className={styles.label}>여행 기간 :</span>
           <span className={styles.value}>
             {isBlind ? '-' : formatDateRange(detail.startAt, detail.endAt)}
           </span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>대상:</span>
+          <span className={styles.label}>모집 대상 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.targetNames || '-')}</span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>테마:</span>
+          <span className={styles.label}>여행 테마 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.themeNames || '-')}</span>
         </div>
       </div>
@@ -423,7 +423,7 @@ useEffect(() => {
       <div className={styles.descriptionSection}>
         <h3 className={styles.sectionTitle}>모임 설명</h3>
         <div className={styles.description}>
-          {isBlind ? '블라인드 처리된 게시글입니다.' : (detail.description || '상세 설명이 없습니다.')}
+          {isBlind ? '블라인드 처리된 게시글입니다' : (detail.description || '상세 설명이 없습니다')}
         </div>
       </div>
 

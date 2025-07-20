@@ -246,10 +246,10 @@ export default function TravelmateFilter({ onSubmit }) {
         </div>
 
         <div className={styles.buttonDiv}>
-        <button type="button" className={`${styles.button} ${styles.darkButton}`} onClick={handleApplyClick}>적용</button>
         <button type="button" className={styles.resetAllButton} onClick={resetAllFilters}>
           <img src="/icons/common/refresh.svg" alt="reset all"/>
         </button>
+        <button type="button" className={`${styles.button} ${styles.darkButton}`} onClick={handleApplyClick}>적용</button>
         </div>
       </div>
 

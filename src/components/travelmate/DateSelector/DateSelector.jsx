@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './DateSelector.module.css';
 
-export default function DateSelector({ onSubmit }) {
+export default function DateSelector({ onSubmit, reset }) {
   const [startYear, setStartYear] = useState(null);
   const [startMonth, setStartMonth] = useState(null);
   const [startDay, setStartDay] = useState(null);
@@ -111,6 +111,23 @@ export default function DateSelector({ onSubmit }) {
     };
     onSubmit(dateData);
   }, [startYear, startMonth, startDay, endYear, endMonth, endDay, onSubmit]);
+
+  useEffect(() => {
+    if (reset) {
+      // 모든 날짜 상태 초기화
+      setStartYear(null);
+      setStartMonth(null);
+      setStartDay(null);
+      setEndYear(null);
+      setEndMonth(null);
+      setEndDay(null);
+      
+      // 드롭다운 상태도 초기화
+      setShowYearDropdown('');
+      setShowMonthDropdown('');
+      setShowDayDropdown('');
+    }
+  }, [reset]);
 
   const handleYearSelect = (year, type) => {
     if (type === 'start') {

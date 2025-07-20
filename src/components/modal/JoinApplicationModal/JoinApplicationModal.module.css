@@ -48,7 +48,7 @@
   padding: 16px;
   border-radius: 6px;
   margin-bottom: 20px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid #111;
 }
 
 .applicationInfo p {
@@ -80,8 +80,8 @@
 
 .textArea:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+  border-color: #000;  
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .textArea::placeholder {
@@ -90,6 +90,8 @@
 
 /* === Buttons === */
 .btn {
+  flex: 1;
+  max-width: 150px;
   padding: 0.5rem 2rem;
   font-size: 0.875rem;
   font-weight: bold;

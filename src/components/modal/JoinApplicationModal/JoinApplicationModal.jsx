@@ -78,7 +78,7 @@ const showAlertModal = (message) => {
         <div className={styles.formGroup}>
           <textarea
             className={styles.textArea}
-            placeholder="참여 신청 사유를 입력해주세요..."
+            placeholder="참여 신청 사유를 입력해주세요"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={6}

@@ -110,11 +110,12 @@
   display: flex;
   gap: 8px;
   width: 100%;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 20px;
   background: #f8f9fa;
   border-radius: 12px;
   box-sizing: border-box;
+  align-items: center;
 }
 
 .filterToggle {
@@ -262,9 +263,10 @@
 
 .buttonDiv {
   display: flex;
-  margin-right: 0;
+  margin-left: auto;
   gap: 8px; 
   align-items: center;
+  flex-shrink: 0;
 }
 /* === 다크 버튼 === */
 .darkButton {
