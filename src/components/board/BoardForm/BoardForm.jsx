@@ -4,6 +4,8 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardForm.module.css';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import certiphoto from '../../../assets/quest/certiphoto.svg';
+import { Circles } from "react-loader-spinner";
 
 const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null, onSubmit, onClose }) => {
   const MAX_IMAGE_COUNT = 10;
@@ -102,17 +104,17 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '제목은 필수입니다' };
+          return { isValid: false, error: '게시글 제목은 필수입니다' };
         } else if (value.length > 100) {
-          return { isValid: false, error: '제목은 100자를 초과할 수 없습니다' };
+          return { isValid: false, error: '게시글 제목은 100자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'content':
         if (!value.trim()) {
-          return { isValid: false, error: '내용은 필수입니다' };
+          return { isValid: false, error: '게시글 내용은 필수입니다' };
         } else if (value.length > 5000) {
-          return { isValid: false, error: '내용은 5000자를 초과할 수 없습니다' };
+          return { isValid: false, error: '게시글 내용은 5000자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
@@ -393,7 +395,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
           <div className={styles.titleColumn}>
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                제목 <span className={styles.required}>*</span>
+                게시글 제목 <span className={styles.required}>*</span>
               </label>
               <input
                 type="text"
@@ -404,7 +406,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="제목을 입력하세요"
+                placeholder="게시글 제목을 입력하세요"
                 required
               />
               {validationErrors.title && (
@@ -452,7 +454,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                           className={styles.emptySlot}
                           onClick={(e) => openFileDialog(index, e)}
                         >
-                          <span className={styles.uploadIcon}>📷</span>
+                          <span className={styles.uploadIcon}>
+                            <img src={certiphoto} alt="camera" />
+                          </span>
                           <p className={styles.uploadText}>이미지 업로드</p>
                         </div>
                       )
@@ -471,7 +475,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         {/* 내용 입력 */}
         <div className={styles.formGroup}>
           <label className={styles.label}>
-            내용 <span className={styles.required}>*</span>
+            게시글 내용 <span className={styles.required}>*</span>
           </label>
           <textarea
             name="content"
@@ -481,7 +485,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
               fieldValidation.content === 'valid' ? styles.validInput : 
               fieldValidation.content === 'invalid' ? styles.invalidInput : ''
             }`}
-            placeholder="내용을 입력하세요"
+            placeholder="게시글 내용을 입력하세요"
             rows="15"
             required
           />
@@ -506,7 +510,11 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
               className={styles.submitButton} 
               disabled={loading}
             >
-              {loading ? '저장 중...' : (mode === 'create' ? '작성하기' : '수정하기')}
+              {loading ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                mode === 'create' ? '작성하기' : '수정하기'
+              )}
             </button>
           </div>
         </div>

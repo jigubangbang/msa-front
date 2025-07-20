@@ -160,8 +160,8 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
       <div className={styles.searchHeader}>
         <h2 className={styles.searchTitle}>
           {searchKeyword && searchKeyword.trim() 
-            ? `"${searchKeyword}" 의 검색 결과: ${totalCount}개의 게시글이 검색되었습니다.`
-            : `전체 ${totalCount}개의 게시글이 있습니다.`
+            ? `"${searchKeyword}" 의 검색 결과 : ${totalCount}개의 게시글이 검색되었습니다`
+            : `전체 ${totalCount}개의 게시글이 있습니다`
           }
         </h2>
       </div>
