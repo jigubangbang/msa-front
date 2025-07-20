@@ -184,6 +184,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
     //채팅하기 버튼
     const handleChatClick = async (groupId) => {
+    console.log('handleChatClick 함수 실행됨!', groupId);
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELMATE",
@@ -317,9 +318,14 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       </div>
                     )}
                     <div className={styles.chatButtonContainer}>
-                      <button className={styles.chatButton}>
+                      <button className={styles.chatButton} onClick={(e) => {
+                        console.log('버튼 클릭됨!', travel.id);
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleChatClick(travel.id);
+                      }}>
                         채팅 바로가기
-                        <img src={arrow}/>
+                        <img src={arrow} alt="arrow" onClick={(e) => e.stopPropagation()}/>
                       </button>
                     </div>
                   </div>
