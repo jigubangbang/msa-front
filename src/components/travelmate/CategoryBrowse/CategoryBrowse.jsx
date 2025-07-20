@@ -20,11 +20,11 @@ const CategoryBrowse = ({ onCategorySelect }) => {
       { id: 'OCEANIA', name: '오세아니아', icon: '🏝️' }
     ],
     대상: [
-      { id: 1, name: '남성 전용 모임', image: man },
-      { id: 2, name: '여성 전용 모임', image: woman },
-      { id: 3, name: '20대 모임', image: girl },
+      { id: 1, name: '남성 전용 모임', icon: '♀️' },
+      { id: 2, name: '여성 전용 모임', icon: '♂️' },
+      { id: 3, name: '20대 모임', image: woman },
       { id: 4, name: '30대 모임', image: man },
-      { id: 5, name: '40대 모임', image: woman },
+      { id: 5, name: '40대 모임', image: girl },
       { id: 6, name: '50대 이상 모임', image: oldMan },
       { id: 7, name: '가족/아이 동반 모임', image: family },
       { id: 8, name: '친구 동반 모임', image: friends }

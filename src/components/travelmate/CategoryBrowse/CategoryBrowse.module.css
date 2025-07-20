@@ -106,8 +106,8 @@
 }
 
 .categoryImage {
-  width: 75px;
-  height: 75px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
   border-radius: 8px;
   margin-top: 15px;
