@@ -330,7 +330,7 @@ const TopTravelInfoList = ({
                 <div className={styles.statsRow}>
                   <span className={styles.members}>
                     <img src={userIcon} alt="인원 수" className={`${styles.icon} ${styles.memberIcon}`}/>
-                    {isBlind ? '-' : (travelinfo.memberCount || 0)}명
+                    {isBlind ? '-' : (travelinfo.memberCount || 0)}
                   </span>
                   <span className={styles.likes}>
                     <button 
