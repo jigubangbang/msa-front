@@ -43,9 +43,9 @@
 }
 
 .categoryCard:hover {
-  border-color: #007bff;
+  border-color: #ccc;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(136, 153, 170, 0.15);
 }
 
 .categoryIcon {

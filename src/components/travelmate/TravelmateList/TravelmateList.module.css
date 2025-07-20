@@ -203,10 +203,13 @@
 
 .creatorStyle {
   font-size: 12px;
-  color: #666;
-  background: #f0f0f0;
-  padding: 2px 6px;
-  border-radius: 10px;
+  font-weight: 600;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(to right, #00f5a0, #00d9f5) border-box;
+  color: #00bcd4;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
 }
 
 /* 제목 셀 */
