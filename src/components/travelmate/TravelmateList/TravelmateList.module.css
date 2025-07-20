@@ -123,7 +123,7 @@
   background: #f8f9fa;
   border-radius: 8px 8px 0 0;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
 }
 
@@ -165,7 +165,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
 }
 
@@ -243,7 +243,7 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  font-size: 12px;
+  font-size: 13px;
   color: #333;
 }
 
@@ -264,10 +264,11 @@
 }
 
 .themes {
-  font-size: 11px;
+  font-size: 12px;
   color: #007bff;
   background: #e7f3ff;
-  padding: 2px 6px;
+  padding: 4px 8px;
+  border: 1px solid #b3d9ff; 
   border-radius: 10px;
   text-align: center;
   line-height: 1.2;
@@ -275,10 +276,11 @@
 }
 
 .styles {
-  font-size: 11px;
+  font-size: 12px;
   color: #28a745;
   background: #e8f5e8;
-  padding: 2px 6px;
+  padding: 4px 8px;
+  border: 1px solid #c3e6cb;
   border-radius: 10px;
   text-align: center;
   line-height: 1.2;
@@ -329,7 +331,7 @@
 
 /* 조회수 */
 .viewCount {
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
   font-weight: 500;
 }
@@ -368,13 +370,13 @@
 }
 
 .targets {
-  font-size: 11px;
+  font-size: 12px;
   color: #dc3545;
   background: #ffeaea;
-  padding: 2px 6px;
+  padding: 4px 8px;
+  border: 1px solid #f5c6cb;
   border-radius: 10px;
   text-align: center;
   line-height: 1.2;
   word-break: break-word;
-  margin-top: 2px;
 }
