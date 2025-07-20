@@ -1,9 +1,8 @@
 export function formatRelativeTime(dateString) {
+  // Directly parse the ISO 8601 string to ensure UTC interpretation.
   const date = new Date(dateString);
   const now = new Date();
-  // The subtraction of two Date objects correctly yields the difference in milliseconds,
-  // as both are internally represented as UTC timestamps.
-  const diff = (now - date) / 1000; // in seconds
+  const diff = (now.getTime() - date.getTime()) / 1000; // in seconds
 
   // Invalid Date 체크
   if (isNaN(date.getTime())) {
