@@ -1,7 +1,7 @@
 export const QUEST_SIDEBAR = (isAdmin = false) => {
   const basicMenus = [
     {
-      label: '챌린지 목록',
+      label: '도전 챌린지',
       icon: '/icons/sidebar/badge.svg',
       path: '/quest',
       needLogin: false,

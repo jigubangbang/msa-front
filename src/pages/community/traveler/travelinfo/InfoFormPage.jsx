@@ -8,6 +8,7 @@ import API_ENDPOINTS from '../../../../utils/constants';
 import TravelInfoForm from '../../../../components/travelinfo/TravelInfoForm/TravelInfoForm';
 import { jwtDecode } from 'jwt-decode';
 import ConfirmModal from '../../../../components/common/ErrorModal/ConfirmModal';
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 const InfoFormPage = () => {
@@ -131,7 +132,7 @@ const showAlertModal = (message) => {
       setInitialData(formattedData);
     } catch (error) {
       console.error('Failed to fetch travelinfo data:', error);
-      showAlertModal('정보방 정보를 불러오는데 실패했습니다.');
+      showAlertModal('정보 공유방 데이터를 불러오는데 실패했습니다.');
       navigate('/traveler/info'); // 목록으로 돌아가기
     } finally {
       setLoading(false);
@@ -208,7 +209,7 @@ const showAlertModal = (message) => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner height={50} width={50} color="#000" />
         </div>
       </div>
     );

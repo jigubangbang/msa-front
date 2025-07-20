@@ -534,7 +534,7 @@ const showAlertModal = (message) => {
           <div className={styles.leftColumn}>
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                모임 제목 <span className={styles.required}>*</span>
+                모임명 <span className={styles.required}>*</span>
               </label>
               <input
                 type="text"

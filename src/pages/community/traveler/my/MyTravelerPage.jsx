@@ -161,7 +161,7 @@ const fetchTravelerData = async () => {
                 className={`${styles.tabButton} ${activeTab === 'travelinfo' ? styles.active : ''}`}
                 onClick={() => handleTabChange('travelinfo')}
               >
-                내 여행자 정보 공유방
+                내 정보 공유방
               </button>
             </div>
           </div>
