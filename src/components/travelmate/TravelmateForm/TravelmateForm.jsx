@@ -5,6 +5,7 @@ import DateSelector from '../DateSelector/DateSelector';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import { Circles } from "react-loader-spinner";
 
 const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose }) => {
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -14,7 +15,17 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
   const [confirmMessage, setConfirmMessage] = useState('');
   const [confirmType, setConfirmType] = useState('alert');
   const [confirmAction, setConfirmAction] = useState(null);
+  const [dateReset, setDateReset] = useState(false);
 
+
+  const handleDateReset = () => {
+    setDateData({
+      startDate: null,
+      endDate: null
+    });
+    setDateReset(true);
+    setTimeout(() => setDateReset(false), 100);
+  };
 
   const validateFile = (file) => {
     const errors = [];
@@ -162,9 +173,9 @@ const showAlertModal = (message) => {
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '모임 제목은 필수입니다' };
+          return { isValid: false, error: '모임명은 필수입니다' };
         } else if (value.length > 100) {
-          return { isValid: false, error: '모임 제목은 100자를 초과할 수 없습니다' };
+          return { isValid: false, error: '모임명은 100자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
@@ -402,7 +413,7 @@ const showAlertModal = (message) => {
     
     // 필터 검사
     if (formData.locations.length === 0) {
-      errors.locations = '지역은 최소 1개 이상 선택해야 합니다. 적용 버튼을 눌러주세요';
+      errors.locations = '지역은 최소 1개 이상 선택해야 합니다';
       hasErrors = true;
     }
     
@@ -426,7 +437,7 @@ const showAlertModal = (message) => {
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      showAlertModal('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요');
       return;
     }
 
@@ -475,7 +486,7 @@ const showAlertModal = (message) => {
     <div className={styles.travelmateForm}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          {mode === 'create' ? '모임 생성' : '모임 수정'}
+          {mode === 'create' ? '여행자 모임 생성' : '여행자 모임 수정'}
         </h2>
         <button className={styles.closeButton} onClick={onClose}>✕</button>
       </div>
@@ -534,7 +545,7 @@ const showAlertModal = (message) => {
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="모임 제목을 입력하세요"
+                placeholder="모임명을 작성해주세요"
                 required
               />
               {validationErrors.title && (
@@ -546,8 +557,7 @@ const showAlertModal = (message) => {
               <label className={styles.label}>
                 모임 한마디 <span className={styles.required}>*</span>
               </label>
-              <input
-                type="text"
+              <textarea
                 name="simpleDescription"
                 value={formData.simpleDescription}
                 onChange={handleInputChange}
@@ -555,7 +565,8 @@ const showAlertModal = (message) => {
                   fieldValidation.simpleDescription === 'valid' ? styles.validInput : 
                   fieldValidation.simpleDescription === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="모임을 한 마디로 표현해보세요"
+                placeholder="모임을 한마디로 표현해 보세요"
+                rows={2}
                 required
               />
               {validationErrors.simpleDescription && (
@@ -609,7 +620,7 @@ const showAlertModal = (message) => {
         {/* 모임 카테고리 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
         <div className={styles.sectionHeader}>
-            <label className={styles.sectionLabel}>모임 카테고리</label>
+            <label className={styles.sectionLabel}>모임 카테고리 <span className={styles.required}>*</span></label>
             
               {/* 수정 모드일 때 기존 필터 정보 표시 */}
               {mode === 'edit' && initialData && (
@@ -638,7 +649,7 @@ const showAlertModal = (message) => {
                 </div>
               )}
               <div className={styles.currentInfo}>
-                <span className={styles.currentLabel}>현재 선택:</span>
+                <span className={styles.currentLabel}>현재 선택 :</span>
             {displayFilters.locationNames && (
                 <span className={styles.currentTag}>
                 지역: {displayFilters.locationNames}
@@ -685,16 +696,23 @@ const showAlertModal = (message) => {
               </div>
             )}
             <div className={styles.currentInfo}>
-              <span className={styles.currentLabel}>현재 선택:</span>
+              <span className={styles.currentLabel}>현재 선택 :</span>
               {dateData.startDate && dateData.endDate && (
                 <span className={styles.currentTag}>
                   {dateData.startDate.dateString} ~ {dateData.endDate.dateString}
                 </span>
               )}
+              <button 
+                type="button"
+                className={styles.resetButton}
+                onClick={handleDateReset}
+              >
+                <img src="/icons/common/refresh.svg" alt="reset"/>
+              </button>
             </div>
           </div>
           <div className={styles.dateSelector}>
-            <DateSelector onSubmit={handleDateSubmit} />
+            <DateSelector onSubmit={handleDateSubmit} reset={dateReset} />
           </div>
           {validationErrors.dates && (
             <div className={styles.errorMessage}>{validationErrors.dates}</div>
@@ -703,21 +721,23 @@ const showAlertModal = (message) => {
 
         {/* 모임 설명 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
-          <label className={styles.sectionTitle}>
-            모임 설명 <span className={styles.required}>*</span>
-          </label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className={`${styles.textarea} ${
-              fieldValidation.description === 'valid' ? styles.validInput : 
-              fieldValidation.description === 'invalid' ? styles.invalidInput : ''
-            }`}
-            placeholder="모임에 대한 상세한 설명을 작성해주세요"
-            rows="8"
-            required
-          />
+          <div className={styles.textareaGroup}>
+            <label className={styles.sectionTitle}>
+              모임 설명 <span className={styles.required}>*</span>
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              className={`${styles.textarea} ${
+                fieldValidation.description === 'valid' ? styles.validInput : 
+                fieldValidation.description === 'invalid' ? styles.invalidInput : ''
+              }`}
+              placeholder="모임에 대한 상세한 설명을 작성해주세요"
+              rows="8"
+              required
+            />
+          </div>
           {validationErrors.description && (
             <div className={styles.errorMessage}>{validationErrors.description}</div>
           )}
@@ -725,24 +745,26 @@ const showAlertModal = (message) => {
 
         {/* 모임 신청 안내 메시지 설명 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
-          <label className={styles.sectionTitle}>
-            모임 신청 안내 메시지 설명 <span className={styles.required}>*</span>
-          </label>
-          <textarea
-            name="applicationDescription"
-            value={formData.applicationDescription}
-            onChange={handleInputChange}
-            className={`${styles.textarea} ${
-              fieldValidation.applicationDescription === 'valid' ? styles.validInput : 
-              fieldValidation.applicationDescription === 'invalid' ? styles.invalidInput : ''
-            }`}
-            placeholder="모임 신청자에게 전달할 안내 메시지를 작성해주세요"
-            rows="6"
-            required
-          />
-          {validationErrors.applicationDescription && (
-            <div className={styles.errorMessage}>{validationErrors.applicationDescription}</div>
-          )}
+          <div className={styles.textareaGroup}>
+            <label className={styles.sectionTitle}>
+              모임 신청 안내 메시지 <span className={styles.required}>*</span>
+            </label>
+            <textarea
+              name="applicationDescription"
+              value={formData.applicationDescription}
+              onChange={handleInputChange}
+              className={`${styles.textarea} ${
+                fieldValidation.applicationDescription === 'valid' ? styles.validInput : 
+                fieldValidation.applicationDescription === 'invalid' ? styles.invalidInput : ''
+              }`}
+              placeholder="모임 신청자에게 전달할 안내 메시지를 작성해주세요"
+              rows="6"
+              required
+            />
+            {validationErrors.applicationDescription && (
+              <div className={styles.errorMessage}>{validationErrors.applicationDescription}</div>
+            )}
+          </div>
         </div>
 
         {/* 제출 버튼 */}
@@ -752,8 +774,12 @@ const showAlertModal = (message) => {
               취소
             </button>
             <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading ? '저장 중...' : (mode === 'create' ? '모임 생성' : '모임 수정')}
-            </button>
+            {loading ? (
+              <Circles height="20" width="20" color="#fff" />
+            ) : (
+              mode === 'create' ? '모임 생성' : '모임 수정'
+            )}
+          </button>
           </div>
         </div>
       </form>

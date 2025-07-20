@@ -208,7 +208,7 @@ const handleSearchSectionSubmit = (searchData) => {
               {/* 현재 인기 여행 동행 모임 */}
               <TopTravelmateList
                 currentUserId={currentUserId}
-                title="현재 인기 여행자 모임"
+                title="인기 여행자 모임"
                 option="popular"
                 isLogin={isLogin}
                 onViewAll={handleViewAll}
@@ -218,7 +218,7 @@ const handleSearchSectionSubmit = (searchData) => {
               {/* 최근 만들어진 여행 동행 모임 */}
               <TopTravelmateList
               currentUserId={currentUserId}
-                title="최근 만들어진 여행자 모임"
+                title="최신 등록 여행자 모임"
                 option="recent"
                 isLogin={isLogin}
                 onViewAll={handleViewAll}

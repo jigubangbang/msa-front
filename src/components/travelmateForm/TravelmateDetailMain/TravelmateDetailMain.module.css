@@ -2,7 +2,6 @@
 
 .travelmateDetailMain {
   width: 100%;
-  max-width: 1100px;
   margin: 0 auto;
   font-family: Pretendard, sans-serif;
 }
@@ -214,6 +213,7 @@
 
 .nickname:hover, .userId:hover {
   cursor: pointer;
+  color: #0056b3;
 }
 
 .userId {
@@ -236,7 +236,7 @@
 .label {
   font-weight: 600;
   color: #333;
-  width: 120px;
+  width: 80px;
   flex-shrink: 0;
 }
 

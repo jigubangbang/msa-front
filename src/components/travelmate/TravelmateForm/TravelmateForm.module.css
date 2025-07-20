@@ -39,7 +39,6 @@
 }
 
 .closeButton:hover {
-  background: #e9ecef;
   color: #333;
 }
 
@@ -144,7 +143,7 @@
 .basicInfoSection {
   display: flex;
   gap: 40px;
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .leftColumn {
@@ -161,7 +160,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .label {
@@ -208,13 +207,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
 }
 
 .thumbnailImageUpload {
   width: 200px;
-  height: 150px;
+  height: 200px;
   border: 1px dashed #ddd;
   border-radius: 8px;
   cursor: pointer;
@@ -288,7 +287,7 @@
 .filterSection {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 16px;
+  padding: 10px;
   border: 1px solid transparent;
   transition: border-color 0.3s ease;
 }
@@ -389,7 +388,7 @@
 .dateSection,
 .descriptionSection,
 .applicationSection {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 /* 텍스트 에어리어 */
@@ -509,6 +508,10 @@
   transition: all 0.3s ease;
   outline: none !important;
   box-sizing: border-box;
+  min-width: 120px; /* 최소 너비 설정 */
+  display: flex; /* flex 추가 */
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: center; /* 가로 중앙 정렬 */
 }
 
 .submitButton:hover:not(:disabled) {
@@ -520,4 +523,41 @@
   background-color: #6c757d;
   cursor: not-allowed;
   transform: none;
+}
+
+.sectionTitleWithReset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resetButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: 0.3s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  justify-content: center;
+}
+
+.resetButton:hover {
+  transform: rotate(90deg);
+}
+
+.resetButton img {
+  width: 20px;
+  height: 20px;
+}
+
+.textareaGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 기본 6px보다 넓게 */
+  margin-bottom: 40px;
 }
