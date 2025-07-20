@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './BadgeModal.module.css';
 import { useNavigate } from 'react-router-dom';
 import ModalUserList from '../ModalUserList/ModalUserList';
+import TrophyIcon from '../../../assets/quest/trophy.svg'; 
 
 
 const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
@@ -138,9 +139,9 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
     if (badgeData.is_awarded) {
       return (
         <div className={styles.statusSection}>
-          <div className={styles.awardedBadge}>🏆</div>
+          <div className={styles.awardedBadge}><img src={TrophyIcon} alt="trophy" className={styles.trophyIcon} /></div>
           <span className={styles.statusText}>
-            축하합니다! {formatDate(badgeData.awarded_at)}에 획득한 뱃지입니다.
+            축하합니다! {formatDate(badgeData.awarded_at)}에 뱃지를 획득했습니다
           </span>
         </div>
       );

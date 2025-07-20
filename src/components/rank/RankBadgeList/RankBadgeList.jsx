@@ -95,7 +95,7 @@ const RankBadgeList = ({
       {/* Search */}
             <div className={styles.searchSection}>
               <p className={styles.totalCount}>
-                현재 {totalCount}개의 뱃지에 도전할 수 있습니다.
+                현재 {totalCount}개의 뱃지에 도전할 수 있습니다
               </p>
               <SearchBar
                 placeholder="뱃지명으로 검색"
@@ -110,10 +110,10 @@ const RankBadgeList = ({
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>뱃지</div>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>제목</div>
-        <div className={styles.headerCell}>퀘스트</div>
+        <div className={styles.headerCell}>뱃지명</div>
+        <div className={styles.headerCell}>연결 퀘스트</div>
         <div className={styles.headerCell}>난이도</div>
-        <div className={styles.headerCell}>획득</div>
+        <div className={styles.headerCell}>획득한 사용자</div>
       </div>
 
       {/* table */}

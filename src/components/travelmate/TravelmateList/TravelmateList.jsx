@@ -41,7 +41,7 @@ const TravelmateList = ({
       const end = new Date(endDate);
       
       const formatDate = (date) => {
-        const year = String(date.getFullYear()).slice(-2);
+        const year = String(date.getFullYear());
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${year}년 ${month}월 ${day}일`;
@@ -54,7 +54,7 @@ const TravelmateList = ({
       return (
         <div>
           <div>{formatDate(start)}</div>
-          <div>~{formatDate(end)}</div>
+          <div> ~ {formatDate(end)}</div>
         </div>
       );
     } catch (error) {
@@ -76,14 +76,14 @@ const formatSearchConditions = (searchSectionData, filters) => {
       { id: 8, name: '친구 동반 모임' }
     ],
     themes: [
-      { id: 9, name: '맛집 탐방 여행 모임' },
-      { id: 10, name: '등산/트레킹 여행 모임' },
-      { id: 11, name: '사진 찍기 여행 모임' },
-      { id: 12, name: '역사/문화 유적지 탐방 모임' },
-      { id: 13, name: '축제/이벤트 참가 여행 모임' },
-      { id: 14, name: '자연 속 힐링 여행 모임' },
-      { id: 15, name: '액티비티/레포츠 여행 모임' },
-      { id: 16, name: '캠핑/차박 여행 모임' }
+      { id: 9, name: '맛집 탐방 모임' },
+      { id: 10, name: '등산/트레킹 모임' },
+      { id: 11, name: '사진 촬영 모임' },
+      { id: 12, name: '유적지 탐방 모임' },
+      { id: 13, name: '축제/이벤트 참가 모임' },
+      { id: 14, name: '자연 속 힐링 모임' },
+      { id: 15, name: '액티비티/레포츠 모임' },
+      { id: 16, name: '캠핑/차박 모임' }
     ],
     styles: [
       { id: 'A', name: '열정트래블러' },
@@ -416,12 +416,12 @@ const formatSearchConditions = (searchSectionData, filters) => {
 
   return (
     <div className={styles.travelmateList}>
-      <h2 className={styles.travelmateListTitle}>여행메이트 모집</h2>
+      <h2 className={styles.travelmateListTitle}>여행자 모임</h2>
       
       {/* Search Section */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
-            현재 {totalCount}개의 여행메이트 모집글이 있습니다.
+            현재 {totalCount}개의 여행자 모임이 있습니다
         </p>
 
         
@@ -437,7 +437,7 @@ const formatSearchConditions = (searchSectionData, filters) => {
             완료된 모임도 보기
             </label>
             <Dropdown
-            defaultOption="정렬 기준"
+            defaultOption="정렬"
             options={sortOptions}
             onSelect={handleSortChange}
             />
@@ -452,7 +452,7 @@ const formatSearchConditions = (searchSectionData, filters) => {
               <div className={styles.searchConditions}>
               {(() => {
                 const { conditions, isFromSearch, isFromCategory } = formatSearchConditions(searchSectionData, filters);
-                const label = isFromSearch ? '검색 조건: ' : isFromCategory ? '카테고리 선택: ' : '검색 조건: ';
+                const label = isFromSearch ? '검색 조건 : ' : isFromCategory ? '카테고리 선택 : ' : '검색 조건: ';
                 
                 return (
                   <>
@@ -475,7 +475,7 @@ const formatSearchConditions = (searchSectionData, filters) => {
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>썸네일</div>
         <div className={styles.headerCell}>모집자</div>
-        <div className={styles.headerCell}>제목</div>
+        <div className={styles.headerCell}>모임명</div>
         <div className={styles.headerCell}>기간</div>
         <div className={styles.headerCell}>장소</div>
         <div className={styles.headerCell}>테마/스타일</div>

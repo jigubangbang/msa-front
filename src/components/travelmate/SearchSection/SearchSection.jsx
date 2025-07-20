@@ -6,6 +6,13 @@ import DateSelector from "../DateSelector/DateSelector";
 export default function SearchSection({ onSubmit }) {
  const [selectedLocations, setSelectedLocations] = useState([]);
  const [selectedDates, setSelectedDates] = useState(null);
+ const [resetKey, setResetKey] = useState(0);
+
+  const resetAll = () => {
+    setSelectedLocations([]);
+    setSelectedDates(null);
+    setResetKey(prev => prev + 1); 
+  };
 
  const handleSubmit = () => {
    if (onSubmit) {
@@ -45,14 +52,23 @@ export default function SearchSection({ onSubmit }) {
        <div className={styles.Container}>
          <h2 className={styles.title}>어디로 떠나실건가요?</h2>
          <div className={styles.selector}>
-           <LocationSelector onSubmit={handleLocationSubmit}/>
-           <DateSelector onSubmit={handleDateSubmit}/>
-         </div>
+            <LocationSelector 
+              key={`location-${resetKey}`}
+              onSubmit={handleLocationSubmit}
+            />
+            <DateSelector 
+              key={`date-${resetKey}`}
+              onSubmit={handleDateSubmit}
+            />
+          </div>
          <div className={styles.buttonDiv}>
-           <button className={`${styles.button} ${styles.darkButton}`}
-             onClick={handleSubmit}
-           >나에게 딱 맞는 여행자 동행 모임 검색하기</button>
-         </div>
+          <button className={`${styles.button} ${styles.darkButton}`}
+            onClick={handleSubmit}
+          >나에게 딱 맞는 여행자 동행 모임 검색하기</button>
+          <button type="button" className={styles.resetAllButton} onClick={resetAll}>
+            <img src="/icons/common/refresh.svg" alt="reset all"/>
+          </button>
+        </div>
        </div>
      </div>
    </div>

@@ -12,7 +12,8 @@ export default function TravelerSearchBar({
   onFocus = () => {},
   debounceMs = 300,
   isSearch,
-  setIsSearch
+  setIsSearch,
+  barWidth = "80%"
 }) {
   const [searchValue, setSearchValue] = useState('');
 
@@ -62,7 +63,7 @@ export default function TravelerSearchBar({
   };
 
   return (
-    <div className={styles.searchContainer}>
+    <div className={styles.searchContainer} style={{ width: barWidth }}>
       <div 
         className={styles.searchBar} 
         onClick={handleBarClick}
