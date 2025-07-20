@@ -23,7 +23,7 @@ const ProgressBar = ({ data }) => {
         ></div>
       </div>
       <p className={styles.progressDescription}>
-        전체 {total}개의 {title.toLowerCase()} 중 {completed}개의 {title.toLowerCase()}를 {title === 'Quest' ? '완료' : '획득'}했습니다.
+        전체 {total}개의 {title.toLowerCase()} 중 {completed}개의 {title.toLowerCase()}를 {title === 'Quest' ? '완료' : '획득'}했습니다
       </p>
     </div>
   );

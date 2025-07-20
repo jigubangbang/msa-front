@@ -115,8 +115,8 @@ const handleQuestClickFromBadge = (quest_id) => {
     { value: 5, label: '자연 체험' },
     { value: 6, label: '여행 생활' },
     { value: 7, label: '소통/공유' },
-    { value: 8, label: '고난이도 도전' },
-    { value: 9, label: '특수 조건' },
+    { value: 8, label: '특수 조건' },
+    { value: 9, label: '고난이도 도전' },
     { value: 10, label: '기간 제한' }
   ];
 
@@ -223,7 +223,9 @@ const handleViewModalClose = () => {
   if (!userInfo?.quest) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>퀘스트 데이터를 불러오는 중...</div>
+        <div className={styles.loading}>
+          <CirclesSpinner/> 
+        </div>
       </div>
     );
   }
@@ -241,7 +243,7 @@ const handleViewModalClose = () => {
   return (
     <div className={styles.container}>
       <div className={styles.totalCount}>
-        총 {filteredQuests.length}개의 퀘스트를 진행 중이거나 완료했습니다.
+        총 {filteredQuests.length}개의 퀘스트에 도전했습니다
       </div>
 
       {/* 카테고리 필터 */}
@@ -287,16 +289,16 @@ const handleViewModalClose = () => {
         <div className={styles.headerCell}>카테고리</div>
         <div className={styles.headerCell}>제목</div>
         <div className={styles.headerCell}>난이도/XP</div>
-        <div className={styles.headerCell}>시작</div>
-        <div className={styles.headerCell}>완료</div>
-        <div className={styles.headerCell}>설명</div>
-        <div className={styles.headerCell}>액션</div>
+        <div className={styles.headerCell}>시작일</div>
+        <div className={styles.headerCell}>완료일</div>
+        <div className={styles.headerCell}>퀘스트 설명</div>
+        <div className={styles.headerCell}>인증</div>
       </div>
 
       {/* 테이블 바디 */}
       <div className={styles.tableBody}>
         {filteredQuests.length === 0 ? (
-          <div className={styles.noQuests}>해당하는 퀘스트가 없습니다.</div>
+          <div className={styles.noQuests}>해당하는 퀘스트가 없습니다</div>
         ) : (
           filteredQuests.map((quest) => (
             <div key={quest.quest_user_id} className={styles.tableRow}

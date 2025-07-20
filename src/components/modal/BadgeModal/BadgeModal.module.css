@@ -336,9 +336,10 @@ font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DN
   font-weight: 400;
 }
 
-.awardedBadge {
-  font-size: 48px;
-  margin-bottom: 12px;
+.trophyIcon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
 }
 
 .progressInfo {

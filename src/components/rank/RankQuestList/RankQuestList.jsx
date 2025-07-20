@@ -31,8 +31,8 @@ const RankQuestList = ({
     { value: 5, label: '자연 체험' },
     { value: 6, label: '여행 생활' },
     { value: 7, label: '소통/공유' },
-    { value: 8, label: '고난이도 도전' },
-    { value: 9, label: '특수 조건' },
+    { value: 8, label: '특수 조건' },
+    { value: 9, label: '고난이도 도전' },
     { value: 10, label: '기간 제한' }
   ];
 
@@ -44,7 +44,7 @@ const RankQuestList = ({
   ];
 
   const sortOptions = [
-    { value: 'default', label: '등록순'},
+    { value: 'default', label: '기본'},
     { value: 'latest', label: '최신순' },
     { value: 'oldest', label: '오래된순' },
     { value: 'xp_high', label: 'XP (높은순)' },
@@ -137,9 +137,12 @@ const RankQuestList = ({
   }
 
   const getSortDisplayText = () => {
-  const selected = sortOptions.find(opt => opt.value === filters.sortOption);
-  return selected ? selected.label : "Sort by";
-};
+    if (filters.sortOption === 'default') {
+      return '정렬'; // 기본값일 때는 '정렬'로 표시
+    }
+    const selected = sortOptions.find(opt => opt.value === filters.sortOption);
+    return selected ? selected.label : "정렬";
+  };
 
 
   if (loading) {
@@ -156,7 +159,7 @@ const RankQuestList = ({
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
-          현재 {totalCount}개의 퀘스트에 도전할 수 있습니다.
+          현재 {totalCount}개의 퀘스트에 도전할 수 있습니다
         </p>
         <SearchBar
           placeholder="퀘스트명으로 검색"
@@ -216,7 +219,7 @@ const RankQuestList = ({
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>#</div>
         <div className={styles.headerCell}>카테고리</div>
-        <div className={styles.headerCell}>제목</div>
+        <div className={styles.headerCell}>퀘스트명</div>
         <div className={styles.headerCell}>난이도 / XP</div>
         <div className={styles.headerCell}>기간</div>
         <div className={styles.headerCell}>뱃지</div>
@@ -252,7 +255,7 @@ const RankQuestList = ({
               <div className={styles.cell}>
                 {quest.category == 10 
                   ? formatDateRange(quest.season_start, quest.season_end)
-                  : 'constant'
+                  : '-'
                 }
               </div>
               
