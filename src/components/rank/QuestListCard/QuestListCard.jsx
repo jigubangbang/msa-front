@@ -45,7 +45,7 @@ const QuestListCard = ({
             ))
           ) : (
             <div className={styles.noQuests}>
-              진행 중인 퀘스트가 <br/>없습니다.
+              진행 중인 퀘스트가 없습니다
             </div>
           )}
         </div>

@@ -70,20 +70,20 @@ const RankingList = ({ myUserId }) => {
 
   return (
     <div className={styles.rankingList}>
-        <h2 className={styles.rankingListTitle}>사용자 랭킹 (LV)</h2>
+        <h2 className={styles.rankingListTitle}>회원 랭킹 (LV)</h2>
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
           {searchTerm 
-            ? `"${searchTerm}"의 검색 결과... ${totalCount}명의 방방이들을 찾았습니다.`
-            : `현재 ${totalCount}명의 방방이들의 퀘스트 챌린지가 진행 중 입니다.`
+            ? `"${searchTerm}"의 검색 결과... ${totalCount}명의 회원을 찾았습니다`
+            : `현재 ${totalCount}명의 회원이 챌린지 도전 중입니다`
           }
         </p>
         <SearchBar
-          placeholder="회원 아이디로 검색"
+          placeholder="회원 ID, 닉네임으로 검색"
           value={searchTerm}
           onSearchChange={handleSearchChange}
-          barWidth="200px"
+          barWidth="240px"
         />
       </div>
 
