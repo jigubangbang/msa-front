@@ -178,7 +178,6 @@ const UserTimeline = ({ data, onQuestClick, onBadgeClick }) => {
           ))
         ) : (
           <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>📋</div>
             <p className={styles.emptyText}>아직 활동 기록이 없습니다</p>
           </div>
         )}
