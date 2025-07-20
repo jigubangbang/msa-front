@@ -263,7 +263,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
 
   const handleDelete = async (travelinfoId) => {
     customConfirm(
-      '정말로 이 정보방을 삭제하시겠습니까?',
+      '정말 이 정보 공유방을 삭제하시겠습니까?',
       async () => {
         try {
           await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
@@ -272,7 +272,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
               'User-Id': currentUserId,
             },
           });
-          showAlertModal('정보방이 삭제되었습니다.');
+          showAlertModal('정보 공유방이 삭제되었습니다');
           // 목록 새로고침
           fetchTravelinfos();
         } catch (error) {

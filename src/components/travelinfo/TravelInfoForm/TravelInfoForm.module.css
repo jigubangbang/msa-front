@@ -39,7 +39,6 @@
 }
 
 .closeButton:hover {
-  background: #e9ecef;
   color: #333;
 }
 
@@ -228,7 +227,7 @@
 .themeSelector {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 20px;
+  padding: 16px 20px;
   border: 2px solid transparent;
   transition: border-color 0.3s ease;
 }
@@ -242,7 +241,7 @@
   gap: 16px;
   align-items: center;
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: -20px;
   justify-content: flex-start;
 }
 
@@ -329,9 +328,10 @@
 
 .addedSection {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   width: 100%;
+  margin-top: 16px;
 }
 
 .addedThemes {
@@ -345,15 +345,14 @@
 .themeTag {
   padding: 12px 16px;
   display: flex;
-  justify-content: space-between;
+  gap: 10px; 
   align-items: center;
   font-size: 16px;
   background: #F3F3F3;
   color: black;
   border-radius: 16px;
   border: 1px solid #ccc;
-  flex: 0 0 calc(25% - 6px); 
-  min-width: 120px; 
+  flex: 0 0 auto;
   box-sizing: border-box;
 }
 
@@ -374,7 +373,9 @@
   padding: 7px;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin-bottom: 20px;
+  margin-left: 0;
+  align-self: center;
   border-radius: 50%;
   width: 44px;
   height: 44px;
@@ -419,7 +420,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  max-width: 60%;
+  max-width: 100%;
 }
 
 .currentTag {
@@ -456,7 +457,7 @@
   color: #000;
   resize: vertical;
   min-height: 120px;
-  margin-top: 4px;
+  margin-top: 15px;
 }
 
 .textarea:focus {
@@ -556,6 +557,10 @@
   transition: all 0.3s ease;
   outline: none !important;
   box-sizing: border-box;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submitButton:hover:not(:disabled) {
