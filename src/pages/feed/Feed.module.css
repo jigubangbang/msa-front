@@ -38,8 +38,7 @@
 
 .boxItem {
   flex: 1 1 300px;
-  background-color: #111;
-  border: 1px solid #333;
+  background-color: #000;
   padding: 1.5rem 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(255,255,255,0.05);
@@ -61,7 +60,6 @@
 
 .boxText {
   font-size: 1rem;
-  margin-bottom: 1rem;
   font-weight: 500;
   color: #fff;
 }
@@ -85,31 +83,158 @@
   }
 }
 
+.countryGrid {
+  display: flex;
+  padding-top: 10px;
+}
+
+.featuredCountry {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 20px;
+  padding-top: 10px;
+}
+
+.featuredFlag {
+  width: 80px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.featuredCountryName {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .countryList {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  padding-left: 20px;
 }
 
 .countryItem {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   font-size: 0.95rem;
   color: #fff;
+  padding-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.countryText {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between index and name */
+}
+
+.countryIndex {
+  font-weight: 500;
+  color: #666;
+}
+
+.countryName {
+  font-weight: 400;
 }
 
 .flagIcon {
   width: 20px;
   height: 14px;
   object-fit: cover;
-  margin-right: 1rem;
+  margin-left: 1rem;
   border-radius: 2px;
   border: 1px solid #444;
   background-color: #000;
 }
 
+.trendingIcon {
+  animation: revealRight 1s ease-in-out forwards;
+  transform-origin: left;
+  opacity: 0;
+}
+
+@keyframes revealRight {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
 .titleRow {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem; 
+  font-size: 18px;
+}
+
+.directionIcon {
+  height: 20px;
+}
+
+.scrollContainer {
+  font-size: 20px;
+  height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.scrollContent {
+  display: flex;
+  flex-direction: column;
+  color: #83D9E0;
+  animation: scrollPause 15s steps(20) infinite;
+}
+
+@keyframes scrollPause {
+  0%    { transform: translateY(0); }
+  5%    { transform: translateY(0); }
+
+  10%   { transform: translateY(-20px); }
+  15%   { transform: translateY(-20px); }
+
+  20%   { transform: translateY(-40px); }
+  25%   { transform: translateY(-40px); }
+
+  30%   { transform: translateY(-60px); }
+  35%   { transform: translateY(-60px); }
+
+  40%   { transform: translateY(-80px); }
+  45%   { transform: translateY(-80px); }
+
+  50%   { transform: translateY(-100px); }
+  55%   { transform: translateY(-100px); }
+
+  60%   { transform: translateY(-120px); }
+  65%   { transform: translateY(-120px); }
+
+  70%   { transform: translateY(-140px); }
+  75%   { transform: translateY(-140px); }
+
+  80%   { transform: translateY(-160px); }
+  85%   { transform: translateY(-160px); }
+
+  90%   { transform: translateY(-180px); }
+  95%   { transform: translateY(-180px); }
+
+  100%  { transform: translateY(-200px); } /* loops to top seamlessly */
+}
+
+.styleBtn {
+  margin-top: 15px;
+  transition: 0.1s ease;
+}
+
+.styleBtn:hover {
+  transform: scale(1.05);
 }
