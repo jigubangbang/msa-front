@@ -194,7 +194,7 @@
 /* 배지 툴팁 */
 .badgeTooltip {
   position: absolute;
-  top: -60px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.9);
@@ -211,12 +211,13 @@
 .badgeTooltip::after {
   content: '';
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.9);
+  border-bottom-color: rgba(0, 0, 0, 0.9);
 }
+
 
 .badgeKorTitle {
   font-weight: 600;
@@ -317,7 +318,7 @@
 /* 레벨 툴팁 */
 .levelTooltip {
   position: absolute;
-  top: -180px;
+  top: 30px;
   left: 0px;
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
@@ -334,11 +335,12 @@
 .levelTooltip::after {
   content: '';
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 20px;
   border: 8px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.9);
+  border-bottom-color: rgba(0, 0, 0, 0.9);
 }
+
 
 .levelTooltipHeader {
   display: flex;
