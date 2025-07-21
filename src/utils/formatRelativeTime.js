@@ -1,31 +1,27 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export function formatRelativeTime(dateString) {
-  // Directly parse the ISO 8601 string to ensure UTC interpretation.
-  const date = new Date(dateString);
-  const now = new Date();
-  const diff = (now.getTime() - date.getTime()) / 1000; // in seconds
+    const date = dayjs.utc(dateString).tz('Asia/Seoul'); // KST로 변환
+    const now = dayjs().tz('Asia/Seoul');
+    const diff = now.diff(date, 'second');
 
-  // Invalid Date 체크
-  if (isNaN(date.getTime())) {
-    console.error('Invalid dateString provided to formatRelativeTime:', dateString);
-    return '잘못된 날짜';
-  }
+    const units = [
+        { max: 60, value: 1, unit: 'second' },
+        { max: 3600, value: 60, unit: 'minute' },
+        { max: 86400, value: 3600, unit: 'hour' },
+        { max: 2592000, value: 86400, unit: 'day' },
+        { max: 31104000, value: 2592000, unit: 'month' },
+        { max: Infinity, value: 31104000, unit: 'year' },
+    ];
 
-  const units = [
-    { max: 60, value: 1, unit: 'second' },       // 1분 미만
-    { max: 3600, value: 60, unit: 'minute' },     // 1시간 미만
-    { max: 86400, value: 3600, unit: 'hour' },   // 1일 미만
-    { max: 2592000, value: 86400, unit: 'day' },  // 30일 미만 (약 1개월)
-    { max: 31536000, value: 2592000, unit: 'month' }, // 12개월 미만 (약 1년)
-    { max: Infinity, value: 31536000, unit: 'year' } // 그 이상
-  ];
+    const unit = units.find(u => diff < u.max);
+    const count = Math.floor(diff / unit.value);
 
-  for (let i = 0; i < units.length; i++) {
-    if (Math.abs(diff) < units[i].max) {
-      const count = Math.round(diff / units[i].value);
-      const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
-      // diff가 양수면 과거, 음수면 미래
-      return rtf.format(-Math.abs(count), units[i].unit);
-    }
-  }
-  return ''; // Fallback
+    const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
+    return rtf.format(-count, unit.unit);
 }
