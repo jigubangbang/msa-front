@@ -38,7 +38,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'deployAWS2', credentialsId: 'github-msa-front-pat', url: 'https://github.com/jigubangbang/msa-front.git'
+                git branch: 'main', credentialsId: 'github-msa-front-pat', url: 'https://github.com/jigubangbang/msa-front.git'
             }
         }
 
