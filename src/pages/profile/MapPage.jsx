@@ -62,7 +62,7 @@ export default function MapPage() {
     }; 
 
     const handleShareBtnClick = async() => {
-        const shareUrl = `${window.location.origin}/map/${userId}`;
+        const shareUrl = `/map/${userId}`;
         await navigator.clipboard.writeText(shareUrl);
         setShowShareModal(true);
     }
