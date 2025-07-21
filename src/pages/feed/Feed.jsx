@@ -77,7 +77,7 @@ export default function Feed() {
                 <div className={styles.feedContainer}>
                     <div className={styles.boxWrapper}>
                         <div className={`${styles.boxItem} ${styles.centeredBox}`}>
-                            <p className={styles.boxText}>당신만의 여행 스타일을 찾아보세요.</p>
+                            <p className={styles.boxText}>당신만의 여행 스타일을 찾아보세요!</p>
                             <img src={upIcon} className={styles.directionIcon}/>
                             <div className={styles.scrollContainer}>
                                 <div className={styles.scrollContent}>
