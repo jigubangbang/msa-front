@@ -278,14 +278,19 @@ body.dark-mode {
   background-color: var(--color-text-primary);
   color: var(--color-background);
   border: 0.5px solid var(--color-border);
+  border-radius: 6px;
   padding: 0.7rem 1.2rem;
   font-family: 'Pretendard', sans-serif; 
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 500;
-  border-radius: 6px;
-  margin-right: 0.75rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  white-space: nowrap; 
+  min-width: 60px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* 크기가 줄어들지 않도록 */
+  box-sizing: border-box;
 }
 
 .chat-send-button:hover {
@@ -312,7 +317,6 @@ body.dark-mode {
   color: #888;
 }
 
-/* ✅ 추가: ChatPanel 메시지 영역 스크롤바 스타일링 */
 .chat-messages-display::-webkit-scrollbar {
   width: 8px;
 }
@@ -330,7 +334,7 @@ body.dark-mode {
   background: var(--color-text-secondary);
 }
 
-/* ✅ 추가: 다크모드에서 스크롤바 스타일 */
+/* 다크모드에서 스크롤바 스타일 */
 .chat-panel-container.dark-mode .chat-messages-display::-webkit-scrollbar-thumb {
   background: #555;
 }
