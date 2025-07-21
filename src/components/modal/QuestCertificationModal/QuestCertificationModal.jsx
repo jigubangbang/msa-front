@@ -4,7 +4,8 @@ import API_ENDPOINTS from '../../../utils/constants';
 import QuestActionModal from '../QuestActionModal/QuestActionModal';
 import AlertModal from '../QuestActionModal/AlertModal';
 import api from '../../../apis/api';
-
+import CertiPhotoIcon from '../../../assets/quest/certiphoto.svg';
+import { Circles } from 'react-loader-spinner';
 
 const QuestCertificationModal = ({ 
   isOpen, 
@@ -163,9 +164,39 @@ const QuestCertificationModal = ({
     }
   };
 
+  // 모달 초기화 함수
+  const resetModal = () => {
+    // 기존 이미지들의 Object URL 해제
+    images.forEach(image => {
+      if (image?.preview) {
+        URL.revokeObjectURL(image.preview);
+      }
+    });
+    
+    // 상태 초기화
+    setImages(Array(INITIAL_IMAGE_COUNT).fill(null));
+    setDescription('');
+    setIsSubmitting(false);
+    setIsFileDialogOpen(false);
+    
+    // 파일 input들 초기화
+    fileInputRefs.current.forEach(ref => {
+      if (ref?.current) {
+        ref.current.value = '';
+      }
+    });
+  };
+
+  // 기존 onClose를 감싸는 함수
+  const handleClose = () => {
+    resetModal();
+    onClose();
+  };
+
   // 성공 모달 확인 핸들러
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false);
+    resetModal();
     onClose(); // QuestCertificationModal 닫기
     
     // 성공 시 부모 컴포넌트에 알림
@@ -177,7 +208,7 @@ const QuestCertificationModal = ({
   // 모달 클릭 핸들러
   const handleModalClick = (e) => {
     if (e.target === e.currentTarget && !isFileDialogOpen) {
-      onClose();
+      handleClose();
     }
   };
 
@@ -188,114 +219,119 @@ const QuestCertificationModal = ({
       <div className={styles.modalOverlay} onClick={handleModalClick}>
         <div className={styles.questModal} onClick={(e) => e.stopPropagation()}>
           <div className={styles.modalHeader}>
-            <button className={styles.closeBtn} onClick={onClose}>
+            <h2 className={styles.questTitle}>퀘스트 인증하기</h2>
+            <button className={styles.closeBtn} onClick={handleClose}>
               ✕
             </button>
           </div>
           <div className={styles.modalContent}>
             <div className={styles.certificationContent}>
-              <h2 className={styles.questTitle}>퀘스트 인증하기</h2>
-              
-              <div className={styles.questInfo}>
-                <h3 className={styles.questName}>퀘스트명: {questData?.title || '존재하지 않는 퀘스트입니다'}</h3>
-                <div className={styles.questMeta}>
-                  <span className={styles.difficulty}>
-                    난이도 {questData?.difficulty === 'HARD' ? '고급' : 
-                             questData?.difficulty === 'MEDIUM' ? '중급' : '하급'}
-                  </span>
-                  <span className={styles.separator}>|</span>
-                  <span className={styles.xp}>XP {questData?.xp || 1000}</span>
-                </div>
-              </div>
-
-              <div className={styles.questConditions}>
-                {questData?.description && (
-                  <div className={styles.conditionText}>
-                    {questData.description.includes('✅ 퀘스트 조건:') 
-                      ? questData.description.split('✅ 퀘스트 조건:')[1]?.trim()
-                      : '퀘스트 설명 오류'
-                    }
+              <div className={styles.scrollableContent}>
+                <div className={styles.questInfo}>
+                  <h3 className={styles.questName}>퀘스트명: {questData?.title || '존재하지 않는 퀘스트입니다'}</h3>
+                  <div className={styles.questMeta}>
+                    <span className={styles.difficulty}>
+                      난이도 {questData?.difficulty === 'HARD' ? '고급' : 
+                              questData?.difficulty === 'MEDIUM' ? '중급' : '하급'}
+                    </span>
+                    <span className={styles.separator}>|</span>
+                    <span className={styles.xp}>XP {questData?.xp || 1000}</span>
                   </div>
-                )}
-              </div>
+                </div>
 
-              <div className={styles.imageUploadSection}>
-                <h4>인증 이미지 업로드</h4>
-                <div className={styles.imageSlotContainer}>
-                  {images.map((image, index) => (
-                    <div key={index} className={styles.imageSlot}>
-                      <input
-                        type="file"
-                        ref={fileInputRefs.current[index]}
-                        accept="image/*"
-                        onChange={(e) => handleImageUpload(index, e)}
-                        onCancel={() => setIsFileDialogOpen(false)}
-                        style={{ display: 'none' }}
-                      />
-                      {image ? (
-                        <div className={styles.imagePreview}>
-                          <img src={image.preview} alt={`업로드된 이미지 ${index + 1}`} />
-                          <button 
-                            className={styles.removeImageBtn}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeImage(index);
-                            }}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ) : (
-                        <div 
-                          className={styles.emptySlot}
-                          onClick={(e) => openFileDialog(index, e)}
-                        >
-                          <span>📷</span>
-                          <p>이미지 업로드</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  
-                  {images.length < MAX_IMAGE_COUNT && (
-                    <div 
-                      className={styles.addSlot} 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addImageSlot();
-                      }}
-                    >
-                      <span>➕</span>
+                <div className={styles.questConditions}>
+                  {questData?.description && (
+                    <div className={styles.conditionText}>
+                      {questData.description.includes('✅ 퀘스트 조건:') 
+                        ? questData.description.split('✅ 퀘스트 조건:')[1]?.trim()
+                        : '퀘스트 인증 설명 오류'
+                      }
                     </div>
                   )}
                 </div>
-              </div>
 
-              <div className={styles.descriptionSection}>
-                <h4>퀘스트 설명</h4>
-                <textarea
-                  className={styles.descriptionInput}
-                  placeholder="퀘스트 완료에 대한 설명을 입력해주세요..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={6}
-                />
+                <div className={styles.imageUploadSection}>
+                  <h4>인증 이미지 업로드</h4>
+                  <div className={styles.imageSlotContainer}>
+                    {images.map((image, index) => (
+                      <div key={index} className={styles.imageSlot}>
+                        <input
+                          type="file"
+                          ref={fileInputRefs.current[index]}
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(index, e)}
+                          onCancel={() => setIsFileDialogOpen(false)}
+                          style={{ display: 'none' }}
+                        />
+                        {image ? (
+                          <div className={styles.imagePreview}>
+                            <img src={image.preview} alt={`업로드된 이미지 ${index + 1}`} />
+                            <button 
+                              className={styles.removeImageBtn}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeImage(index);
+                              }}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <div 
+                            className={styles.emptySlot}
+                            onClick={(e) => openFileDialog(index, e)}
+                          >
+                            <img src={CertiPhotoIcon} alt="사진 업로드" className={styles.uploadIcon} />
+                            <p>이미지 업로드</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    
+                    {images.length < MAX_IMAGE_COUNT && (
+                      <div 
+                        className={styles.addSlot} 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addImageSlot();
+                        }}
+                      >
+                        <span>➕</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className={styles.descriptionSection}>
+                  <h4>퀘스트 인증 설명</h4>
+                  <textarea
+                    className={styles.descriptionInput}
+                    placeholder="퀘스트 인증에 대한 설명을 입력해 주세요"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={6}
+                  />
+                </div>
               </div>
 
               <div className={styles.buttonSection}>
+                <button 
+                  className={`${styles.cancelBtn} ${styles.outlineButton}`}
+                  onClick={handleClose}
+                  disabled={isSubmitting}
+                >
+                  인증 취소하기
+                </button>
                 <button 
                   className={`${styles.completeBtn} ${styles.darkButton}`}
                   onClick={handleComplete}
                   disabled={isSubmitting || images.every(img => !img)}
                 >
-                  {isSubmitting ? '제출 중...' : '퀘스트 완료하기'}
-                </button>
-                <button 
-                  className={`${styles.cancelBtn} ${styles.outlineButton}`}
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                >
-                  인증 취소하기
+                  {isSubmitting ? (
+                    <Circles height="20" width="20" color="#fff" />
+                  ) : (
+                    '퀘스트 인증하기'
+                  )}
                 </button>
               </div>
             </div>

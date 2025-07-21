@@ -16,6 +16,7 @@ import BadgesContent from "../../../components/quest-mypage/BadgesContent/Badges
 import QuestsContent from "../../../components/quest-mypage/QuestsContent/QuestsContent";
 import JourneyContent from "../../../components/quest-mypage/JourneyContent/JourneyContent";
 import api from "../../../apis/api";
+import CirclesSpinner from "../../../components/common/Spinner/CirclesSpinner";
 
 export default function MyQuestPage({page, isMine}) {
   const [loading, setLoading] = useState(false);
@@ -259,7 +260,7 @@ export default function MyQuestPage({page, isMine}) {
         <div className={styles.Container}>
           <Sidebar menuItems={finalMenuItems} isAdmin={isAdmin} isLogin={isLogin}/>
           <div className={styles.content}>
-            <div className={styles.loading}>로딩 중...</div>
+            <CirclesSpinner/>
           </div>
         </div>
       );
@@ -287,6 +288,7 @@ export default function MyQuestPage({page, isMine}) {
                 completedQuests={userInfo.quest?.count_completed || 0}
                 awardedBadges={userInfo.badge?.count_awarded_badge || 0}
                 onBadgeClick={openBadgeModal}
+                isLogin={isLogin} 
               />
 
                 <MyPageMenu isMine={isMine}/>

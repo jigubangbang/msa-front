@@ -1,7 +1,7 @@
 export const QUEST_SIDEBAR = (isAdmin = false) => {
   const basicMenus = [
     {
-      label: '퀘스트와 뱃지',
+      label: '도전 챌린지',
       icon: '/icons/sidebar/badge.svg',
       path: '/quest',
       needLogin: false,
@@ -19,25 +19,25 @@ export const QUEST_SIDEBAR = (isAdmin = false) => {
       ]
     },
     {
-      label: '내 퀘스트/뱃지',
+      label: '내 챌린지 기록',
       icon: '/icons/sidebar/record.svg',
       path: '/my-quest',
       needLogin: true,
       submenus: [
         {
-          label: '내 뱃지',
-          path: '/my-quest/badge',
+          label: '내 퀘스트',
+          path: '/my-quest/record',
           needLogin: true
         },
         {
-          label: '내 퀘스트 기록',
-          path: '/my-quest/record',
+          label: '내 뱃지',
+          path: '/my-quest/badge',
           needLogin: true
         }
       ]
     },
     {
-      label: '유저들',
+      label: '회원 랭킹',
       icon: '/icons/sidebar/user_search.svg',
       path: '/rank/list',
       needLogin: false
@@ -109,93 +109,76 @@ export const USER_SIDEBAR = [
 
 export const TRAVELER_SIDEBAR = [
   {
-    label: '여행자 동행 모집',
+    label: '여행 메이트',
     icon: '/icons/sidebar/travelmate.svg',
     path: '/traveler/mate',
     needLogin: false,
     submenus: [
       {
-        label: '모집 글쓰기',
+        label: '모임 둘러보기',
+        path: '/traveler/mate',
+        needLogin: false
+      },
+      {
+        label: '모임 생성',
         path: '/traveler/mate/new',
         needLogin: true
       }
     ]
   },
   {
-    label: '여행 정보 공유방',
+    label: '여행 정보 공유',
     icon: '/icons/sidebar/travelinfo.svg',
     path: '/traveler/info',
     needLogin: false,
     submenus: [
       {
-        label: '공유방 만들기',
+        label: '공유방 둘러보기',
+        path: '/traveler/info',
+        needLogin: false
+      },
+      {
+        label: '공유방 생성',
         path: '/traveler/info/new',
         needLogin: true
       }
     ]
   },
   {
-    label: '내 여행자 모임',
-    icon: '/icons/sidebar/my_traveler.svg',
-    path: '/traveler/my',
-    needLogin: true,
-    submenus: [
-      {
-        label: '내 여행자 동행',
-        path: '/traveler/my/travelmate',
-        needLogin: true
-      },
-      {
-        label: '내 여행 정보 공유방',
-        path: '/traveler/my/travelinfo',
-        needLogin: true
-      }
-    ]
-  },
-  {
-    label: '게시판',
+    label: '자유 게시판',
     icon: '/icons/sidebar/board.svg',
     path: '/board/popular',
     needLogin: false,
     submenus: [
       {
-        label: '인기글',
-        path: '/board/popular',
-        needLogin: false
+        label: '게시글 작성',
+        path: '/board/new',
+        needLogin: true
       },
       {
-        label: '정보글',
-        path: '/board/info',
-        needLogin: false
+        label: '내 글 관리',
+        path: '/board/my',
+        needLogin: true
       },
-      {
-        label: '추천글',
-        path: '/board/recommend',
-        needLogin: false
-      },
-      {
-        label: '잡담글',
-        path: '/board/chat',
-        needLogin: false
-      },
-      {
-        label: '질문글',
-        path: '/board/question',
-        needLogin: false
-      }
     ]
   },
   {
-    label: '내 게시판',
-    icon: '/icons/sidebar/my_board.svg',
-    path: '/board/my',
-    needLogin: true
-  },
-  {
-    label: '글쓰기',
-    icon: '/icons/sidebar/write.svg',
-    path: '/board/new',
-    needLogin: true
+    label: '내 그룹 관리',
+    icon: '/icons/sidebar/my_traveler.svg',
+    path: '/traveler/my',
+    needLogin: true,
+    submenus: [
+      {
+        label: '내 여행 모임',
+        path: '/traveler/my/travelmate',
+        needLogin: true
+      },
+      {
+        label: '내 정보 공유방',
+        path: '/traveler/my/travelinfo',
+        needLogin: true
+      }
+    ]
   }
 ];
 
@@ -219,7 +202,7 @@ export const ADMIN_SIDEBAR = [
         path: '/admin/content/comments'
       },
       {
-        label: '모임 관리',
+        label: '그룹 관리',
         path: '/admin/content/groups'
       }
     ]
@@ -264,20 +247,20 @@ export const FEED_SIDEBAR = (isLoggedIn = false) => {
       needLogin: false
     },
     {
+      label: '탐색',
+      icon: '/icons/sidebar/search.svg',
+      path: '/feed/search', 
+      needLogin: false
+    },
+    {
       label: '팔로우',
-      icon: '/icons/sidebar/my_traveler.svg',
+      icon: '/icons/sidebar/follow.svg',
       path: '/feed/following'
     },
     {
       label: '북마크',
       icon: '/icons/sidebar/bookmark.svg',
       path: '/feed/bookmark'
-    },
-    {
-      label: '탐색',
-      icon: '/icons/sidebar/search.svg',
-      path: '/feed/search', 
-      needLogin: false
     },
     {
       label: '친구 추천',

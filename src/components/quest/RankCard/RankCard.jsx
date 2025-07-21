@@ -40,11 +40,12 @@ const RankCard = ({
           {title}
         </h2>
       </div>
-      <p className={styles.count}>
-      : {isLogin ? getOrdinalSuffix(count) : "?"} Out of {isLogin ? totalCount : "??"}
-      </p>
+      <div className={styles.count}>
+        <span className={styles.currentRank}>{isLogin ? count : "?"}위</span>
+        <span className={styles.totalCount}> / {isLogin ? totalCount : "??"}</span>
+      </div>
         <button className={`${styles.btn} ${styles.btnSecondary}`}
-          onClick={handleButtonClick}>View Full Rankings →</button>
+          onClick={handleButtonClick}>전체 순위 보기→</button>
     </div>
   );
 };

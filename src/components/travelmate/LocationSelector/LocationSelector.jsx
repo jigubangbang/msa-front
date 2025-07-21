@@ -3,7 +3,7 @@ import styles from './LocationSelector.module.css';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
-export default function LocationSelector({ onSubmit, locationOpen, locationClose}) {
+export default function LocationSelector({ onSubmit, locationOpen, locationClose, reset }) {
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -14,6 +14,19 @@ export default function LocationSelector({ onSubmit, locationOpen, locationClose
   
   const countryRef = useRef(null);
   const cityRef = useRef(null);
+
+  // reset prop 감지해서 상태 초기화
+  useEffect(() => {
+    if (reset) {
+      setSelectedLocations([]);
+      setSelectedCountry(null);
+      setSelectedCity(null);
+      setCities([]);
+      setShowCountryDropdown(false);
+      setShowCityDropdown(false);
+      onSubmit([]);
+    }
+  }, [reset]);
 
   // 국가 목록 가져오기
   useEffect(() => {
@@ -125,14 +138,6 @@ export default function LocationSelector({ onSubmit, locationOpen, locationClose
     onSubmit(updatedLocations);
   };
 
-  const resetAll = () => {
-    setSelectedLocations([]);
-    setSelectedCountry(null);
-    setSelectedCity(null);
-    setCities([]);
-    onSubmit([]);
-  };
-
   const handleCountryDropdownToggle = () => {
     if (showCountryDropdown && locationClose){
       locationClose();
@@ -230,12 +235,6 @@ const handleCityDropdownToggle = () => {
 
       {/* 추가된 위치들과 리셋 버튼 */}
       <div className={styles.addedSection}>
-
-        {selectedLocations.length > 0 && (
-          <button className={styles.resetButton} onClick={resetAll}>
-            <img src="/icons/common/refresh.svg" alt="refresh"/>
-          </button>
-        )}
 
         <div className={styles.addedLocations}>
           {selectedLocations.map(location => (

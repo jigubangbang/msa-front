@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useChatContext } from '../../utils/ChatContext';
 import styles from './Header.module.css';
 import logo from '../../assets/logo.png';
 import diamond from '../../assets/main/diamond_white.svg';
 import ProfileDropdown from './ProfileDropdown';
 import NotificationDropdown from '../../pages/notification/NotificationDropdown';
 import { jwtDecode } from "jwt-decode";
+import LoginConfirmModal from '../common/LoginConfirmModal/LoginConfirmModal';
 
 export default function Header({onOpenChat}) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
   const [userId, setUserId] = useState();
+  const [showLoginConfirmModal, setShowLoginConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { closeAllChats } = useChatContext();
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('accessToken'));
@@ -28,14 +32,29 @@ export default function Header({onOpenChat}) {
   }, [isLoggedIn])
 
   const handleLogout = () => {
+    console.log('[Header] 수동 로그아웃 - 모든 채팅방 정리');
+    closeAllChats();
     navigate('/logout'); 
   };
+
+  const handlePremiumClick = () => {
+    if (isLoggedIn) {
+      navigate('/payment');
+    } else {
+      setShowLoginConfirmModal(true);
+    }
+  };
+
+  const handleLoginClick = () => {
+    setShowLoginConfirmModal(false);
+    navigate("/login");
+  }
 
 
   return (
     <div className={styles.headerWrapper}>
       <div className={styles.scrollText}>
-        <Link to="/payment">
+        <div onClick={handlePremiumClick} style={{ cursor: 'pointer' }}>
           <div className={styles.promoBanner}>
             <img src={diamond} />
             <span>월 990원</span>
@@ -57,7 +76,7 @@ export default function Header({onOpenChat}) {
             <b>Premium Subscription</b>
             <img src={diamond} />
           </div>
-        </Link>
+        </div>
       </div>
 
       <header className={styles.mainHeader}>
@@ -65,14 +84,47 @@ export default function Header({onOpenChat}) {
 
         <nav className={styles.menu}>
           {isLoggedIn && (
-            <span><Link to={`/profile/${userId}/map`}>지도</Link></span>
+            <span>
+              <Link
+                to={`/profile/${userId}/map`}
+                className={location.pathname===`/profile/${userId}/map` ? styles.activeLink : ''}
+              >
+                  세계지도
+              </Link>
+            </span>
           )}
-          <span><Link to="/style-guide">스타일가이드</Link></span>
-          <span><Link to="/quest">퀘스트</Link></span>
-          <span><Link to="/traveler/mate">커뮤니티</Link><span className={styles.badge}>New</span></span>
-          <span><Link to="/feed">여행기록</Link><span className={styles.badge}>New</span></span>
-          <span onClick={onOpenChat} style={{ cursor: 'pointer' }}>채팅</span>
-          <span onClick={() => {console.log(localStorage.getItem("accessToken"))}}>JWT 토큰</span>
+          <span>
+            <Link
+              to="/quest"
+              className={(location.pathname.startsWith('/quest') || location.pathname.startsWith('/my-quest')) ? styles.activeLink : ''}
+            >
+              도전 챌린지
+            </Link>
+          </span>
+          <span>
+            <Link
+              to="/traveler/mate"
+              className={location.pathname.startsWith('/traveler') ? styles.activeLink : ''}
+            >
+              커뮤니티
+            </Link>
+          </span>
+          <span>
+            <Link
+              to="/feed"
+              className={location.pathname.startsWith('/feed') ? styles.activeLink : ''}
+            >
+              여행 피드
+            </Link>
+          </span>
+          <span>
+            <Link
+              to={`/profile/${userId}/diary`}
+              className={location.pathname.startsWith(`/profile/${userId}/diary`) ? styles.activeLink : ''}
+            >
+              내 여행 일지
+            </Link>
+          </span>
         </nav>
         <div className={styles.authButtons}>
           {isLoggedIn ? (
@@ -83,9 +135,18 @@ export default function Header({onOpenChat}) {
           ) : (
             <Link to="/login"><span>로그인</span></Link>
           )}
-          <Link to="/payment" className={styles.proBtn}><span>Premium</span></Link>
+          <div onClick={handlePremiumClick} className={styles.proBtn}><span>Premium</span></div>
         </div>
       </header>
+
+      {showLoginConfirmModal && (
+        <LoginConfirmModal
+          isOpen={showLoginConfirmModal}
+          onClose={() => setShowLoginConfirmModal(false)}
+          onConfirm={handleLoginClick}
+        />
+      )}
     </div>
   );
 }
+

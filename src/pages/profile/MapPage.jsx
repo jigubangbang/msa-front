@@ -5,6 +5,7 @@ import styles from "./Map.module.css";
 import ToggleBtn from "../../components/common/ToggleBtn";
 import lockIcon from "../../assets/profile/lock_grey.svg";
 import shareIcon from "../../assets/profile/share_grey.svg";
+import SearchBar from "../../components/common/SearchBar";
 import settingsIcon from "../../assets/profile/settings_grey.svg";
 
 import Map from "./Map";

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './BadgeModal.module.css';
 import { useNavigate } from 'react-router-dom';
 import ModalUserList from '../ModalUserList/ModalUserList';
+import TrophyIcon from '../../../assets/quest/trophy.svg'; 
 
 
 const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
@@ -106,7 +107,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
               <span className={styles.questTitle}>{quest.title}</span>
             </div>
             <div className={styles.questStatus}>
-              <div className={styles.questIcon}>🎯</div>
+              <div className={styles.questIcon}></div>
             </div>
           </div>
         ))}
@@ -138,9 +139,9 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
     if (badgeData.is_awarded) {
       return (
         <div className={styles.statusSection}>
-          <div className={styles.awardedBadge}>🏆</div>
+          <div className={styles.awardedBadge}><img src={TrophyIcon} alt="trophy" className={styles.trophyIcon} /></div>
           <span className={styles.statusText}>
-            축하합니다! {formatDate(badgeData.awarded_at)}에 획득한 뱃지입니다.
+            축하합니다! {formatDate(badgeData.awarded_at)}에 뱃지를 획득했습니다
           </span>
         </div>
       );
@@ -172,7 +173,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
       <div className={styles.badgeModal} onClick={e => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <button className={styles.closeBtn} onClick={onClose}>
-            <img src="/icons/common/close.svg" alt="x" />
+            ✕
           </button>
         </div>
         
@@ -186,7 +187,7 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
                   <img 
                     src={badgeData.icon} 
                     alt="badge" 
-                    className={styles.badgseIcon}
+                    className={styles.badgeIcon}
                   />
                 </div>
               </div>
@@ -222,6 +223,9 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
                 )}
               </div>
 
+              {/* 상태 섹션 */}
+              {renderStatusSection()}
+              
               {/* 퀘스트 목록 */}
               <div className={styles.questSection}>
                 <div className={styles.sectionTitle}>
@@ -229,9 +233,6 @@ const BadgeModal = ({ badgeData, onClose, onQuestClick, isLogin = false }) => {
                 </div>
                 {renderQuestList()}
               </div>
-              
-              {/* 상태 섹션 */}
-              {renderStatusSection()}
             </div>
           </div>
         </div>

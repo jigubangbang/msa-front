@@ -5,8 +5,14 @@ import api from '../../../apis/api';
 import JoinApplicationModal from '../../modal/JoinApplicationModal/JoinApplicationModal';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import { useNavigate } from 'react-router-dom';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import CirclesSpinner from '../../../components/common/Spinner/CirclesSpinner';
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
 
 const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [detail, setDetail] = useState(null);
@@ -16,10 +22,60 @@ const TravelmateDetailMain = ({ postId, isLogin, currentUserId }) => {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
-  const navigate = useNavigate();
+  // Alert 모달 상태 (ConfirmModal)
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
-    const [chatModalOpen, setChatModalOpen] = useState(false);
-    const [selectedChatId, setSelectedChatId] = useState(null);
+  // 삭제 확인 모달 상태 (SimpleConfirmModal)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmMessage, setDeleteConfirmMessage] = useState('');
+
+  // 로그인 확인 모달 상태 (LoginConfirmModal)
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
+
+  const navigate = useNavigate();
+  const { openChat } = useChatContext();
+
+  // 모달 관련 함수들
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const hideAlert = () => {
+    setShowAlertModal(false);
+    setAlertMessage('');
+  };
+
+  const handleDeleteConfirm = async () => {
+    setShowDeleteConfirm(false);
+    try {
+      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}`, {
+        headers: {
+          'User-Id': currentUserId,
+        },
+      });
+
+      showAlert('여행자모임이 삭제되었습니다.');
+      navigate('/traveler/mate'); // 목록 페이지로 이동
+    } catch (error) {
+      console.error('Failed to delete travelmate:', error);
+      showAlert('삭제에 실패했습니다.');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+  };
+
+  const handleLoginConfirm = () => {
+    setShowLoginConfirm(false);
+    navigate('/login');
+  };
+
+  const handleLoginCancel = () => {
+    setShowLoginConfirm(false);
+  };
 
 useEffect(() => {
   if (postId) {
@@ -47,7 +103,8 @@ useEffect(() => {
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`);
       setDetail(response.data.travelmate);
 
-      if (currentUserId == response.data.travelmate.creatorId){
+      // 타입 안전한 비교로 수정 (== 대신 ===, 문자열로 변환)
+      if (String(currentUserId) === String(response.data.travelmate.creatorId)){
         setMemberStatus('CREATOR')    
       }
     } catch (error) {
@@ -56,6 +113,7 @@ useEffect(() => {
       setLoading(false);
     }
   };
+
 
   const fetchLikeStatus = async () => {
     try {
@@ -132,11 +190,11 @@ useEffect(() => {
         }
       });
       setMemberStatus('PENDING');
-      alert('참여 신청이 완료되었습니다.');
+      showAlert('참가 신청이 완료되었습니다!');
     } catch (error) {
       console.error('Failed to request join:', error);
-      const errorMessage = error.response?.data?.error || '참여 신청에 실패했습니다.';
-      alert(errorMessage);
+      const errorMessage = error.response?.data?.error || '참가 신청에 실패했습니다';
+      showAlert(errorMessage);
       throw error; 
     }
   };
@@ -155,13 +213,13 @@ useEffect(() => {
   const getJoinButtonText = () => {
     switch (memberStatus) {
       case 'PENDING':
-        return '모임 참여 신청 중';
+        return '모임 참가 신청 중';
       case 'MEMBER':
-        return '참여 중인 모임: 채팅하기';
+        return '참가 중인 모임: 채팅하기';
       case 'CREATOR' :
         return '내 모임: 채팅하기';
       default:
-        return '모임 참여 신청하기';
+        return '모임 참가 신청하기';
     }
   };
 
@@ -170,26 +228,13 @@ useEffect(() => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      try {
-        await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}`, {
-          headers: {
-            'User-Id': currentUserId,
-          },
-        });
-
-        alert('여행자모임이 삭제되었습니다.');
-        navigate('/traveler/mate'); // 목록 페이지로 이동
-      } catch (error) {
-        console.error('Failed to delete travelmate:', error);
-        alert('삭제에 실패했습니다.');
-      }
-    }
+    setDeleteConfirmMessage('정말 삭제하시겠습니까?');
+    setShowDeleteConfirm(true);
   };
 
   const handleReport = () => {
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      setShowLoginConfirm(true);
       return;
     }
     setShowReportModal(true);
@@ -218,11 +263,11 @@ useEffect(() => {
       );
       
       setShowReportModal(false);
-      alert('신고가 접수되었습니다.');
+      showAlert('신고가 접수되었습니다.');
     } catch (error) {
       console.error('Failed to submit report:', error);
       const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -245,27 +290,40 @@ useEffect(() => {
       
       console.log('채팅방 조회/생성 성공:', response.data);
     if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            const isCreator = detail && String(currentUserId) === String(detail.creatorId);
+          
+            if (isCreator) {
+              // 방장인 경우: memberStatus 유지하고 fetchMemberStatus 호출 안함
+              setMemberStatus('CREATOR');
+              fetchTravelmateDetail();
+            } else {
+              // 일반 멤버인 경우: 기존 로직 그대로
+              fetchTravelmateDetail();
+              if (isLogin) {
+                fetchMemberStatus();
+              }
+            }
+          }
+        });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlert('채팅방 정보를 가져오는데 실패했습니다.');
       }
-      
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방에 접속할 수 없습니다.');
+      showAlert('채팅방에 접속할 수 없습니다.');
     }
   };
 
   const handleReportClose = () => {
     setShowReportModal(false);
-    setReportInfo(null);
   };
 
   const isBlind = detail?.blindStatus === 'BLINDED';
 
   if (loading) {
-    return <div className={styles.loading}>로딩 중...</div>;
+    return <CirclesSpinner/>
   }
 
   if (!detail) {
@@ -309,7 +367,8 @@ useEffect(() => {
                 onClick={handleLikeToggle}
                 disabled={!isLogin || isBlind}
               >
-                {isLiked ? '❤️' : '🤍'} {isBlind ? '-' : detail.likeCount}
+                <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요"/>
+                {isBlind ? '-' : detail.likeCount}
               </button>
               
               <button 
@@ -327,17 +386,23 @@ useEffect(() => {
       {/* 작성자 정보 */}
       <div className={styles.creatorSection}>
         <div className={styles.creatorInfo}>
-          <div className={styles.profileImage}>
+          <div className={styles.profileImageWrapper}>
             <img 
               src={isBlind ? '/icons/common/warning.png' : (detail.creatorProfileImage || '/icons/common/default_profile.png')} 
               alt="프로필"
+              onClick={() => navigate(`/profile/${detail.creatorId}`)}
+              className={styles.profileImage}
             />
+            {!isBlind && detail.creatorStyle && (
+              <span className={styles.travelBadge}>
+                {detail.creatorStyle}
+              </span>
+            )}
           </div>
           <div className={styles.creatorDetails}>
             <div className={styles.creatorName}>
-              <span className={styles.style}>[{isBlind ? '-' : (detail.creatorStyle|| '')}]</span>
-              <span className={styles.nickname}>{isBlind ? '블라인드 사용자' : detail.creatorNickname}</span>
-              <span className={styles.userId}>({isBlind ? '-' : detail.creatorId})</span>
+              <span className={styles.nickname}  onClick={() => {!isBlind && navigate(`/profile/${detail.creatorId}`)}}>{isBlind ? '블라인드 사용자' : detail.creatorNickname}</span>
+              <span className={styles.userId}  onClick={() => {!isBlind && navigate(`/profile/${detail.creatorId}`)}}>({isBlind ? '-' : detail.creatorId})</span>
             </div>
           </div>
         </div>
@@ -346,21 +411,21 @@ useEffect(() => {
       {/* 여행 정보 */}
       <div className={styles.travelInfo}>
         <div className={styles.infoItem}>
-          <span className={styles.label}>모임 지역:</span>
+          <span className={styles.label}>여헹 장소 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.locationNames || '미정')}</span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>여행 기간:</span>
+          <span className={styles.label}>여행 기간 :</span>
           <span className={styles.value}>
             {isBlind ? '-' : formatDateRange(detail.startAt, detail.endAt)}
           </span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>대상:</span>
+          <span className={styles.label}>모집 대상 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.targetNames || '-')}</span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>테마:</span>
+          <span className={styles.label}>여행 테마 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.themeNames || '-')}</span>
         </div>
       </div>
@@ -369,7 +434,7 @@ useEffect(() => {
       <div className={styles.descriptionSection}>
         <h3 className={styles.sectionTitle}>모임 설명</h3>
         <div className={styles.description}>
-          {isBlind ? '블라인드 처리된 게시글입니다.' : (detail.description || '상세 설명이 없습니다.')}
+          {isBlind ? '블라인드 처리된 게시글입니다' : (detail.description || '상세 설명이 없습니다')}
         </div>
       </div>
 
@@ -391,6 +456,7 @@ useEffect(() => {
         </div>
       </div>
 
+      {/* 참여 신청 모달 (JoinApplicationModal) */}
       <JoinApplicationModal
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
@@ -399,20 +465,35 @@ useEffect(() => {
         applicationDescription={detail?.applicationDescription}
       />
 
-      {chatModalOpen && selectedChatId && (
-            <ChatModal
-              isOpen={chatModalOpen}
-              onClose={() => setChatModalOpen(false)}
-              chatId={selectedChatId}
-              currentUserId={currentUserId}
-            />
-          )}
-    
-          <ReportModal
-                  show={showReportModal}
-                  onClose={handleReportClose}
-                  onSubmit={handleReportSubmit}
-                />
+      {/* 신고 모달 (ReportModal) */}
+      <ReportModal
+        show={showReportModal}
+        onClose={handleReportClose}
+        onSubmit={handleReportSubmit}
+      />
+
+      {/* 로그인 확인 모달 (LoginConfirmModal) */}
+      <LoginConfirmModal
+        isOpen={showLoginConfirm}
+        onClose={handleLoginCancel}
+        onConfirm={handleLoginConfirm}
+      />
+
+      {/* 삭제 확인 모달 (SimpleConfirmModal) */}
+      <SimpleConfirmModal
+        isOpen={showDeleteConfirm}
+        message={deleteConfirmMessage}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
+      {/* Alert 모달 (ConfirmModal) */}
+      <ConfirmModal
+        isOpen={showAlertModal}
+        onClose={hideAlert}
+        message={alertMessage}
+        type="alert"
+      />
     </div>
   );
 };

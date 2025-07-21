@@ -5,9 +5,10 @@ import Dropdown from '../../common/Dropdown';
 import { useNavigate } from 'react-router-dom';
 import QuestActionModal from '../../modal/QuestActionModal/QuestActionModal';
 import api from '../../../apis/api';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 
-const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
+const QuestListCard = ({ quest, onJoin, onDetail, isLogin, onLoginClick}) => {
 
   const getDifficultyText = (difficulty) => {
     switch(difficulty) {
@@ -26,6 +27,9 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
       default: return 1;
     }
   };
+
+  
+
 
   const calculateCompletionRate = () => {
     const total = quest.count_in_progress + quest.count_completed;
@@ -46,7 +50,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
       
       {/* 퀘스트 아이콘 */}
       <div className={styles.questIcon}>
-        <img src={quest.icon} alt="quest icon" />
+        <img src={quest.icon || "/icons/common/unknwon_badge.png"} alt="quest icon" />
       </div>
       
       {/* 퀘스트 정보 */}
@@ -55,7 +59,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
           <div className={styles.questMeta}>
             <span className={styles.label}>난이도</span>
             <span className={styles.value}>{getDifficultyText(quest.difficulty)}</span>
-            <span className={styles.label}>XP</span>
+            <span className={styles.label2}>XP</span>
             <span className={styles.value}>{quest.xp}</span>
           </div>
 
@@ -65,7 +69,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
                 현재 {quest.count_in_progress}명 도전 중
               </div>
               <div className={styles.statText}>
-                완수율 {calculateCompletionRate()}%
+                완료율 {calculateCompletionRate()}%
               </div>
             </div>
 
@@ -118,7 +122,7 @@ const QuestListCard = ({ quest, onJoin, onDetail, isLogin}) => {
   );
 };
 
-const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId} ) => {
+const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId, onLoginClick} ) => {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -148,8 +152,8 @@ const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId} ) => {
     { value: 5, label: '자연 체험' },
     { value: 6, label: '여행 생활' },
     { value: 7, label: '소통/공유' },
-    { value: 8, label: '고난이도 도전' },
-    { value: 9, label: '특수 조건' },
+    { value: 8, label: '특수 조건' },
+    { value: 9, label: '고난이도 도전' },
     { value: 10, label: '기간 제한' }
   ];
 
@@ -161,11 +165,11 @@ const QuestList = ( { isLogin, onOpenModal, onQuestUpdate, currentUserId} ) => {
   ];
 
   const sortOptions = [
-    { value: '', label: 'Default' },
-    { value: 'latest', label: 'Newest first' },
-    { value: 'oldest', label: 'Oldest first' },
-    { value: 'xp_high', label: 'XP High to Low' },
-    { value: 'xp_low', label: 'XP Low to High' }
+    { value: '', label: '기본' },
+    { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된순' },
+    { value: 'xp_high', label: 'XP (높은순)' },
+    { value: 'xp_low', label: 'XP (낮은순)' }
   ];
 
 useEffect(() => {
@@ -223,13 +227,16 @@ useEffect(() => {
     setCurrentPage(1);
   };
 
-  
+   const getSortDisplayText = () => {
+    if (!filters.sortOption) return "정렬";
+    const selected = sortOptions.find(opt => opt.value === filters.sortOption);
+    return selected ? selected.label : "정렬";
+  };
 
   const handleJoinQuest = (quest) => {
     console.log(isLogin);
-    if (!isLogin){
-      window.scroll(0,0);
-      navigate(`/login`);
+    if (!isLogin && onLoginClick){
+      onLoginClick();
       return;
     }
 
@@ -245,6 +252,10 @@ useEffect(() => {
     if (onOpenModal && quest.id) {
         onOpenModal(quest.id);
       }
+  };
+
+  const handleSortChange = (option) => {
+    handleFilterChange('sortOption', option.value);
   };
 
 
@@ -289,9 +300,7 @@ useEffect(() => {
 
   if (loading || isLogin === null) {
     return (
-      <div className={styles.questList}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
+      <CirclesSpinner/>
     );
   }
 
@@ -299,11 +308,11 @@ useEffect(() => {
     <div className={styles.questList}>
       {/* 헤더와 필터 */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Available Quests</h2>
+        <h2 className={styles.title}>도전 가능한 퀘스트</h2>
         <Dropdown 
-          defaultOption="Sort by"
+          defaultOption={getSortDisplayText()}
           options={sortOptions}
-          onSelect={(option) => handleFilterChange('sortOption', option.value)}
+          onSelect={handleSortChange}
         />
       </div>
 
@@ -358,7 +367,7 @@ useEffect(() => {
           ))
         ) : (
           <div className={styles.emptyState}>
-            <p>조건에 맞는 퀘스트가 없습니다.</p>
+            <p>조건에 맞는 퀘스트가 없습니다</p>
           </div>
         )}
       </div>

@@ -7,6 +7,7 @@ import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import BoardForm from '../../../components/board/BoardForm/BoardForm';
 import { jwtDecode } from 'jwt-decode';
+import ConfirmModal from '../../../components/common/ErrorModal/ConfirmModal';
 
 const BoardFormPage = () => {
   const { postId } = useParams();
@@ -18,6 +19,11 @@ const BoardFormPage = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [mode, setMode] = useState('create'); // 'create' or 'edit'
   const [initialData, setInitialData] = useState(null);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
 
   //SideBar//
   const currentPath = location.pathname;
@@ -40,52 +46,73 @@ const BoardFormPage = () => {
   const finalMenuItems = getActiveMenuItems();
   //SideBar//
 
-    useEffect(() => {
-      // 로그인 상태 확인
-      const token = localStorage.getItem("accessToken");
-      
-      if (token) {
-          try {
-              const decoded = jwtDecode(token);
-              
-              const currentTime = Math.floor(Date.now() / 1000);
-              if (decoded.exp && decoded.exp < currentTime) {
-                  localStorage.removeItem("accessToken");
-                  setIsLogin(false);
-                  setCurrentUserId(null);
-                  navigate('/board/popular');
-                  return;
-              }
-              
-              const userId = decoded.sub || decoded.userId;
-              setIsLogin(true);
-              setCurrentUserId(userId);
-              
-              // 모드 결정: postId가 있으면 수정, 없으면 생성
-              console.log('postId:', postId);
-              if (postId) {
-                  setMode('edit');
-                  fetchBoardData(postId, userId); // userId를 직접 전달
-              } else {
-                  setMode('create');
-                  setLoading(false);
-              }
-              
-          } catch (error) {
-              console.error("토큰 디코딩 오류:", error);
-              localStorage.removeItem("accessToken");
-              setIsLogin(false);
-              setCurrentUserId(null);
-              navigate('/board/popular');
-              return;
-          }
-      } else {
-          setIsLogin(false);
-          setCurrentUserId(null);
-          navigate('/board/popular');
-          return;
-      }
+  useEffect(() => {
+    // 로그인 상태 확인
+    const token = localStorage.getItem("accessToken");
+    
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && decoded.exp < currentTime) {
+                localStorage.removeItem("accessToken");
+                setIsLogin(false);
+                setCurrentUserId(null);
+                navigate('/board/popular');
+                return;
+            }
+            
+            const userId = decoded.sub || decoded.userId;
+            setIsLogin(true);
+            setCurrentUserId(userId);
+            
+            // 모드 결정: postId가 있으면 수정, 없으면 생성
+            console.log('postId:', postId);
+            if (postId) {
+                setMode('edit');
+                fetchBoardData(postId, userId); // userId를 직접 전달
+            } else {
+                setMode('create');
+                setLoading(false);
+            }
+            
+        } catch (error) {
+            console.error("토큰 디코딩 오류:", error);
+            localStorage.removeItem("accessToken");
+            setIsLogin(false);
+            setCurrentUserId(null);
+            navigate('/board/popular');
+            return;
+        }
+    } else {
+        setIsLogin(false);
+        setCurrentUserId(null);
+        navigate('/board/popular');
+        return;
+    }
   }, [postId, navigate]);
+
+  // 알림 모달 표시 함수 - 콜백 함수를 받도록 수정
+  const showAlertModal = (message, callback = null) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(callback);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
 
   // fetchBoardData 함수 수정 - userId 파라미터 추가
   const fetchBoardData = async (id, userId) => {
@@ -102,8 +129,9 @@ const BoardFormPage = () => {
 
         // 작성자 권한 확인
         if (postData.userId !== userId) {
-            alert('수정 권한이 없습니다.');
-            navigate(`/board/${id}`);
+            showAlertModal('수정 권한이 없습니다.', () => {
+                navigate(`/board/${id}`);
+            });
             return;
         }
         
@@ -129,12 +157,13 @@ const BoardFormPage = () => {
         setInitialData(formattedData);
     } catch (error) {
         console.error('Failed to fetch board data:', error);
-        alert('게시글 정보를 불러오는데 실패했습니다.');
-        navigate('/board/popular');
+        showAlertModal('게시글 정보를 불러오는데 실패했습니다.', () => {
+            navigate('/board/popular');
+        });
     } finally {
         setLoading(false);
     }
-};
+  };
 
   // 폼 제출 처리
   const handleFormSubmit = async (formData) => {
@@ -153,15 +182,16 @@ const BoardFormPage = () => {
         );
                 
         console.log('게시글이 생성되었습니다:', response.data);
-        alert('게시글이 성공적으로 작성되었습니다!');
         
-        // 생성된 게시글 상세 페이지로 이동
+        // 생성된 게시글 상세 페이지로 이동하는 콜백 함수
         const newPostId = response.data?.id || response.data?.data?.id;
-        if (newPostId) {
-          navigate(`/board/${newPostId}`);
-        } else {
-          navigate('/board/popular'); // 목록으로 이동
-        }
+        showAlertModal('게시글이 성공적으로 작성되었습니다!', () => {
+          if (newPostId) {
+            navigate(`/board/${newPostId}`);
+          } else {
+            navigate('/board/popular'); // 목록으로 이동
+          }
+        });
         
       } else {
         // 기존 게시글 수정
@@ -176,10 +206,11 @@ const BoardFormPage = () => {
         );
         
         console.log('게시글이 수정되었습니다:', response.data);
-        alert('게시글이 성공적으로 수정되었습니다!');
         
-        // 수정된 게시글 상세 페이지로 이동
-        navigate(`/board/${postId}`);
+        // 수정된 게시글 상세 페이지로 이동하는 콜백 함수
+        showAlertModal('게시글이 성공적으로 수정되었습니다!', () => {
+          navigate(`/board/${postId}`);
+        });
       }
       
     } catch (error) {
@@ -195,19 +226,14 @@ const BoardFormPage = () => {
         errorMessage = '게시글을 찾을 수 없습니다.';
       }
       
-      alert(errorMessage);
+      showAlertModal(errorMessage);
       throw error; // BoardForm에서 로딩 상태 해제를 위해
     }
   };
 
   // 폼 닫기/취소
   const handleFormClose = () => {
-    // 이전 페이지로 돌아가거나 목록으로 이동
-    if (postId) {
-      navigate(`/board/${postId}`); // 수정 모드였다면 상세 페이지로
-    } else {
-      navigate('/board/popular'); // 생성 모드였다면 목록으로
-    }
+    navigate(-1);
   };
 
   if (loading) {
@@ -248,6 +274,14 @@ const BoardFormPage = () => {
           />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

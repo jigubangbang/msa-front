@@ -70,15 +70,15 @@ export function useStomp() {
         // STOMP 클라이언트 생성
         const stompClient = new Client({
         // webSocketFactory: () => socket,
-        webSocketFactory: () => new WebSocket(`${WEBSOCKET_ENDPOINT_URL}?token=${token}`), // SockJs 사용 안하면 위 socket 지우고 이 줄만 작성 - 현재 안되는 상태
+        webSocketFactory: () => new WebSocket(`${WEBSOCKET_ENDPOINT_URL}?token=${token}`), // SockJs 사용 안하면 위 socket 지우고 이 줄만 작성
         debug: (msg) => console.log("[STOMP]:", msg),
         connectHeaders: {
-          Authorization: `Bearer ${token}`,
+          // UTF-8 인코딩 헤더 명시
+          'Accept-Version': '1.1,1.0',
+          'content-type': 'application/json;charset=UTF-8'
         },
         onConnect : () => {
-            console.log("[STOMP] 연결 성공 - setIsConnected(true) 호출 예정");
             setIsConnected(true); // 전역 상태 업데이트
-            console.log("[STOMP] setIsConnected(true) 호출 완료");
             onConnect();
         },
         onStompError: (e) => {
@@ -86,14 +86,23 @@ export function useStomp() {
           setIsConnected(false);
           onError(e);
         },
+        onWebSocketError: (e) => {
+          console.error("[STOMP] WebSocket 연결 에러: ", e);
+          console.error("[STOMP] 에러 상세:", {
+            type: e.type,
+            target: e.target?.url,
+            readyState: e.target?.readyState
+          });
+        },
         onDisconnect: () => {
             console.log("[STOMP] 연결 해제");
             setIsConnected(false);
             onDisconnect();
         },
         reconnectDelay: 5000, // 연결 끊어졌을 때 5초 후 재연결 시도
-        heartbeatIncoming: 4000, // 서버가 4초 이내에 heartbeat를 보내지 않으면 연결 끊김으로 간주
-        heartbeatOutgoing: 4000,
+        heartbeatIncoming: 30000,
+        heartbeatOutgoing: 30000,
+        connectionTimeout: 10000,
       });
 
       stompClient.activate();
@@ -114,15 +123,19 @@ export function useStomp() {
   }, [setStompClient]);
 
   // 메시지 전송
-  const send = useCallback((destination, payload) => {
+  const send = useCallback((destination, payload, headers = {}) => {
     const client = useStore.getState().stompClient;
     if (client && client.connected) {
       client.publish({
         destination,
         body: JSON.stringify(payload),
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          ...headers
+        }
       });
     } else {
-      console.warn("[useStomp] send 실패: STOMP 연결되지 않음");
+      console.warn("[useStomp] send 실패: STOMP 연결되지 않음. 연결 상태:", client?.connected);
     }
   }, []);
 

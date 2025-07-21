@@ -3,6 +3,7 @@ import styles from './QuestCertificationViewModal.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
 import AlertModal from '../QuestActionModal/AlertModal';
 import api from '../../../apis/api';
+import { Circles } from "react-loader-spinner";
 
 const QuestCertificationViewModal = ({ 
   isOpen, 
@@ -41,7 +42,7 @@ const QuestCertificationViewModal = ({
       console.log('인증 데이터 조회 성공:', response.data);
     } catch (error) {
       console.error('인증 데이터 조회 실패:', error);
-      showAlertMessage('인증 데이터를 불러오는데 실패했습니다.');
+      showAlertMessage('인증 데이터를 불러오는데 실패했습니다');
     } finally {
       setLoading(false);
     }
@@ -72,10 +73,10 @@ const QuestCertificationViewModal = ({
 
   // 퀘스트 조건 추출
   const getQuestConditions = (description) => {
-    if (!description) return '퀘스트 조건 정보가 없습니다.';
+    if (!description) return '퀘스트 조건 정보가 없습니다';
     
     if (description.includes('✅ 퀘스트 조건:')) {
-      return description.split('✅ 퀘스트 조건:')[1]?.trim() || '퀘스트 조건 정보가 없습니다.';
+      return description.split('✅ 퀘스트 조건:')[1]?.trim() || '퀘스트 조건 정보가 없습니다';
     }
     return description;
   };
@@ -104,6 +105,7 @@ const QuestCertificationViewModal = ({
       <div className={styles.modalOverlay} onClick={handleModalClick}>
         <div className={styles.questModal} onClick={(e) => e.stopPropagation()}>
           <div className={styles.modalHeader}>
+            <h2 className={styles.questTitle}>퀘스트 인증 내역</h2>
             <button className={styles.closeBtn} onClick={onClose}>
               ✕
             </button>
@@ -112,75 +114,74 @@ const QuestCertificationViewModal = ({
           <div className={styles.modalContent}>
             {loading ? (
               <div className={styles.loading}>
-                <div className={styles.loadingSpinner}></div>
-                <p>인증 데이터를 불러오는 중...</p>
+                <Circles height="50" width="50" color="#fff" />
               </div>
             ) : certificationData ? (
               <div className={styles.certificationContent}>
-                <h2 className={styles.questTitle}>퀘스트 인증 내역</h2>
-                
-                <div className={styles.questInfo}>
-                  <h3 className={styles.questName}>{certificationData.title}</h3>
-                  <div className={styles.questMeta}>
-                    <span className={styles.difficulty}>
-                      난이도 {getDifficultyText(certificationData.difficulty)}
-                    </span>
-                    <span className={styles.separator}>|</span>
-                    <span className={styles.xp}>XP {certificationData.xp}</span>
-                    <span className={styles.separator}>|</span>
-                    <span className={styles.status}>
-                      상태: {certificationData.status === 'COMPLETED' ? '완료' : certificationData.status}
-                    </span>
-                  </div>
-                </div>
-
-                <div className={styles.questConditions}>
-                  <h4>퀘스트 조건</h4>
-                  <div className={styles.conditionText}>
-                    {getQuestConditions(certificationData.quest_description)}
-                  </div>
-                </div>
-
-                <div className={styles.completionInfo}>
-                  <div className={styles.dateInfo}>
-                    <div className={styles.dateItem}>
-                      <span className={styles.dateLabel}>시작일:</span>
-                      <span className={styles.dateValue}>{formatDate(certificationData.started_at)}</span>
-                    </div>
-                    <div className={styles.dateItem}>
-                      <span className={styles.dateLabel}>완료일:</span>
-                      <span className={styles.dateValue}>{formatDate(certificationData.completed_at)}</span>
+                <div className={styles.scrollableContent}>
+                  <div className={styles.questInfo}>
+                    <h3 className={styles.questName}>{certificationData.title}</h3>
+                    <div className={styles.questMeta}>
+                      <span className={styles.difficulty}>
+                        난이도 {getDifficultyText(certificationData.difficulty)}
+                      </span>
+                      <span className={styles.separator}>|</span>
+                      <span className={styles.xp}>XP {certificationData.xp}</span>
+                      <span className={styles.separator}>|</span>
+                      <span className={styles.status}>
+                        상태 : {certificationData.status === 'COMPLETED' ? '완료' : certificationData.status}
+                      </span>
                     </div>
                   </div>
-                </div>
 
-                <div className={styles.imageSection}>
-                  <h4>인증 이미지</h4>
-                  <div className={styles.imageGrid}>
-                    {certificationData.image_list && certificationData.image_list.length > 0 ? (
-                      certificationData.image_list.map((imageUrl, index) => (
-                        <div 
-                          key={index} 
-                          className={styles.imageItem}
-                          onClick={() => handleImageClick(index)}
-                        >
-                          <img 
-                            src={imageUrl} 
-                            alt={`인증 이미지 ${index + 1}`} 
-                            className={styles.certificationImage}
-                          />
-                        </div>
-                      ))
-                    ) : (
-                      <p className={styles.noImages}>인증 이미지가 없습니다.</p>
-                    )}
+                  <div className={styles.questConditions}>
+                    <h4>퀘스트 조건</h4>
+                    <div className={styles.conditionText}>
+                      {getQuestConditions(certificationData.quest_description)}
+                    </div>
                   </div>
-                </div>
 
-                <div className={styles.descriptionSection}>
-                  <h4>인증 설명</h4>
-                  <div className={styles.descriptionContent}>
-                    {certificationData.description || '인증 설명이 없습니다.'}
+                  <div className={styles.completionInfo}>
+                    <div className={styles.dateInfo}>
+                      <div className={styles.dateItem}>
+                        <span className={styles.dateLabel}>시작일시</span>
+                        <span className={styles.dateValue}>{formatDate(certificationData.started_at)}</span>
+                      </div>
+                      <div className={styles.dateItem}>
+                        <span className={styles.dateLabel}>완료일시</span>
+                        <span className={styles.dateValue}>{formatDate(certificationData.completed_at)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.imageSection}>
+                    <h4>인증 이미지</h4>
+                    <div className={styles.imageGrid}>
+                      {certificationData.image_list && certificationData.image_list.length > 0 ? (
+                        certificationData.image_list.map((imageUrl, index) => (
+                          <div 
+                            key={index} 
+                            className={styles.imageItem}
+                            onClick={() => handleImageClick(index)}
+                          >
+                            <img 
+                              src={imageUrl} 
+                              alt={`인증 이미지 ${index + 1}`} 
+                              className={styles.certificationImage}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <p className={styles.noImages}>인증 이미지가 없습니다</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className={styles.descriptionSection}>
+                    <h4>퀘스트 인증 설명</h4>
+                    <div className={styles.descriptionContent}>
+                      {certificationData.description || '퀘스트 인증 설명이 없습니다'}
+                    </div>
                   </div>
                 </div>
 
@@ -195,7 +196,7 @@ const QuestCertificationViewModal = ({
               </div>
             ) : (
               <div className={styles.error}>
-                <p>인증 데이터를 불러올 수 없습니다.</p>
+                <p>인증 데이터를 불러올 수 없습니다</p>
                 <button 
                   className={`${styles.retryButton} ${styles.outlineButton}`}
                   onClick={fetchCertificationData}

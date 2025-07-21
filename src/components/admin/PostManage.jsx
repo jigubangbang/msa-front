@@ -232,7 +232,7 @@ export default function PostManage() {
           placeholder="게시글 제목, 작성자로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown
@@ -330,13 +330,15 @@ export default function PostManage() {
                               { label: "공개", value: "VISIBLE" },
                               { label: "블라인드", value: "BLINDED" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(
-                                post.postId,
-                                post.contentType,
-                                option.value
-                              )
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== post.status) {
+                                handleStatusChange(
+                                  post.postId,
+                                  post.contentType,
+                                  option.value
+                                );
+                              }
+                            }}
                           />
                         </div>
                       </td>

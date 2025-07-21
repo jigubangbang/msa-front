@@ -10,6 +10,7 @@ import TravelmateList from "../../../../components/travelmate/TravelmateList/Tra
 import CategoryBrowse from "../../../../components/travelmate/CategoryBrowse/CategoryBrowse";
 import TopTravelmateList from "../../../../components/travelmate/TopTravelmateList/TopTravelmateList";
 import { jwtDecode } from "jwt-decode";
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 export default function TravelMateListPage() {
@@ -29,6 +30,15 @@ export default function TravelMateListPage() {
       continent: [],
       sortOption: 'default'
     });
+
+    const defaultFilters = {
+      locations: [],
+      targets: [],
+      themes: [],
+      styles: [],
+      continent: [],
+      sortOption: 'default'
+    };
 
     //흠
     const showCompleted = false;
@@ -101,30 +111,36 @@ export default function TravelMateListPage() {
       return newFilters;
     });
     setCurrentPage(1);
+    setIsSearching(true);
+    setSearchSectionData(null);
 }
 
 const handleSearchSectionSubmit = (searchData) => {
-    console.log('SearchSection에서 받은 데이터:', searchData);
-    
-    // SearchSection 데이터를 filters 형태로 변환
-    const newFilters = {
-      ...filters,
-      locations: searchData.locations || [],
-    };
-    setSearchSectionData(searchData);
-    setFilters(newFilters);
-    setIsSearching(true);
-    setCurrentPage(1);
-    setSearchTerm('');
+  console.log('SearchSection에서 받은 데이터:', searchData);
+  
+  const newFilters = {
+    ...defaultFilters,
+    sortOption: filters.sortOption || 'default'
   };
+  
+  setSearchSectionData(searchData); 
+  setFilters(newFilters); 
+  setIsSearching(true);
+  setCurrentPage(1);
+  setSearchTerm('');
+};
 
   const handleCategorySelect = (filterData) => {
+    window.scroll(0,0);
   console.log('카테고리에서 받은 필터 데이터:', filterData);
   
-  setFilters(prev => {
-    const newFilters = { ...prev, ...filterData };
-    return newFilters;
-  });
+  const newFilters = {
+    ...defaultFilters,
+    ...filterData,
+    sortOption: filters.sortOption || 'default' // 정렬 옵션 유지
+  };
+  
+  setFilters(newFilters);
   
   setIsSearching(true);
   setCurrentPage(1);
@@ -136,13 +152,18 @@ const handleSearchSectionSubmit = (searchData) => {
 
   const handleSearchStart = () => {
     setCurrentPage(1);
+    setFilters(defaultFilters);
+    setFilters({});
     setSearchSectionData(null);
   }
 
   const handleViewAll = () => {
+    window.scroll(0,0);
     setIsSearching(true);
     setCurrentPage(1);
     setSearchTerm('');
+    setSearchSectionData(null);
+    setFilters(defaultFilters);
   }
 
   const handlePostClick = (postId) => {
@@ -156,7 +177,7 @@ const handleSearchSectionSubmit = (searchData) => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );
@@ -164,7 +185,7 @@ const handleSearchSectionSubmit = (searchData) => {
 
   return (
     <div className={styles.Container}>
-      <Sidebar menuItems={finalMenuItems}isLogin={isLogin}/>
+      <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
 
       <div className={styles.content}>
         <div className={styles.contentWrapper}>
@@ -178,7 +199,6 @@ const handleSearchSectionSubmit = (searchData) => {
               setSearchTerm(value);
               handleSearchStart(); 
             }}
-            barWidth = "80%"
           />
 
           {!isSearching ? (
@@ -188,7 +208,7 @@ const handleSearchSectionSubmit = (searchData) => {
               {/* 현재 인기 여행 동행 모임 */}
               <TopTravelmateList
                 currentUserId={currentUserId}
-                title="현재 인기 여행 동행 모임"
+                title="인기 여행자 모임"
                 option="popular"
                 isLogin={isLogin}
                 onViewAll={handleViewAll}
@@ -198,7 +218,7 @@ const handleSearchSectionSubmit = (searchData) => {
               {/* 최근 만들어진 여행 동행 모임 */}
               <TopTravelmateList
               currentUserId={currentUserId}
-                title="최근 만들어진 여행 동행 모임"
+                title="최신 등록 여행자 모임"
                 option="recent"
                 isLogin={isLogin}
                 onViewAll={handleViewAll}

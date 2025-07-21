@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TopTravelmateList.module.css';
 import api from '../../../apis/api';
+import heartFilledIcon from '../../../assets/feed/heart_filled.svg';
+import heartEmptyIcon from '../../../assets/feed/heart_empty.svg';
+import userIcon from '../../../../public/icons/sidebar/user.svg';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const TopTravelmateList = ({ 
   currentUserId,
@@ -46,21 +50,24 @@ const TopTravelmateList = ({
     try {
       let params = {
         pageNum: 1,
-        limit: 5 // 5개만 가져오기
+        limit: 10 
       };
 
-      // option에 따라 다른 파라미터 설정
       if (option === 'popular') {
-        params.sortOption = 'likes'; // 좋아요 순
+        params.sortOption = 'likes'; 
       } else if (option === 'recent') {
-        params.sortOption = 'latest'; // 최신 순
+        params.sortOption = 'latest'; 
       }
 
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/list`, {
         params: params
       });
 
-      setTravelmates(response.data.travelmates?.slice(0, 5) || []);
+      const filteredTravelmates = response.data.travelmates
+     ?.filter(travelmate => travelmate.blindStatus === 'VISIBLE')
+     ?.slice(0, 5) || [];
+   
+    setTravelmates(filteredTravelmates);
     } catch (err) {
       console.error("Failed to fetch top travelmates", err);
       setTravelmates([]);
@@ -124,7 +131,7 @@ const TopTravelmateList = ({
   if (loading) {
     return (
       <div className={styles.topTravelmateList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -155,13 +162,6 @@ const TopTravelmateList = ({
                   alt="썸네일"
                   className={styles.thumbnail}
                 />
-                <button 
-                  className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
-                  onClick={(e) => handleLikeToggle(travelmate.id, e)}
-                  disabled={!isLogin || isBlind}
-                >
-                  {isLiked ? '❤️' : '🤍'}
-                </button>
               </div>
               
               <div className={styles.content}>
@@ -174,10 +174,18 @@ const TopTravelmateList = ({
                 
                 <div className={styles.stats}>
                   <span className={styles.members}>
-                    👥 {isBlind ? '-' : (travelmate.memberCount || 0)}명
+                    <img src={userIcon} alt="인원 수" className={`${styles.icon} ${styles.memberIcon}`}/>
+                    {isBlind ? '-' : (travelmate.memberCount || 0)}
                   </span>
                   <span className={styles.likes}>
-                    ❤️ {isBlind ? '-' : travelmate.likeCount}
+                    <button 
+                      className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
+                      onClick={(e) => handleLikeToggle(travelmate.id, e)}
+                      disabled={!isLogin || isBlind}
+                    >
+                      <img src={isLiked ? heartFilledIcon : heartEmptyIcon} alt="좋아요" className={styles.icon}/>
+                    </button>
+                    {isBlind ? '' : travelmate.likeCount}
                   </span>
                 </div>
               </div>

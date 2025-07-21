@@ -7,6 +7,8 @@ import api from '../../../../apis/api';
 import API_ENDPOINTS from '../../../../utils/constants';
 import TravelInfoForm from '../../../../components/travelinfo/TravelInfoForm/TravelInfoForm';
 import { jwtDecode } from 'jwt-decode';
+import ConfirmModal from '../../../../components/common/ErrorModal/ConfirmModal';
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 const InfoFormPage = () => {
@@ -20,6 +22,11 @@ const InfoFormPage = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [mode, setMode] = useState('create'); // 'create' or 'edit'
   const [initialData, setInitialData] = useState(null);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
 
   //SideBar//
   const currentPath = location.pathname;
@@ -83,6 +90,27 @@ const InfoFormPage = () => {
     }
 }, [infoId]);
 
+const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+
   // 기존 정보방 데이터 조회 (수정 모드용)
   const fetchTravelInfoData = async (id) => {
     try {
@@ -104,7 +132,7 @@ const InfoFormPage = () => {
       setInitialData(formattedData);
     } catch (error) {
       console.error('Failed to fetch travelinfo data:', error);
-      alert('정보방 정보를 불러오는데 실패했습니다.');
+      showAlertModal('정보 공유방 데이터를 불러오는데 실패했습니다.');
       navigate('/traveler/info'); // 목록으로 돌아가기
     } finally {
       setLoading(false);
@@ -128,7 +156,7 @@ const InfoFormPage = () => {
         );
         
         console.log('정보방이 생성되었습니다:', response.data);
-        alert('정보방이 성공적으로 생성되었습니다!');
+        showAlertModal('정보방이 성공적으로 생성되었습니다!');
         
         // 생성된 정보방 상세 페이지로 이동
         navigate('/traveler/info'); // 목록으로 이동
@@ -146,11 +174,9 @@ const InfoFormPage = () => {
         );
         
         console.log('정보방이 수정되었습니다:', response.data);
-        alert('정보방이 성공적으로 수정되었습니다!');
-        
-        // 수정된 정보방 상세 페이지로 이동
-        //#NeedToChange 내 정보방으로 이동
-        navigate(`/traveler/info`);
+        showAlertModal('정보방이 성공적으로 수정되었습니다!');
+
+        navigate(`/traveler/my/travelinfo`);
       }
       
     } catch (error) {
@@ -166,15 +192,16 @@ const InfoFormPage = () => {
         errorMessage = '정보방을 찾을 수 없습니다.';
       }
       
-      alert(errorMessage);
+      showAlertModal(errorMessage);
       throw error; // TravelInfoForm에서 로딩 상태 해제를 위해
     }
   };
 
+  
+
   // 폼 닫기/취소
   const handleFormClose = () => {
-    // 이전 페이지로 돌아가거나 목록으로 이동 #NeedToChange 이거 이전 페이지 말고 내 거기 수정하는 거기로 마들면
-      navigate(`/traveler/info`);
+    navigate(-1);
   };
 
   if (loading) {
@@ -182,7 +209,7 @@ const InfoFormPage = () => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner height={50} width={50} color="#000" />
         </div>
       </div>
     );
@@ -206,6 +233,15 @@ const InfoFormPage = () => {
           />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
     </div>
   );
 };

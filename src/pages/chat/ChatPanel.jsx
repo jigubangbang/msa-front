@@ -1,24 +1,32 @@
 // /src/components/chat/ChatPanel.jsx
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { ThemeContext } from '../../utils/themeContext';
-import ChatSidebar from './ChatSideBar';
+import ChatSidebar from './ChatSidebar';
+import API_ENDPOINTS from '../../utils/constants';
+import api from "../../apis/api";
+import { getAccessToken } from '../../utils/tokenUtils';
 import menu_vert_white from '../../assets/common/more_vert_white.svg';
 import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
 import minimize from '../../assets/chat/hide.svg';
 import defaultProfile from '../../assets/default_profile.png';
-import '../../styles/chat/ChatPanel.css'
+import '../../styles/Chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, 
-    onClose, onMinimize, onForceClose, showAlert, members }) {
+    onClose, onMinimize, onForceClose, showAlert, members, onLeave }) {
   
   const { isDark, setIsDark } = useContext(ThemeContext);
 
   const [input, setInput] = useState('');
-  const messagesEndRef = useRef(null); // Ref for auto-scrolling
+  // 인코딩 관리
+  const [isComposing, setIsComposing] = useState(false);
+  const messagesEndRef = useRef(null);
   const chatMessagesDisplayRef = useRef(null);
+  const accessToken = getAccessToken();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isSidebar, setIsSidebar] = useState(false);
+  const [originalCreatorId, setOriginalCreatorId] = useState(null);
+  const [creatorLoading, setCreatorLoading] = useState(true);
   const {info} = useChatRoomInfo(chatId);
 
   /*
@@ -31,6 +39,19 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
     }
   }, [isDark]);
   */
+
+  // 인코딩 관리 후, 메세지 전송
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !isComposing) {
+      handleSubmit(e);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -64,9 +85,16 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
       showAlert("알림", "강제 퇴장되셨습니다. 메시지를 전송할 수 없습니다.");
       return;
     }
+
+    if (isComposing) {
+      console.log('IME 조합 중이므로 전송 차단');
+      return;
+    }
+
     if(input.trim()) {
       onSendMessage(input);
       setInput('');
+      setIsComposing(false);
     }
   }
 
@@ -79,6 +107,34 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
   };
 
   const isKicked = localStorage.getItem(`kicked:${chatId}`) === 'true';
+
+  // 생성자 조회
+  const getOriginalCreator = async () => {
+    try {
+      const response = await api.get(`${API_ENDPOINTS.CHAT}/${chatId}/original-creator`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("[ChatPanel] 최초 생성자 조회 실패:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchOriginalCreator = async () => {
+      if (chatId && accessToken) {
+        setCreatorLoading(true);
+        const creatorId = await getOriginalCreator();
+        setOriginalCreatorId(creatorId);
+        setCreatorLoading(false);
+      }
+    };
+
+    fetchOriginalCreator();
+  }, [chatId, accessToken]);
   
   return (
     <div className={`chat-panel-container ${isDark ? 'dark-mode' : ''}`}>
@@ -86,7 +142,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         <div className="chat-minimize-button" onClick={handleMinimize}>
           <img src={minimize} alt="화면축소"/>
         </div>
-        <h2>{info?.groupType || `Room ${chatId}`}</h2>
+        <h2>{info?.groupName || info?.groupType || `Room ${chatId}`}</h2>
         <div 
           className="chat-header-menu"
           onClick={handleSidebar}
@@ -143,7 +199,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
                   className={`chat-message-bubble ${isMine ? 'my-message' : 'other-message'}`}
                 >
                   <p className="message-text">{msg.message}</p>
-                  <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</span>
+                    <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt + 'Z').toLocaleTimeString() : ''}</span>
                 </div>
               </>
               )}
@@ -169,12 +225,16 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
             type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSubmit(e)}
+            onKeyDown={handleKeyDown}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             placeholder={isKicked ? "강제 퇴장되어 메시지를 보낼 수 없습니다." : "메세지를 입력하세요..."}
             className="chat-input"
             disabled={isKicked}
           />
-        <button type="submit" className="chat-send-button" disabled={isKicked}>Send</button>
+          <button type="submit" className="chat-send-button" disabled={isKicked}>
+            Send
+          </button>
         </form>
       </div>
 
@@ -183,11 +243,14 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
         chatId={chatId}
         senderId={senderId}
         nickname={nickname}
+        isOpen={isSidebar}
         onClose={handleSidebar}
         chatInfo={info}
+        originalCreatorId={originalCreatorId}
+        creatorLoading={creatorLoading}
         onForceClose={onForceClose}
         showAlert={showAlert}
-        isDark={isDark}
+        onLeave={onLeave}
       />
      )}
 

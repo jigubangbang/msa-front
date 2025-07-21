@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import AppRouter from "./routes/AppRouter";
 import { ThemeContext } from "./utils/themeContext";
-import { ChatProvider } from "./utils/ChatContext";
+import { ChatProvider, useChatContext } from "./utils/ChatContext";
 import Header from "./components/main/Header";
 import Footer from "./components/main/Footer";
 import ChatModal from "./pages/chat/ChatModal";
@@ -20,16 +20,25 @@ function ScrollToTop() {
   return null;
 }
 
-function App() {
+function AppContent() {
   const [isDark, setIsDark] = useState(false); // 다크모드
-
-  // 이제 지워야 할 부분
-  const [isChatModal, setIsChatModal] = useState(false);
-
-  const [currentChatId, setCurrentChatId] = useState(1);
+  const { chatRooms, openChat, closeAllChats } = useChatContext();
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const handleForceLogout = () => {
+      console.log('[App] 강제 로그아웃 감지 - 모든 채팅방 정리');
+      closeAllChats();
+    };
+
+    window.addEventListener('forceLogout', handleForceLogout);
+
+    return () => {
+      window.removeEventListener('forceLogout', handleForceLogout);
+    };
+  }, [closeAllChats]);
 
   useEffect(() => {
     const isLoginPage = location.pathname === "/login";
@@ -40,27 +49,13 @@ function App() {
       navigate("/login", { replace: true });
     }
   }, [location, navigate]);
-
-  // 채팅방 열기 함수 (여러 채팅방 지원)
-  const openChatModal = (chatId = 1) => {
-    console.log(`[App] 채팅방 열기: ${chatId}`);
-    setCurrentChatId(chatId);
-    setIsChatModal(true);
-  };
   
-  // 채팅방 닫기
-  const closeChatModal = () => {
-    console.log(`[App] 채팅방 닫기: ${currentChatId}`);
-    setIsChatModal(false);
-  };
-
   const state = location.state && location.state.backgroundLocation;
 
   return (
     <ThemeContext.Provider value={{ isDark, setIsDark }}>
-      <ChatProvider>
         <div className="app-container">
-          <Header onOpenChat={openChatModal} />
+          <Header/>
           <main className="main-container">
             <ScrollToTop />
 
@@ -74,19 +69,31 @@ function App() {
               </Routes>
             )}
 
-            {isChatModal && ( 
-              <ChatModal 
-                isOpen={isChatModal} 
-                onClose={closeChatModal} 
-                chatId={1} 
-              />
-            )}
+             {Object.entries(chatRooms).map(([chatId, chatData]) => (
+              chatData.isOpen && (
+                <ChatModal
+                  key={chatId}
+                  isOpen={chatData.isOpen}
+                  onClose={chatData.onClose} 
+                  chatId={chatId}
+                  currentUserId={chatData.currentUserId}
+                  onLeave={chatData.onLeave}
+                />
+              )
+          ))}
 
           </main>
           <Footer />
         </div>
-      </ChatProvider>
     </ThemeContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <ChatProvider>
+      <AppContent />
+    </ChatProvider>
   );
 }
 

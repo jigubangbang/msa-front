@@ -5,6 +5,9 @@ import API_ENDPOINTS from '../../../utils/constants';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 import styles from './BoardTravelStyleList.module.css';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const BoardTravelStyleList = ({ category, isLogin, currentUserId }) => {
   const navigate = useNavigate();
@@ -17,6 +20,13 @@ const BoardTravelStyleList = ({ category, isLogin, currentUserId }) => {
   const [sortOption, setSortOption] = useState('latest');
 
   const itemsPerPage = 10;
+
+   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
 
   // 필터 옵션 정의
     const getFilterOptions = () => {
@@ -73,6 +83,31 @@ const BoardTravelStyleList = ({ category, isLogin, currentUserId }) => {
     }
   };
 
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
   const fetchPosts = async () => {
     setLoading(true);
     try {
@@ -119,12 +154,12 @@ const BoardTravelStyleList = ({ category, isLogin, currentUserId }) => {
 const handleFilterClick = (filterValue) => {
   if (filterValue === 'same' || filterValue === 'similar') {
     if (!isLogin) {
-      alert('로그인이 필요한 서비스입니다.');
+      setIsModalOpen(true);
       return;
     }
     
     if (!userTravelStyle) {
-      alert('스타일 검사가 필요합니다.');
+      showAlertModal('스타일 검사가 필요합니다.');
       return;
     }
   }
@@ -143,6 +178,10 @@ const handleFilterClick = (filterValue) => {
   };
 
   const handlePostClick = (postId) => {
+    if (!isLogin){
+      setIsModalOpen(true);
+      return;
+    }
     navigate(`/board/${postId}`);
   };
 
@@ -177,7 +216,7 @@ const handleFilterClick = (filterValue) => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -235,7 +274,7 @@ const handleFilterClick = (filterValue) => {
                           
                             {(!isBlinded && post.creatorTravelStyle) && (
                             <span className={styles.travelStyle}>
-                                [{getTravelStyleLabel(post.creatorTravelStyle)}]
+                                {getTravelStyleLabel(post.creatorTravelStyle)}
                             </span>
                             )}
 
@@ -281,6 +320,20 @@ const handleFilterClick = (filterValue) => {
           onPageChange={handlePageChange}
         />
       )}
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

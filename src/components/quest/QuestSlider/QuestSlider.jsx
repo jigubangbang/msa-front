@@ -39,13 +39,15 @@ const QuestSliderCard = ({ quest, onClick }) => {
       <div className={styles.questTitle}>{quest.title}</div>
       
       <div className={styles.questInfo}>
-        <span className={styles.xp}>난이도: {getDifficultyText(quest.difficulty)}</span>
-        <span className={styles.xp}>XP: {quest.xp}</span>
+        <span className={styles.label}>난이도</span>
+        <span className={styles.value}>{getDifficultyText(quest.difficulty)}</span>
+        <span className={styles.label2}>XP</span>
+        <span className={styles.value}>{quest.xp}</span>
       </div>
       
       <div className={styles.questBottom}>
         <div className={styles.questIcon}>
-          <img src={quest.icon} alt="quest icon" />
+          <img src={quest.icon || "/icons/common/unknwon_badge.png"} alt="quest icon" />
         </div>
         <div className={styles.questStats}>
           <div className={styles.statItem}>
@@ -53,7 +55,7 @@ const QuestSliderCard = ({ quest, onClick }) => {
             <span className={styles.statValue}>{quest.count_in_progress}명</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>완수율</span>
+            <span className={styles.statLabel}>완료율</span>
             <span className={styles.statValue}>{calculateCompletionRate()}%</span>
           </div>
         </div>

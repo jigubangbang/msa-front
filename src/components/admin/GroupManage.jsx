@@ -243,7 +243,7 @@ export default function GroupManage() {
           placeholder="그룹명, 소개글, 생성자로 검색"
           onSearchChange={setSearchTerm}
           value={searchTerm}
-          barWidth="250px"
+          barWidth="260px"
         />
         <div className={styles.dropdownContainer}>
           <Dropdown
@@ -348,13 +348,15 @@ export default function GroupManage() {
                               { label: "공개", value: "VISIBLE" },
                               { label: "블라인드", value: "BLINDED" },
                             ]}
-                            onSelect={(option) =>
-                              handleStatusChange(
-                                group.groupId,
-                                group.contentType,
-                                option.value
-                              )
-                            }
+                            onSelect={(option) => {
+                              if (option.value !== group.status) {
+                                handleStatusChange(
+                                  group.groupId,
+                                  group.contentType,
+                                  option.value
+                                );
+                              }
+                            }}
                           />
                         </div>
                       </td>

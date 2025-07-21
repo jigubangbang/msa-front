@@ -167,7 +167,8 @@ export default function InquiryDetail() {
         title: editFormData.title.trim(),
         content: editFormData.content.trim(),
         category: editFormData.category,
-        attachments: inquiry.attachments || []
+        // 현재 남아있는 기존 파일들만 유지
+        keepExistingFiles: inquiry.attachments || []
       };
 
       const dtoBlob = new Blob([JSON.stringify(dtoData)], {

@@ -17,6 +17,8 @@ import QuestList from "../../../components/quest/QuestList/QuestList";
 import QuestModal from "../../../components/modal/QuestModal/QuestModal";
 import BadgeModal from "../../../components/modal/BadgeModal/BadgeModal";
 import api from "../../../apis/api";
+import LoginConfirmModal from "../../../components/common/LoginConfirmModal/LoginConfirmModal";
+import CirclesSpinner from "../../../components/common/Spinner/CirclesSpinner";
 
 function Rankings() {
   const [rankingData, setRankingData] = useState({
@@ -27,6 +29,7 @@ function Rankings() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   
   
 
@@ -77,18 +80,13 @@ function Rankings() {
       count: data[countKey],
       profile_image: data.profile_image,
       level: data.level,
-      nickname: data.nickname
+      nickname: data.nickname,
+      isTopUser: true
     };
   };
 
   if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.cardGrid}>
-          <p>로딩 중...</p>
-        </div>
-      </div>
-    );
+    return <CirclesSpinner/>;
   }
 
   if (error) {
@@ -169,6 +167,7 @@ export default function QuestMainPage() {
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const [selectedBadge, setSelectedBadge] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   //SideBar//
@@ -446,6 +445,17 @@ const response = await api.get(endpoint, {
     closeBadgeModal(); // 배지 모달 닫기
     openQuestModal(quest_id); // 퀘스트 모달 열기
   };
+  
+    const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
+  const handleLoginClick = () => {
+    if (!isLogin) {
+      setIsModalOpen(true);
+    }
+  }
 
 
   return (
@@ -462,7 +472,7 @@ const response = await api.get(endpoint, {
                   <QuestCarousel 
                   currentUserId={currentUserId}
                     quests={userQuest} 
-                    title="Ongoing Quests" 
+                    title="진행 중인 퀘스트" 
                     onOpenModal={openQuestModal}
                     isLogin={isLogin}
                     onQuestUpdate={handleQuestUpdate}
@@ -472,7 +482,7 @@ const response = await api.get(endpoint, {
             ) : (
               <QuestCarousel 
                 quests={null} 
-                title="Ongoing Quests" 
+                title="진행 중인 퀘스트" 
                 onOpenModal={openQuestModal}
                 isLogin={isLogin}
                 onQuestUpdate={handleQuestUpdate}
@@ -482,16 +492,16 @@ const response = await api.get(endpoint, {
           <div className={styles.verticalDivider}></div>
           
           <div className={styles.loginRightContent}>
-            <h2 className={styles.rightTitle}>My Quest Journey</h2>
+            <h2 className={styles.rightTitle}>내 퀘스트 정보</h2>
 
             <div className={styles.card}>
             <ProfileCard 
                 id={isLogin && userinfo ? userinfo.user_id : null}
-                title={"Total Quests Completed"} 
+                title={"내 퀘스트"} 
                 count={isLogin && userinfo ? userinfo.completed_quest_count : 0} 
                 profile_image={isLogin && userinfo ? userinfo.profile_image : null}
                 level={isLogin && userinfo ? userinfo.level : 0}
-                nickname={isLogin && userinfo ? userinfo.nickname : "Guest"}
+                nickname={isLogin && userinfo ? userinfo.nickname : "게스트"}
                 isLogin={isLogin}
                 currentUserId={currentUserId}
               />
@@ -499,7 +509,7 @@ const response = await api.get(endpoint, {
           
             <div className={styles.card}>
               <RankCard 
-                title={"My Rank"} 
+                title={"내 순위"} 
                 count={isLogin && userRank ? userRank.count : null}
                 totalCount={isLogin && userRank ? userRank.totalCount : null}
                 isLogin={isLogin}
@@ -522,12 +532,13 @@ const response = await api.get(endpoint, {
         <div className={styles.questContent}>
         {seasonalQuest && (
             <div className={styles.seasonalQuestContainer}>
-                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="Seasonal Events" onOpenModal={openQuestModal}/>
+                <QuestSlider currentUserId={currentUserId} quests={seasonalQuest} title="시즌 퀘스트" onOpenModal={openQuestModal}/>
             </div>
           )}
             
           </div>
         <QuestList currentUserId={currentUserId} isLogin={isLogin} onOpenModal={openQuestModal} onQuestUpdate={handleQuestUpdate}
+          onLoginClick={handleLoginClick}
        />
         
       </div>
@@ -556,6 +567,12 @@ const response = await api.get(endpoint, {
         />,
         document.body
       )}
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
     </div>
   );
 }

@@ -11,7 +11,7 @@
 .badgeListTitle {
   margin: 0;
   font-family: Pretendard, sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   text-align: left;
   color: #000;
@@ -133,7 +133,7 @@
 }
 
 .badgeImage {
-  width: 70px;
+  width: 65px;
   height: 70px;
   overflow: hidden;
   display: flex;
@@ -145,7 +145,7 @@
 .badgeImage img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .badgeTitle {
@@ -165,7 +165,7 @@
 .badgeEngTitle {
   font-weight: 400;
   color: #666; 
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.2;
 }
 

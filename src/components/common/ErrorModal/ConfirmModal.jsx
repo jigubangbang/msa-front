@@ -10,12 +10,13 @@ const ConfirmModal = ({
 }) => {
   if (!isOpen) return null;
 
+  console.log("ConfirmModal에서 받은 props - message:", message, "type:", type);
+
   const handleConfirm = () => {
     if (onConfirm) {
       onConfirm();
-    } else {
-      onClose();
     }
+      onClose();
   };
 
   return (
@@ -35,7 +36,7 @@ const ConfirmModal = ({
                 취소
               </button>
               <button
-                className={`${styles.btn} ${styles.confirmButton}`}
+                className={`${styles.btn} ${styles.darkButton}`}
                 onClick={handleConfirm}
               >
                 확인

@@ -7,6 +7,7 @@ import TravelmateDetailMain from '../../../../components/travelmateForm/Travelma
 import TravelmateMembers from '../../../../components/travelmateForm/TravelmateMembers/TravelmateMembers';
 import TravelmateQA from '../../../../components/travelmateForm/TravelmateQA/TravelmateQA';
 import { jwtDecode } from 'jwt-decode';
+import CirclesSpinner from '../../../../components/common/Spinner/CirclesSpinner';
 
 
 const TravelmateDetailPage = () => {
@@ -51,7 +52,6 @@ const TravelmateDetailPage = () => {
                 localStorage.removeItem("accessToken");
                 setIsLogin(false);
                 setCurrentUserId(null);
-                alert("로그인이 만료되었습니다.");
                 navigate('/login');
                 return;
             }
@@ -64,15 +64,12 @@ const TravelmateDetailPage = () => {
             localStorage.removeItem("accessToken");
             setIsLogin(false);
             setCurrentUserId(null);
-            alert("로그인 정보가 유효하지 않습니다.");
             navigate('/login');
             return;
         }
     } else {
-        // 토큰이 없으면 즉시 리다이렉트
         setIsLogin(false);
         setCurrentUserId(null);
-        alert("로그인이 필요한 서비스입니다.");
         navigate('/login');
         return;
     }
@@ -85,7 +82,7 @@ const TravelmateDetailPage = () => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

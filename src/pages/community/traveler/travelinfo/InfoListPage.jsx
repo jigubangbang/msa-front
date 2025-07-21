@@ -8,6 +8,7 @@ import InfoCategoryBrowse from "../../../../components/travelinfo/InfoCategoryBr
 import TopTravelInfoList from "../../../../components/travelinfo/TopTravelInfoList/TopTravelInfoList";
 import TravelInfoList from "../../../../components/travelinfo/TravelInfoList/TravelInfoList";
 import { jwtDecode } from "jwt-decode";
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 export default function InfoListPage() {
@@ -87,21 +88,17 @@ useEffect(() => {
   }
 
   const handleViewAll = () => {
+    window.scroll(0,0);
+    setCategories([]);
         setIsSearching(true);
         setCurrentPage(1);
         setSearchTerm('');
     }
 
     const handleCategorySelect = (categoryId) => {
-      console.log('선택된 카테고리 ID:', categoryId);
+      window.scroll(0,0);
       
-      setCategories(prevCategories => {
-          if (prevCategories.includes(categoryId)) {
-          return prevCategories.filter(id => id !== categoryId);
-          } else {
-          return [...prevCategories, categoryId];
-          }
-      });
+      setCategories([categoryId]);
 
       setIsSearching(true);
         setCurrentPage(1);
@@ -114,7 +111,7 @@ useEffect(() => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );

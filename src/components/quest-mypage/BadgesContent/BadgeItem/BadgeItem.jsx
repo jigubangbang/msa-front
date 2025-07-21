@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import styles from './BadgeItem.module.css';
 import API_ENDPOINTS from '../../../../utils/constants';
 import api from '../../../../apis/api';
+import { Circles } from "react-loader-spinner";
 
 const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge, currentUserId }) => {
   const [hoveredBadge, setHoveredBadge] = useState(false);
@@ -68,7 +69,7 @@ const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge, curre
       setActionModal({
         isOpen: true,
         type: 'pin_error',
-        resultMessage: '대표 뱃지 설정에 실패했습니다.',
+        resultMessage: '대표 뱃지 설정에 실패했습니다',
         isSuccessResult: false
       });
     } finally {
@@ -124,7 +125,11 @@ const BadgeItem = ({ badge, onBadgeClick, isMine, onUpdate, isPinnedBadge, curre
               onClick={handlePinBadge}
               disabled={isPinning}
             >
-              {isPinning ? '설정 중...' : '대표 뱃지로 설정하기'}
+              {isPinning ? (
+                <Circles height="12" width="12" color="#fff" />
+              ) : (
+                '대표 뱃지로 설정하기'
+              )}
             </button>
           )
         )}

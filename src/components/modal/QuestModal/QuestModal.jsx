@@ -334,11 +334,25 @@ const handleViewModalClose = () => {
     }
   };
 
-  // 설명 텍스트 포맷팅
-  const formatDescription = (text) => {
+  // 설명과 조건 분리
+  const parseDescription = (text) => {
     const converted = convertUnicodeToEmoji(text);
-    return converted.replace(/✅/g, '\n✅');
+    const parts = converted.split('✅ 퀘스트 조건:');
+    
+    if (parts.length === 2) {
+      return {
+        description: parts[0].trim(),
+        conditions: parts[1].trim()
+      };
+    }
+    
+    return {
+      description: converted,
+      conditions: null
+    };
   };
+
+  const { description, conditions } = parseDescription(questData.description);
 
   if (!questData) return null;
 
@@ -347,7 +361,7 @@ const handleViewModalClose = () => {
       <div className={styles.questModal} onClick={e => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <button className={styles.closeBtn} onClick={onClose}>
-            <img src="/icons/common/close.svg" alt="x"></img>
+            ✕
           </button>
         </div>
         
@@ -397,19 +411,25 @@ const handleViewModalClose = () => {
               <div className={styles.statsSection}>
                 <span>현재 {questData.count_in_progress}명 도전 중</span>
                 <span className={styles.separator}>|</span>
-                <span>완수율 {calculateCompletionRate()}%</span>
+                <span>완료율 {calculateCompletionRate()}%</span>
               </div>
               
               {/* 설명 */}
               <div className={styles.questDescription}>
                 <div className={styles.descriptionInner}>
-                  {formatDescription(questData.description).split('\n').map((line, index) => (
-                    <div key={index} className={line.startsWith('✅') ? styles.conditionLine : ''}>
-                      {line}
-                    </div>
-                  ))}
+                  {description}
                 </div>
               </div>
+              
+              {/* 조건 (있는 경우만) */}
+              {conditions && (
+                <div className={styles.questConditions}>
+                  <h4>퀘스트 조건</h4>
+                  <div className={styles.conditionText}>
+                    {conditions}
+                  </div>
+                </div>
+              )}
               
               {/* 상태별 버튼 */}
               {isLogin ? renderStatusButtons() : renderLogoutButtons()}

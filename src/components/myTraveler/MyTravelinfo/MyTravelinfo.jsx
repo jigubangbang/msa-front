@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-
 import styles from './MyTravelinfo.module.css';
+import cards from '../MyTravelCard.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import { useNavigate } from 'react-router-dom';
 import JoinChatModal from '../../modal/JoinChatModal/JoinChatModal';
-import { useChatLeave } from '../../../hooks/chat/useChatLeave';
+import { useChatLeave } from '../../../hooks/Chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
-import ChatModal from '../../../pages/chat/ChatModal';
+import { useChatContext } from '../../../utils/ChatContext';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
-
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import arrow from "../../../assets/community/arrow_right.svg";
 
 export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, isLogin}) {
   const navigate = useNavigate();
@@ -19,11 +21,58 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportInfo, setReportInfo] = useState(null);
 
-  // 채팅방 입장
-  const [chatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  // 공유방 나가기
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
+  // SimpleConfirmModal 상태
+  const [showSimpleConfirm, setShowSimpleConfirm] = useState(false);
+  const [simpleConfirmMessage, setSimpleConfirmMessage] = useState('');
+  const [simpleConfirmCallback, setSimpleConfirmCallback] = useState(null);
+
+  const { openChat, closeChat, chatRooms } = useChatContext();
   const { leaveChatRoom, isLeaving } = useChatLeave();
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+  // SimpleConfirmModal 관련 함수들
+  const customConfirm = (message, callback) => {
+    setSimpleConfirmMessage(message);
+    setSimpleConfirmCallback({ fn: callback });
+    setShowSimpleConfirm(true);
+  };
+
+  const handleSimpleConfirm = () => {
+    if (simpleConfirmCallback && simpleConfirmCallback.fn) {
+      simpleConfirmCallback.fn();
+    }
+    setShowSimpleConfirm(false);
+    setSimpleConfirmCallback(null);
+  };
+
+  const handleSimpleCancel = () => {
+    setShowSimpleConfirm(false);
+    setSimpleConfirmCallback(null);
+  };
 
   const themeMap = {
       1: '후기/팁',
@@ -44,8 +93,6 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       if (!themeIds || themeIds.length === 0) return '';
       return themeIds.map(id => themeMap[id] || `테마 ${id}`).join(', ');
     };
-
-    
 
     const handleJoinClick = (travelinfo) => {
   
@@ -69,15 +116,20 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       console.log('채팅방으로 이동:', chatRoomId);
 
       if (response.data.success && response.data.chatRoomId) {
-        setSelectedChatId(response.data.chatRoomId);
-        setChatModalOpen(true);
+        openChat(response.data.chatRoomId, currentUserId, {
+          onLeave: () => {
+            if (fetchTravelinfos) {
+              fetchTravelinfos();
+            }
+          }
+        });
       } else {
-        alert('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
       }
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      alert('채팅방을 불러오는데 실패했습니다.');
+      showAlertModal('채팅방을 불러오는데 실패했습니다.');
     }
   };
 
@@ -94,52 +146,65 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       }
     );
 
-      if (fetchTravelinfos) {
-            fetchTravelinfos();
-          }
-      alert('참여가 완료되었습니다!');
+    showAlertModal('참여가 완료되었습니다!');
       setIsModalOpen(false);
       setSelectedInfo(null);
+
+    if (fetchTravelinfos) {
+      await fetchTravelinfos();
+    }
+      
     } catch (error) {
       console.error('Failed to join chat:', error);
-      alert('참여에 실패했습니다.');
+      showAlertModal('참여에 실패했습니다.');
     }
   };
 
   // 공유방 나가기
   const handleLeaveGroup = async (travelinfoId) => {
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      showAlertModal('로그인이 필요합니다.');
       return;
     }
 
-    try {
-      const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
-        groupType: "TRAVELINFO",
-        groupId: travelinfoId
-      });
-      
-      const chatRoomId = response.data.chatRoomId;
-      
-      if (chatRoomId) {
-        const success = await leaveChatRoom(chatRoomId, {
-          skipConfirmation: false, // 확인 모달 표시
-          showAlert: (title, message) => alert(message),
-          onSuccess: () => {
-            if (fetchTravelinfos) {
-              fetchTravelinfos();
-            }
-          }
+    customConfirm(
+    '정말로 공유방에서 나가시겠습니까?',
+    async () => {
+      try {
+        const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
+          groupType: "TRAVELINFO",
+          groupId: travelinfoId
         });
-      } else {
-        alert('채팅방 정보를 찾을 수 없습니다.');
+        
+        const chatRoomId = response.data.chatRoomId;
+        
+          if (chatRoomId) {
+            const success = await leaveChatRoom(chatRoomId, {
+              showAlert: (title, message) => showAlertModal(message),
+              onSuccess: () => {
+                if (chatRooms[chatRoomId]) {
+                  closeChat(chatRoomId);
+                }
+
+                showAlertModal('공유방에서 나갔습니다.');
+                if (fetchTravelinfos) {
+                  fetchTravelinfos();
+                }
+
+              
+              }
+            });
+          } else {
+            showAlertModal('채팅방 정보를 찾을 수 없습니다.');
+          }
+        } catch (error) {
+          console.error('Failed to get chat room info:', error);
+          showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
+        }
       }
-    } catch (error) {
-      console.error('Failed to get chat room info:', error);
-      alert('채팅방 정보를 가져오는데 실패했습니다.');
-    }
+    );
   };
-  
+    
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedInfo(null);
@@ -179,12 +244,12 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
         
         setShowReportModal(false);
         setReportInfo(null);
-        alert('신고가 접수되었습니다.');
+        showAlertModal('신고가 접수되었습니다.');
         
       } catch (error) {
         console.error('Failed to submit report:', error);
         const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-        alert(errorMessage);
+        showAlertModal(errorMessage);
       }
     };
   
@@ -197,179 +262,240 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
   };
 
   const handleDelete = async (travelinfoId) => {
-    if (!window.confirm('정말로 이 정보방을 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
-      {
-        headers: {
-          'User-Id': currentUserId,
-        },
-      });
-      alert('정보방이 삭제되었습니다.');
-      // 목록 새로고침
-      fetchTravelinfos();
-    } catch (error) {
-      console.error('Failed to delete travelinfo:', error);
-      alert('삭제에 실패했습니다.');
-    }
+    customConfirm(
+      '정말 이 정보 공유방을 삭제하시겠습니까?',
+      async () => {
+        try {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
+          {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          });
+          showAlertModal('정보 공유방이 삭제되었습니다');
+          // 목록 새로고침
+          fetchTravelinfos();
+        } catch (error) {
+          console.error('Failed to delete travelinfo:', error);
+          showAlertModal('삭제에 실패했습니다.');
+        }
+      }
+    );
   };
 
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const date = new Date(dateString);
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? '오후' : '오전';
+    
+    hours = hours % 12;
+    if (hours === 0) hours = 12;
+    const hoursStr = String(hours).padStart(2, '0');
+    
+    return `${year}.${month}.${day} ${ampm} ${hoursStr}:${minutes}`;
   };
 
+  const renderTravelInfoList = (travelInfos, title, sectionType) => {
+    // 좋아요한 정보공유방은 카드 스타일로 렌더링
+    if (sectionType === 'liked') {
+      return renderLikedTravelInfoCards(travelInfos, title);
+    }
 
-
-
-  const renderTravelInfoList = (travelInfos, title, sectionType) => (
-    <div className={styles.section}>
-      <h3 className={styles.sectionTitle}>{title}</h3>
-      {travelInfos.length === 0 ? (
-        <div className={styles.emptyState}>등록된 정보가 없습니다.</div>
-      ) : (
-        <div className={styles.travelInfoList}>
-          {travelInfos.map((info) => (
-            <div key={info.id} className={styles.travelInfoCard}>
-              <div className={styles.travelInfoHeader}>
-                {/* 참가/채팅 버튼 - 오른쪽 중간 */}
-                  <div className={styles.actionButtonContainer}>
-                        <img 
+    return (
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>{title}</h3>
+        {travelInfos.length === 0 ? (
+          <div className={styles.emptyState}>등록된 정보 공유방이 없습니다</div>
+        ) : (
+          <div className={styles.travelInfoList}>
+            {travelInfos.map((info) => (
+              <div key={info.id} className={styles.travelInfoCard}>
+                <div className={styles.travelInfoHeader}>
+                  <div className={styles.thumbnailContainer}>
+                    <img 
                       src={info.thumbnailImage} 
                       alt={info.title}
                       className={styles.thumbnail}
                     />
-                    {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
-                          <div className={styles.buttonContainer}>
-                            <button
-                              className={styles.chatButton}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleChatClick(info.id);
-                              }}
-                            >
-                              채팅하기
-                            </button>
-                            {sectionType === 'hosted' ? (
-                              <button
-                                className={styles.chatButton}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(info.id);
-                                }}
-                              >
-                                채팅방 삭제하기
-                              </button>
-                            ) : (
-                              <button 
-                                className={styles.leaveButton}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleLeaveGroup(info.id);
-                                }}
-                                disabled={isLeaving}
-                              >
-                                {isLeaving ? '나가는 중...' : '채팅방 나가기'}
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <button
-                            className={styles.joinButton}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleJoinClick(info, e);
-                            }}
-                          >
-                            참가하기
-                          </button>
-                        )}
-                  </div>
-                <div className={styles.travelInfoContent}>
-                  <h4 className={styles.travelInfoTitle}>{info.title}</h4>
-                  <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
-                  
-                  <div className={styles.creatorInfo}>
-                    <span>작성자: {info.creatorNickname}</span>
-                    {info.creatorId && <span>({info.creatorId})</span>}
+                    <div className={styles.infoDetails}>
+                      <span>방장 | {info.creatorNickname}</span>
+                    </div>
                   </div>
 
-                  <div className={styles.travelInfoMeta}>
-                    <span>좋아요: {info.likeCount}</span>
-                    <span>멤버: {info.memberCount}명</span>
-                    {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
-                    <span>작성일: {formatDate(info.createdAt)}</span>
+                  <div className={styles.travelInfoContent}>
+                    {info.blindStatus === 'BLINDED' && (
+                      <span className={styles.blindedBadge}>블라인드 처리됨</span>
+                    )}
+                    <h4 className={styles.travelInfoTitle}>{info.title}</h4>
+                    <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
+                    <div className={styles.travelSchedule}>
+                      <span>생성일 | {formatDate(info.createdAt)}</span>
+                    </div>
+                    
+                    <div className={styles.travelInfoMeta}>
+                      <span>좋아요 {info.likeCount}</span>
+                      | <span>멤버 {info.memberCount}명</span>
+                      | {info.chatCount !== undefined && <span>채팅 {info.chatCount}</span>}
+                    </div>
+
+                    {info.themeIds && info.themeIds.length > 0 && (
+                      <div className={styles.themes}>
+                        {getThemeLabels(info.themeIds).split(', ').map((theme, index) => (
+                          <span key={index} className={styles.themeTag}>
+                            {theme.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 🔄 참가중/좋아요 상태를 썸네일 아래로 이동 */}
+                    {info.joinedAt && (
+                      <div className={styles.thumbnailStatus}>
+                        <span className={styles.joinedBadge}>참가중</span>
+                        <span className={styles.joinedDate}>
+                          {formatDate(info.joinedAt)}
+                        </span>
+                      </div>
+                    )}
+                    {info.likedAt && (
+                      <div className={styles.thumbnailStatus}>
+                        <span className={styles.likedBadge}>♥ 좋아요</span>
+                        <span className={styles.likedDate}>
+                          {formatDate(info.likedAt)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* TravelMate 스타일로 채팅 버튼 컨테이너 추가 */}
+                    <div className={styles.chatButtonContainer}>
+                      {(sectionType === 'hosted' || sectionType === 'joined' || info.isJoined) ? (
+                        <button className={styles.chatButton} onClick={(e) => {
+                          e.stopPropagation();
+                          handleChatClick(info.id);
+                        }}>
+                          채팅 바로가기
+                          <img src={arrow} alt="arrow"/>
+                        </button>
+                      ) : (
+                        <button className={styles.joinButton} onClick={(e) => {
+                          e.stopPropagation();
+                          handleJoinClick(info, e);
+                        }}>
+                          참가하기
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  
-                  {/* 테마 정보 표시 */}
-                  {info.themeIds && info.themeIds.length > 0 && (
-                    <div className={styles.themes}>
-                      <span>테마: {getThemeLabels(info.themeIds)}</span>
-                    </div>
-                  )}
-                  {/* 참가한 정보의 경우 참가 날짜 표시 */}
-                  {info.joinedAt && (
-                    <div className={styles.joinedInfo}>
-                      <span className={styles.joinedBadge}>참가중</span>
-                      <span className={styles.joinedDate}>
-                        참가일: {formatDate(info.joinedAt)}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* 좋아요한 정보의 경우 좋아요 날짜 표시 */}
-                  {info.likedAt && (
-                    <div className={styles.likedInfo}>
-                      <span className={styles.likedBadge}>♥ 좋아요</span>
-                      <span className={styles.likedDate}>
-                        {formatDate(info.likedAt)}
-                      </span>
-                    </div>
-                  )}
-
-
-                  {/* 최근 메시지 정보 */}
-                  {info.latestMessage && (
-                    <div className={styles.latestMessage}>
-                      <strong>최근 메시지:</strong> {info.latestMessage}
-                    </div>
-                  )}
-                </div>
-
-                {/* 우측 액션 영역 */}
-                <div className={styles.rightActions}>
-                  {/* 드롭다운 메뉴 - 오른쪽 위 */}
-                  <div 
-                    className={styles.dropdownContainer}
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <div className={styles.dropdownContainer} onClick={(e) => e.stopPropagation()}>
                     <DetailDropdown
                       isCreator={sectionType === 'hosted'}
                       onReport={() => handleReport(info)}
                       onEdit={() => handleEdit(info.id)}
                       onDelete={() => handleDelete(info.id)}
+                      onLeave={sectionType === 'joined' ? () => handleLeaveGroup(info.id) : undefined}
+                      showLeave={sectionType === 'joined'}
                     />
                   </div>
+                </div>
 
+                {info.latestMessage && (
+                  <div className={styles.latestMessageSection} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.latestMessageHeader}>
+                      <span>최근 메시지</span>
+                    </div>
+                    <div className={styles.latestMessage}>
+                      {info.latestMessage}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // 새로운 함수: 카드 스타일로 렌더링
+  const renderLikedTravelInfoCards = (travelInfos, title) => (
+    <div className={cards.section}>
+      <h3 className={cards.sectionTitle}>{title}</h3>
+      {travelInfos.length === 0 ? (
+        <div className={cards.emptyState}>등록된 정보 공유방이 없습니다</div>
+      ) : (
+        <div className={cards.cardContainer}>
+          {travelInfos.map((info) => {
+            const isBlind = info.blindStatus === 'BLINDED';
+            
+            return (
+              <div 
+                key={info.id} 
+                className={cards.card}
+                onClick={() => navigate(`/traveler/info/${info.id}`)}
+              >
+                <div className={cards.imageContainer}>
+                  <img 
+                    src={isBlind ? '/icons/common/warning.png' : (info.thumbnailImage || '/images/default-thumbnail.jpg')} 
+                    alt="썸네일"
+                    className={cards.thumbnail}
+                  />
+                  <div className={cards.cardDropdown} onClick={(e) => e.stopPropagation()}>
+                    <DetailDropdown
+                      isCreator={false}
+                      onReport={() => handleReport(info)}
+                      onEdit={() => handleEdit(info.id)}
+                      onDelete={() => handleDelete(info.id)}
+                    />
+                  </div>
+                </div>
+                
+                <div className={cards.content}>
+                  <h4 className={cards.cardTitle}>
+                    {isBlind ? '블라인드 처리된 게시글입니다' : info.title}
+                  </h4>
+                  <p className={cards.description}>
+                    {isBlind ? '' : info.simpleDescription}
+                  </p>
                   
+                  {!isBlind && (
+                    <div className={cards.likedTravelMeta}>
+                      <div>방장 | {info.creatorNickname}</div>
+                      <div>생성일 | {formatDate(info.createdAt)}</div>
+                    </div>
+                  )}
+                  
+                  {!isBlind && (
+                    <div className={cards.travelMeta}>
+                      <span>좋아요 {info.likeCount}</span>
+                      |<span>멤버 {info.memberCount}명</span>
+                      |{info.chatCount !== undefined && <span>채팅 {info.chatCount}</span>}
+                    </div>
+                  )}
+
+                  {isBlind && (
+                    <div className={cards.travelMeta}>
+                      <span>좋아요 -</span>
+                      |<span>멤버 -명</span>
+                      |<span>채팅 -</span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   );
+
 
   return (<>
     <div className={styles.container}>
@@ -377,7 +503,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       {data.hostedTravelInfos && renderTravelInfoList(data.hostedTravelInfos, '내가 만든 정보 공유방', 'hosted')}
 
       {/* 참가한 정보 공유방 */}
-      {data.joinedTravelInfos && renderTravelInfoList(data.joinedTravelInfos, '참가한 정보 공유방', 'joined')}
+      {data.joinedTravelInfos && renderTravelInfoList(data.joinedTravelInfos, '참여 중인 정보 공유방', 'joined')}
 
       {/* 좋아요한 정보 공유방 */}
       {data.likedTravelInfos && renderTravelInfoList(data.likedTravelInfos, '좋아요한 정보 공유방', 'liked')}
@@ -391,20 +517,28 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
         message={selectedInfo?.enterDescription}
       />
 
-    {chatModalOpen && selectedChatId && (
-        <ChatModal
-          isOpen={chatModalOpen}
-          onClose={() => setChatModalOpen(false)}
-          chatId={selectedChatId}
-          currentUserId={currentUserId}
-        />
-      )}
-
       <ReportModal
               show={showReportModal}
               onClose={handleReportClose}
               onSubmit={handleReportSubmit}
             />
+
+            <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
+      {/* SimpleConfirmModal 추가 */}
+      <SimpleConfirmModal
+        isOpen={showSimpleConfirm}
+        message={simpleConfirmMessage}
+        onConfirm={handleSimpleConfirm}
+        onCancel={handleSimpleCancel}
+      />
+
     </>
   );
 }

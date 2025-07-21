@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styles from './JoinApplicationModal.module.css';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import { Circles } from "react-loader-spinner";
 
 const JoinApplicationModal = ({ 
   isOpen, 
@@ -11,9 +13,38 @@ const JoinApplicationModal = ({
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+
+  
+const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
+
+
   const handleSubmit = async () => {
     if (!description.trim()) {
-      alert('신청 사유를 입력해주세요.');
+      showAlertModal('신청 사유를 입력해주세요.'); 
+
       return;
     }
 
@@ -48,7 +79,7 @@ const JoinApplicationModal = ({
         <div className={styles.formGroup}>
           <textarea
             className={styles.textArea}
-            placeholder="참여 신청 사유를 입력해주세요..."
+            placeholder="참가 신청 사유를 입력해주세요"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={6}
@@ -61,7 +92,11 @@ const JoinApplicationModal = ({
             onClick={handleSubmit}
             disabled={isSubmitting || !description.trim()}
           >
-            {isSubmitting ? '신청 중...' : '참여 신청'}
+            {isSubmitting ? (
+              <Circles height="20" width="20" color="#fff" />
+            ) : (
+              '참가 신청'
+            )}
           </button>
           <button 
             className={`${styles.btn} ${styles.outlineButton}`}
@@ -72,6 +107,15 @@ const JoinApplicationModal = ({
           </button>
         </div>
       </div>
+
+      
+<ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './JoinChatModal.module.css';
+import { Circles } from "react-loader-spinner";
 
 const JoinChatModal = ({ 
   isOpen, 
@@ -32,13 +33,13 @@ const JoinChatModal = ({
     <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2>정보 공유방 참여</h2>
-        
+        <p>이 정보 공유방에 참여하시겠습니까?</p>
+
         <div className={styles.chatTitle}>
           {chatTitle}
         </div>
         
         <div className={styles.confirmMessage}>
-          <p>이 정보 공유방에 참여하시겠습니까?</p>
           {message && (
             <p className={styles.subMessage}>{message}</p>
           )}
@@ -50,7 +51,11 @@ const JoinChatModal = ({
             onClick={handleSubmit}
             disabled={isSubmitting}
           >
-            {isSubmitting ? '참여 중...' : '참여하기'}
+            {isSubmitting ? (
+              <Circles height="20" width="20" color="#fff" />
+            ) : (
+              '참여하기'
+            )}
           </button>
           <button 
             className={`${styles.btn} ${styles.outlineButton}`}

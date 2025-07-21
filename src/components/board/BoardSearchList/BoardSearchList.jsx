@@ -5,6 +5,7 @@ import API_ENDPOINTS from '../../../utils/constants';
 import Pagination from '../../common/Pagination/Pagination';
 import Dropdown from '../../common/Dropdown';
 import styles from './BoardSearchList.module.css';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
 
 const BoardSearchList = ({ searchKeyword, isLogin }) => {
   const navigate = useNavigate();
@@ -15,6 +16,9 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOption, setSortOption] = useState('latest');
+
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const itemsPerPage = 10;
 
@@ -80,6 +84,11 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
     }
   };
 
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
   const handleCategoryClick = (categoryValue) => {
     setSelectedCategory(categoryValue);
     setCurrentPage(1);
@@ -91,12 +100,14 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
     setCurrentPage(pageNum);
   };
 
   const handlePostClick = (postId) => {
     if(!isLogin){
-        alert(`로그인이 필요한 서비스입ㄴ디ㅏ`);
+        setIsModalOpen(true);
+        setIsModalOpen(true);
         return;
     }
     navigate(`/board/${postId}`);
@@ -149,8 +160,8 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
       <div className={styles.searchHeader}>
         <h2 className={styles.searchTitle}>
           {searchKeyword && searchKeyword.trim() 
-            ? `"${searchKeyword}" 의 검색 결과: ${totalCount}개의 게시글이 검색되었습니다.`
-            : `전체 ${totalCount}개의 게시글이 있습니다.`
+            ? `"${searchKeyword}" 의 검색 결과 : ${totalCount}개의 게시글이 검색되었습니다`
+            : `전체 ${totalCount}개의 게시글이 있습니다`
           }
         </h2>
       </div>
@@ -253,6 +264,13 @@ const BoardSearchList = ({ searchKeyword, isLogin }) => {
           onPageChange={handlePageChange}
         />
       )}
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
+
     </div>
   );
 };

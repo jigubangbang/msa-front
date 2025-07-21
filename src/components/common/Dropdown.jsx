@@ -24,7 +24,7 @@ export default function Dropdown({defaultOption="", options=[], onSelect}) {
     }, []);
 
     return (
-        <div ref={dropdownRef}>
+        <div ref={dropdownRef} style={{position: 'relative'}}>
             <button className={styles.dropdownToggle} onClick={() => {setOpen(!open)}}>
                 {dropdownLabel}
                 <span className={`${styles.arrow} ${open ? styles.arrowOpen : ''}`}>▾</span>

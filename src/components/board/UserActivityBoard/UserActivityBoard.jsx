@@ -87,7 +87,7 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
       setBookmarkedPosts(prev => prev.filter(post => post.id !== postId));
     } catch (error) {
       console.error('Failed to remove bookmark:', error);
-      alert('북마크 해제 중 오류가 발생했습니다.');
+      console.log('북마크 해제 중 오류가 발생했습니다.');
     }
   };
 
@@ -102,17 +102,12 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
       setLikedPosts(prev => prev.filter(post => post.id !== postId));
     } catch (error) {
       console.error('Failed to remove like:', error);
-      alert('좋아요 해제 중 오류가 발생했습니다.');
+      console.log('좋아요 해제 중 오류가 발생했습니다.');
     }
   };
 
-  const handleMoreClick = (type) => {
-    //#NeedToChange
-    if (type === 'bookmark') {
-      navigate('/my/bookmarks');
-    } else if (type === 'like') {
-      navigate('/my/likes');
-    }
+  const handleMoreClick = () => {
+      navigate('/board/my');
   };
 
   const formatDate = (dateString) => {
@@ -216,7 +211,7 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
           <h3 className={styles.boardTitle}>내가 북마크한 글</h3>
           <button 
             className={styles.moreButton}
-            onClick={() => handleMoreClick('bookmark')}
+            onClick={handleMoreClick}
           >
             더보기
           </button>
@@ -230,7 +225,7 @@ const UserActivityBoard = ({ isLogin, currentUserId }) => {
           <h3 className={styles.boardTitle}>내가 좋아요한 글</h3>
           <button 
             className={styles.moreButton}
-            onClick={() => handleMoreClick('like')}
+            onClick={handleMoreClick}
           >
             더보기
           </button>

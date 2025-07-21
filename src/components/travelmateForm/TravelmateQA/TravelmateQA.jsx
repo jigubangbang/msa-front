@@ -4,6 +4,11 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './TravelmateQA.module.css';
 import DetailDropdown from '../../common/DetailDropdown/DetailDropdown';
 import ReportModal from '../../common/Modal/ReportModal';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import { useNavigate } from 'react-router-dom';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [questions, setQuestions] = useState([]);
@@ -20,6 +25,59 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
   const [editingText, setEditingText] = useState('');
 
   const [isBlind, setIsBlind] = useState(false);
+
+  // Alert 모달 상태 (ConfirmModal)
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  // 삭제 확인 모달 상태 (SimpleConfirmModal)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmMessage, setDeleteConfirmMessage] = useState('');
+  const [deleteConfirmCallback, setDeleteConfirmCallback] = useState(null);
+
+  // 로그인 확인 모달 상태 (LoginConfirmModal)
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
+
+  const navigate = useNavigate();
+
+  // 모달 관련 함수들
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlertModal(true);
+  };
+
+  const hideAlert = () => {
+    setShowAlertModal(false);
+    setAlertMessage('');
+  };
+
+  const customDeleteConfirm = (message, callback) => {
+    setDeleteConfirmMessage(message);
+    setDeleteConfirmCallback({ fn: callback });
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirmCallback && deleteConfirmCallback.fn) {
+      deleteConfirmCallback.fn();
+    }
+    setShowDeleteConfirm(false);
+    setDeleteConfirmCallback(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    setDeleteConfirmCallback(null);
+  };
+
+  const handleLoginConfirm = () => {
+    setShowLoginConfirm(false);
+    navigate('/login');
+  };
+
+  const handleLoginCancel = () => {
+    setShowLoginConfirm(false);
+  };
 
   useEffect(() => {
     if (postId) {
@@ -85,11 +143,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       
       setNewQuestion('');
       fetchQuestions(); 
-      alert('질문이 등록되었습니다.');
+      showAlert('질문이 등록되었습니다.');
     } catch (error) {
       console.error('Failed to submit question:', error);
       const errorMessage = error.response?.data?.error || '질문 등록에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -111,11 +169,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       setReplyTexts(prev => ({ ...prev, [questionId]: '' }));
       setActiveReplyId(null);
       fetchQuestions(); 
-      alert('답변이 등록되었습니다.');
+      showAlert('답변이 등록되었습니다.');
     } catch (error) {
       console.error('Failed to submit reply:', error);
       const errorMessage = error.response?.data?.error || '답변 등록에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -158,11 +216,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       
       setShowReportModal(false);
       setReportTarget(null);
-      alert('신고가 접수되었습니다.');
+      showAlert('신고가 접수되었습니다.');
     } catch (error) {
       console.error('Failed to submit report:', error);
       const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -188,11 +246,11 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
       setEditingId(null);
       setEditingText('');
       fetchQuestions();
-      alert('댓글이 수정되었습니다.');
+      showAlert('댓글이 수정되었습니다.');
     } catch (error) {
       console.error('Failed to update comment:', error);
       const errorMessage = error.response?.data?.error || '댓글 수정에 실패했습니다.';
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
 
@@ -201,33 +259,36 @@ const TravelmateQA = ({ postId, isLogin, currentUserId }) => {
     setEditingText('');
   };
 
-const handleDelete = async (commentId) => {
-  if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) return;
-  
-  try {
-    await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${commentId}`, {
-      headers: {
-        'User-Id': currentUserId,
-      },
-    });
-    
-    fetchQuestions(); // 새로고침
-    alert('댓글이 삭제되었습니다.');
-  } catch (error) {
-    console.error('Failed to delete comment:', error);
-    const errorMessage = error.response?.data?.error || '댓글 삭제에 실패했습니다.';
-    alert(errorMessage);
-  }
-};
+  const handleDelete = async (commentId) => {
+    customDeleteConfirm(
+      '정말로 댓글을 삭제하시겠습니까?',
+      async () => {
+        try {
+          await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${postId}/comments/${commentId}`, {
+            headers: {
+              'User-Id': currentUserId,
+            },
+          });
+          
+          fetchQuestions(); // 새로고침
+          showAlert('댓글이 삭제되었습니다.');
+        } catch (error) {
+          console.error('Failed to delete comment:', error);
+          const errorMessage = error.response?.data?.error || '댓글 삭제에 실패했습니다.';
+          showAlert(errorMessage);
+        }
+      }
+    );
+  };
 
   const handleReport = (id, userId) => {
-  if (!isLogin) {
-    alert('로그인이 필요합니다.');
-    return;
-  }
-  setReportTarget({ id, userId });
-  setShowReportModal(true);
-};
+    if (!isLogin) {
+      setShowLoginConfirm(true);
+      return;
+    }
+    setReportTarget({ id, userId });
+    setShowReportModal(true);
+  };
 
   const formatTimeAgo = (dateString) => {
     const date = new Date(dateString);
@@ -244,14 +305,13 @@ const handleDelete = async (commentId) => {
       }
       return `${diffInDays}일전`;
     }
-    return `${diffInMonths}월전`;
+    return `${diffInMonths}개월전`;
   };
-
 
   if (loading) {
     return (
       <div className={styles.travelmateQA}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
@@ -260,30 +320,26 @@ const handleDelete = async (commentId) => {
     return (
       <div className={styles.travelmateQA}>
         <div className={styles.header}>
-          <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
+          <h3 className={styles.title}>모임 질문 및 답변 ({questions.length})</h3>
         </div>
         <div className={styles.blindedMessage}>
-        <p>블라인드 처리된 게시글로 댓글을 확인할 수 없습니다.</p>
+        <p>블라인드 처리된 게시글로 댓글을 확인할 수 없습니다</p>
       </div>
       </div>
     );
   }
 
-  
-
   return (
     <div className={styles.travelmateQA}>
       <div className={styles.header}>
-        <h3 className={styles.title}>여행 모임 질문 및 답변 ({questions.length})</h3>
+        <h3 className={styles.title}>모임 질문 및 답변 ({questions.length})</h3>
       </div>
-
-      
 
       {/* 질문 목록 */}
       <div className={styles.questionsList}>
         {questions.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>아직 질문이 없습니다. 첫 번째 질문을 남겨보세요!</p>
+            <p>등록된 질문이 없습니다. 첫 번째 질문을 남겨보세요!</p>
           </div>
         ) : (
           questions.map((question) => (
@@ -294,12 +350,13 @@ const handleDelete = async (commentId) => {
                   <img 
                     src={question.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (question.profileImage || '/icons/common/default_profile.png')} 
                     alt="프로필"
+                    onClick={() => (question.blindStatus !== 'BLINDED' && navigate(`/profile/${question.userId}`))}
                   />
                 </div>
                 <div className={styles.questionBubble}>
                   <div className={styles.bubbleHeader}>
                     <div className={styles.userDetails}>
-                      <span className={styles.nickname}>
+                      <span className={styles.nickname} onClick={() => (question.blindStatus !== 'BLINDED' && navigate(`/profile/${question.userId}`))}>
                         {question.blindStatus === 'BLINDED' ? '블라인드 사용자' : question.nickname}
                       </span>
                       <span className={styles.timeAgo}>{formatTimeAgo(question.createdAt)}</span>
@@ -314,13 +371,13 @@ const handleDelete = async (commentId) => {
                     )}
                   </div>
                   <div className={styles.bubbleContent}>
-                    {question.blindStatus === 'BLINDED' ? '블라인드 된 글입니다.' : 
-                    question.isDeleted ? '삭제된 댓글입니다.' : question.question}
+                    {question.blindStatus === 'BLINDED' ? '블라인드 된 글입니다' : 
+                    question.isDeleted ? '삭제된 댓글입니다' : question.question}
                   </div>
                   {editingId === question.id && (
                       <div className={styles.editForm}>
                         <textarea
-                          className={styles.editInput}
+                          className={styles.questionInput}
                           value={editingText}
                           onChange={(e) => setEditingText(e.target.value)}
                           rows={3}
@@ -344,11 +401,11 @@ const handleDelete = async (commentId) => {
                     )}
                   <div className={styles.bubbleActions}>
                     <button 
-                    className={styles.replyButton}
+                    className={styles.submitButton}
                     onClick={() => handleReplyClick(question.id)}
                     disabled={question.blindStatus === 'BLINDED' || question.isDeleted}
                   >
-                    댓글
+                    답글
                   </button>
                   </div>
                 </div>
@@ -363,12 +420,13 @@ const handleDelete = async (commentId) => {
                         <img 
                           src={reply.blindStatus === 'BLINDED' ? '/icons/common/warning.png' : (reply.profileImage || '/icons/common/default_profile.png')} 
                           alt="프로필"
+                          onClick={() => {navigate(`/profile/${reply.userId}`)}}
                         />
                       </div>
                       <div className={styles.replyBubble}>
                         <div className={styles.bubbleHeader}>
                           <div className={styles.userDetails}>
-                            <span className={styles.nickname}>
+                            <span className={styles.nickname} onClick={() => navigate(`/profile/${reply.userId}`)}>
                               {reply.blindStatus === 'BLINDED' ? '블라인드 사용자' : reply.nickname}
                             </span>
                             <span className={styles.timeAgo}>{formatTimeAgo(reply.createdAt)}</span>
@@ -389,7 +447,7 @@ const handleDelete = async (commentId) => {
                         {editingId === reply.id && (
                           <div className={styles.editForm}>
                             <textarea
-                              className={styles.editInput}
+                              className={styles.questionInput}
                               value={editingText}
                               onChange={(e) => setEditingText(e.target.value)}
                               rows={2}
@@ -429,7 +487,7 @@ const handleDelete = async (commentId) => {
                   </div>
                   <div className={styles.replyInputContainer}>
                     <textarea
-                      className={styles.replyInput}
+                      className={styles.questionInput}
                       placeholder="답변을 작성해주세요..."
                       value={replyTexts[question.id] || ''}
                       onChange={(e) => setReplyTexts(prev => ({ 
@@ -464,37 +522,56 @@ const handleDelete = async (commentId) => {
       {/* 질문 작성 */}
       {isLogin && (
         <div className={styles.questionForm}>
-          <div className={styles.profileImage}>
-            <img 
-              src={userProfile || '/icons/common/default_profile.png'} 
-              alt="내 프로필"
-            />
-          </div>
-          <div className={styles.inputContainer}>
-            <textarea
-              className={styles.questionInput}
-              placeholder="질문을 작성해주세요..."
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
-              rows={3}
-            />
-            <div className={styles.formActions}>
-              <button 
-                className={styles.submitButton}
-                onClick={handleQuestionSubmit}
-                disabled={!newQuestion.trim()}
-              >
-                질문하기
-              </button>
-            </div>
-          </div>
+          <img 
+            src={userProfile || '/icons/common/default_profile.png'} 
+            alt="내 프로필"
+            className={styles.profileImage}
+          />
+          <textarea
+            className={styles.questionInput}
+            placeholder="질문을 작성해 주세요"
+            value={newQuestion}
+            onChange={(e) => setNewQuestion(e.target.value)}
+            rows={3}
+          />
+          <button 
+            className={styles.submitButton}
+            onClick={handleQuestionSubmit}
+            disabled={!newQuestion.trim()}
+          >
+            질문 등록
+          </button>
         </div>
       )}
 
+      {/* 신고 모달 (ReportModal) */}
       <ReportModal
         show={showReportModal}
         onClose={() => setShowReportModal(false)}
         onSubmit={handleReportSubmit}
+      />
+
+      {/* 로그인 확인 모달 (LoginConfirmModal) */}
+      <LoginConfirmModal
+        isOpen={showLoginConfirm}
+        onClose={handleLoginCancel}
+        onConfirm={handleLoginConfirm}
+      />
+
+      {/* 삭제 확인 모달 (SimpleConfirmModal) */}
+      <SimpleConfirmModal
+        isOpen={showDeleteConfirm}
+        message={deleteConfirmMessage}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
+      {/* Alert 모달 (ConfirmModal) */}
+      <ConfirmModal
+        isOpen={showAlertModal}
+        onClose={hideAlert}
+        message={alertMessage}
+        type="alert"
       />
     </div>
   );

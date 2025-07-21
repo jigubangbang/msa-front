@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { TRAVELER_SIDEBAR } from "../../../../utils/sidebar";
-import styles from './TravelmateListPage.module.css';
+import styles from './TravelMateListPage.module.css';
 import Sidebar from "../../../../components/common/SideBar/SideBar";
 import api from '../../../../apis/api';
 import API_ENDPOINTS from '../../../../utils/constants';
 import TravelmateForm from '../../../../components/travelmate/TravelmateForm/TravelmateForm';
 import { jwtDecode } from 'jwt-decode';
-
+import ConfirmModal from '../../../../components/common/ErrorModal/ConfirmModal';
+import CirclesSpinner from '../../../../components/common/Spinner/CirclesSpinner';
 
 const TravelmateFormPage = () => {
   const { postId } = useParams();
@@ -20,6 +21,11 @@ const TravelmateFormPage = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [mode, setMode] = useState('create'); // 'create' or 'edit'
   const [initialData, setInitialData] = useState(null);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
 
   //SideBar//
   const currentPath = location.pathname;
@@ -81,7 +87,28 @@ const TravelmateFormPage = () => {
         setMode('create');
         setLoading(false);
     }
-}, [postId]);
+  }, [postId]);
+
+  // 알림 모달 표시 함수 - 콜백 함수를 받도록 수정
+  const showAlertModal = (message, callback = null) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(callback);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
 
   // 기존 모임 데이터 조회 (수정 모드용)
   const fetchTravelmateData = async (id) => {
@@ -102,8 +129,9 @@ const TravelmateFormPage = () => {
       setInitialData(formattedData);
     } catch (error) {
       console.error('Failed to fetch travelmate data:', error);
-      alert('모임 정보를 불러오는데 실패했습니다.');
-      navigate('/traveler/mate'); // 목록으로 돌아가기
+      showAlertModal('모임 정보를 불러오는데 실패했습니다.', () => {
+        navigate('/traveler/mate'); // 목록으로 돌아가기
+      });
     } finally {
       setLoading(false);
     }
@@ -126,14 +154,15 @@ const TravelmateFormPage = () => {
         );
                 
         console.log('모임이 생성되었습니다:', response.data);
-        alert('모임이 성공적으로 생성되었습니다!');
         
-        // 생성된 모임 상세 페이지로 이동
-        if (response.data.travelmateId) {
-          navigate(`/traveler/mate/${response.data.travelmateId}`);
-        } else {
-          navigate('/traveler/mate'); // 목록으로 이동
-        }
+        // 생성된 모임 상세 페이지로 이동하는 콜백 함수
+        showAlertModal('모임이 성공적으로 생성되었습니다!', () => {
+          if (response.data.travelmateId) {
+            navigate(`/traveler/mate/${response.data.travelmateId}`);
+          } else {
+            navigate('/traveler/mate'); // 목록으로 이동
+          }
+        });
         
       } else {
         // 기존 모임 수정
@@ -148,10 +177,11 @@ const TravelmateFormPage = () => {
         );
         
         console.log('모임이 수정되었습니다:', response.data);
-        alert('모임이 성공적으로 수정되었습니다!');
         
-        // 수정된 모임 상세 페이지로 이동
-        navigate(`/traveler/mate/${postId}`);
+        // 수정된 모임 상세 페이지로 이동하는 콜백 함수
+        showAlertModal('모임이 성공적으로 수정되었습니다!', () => {
+          navigate(`/traveler/mate/${postId}`);
+        });
       }
       
     } catch (error) {
@@ -167,19 +197,14 @@ const TravelmateFormPage = () => {
         errorMessage = '모임을 찾을 수 없습니다.';
       }
       
-      alert(errorMessage);
+      showAlertModal(errorMessage);
       throw error; // TravelmateForm에서 로딩 상태 해제를 위해
     }
   };
 
   // 폼 닫기/취소
   const handleFormClose = () => {
-    // 이전 페이지로 돌아가거나 목록으로 이동
-    if (postId) {
-      navigate(`/traveler/mate/${postId}`); // 수정 모드였다면 상세 페이지로
-    } else {
-      navigate('/traveler/mate'); // 생성 모드였다면 목록으로
-    }
+    navigate(-1);
   };
 
   if (loading) {
@@ -187,7 +212,7 @@ const TravelmateFormPage = () => {
       <div className={styles.Container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );
@@ -211,6 +236,14 @@ const TravelmateFormPage = () => {
           />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };

@@ -4,6 +4,9 @@ import styles from './RankList.module.css';
 import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import api from '../../../apis/api';
+import { useNavigate } from 'react-router-dom';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
+
 
 const RankingList = ({ myUserId }) => {
   const [rankings, setRankings] = useState([]);
@@ -14,6 +17,8 @@ const RankingList = ({ myUserId }) => {
   
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  const navigate=useNavigate();
 
   useEffect(() => {
     fetchRankings();
@@ -47,42 +52,50 @@ const RankingList = ({ myUserId }) => {
   };
 
     const handlePageChange = (pageNum) => {
+      window.scroll(0,0);
         setCurrentPage(pageNum);
     };
+
+    const handleTableRowClick = (userId) => {
+      navigate(`/my-quest/profile/${userId}`);
+    }
 
   if (loading) {
     return (
       <div className={styles.rankingList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
 
   return (
     <div className={styles.rankingList}>
-        <h2 className={styles.rankingListTitle}>Rank(Level)</h2>
+        <h2 className={styles.rankingListTitle}>회원 랭킹 (LV)</h2>
       {/* Search */}
       <div className={styles.searchSection}>
         <p className={styles.totalCount}>
-          현재 {totalCount}명의 방방이들의 퀘스트 챌린지가 진행 중 입니다.
+          {searchTerm 
+            ? `"${searchTerm}"의 검색 결과... ${totalCount}명의 회원을 찾았습니다`
+            : `현재 ${totalCount}명의 회원이 챌린지 도전 중입니다`
+          }
         </p>
         <SearchBar
-          placeholder="USER ID"
+          placeholder="회원 ID, 닉네임으로 검색"
           value={searchTerm}
           onSearchChange={handleSearchChange}
-          barWidth="200px"
+          barWidth="240px"
         />
       </div>
 
       {/* header */}
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Profile</div>
-        <div className={styles.headerCell}>ID / Nickname</div>
-        <div className={styles.headerCell}>Level</div>
-        <div className={styles.headerCell}>Quests Completed</div>
+        <div className={styles.headerCell}>프로필</div>
+        <div className={styles.headerCell}>ID / 닉네임</div>
+        <div className={styles.headerCell}>레벨</div>
+        <div className={styles.headerCell}>완료 퀘스트</div>
         <div className={styles.headerCell}>XP</div>
-        <div className={styles.headerCell}>Performance</div>
+        <div className={styles.headerCell}>진행률</div>
       </div>
 
       {/* table */}
@@ -95,6 +108,7 @@ const RankingList = ({ myUserId }) => {
             <div 
               key={user.user_id || index} 
               className={`${styles.tableRow} ${isMyUser ? styles.highlighted : ''}`}
+              onClick={() => {handleTableRowClick(user.user_id)}}
             >
               <div className={styles.cell}>{rank}</div>
               <div className={styles.cell}>

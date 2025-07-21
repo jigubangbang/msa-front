@@ -97,18 +97,18 @@ const Login = () => {
     console.log("소셜 로그인 시도:", provider);
     if (provider === "kakao") {
       const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
-      const REDIRECT_URI = "http://localhost:5173/oauth/kakao/callback"; // 카카오에 등록한 Redirect URI
+      const REDIRECT_URI = "http://k8s-default-msafront-0961d08170-429312898.ap-northeast-2.elb.amazonaws.com/oauth/kakao/callback"; // 카카오에 등록한 Redirect URI
       const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
       window.location.href = kakaoAuthURL;
     } else if (provider === "naver") {
       const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
-      const REDIRECT_URI = "http://localhost:5173/oauth/naver/callback";
+      const REDIRECT_URI = "http://k8s-default-msafront-0961d08170-429312898.ap-northeast-2.elb.amazonaws.com/oauth/naver/callback";
       const STATE = crypto.randomUUID();
       const naverAuthURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
       window.location.href = naverAuthURL;
     } else if (provider === "google") {
       const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-      const REDIRECT_URI = "http://localhost:5173/oauth/google/callback";
+      const REDIRECT_URI = "http://k8s-default-msafront-0961d08170-429312898.ap-northeast-2.elb.amazonaws.com/oauth/google/callback";
       const STATE = crypto.randomUUID();
       const SCOPE = "openid email profile";
       const googleAuthURL = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${encodeURIComponent(

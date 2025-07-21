@@ -28,6 +28,10 @@ export default function UserRecommendation() {
             const response = await api.get(`${API_ENDPOINTS.FEED.PRIVATE}/recommended/users`, {
                 params: { limit, offset }
             });
+            if (response.data.users.length == 0) {
+                setCurrentPage(0);
+                return;
+            } 
             setRecommendationList(response.data.users);
             setTravelStyleId(response.data.travelStyleId);
             if (response.data.users.length < limit) setHasMore(false);
@@ -42,7 +46,13 @@ export default function UserRecommendation() {
             setShowPremiumModal(true);
             return;
         }
-        setCurrentPage(prev => prev + 1);
+
+        if (!hasMore) {
+            setCurrentPage(0);
+            setHasMore(true);
+        } else {
+            setCurrentPage(prev => prev + 1);
+        }
     }
 
     const handleTestClick = () => {
@@ -81,7 +91,6 @@ export default function UserRecommendation() {
             <div className={styles.recommendationWrapper}>
                 <button
                     onClick={handleRefreshBtnClick}
-                    disabled={!hasMore}
                     className={styles.refreshButton}
                 >
                     <img src={refreshIcon} alt="새로 고침"/>

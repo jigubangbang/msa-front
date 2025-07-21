@@ -2,16 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardForm.module.css';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import certiphoto from '../../../assets/quest/certiphoto.svg';
+import { Circles } from "react-loader-spinner";
 
 const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null, onSubmit, onClose }) => {
   const MAX_IMAGE_COUNT = 10;
   const fileInputRefs = useRef([]);
+
+  // ConfirmModal 관련 상태 추가
 
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     boardId: '3'
   });
+
+
 
   const CATEGORY_OPTIONS = [
     { value: '1', label: '정보' },
@@ -23,6 +31,13 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   // 유효성 검사 상태
   const [validationErrors, setValidationErrors] = useState({});
@@ -82,22 +97,24 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+
+
   // 유효성 검사 함수
   const validateField = (name, value) => {
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '제목은 필수입니다' };
+          return { isValid: false, error: '게시글 제목은 필수입니다' };
         } else if (value.length > 100) {
-          return { isValid: false, error: '제목은 100자를 초과할 수 없습니다' };
+          return { isValid: false, error: '게시글 제목은 100자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'content':
         if (!value.trim()) {
-          return { isValid: false, error: '내용은 필수입니다' };
+          return { isValid: false, error: '게시글 내용은 필수입니다' };
         } else if (value.length > 5000) {
-          return { isValid: false, error: '내용은 5000자를 초과할 수 없습니다' };
+          return { isValid: false, error: '게시글 내용은 5000자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
@@ -105,6 +122,27 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         return { isValid: true, error: null };
     }
   };
+
+  const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   // 입력 변경 핸들러
   const handleInputChange = (e) => {
@@ -134,12 +172,12 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     if (file) {
       // 파일 검증
       if (file.size > 10 * 1024 * 1024) {
-        alert('파일 크기는 10MB 이하여야 합니다.');
+        showAlertModal('파일 크기는 10MB 이하여야 합니다.');
         return;
       }
       
       if (!file.type.startsWith('image/')) {
-        alert('이미지 파일만 업로드 가능합니다.');
+        showAlertModal('이미지 파일만 업로드 가능합니다.');
         return;
       }
 
@@ -227,18 +265,21 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     return !hasErrors;
   };
 
+
+
   // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!isLogin) {
-      alert('로그인이 필요합니다.');
+      setIsModalOpen(true);
+
       return;
     }
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      alert('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요.');
       return;
     }
 
@@ -287,10 +328,18 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     }
   };
 
+   const handleLoginConfirm = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
+
+
   if (loading && mode === 'edit' && !initialData) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <div className={styles.loading}>
+          <CirclesSpinner/>
+        </div>
       </div>
     );
   }
@@ -308,7 +357,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         <div className={styles.titleSection}>
           <div className={styles.categoryColumn}>
             <div className={styles.formGroup}>
-            <label className={styles.label}>카테고리</label>
+            <label className={styles.label}>
+              카테고리 <span className={styles.required}>*</span>
+            </label>
             <div className={styles.categoryDropdown} ref={categoryDropdownRef}>
               <button 
                 type="button"
@@ -316,7 +367,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                 onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
               >
                 {CATEGORY_OPTIONS.find(option => option.value === formData.boardId)?.label || '카테고리 선택'}
-                <span className={`${styles.arrow} ${categoryDropdownOpen ? styles.arrowOpen : ''}`}>▾</span>
+                <span className={`${styles.arrow} ${categoryDropdownOpen ? styles.arrowOpen : ''}`}>▼</span>
               </button>
               
               {categoryDropdownOpen && (
@@ -343,7 +394,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
 
           <div className={styles.titleColumn}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>제목</label>
+              <label className={styles.label}>
+                게시글 제목 <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="title"
@@ -353,7 +406,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="제목을 입력하세요"
+                placeholder="게시글 제목을 입력하세요"
                 required
               />
               {validationErrors.title && (
@@ -401,7 +454,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                           className={styles.emptySlot}
                           onClick={(e) => openFileDialog(index, e)}
                         >
-                          <span className={styles.uploadIcon}>📷</span>
+                          <span className={styles.uploadIcon}>
+                            <img src={certiphoto} alt="camera" />
+                          </span>
                           <p className={styles.uploadText}>이미지 업로드</p>
                         </div>
                       )
@@ -419,7 +474,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
 
         {/* 내용 입력 */}
         <div className={styles.formGroup}>
-          <label className={styles.label}>내용</label>
+          <label className={styles.label}>
+            게시글 내용 <span className={styles.required}>*</span>
+          </label>
           <textarea
             name="content"
             value={formData.content}
@@ -428,7 +485,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
               fieldValidation.content === 'valid' ? styles.validInput : 
               fieldValidation.content === 'invalid' ? styles.invalidInput : ''
             }`}
-            placeholder="내용을 입력하세요"
+            placeholder="게시글 내용을 입력하세요"
             rows="15"
             required
           />
@@ -438,24 +495,45 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button 
-            type="button" 
-            className={styles.cancelButton} 
-            onClick={handleCancel}
-            disabled={loading}
-          >
-            취소
-          </button>
-          <button 
-            type="submit" 
-            className={styles.submitButton} 
-            disabled={loading}
-          >
-            {loading ? '저장 중...' : (mode === 'create' ? '작성하기' : '수정하기')}
-          </button>
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button 
+              type="button" 
+              className={styles.cancelButton} 
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              취소
+            </button>
+            <button 
+              type="submit" 
+              className={styles.submitButton} 
+              disabled={loading}
+            >
+              {loading ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                mode === 'create' ? '작성하기' : '수정하기'
+              )}
+            </button>
+          </div>
         </div>
       </form>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
+
+      <LoginConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleLoginConfirm}
+      />
+
     </div>
   );
 };

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msa-front-deployment
+  labels:
+    app: msa-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msa-front
+  template:
+    metadata:
+      labels:
+        app: msa-front
+    spec:
+      containers:
+      - name: msa-front-container
+        image: __ECR_IMAGE_FULL_PATH__
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "50m"
+            memory: "128Mi"
+          requests:
+            cpu: "25m"
+            memory: "64Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 3

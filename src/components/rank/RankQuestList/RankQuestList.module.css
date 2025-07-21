@@ -11,7 +11,7 @@
 .questListTitle {
   margin: 0;
   font-family: Pretendard, sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   text-align: left;
   color: #000;
@@ -94,8 +94,8 @@
 }
 
 .badgeImage {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 55px;
   overflow: hidden;
   display: flex;
   align-items: center;

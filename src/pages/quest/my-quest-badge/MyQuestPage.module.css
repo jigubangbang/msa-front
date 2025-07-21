@@ -8,7 +8,7 @@
 
 .content {
 
-  margin-left: 180px; /* sidebar 때문에 필수 */
+  margin-left: 200px; /* sidebar 때문에 필수 */
   padding: 20px 40px;
   transition: margin-left 0.3s ease;
   min-height: 100vh;
@@ -20,12 +20,18 @@
 }
 
 .contentWrapper {
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  overflow-x: hidden;
+}
+
+.contentWrapper > * {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .loading {

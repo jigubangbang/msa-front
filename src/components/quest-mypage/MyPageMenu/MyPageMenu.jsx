@@ -26,19 +26,19 @@ export default function MyPageMenu({isMine}) {
                     to={basePath} 
                     className={`${styles.tab} ${activeTab === 'journey' ? styles.active : ''}`}
                 >
-                    Journey
-                </Link>
-                <Link 
-                    to={badgePath} 
-                    className={`${styles.tab} ${activeTab === 'badges' ? styles.active : ''}`}
-                >
-                    Badges
+                    활동
                 </Link>
                 <Link 
                     to={questPath} 
                     className={`${styles.tab} ${activeTab === 'quests' ? styles.active : ''}`}
                 >
-                    Quests
+                    퀘스트
+                </Link>
+                <Link 
+                    to={badgePath} 
+                    className={`${styles.tab} ${activeTab === 'badges' ? styles.active : ''}`}
+                >
+                    뱃지
                 </Link>
             </div>
         </div>

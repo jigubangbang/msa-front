@@ -6,6 +6,7 @@ import BadgeModal from "../../modal/BadgeModal/BadgeModal";
 import QuestModal from "../../modal/QuestModal/QuestModal";
 import QuestCertificationViewModal from "../../modal/QuestCertificationViewModal/QuestCertificationViewModal";
 import api from "../../../apis/api";
+import CirclesSpinner from "../../common/Spinner/CirclesSpinner";
 
 
 const QuestsContent = ({ userInfo, isLogin, onUpdate, currentUserId }) => {
@@ -114,16 +115,16 @@ const handleQuestClickFromBadge = (quest_id) => {
     { value: 5, label: '자연 체험' },
     { value: 6, label: '여행 생활' },
     { value: 7, label: '소통/공유' },
-    { value: 8, label: '고난이도 도전' },
-    { value: 9, label: '특수 조건' },
+    { value: 8, label: '특수 조건' },
+    { value: 9, label: '고난이도 도전' },
     { value: 10, label: '기간 제한' }
   ];
 
   const statusOptions = [
-    { value: 'all', label: 'All' },
-    { value: 'IN_PROGRESS', label: 'In Progress' },
-    { value: 'COMPLETED', label: 'Completed' },
-    { value: 'GIVEN_UP', label: 'Given Up' }
+    { value: 'all', label: '전체' },
+    { value: 'IN_PROGRESS', label: '진행 중' },
+    { value: 'COMPLETED', label: '완료' },
+    { value: 'GIVEN_UP', label: '포기' }
   ];
 
   const getCategoryLabel = (categoryValue) => {
@@ -222,7 +223,9 @@ const handleViewModalClose = () => {
   if (!userInfo?.quest) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>퀘스트 데이터를 불러오는 중...</div>
+        <div className={styles.loading}>
+          <CirclesSpinner/> 
+        </div>
       </div>
     );
   }
@@ -231,7 +234,7 @@ const handleViewModalClose = () => {
     return (
       <div className={styles.container}>
         <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+          <CirclesSpinner/>
         </div>
       </div>
     );
@@ -240,7 +243,7 @@ const handleViewModalClose = () => {
   return (
     <div className={styles.container}>
       <div className={styles.totalCount}>
-        총 {filteredQuests.length}개의 퀘스트를 진행 중이거나 완료했습니다.
+        총 {filteredQuests.length}개의 퀘스트에 도전했습니다
       </div>
 
       {/* 카테고리 필터 */}
@@ -281,21 +284,21 @@ const handleViewModalClose = () => {
 
       {/* 테이블 헤더 */}
       <div className={styles.tableHeader}>
-        <div className={styles.headerCell}>Quest ID</div>
-        <div className={styles.headerCell}>Status</div>
-        <div className={styles.headerCell}>Category</div>
-        <div className={styles.headerCell}>Title</div>
-        <div className={styles.headerCell}>Difficulty/XP</div>
-        <div className={styles.headerCell}>Started</div>
-        <div className={styles.headerCell}>Completed</div>
-        <div className={styles.headerCell}>Description</div>
-        <div className={styles.headerCell}>Action</div>
+        <div className={styles.headerCell}>퀘스트 ID</div>
+        <div className={styles.headerCell}>상태</div>
+        <div className={styles.headerCell}>카테고리</div>
+        <div className={styles.headerCell}>제목</div>
+        <div className={styles.headerCell}>난이도/XP</div>
+        <div className={styles.headerCell}>시작일</div>
+        <div className={styles.headerCell}>완료일</div>
+        <div className={styles.headerCell}>퀘스트 설명</div>
+        <div className={styles.headerCell}>인증</div>
       </div>
 
       {/* 테이블 바디 */}
       <div className={styles.tableBody}>
         {filteredQuests.length === 0 ? (
-          <div className={styles.noQuests}>해당하는 퀘스트가 없습니다.</div>
+          <div className={styles.noQuests}>해당하는 퀘스트가 없습니다</div>
         ) : (
           filteredQuests.map((quest) => (
             <div key={quest.quest_user_id} className={styles.tableRow}

@@ -5,6 +5,7 @@ import SearchBar from '../../common/SearchBar';
 import Pagination from '../../common/Pagination/Pagination';
 import ReactDOM from 'react-dom';
 import api from '../../../apis/api';
+import CirclesSpinner from '../../common/Spinner/CirclesSpinner';
 
 
 
@@ -69,6 +70,7 @@ const RankBadgeList = ({
   };
 
   const handlePageChange = (pageNum) => {
+    window.scroll(0,0);
       setCurrentPage(pageNum);
   };
 
@@ -82,21 +84,21 @@ const RankBadgeList = ({
   if (loading) {
     return (
       <div className={styles.badgeList}>
-        <div className={styles.loading}>로딩 중...</div>
+        <CirclesSpinner/>
       </div>
     );
   }
 
   return (
     <div className={styles.badgeList}>
-        <h2 className={styles.badgeListTitle}>Badges</h2>
+        <h2 className={styles.badgeListTitle}>뱃지 목록</h2>
       {/* Search */}
             <div className={styles.searchSection}>
               <p className={styles.totalCount}>
-                현재 {totalCount}개의 뱃지에 도전할 수 있습니다.
+                현재 {totalCount}개의 뱃지에 도전할 수 있습니다
               </p>
               <SearchBar
-                placeholder="Badge"
+                placeholder="뱃지명으로 검색"
                 value={searchTerm}
                 onSearchChange={handleSearchChange}
                 barWidth="200px"
@@ -106,12 +108,12 @@ const RankBadgeList = ({
 
       {/* header */}
       <div className={styles.tableHeader}>
-        <div className={styles.headerCell}>Icon</div>
+        <div className={styles.headerCell}>뱃지</div>
         <div className={styles.headerCell}>#</div>
-        <div className={styles.headerCell}>Title</div>
-        <div className={styles.headerCell}>Quests</div>
-        <div className={styles.headerCell}>Difficulty</div>
-        <div className={styles.headerCell}>Acquired</div>
+        <div className={styles.headerCell}>뱃지명</div>
+        <div className={styles.headerCell}>연결 퀘스트</div>
+        <div className={styles.headerCell}>난이도</div>
+        <div className={styles.headerCell}>획득한 사용자</div>
       </div>
 
       {/* table */}
@@ -160,16 +162,6 @@ const RankBadgeList = ({
                   <span className={styles.acquiredCount}>
                     {badge.acquired_count}명
                   </span>
-                </div>
-              </div>
-
-              {/* 행2 */}
-              <div className={`${styles.tableRow} ${styles.secondRow} ${isMyUser ? styles.highlighted : ''}`}>
-                <div className={styles.cell}></div> 
-                <div className={`${styles.cell} ${styles.descriptionCell}`}>
-                  <div className={styles.badgeDescription}>
-                    {badge.description}
-                  </div>
                 </div>
               </div>
             </div>

@@ -4,10 +4,28 @@ import TravelmateFilter from '../TravelmateFilter/TravelmateFilter';
 import DateSelector from '../DateSelector/DateSelector';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
+import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import { Circles } from "react-loader-spinner";
 
 const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose }) => {
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
   const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmType, setConfirmType] = useState('alert');
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [dateReset, setDateReset] = useState(false);
+
+
+  const handleDateReset = () => {
+    setDateData({
+      startDate: null,
+      endDate: null
+    });
+    setDateReset(true);
+    setTimeout(() => setDateReset(false), 100);
+  };
 
   const validateFile = (file) => {
     const errors = [];
@@ -27,6 +45,28 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       errors
     };
   };
+
+  
+const showAlertModal = (message) => {
+    setConfirmMessage(message);
+    setConfirmType('alert');
+    setConfirmAction(null);
+    setShowConfirmModal(true);
+  };
+
+  const hideConfirm = () => {
+    setShowConfirmModal(false);
+    setConfirmMessage('');
+    setConfirmAction(null);
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    hideConfirm();
+  };
+
 
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -397,7 +437,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     
     // 전체 유효성 검사
     if (!validateAllFields()) {
-      alert('입력값을 확인해주세요.');
+      showAlertModal('입력값을 확인해주세요');
       return;
     }
 
@@ -436,7 +476,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
       
     } catch (error) {
       console.error('Failed to submit form:', error);
-      alert('모임 저장에 실패했습니다.');
+      showAlertModal('모임 저장에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -446,7 +486,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     <div className={styles.travelmateForm}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          {mode === 'create' ? '모임 생성' : '모임 수정'}
+          {mode === 'create' ? '여행자 모임 생성' : '여행자 모임 수정'}
         </h2>
         <button className={styles.closeButton} onClick={onClose}>✕</button>
       </div>
@@ -485,7 +525,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
             className={styles.hiddenFileInput}
           />
           {validationErrors.backgroundImage && (
-            <div className={styles.errorMessage}>{validationErrors.backgroundImage}</div>
+            <div className={`${styles.message} ${styles.errorMessage}`}>{validationErrors.backgroundImage}</div>
           )}
         </div>
 
@@ -493,7 +533,9 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         <div className={styles.basicInfoSection}>
           <div className={styles.leftColumn}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>모임 제목</label>
+              <label className={styles.label}>
+                모임 제목<span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="title"
@@ -503,7 +545,7 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="모임 제목을 입력하세요"
+                placeholder="모임 제목을 작성해주세요"
                 required
               />
               {validationErrors.title && (
@@ -512,9 +554,10 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>모임 한마디</label>
-              <input
-                type="text"
+              <label className={styles.label}>
+                모임 한마디 <span className={styles.required}>*</span>
+              </label>
+              <textarea
                 name="simpleDescription"
                 value={formData.simpleDescription}
                 onChange={handleInputChange}
@@ -522,7 +565,8 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                   fieldValidation.simpleDescription === 'valid' ? styles.validInput : 
                   fieldValidation.simpleDescription === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="모임을 한 마디로 표현해보세요"
+                placeholder="모임을 한마디로 표현해 보세요"
+                rows={2}
                 required
               />
               {validationErrors.simpleDescription && (
@@ -533,6 +577,9 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
 
           <div className={styles.rightColumn}>
             <div className={styles.thumbnailUpload}>
+              <label className={styles.label}>
+                썸네일 이미지 <span className={styles.required}>*</span>
+              </label>
               <div 
                 className={`${styles.thumbnailImageUpload} ${
                   fieldValidation.thumbnailImage === 'invalid' ? styles.invalidUpload : ''
@@ -573,8 +620,36 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         {/* 모임 카테고리 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
         <div className={styles.sectionHeader}>
-            <label className={styles.sectionLabel}>모임 카테고리</label>
-            <div className={styles.currentInfo}>
+            <label className={styles.sectionLabel}>모임 카테고리 <span className={styles.required}>*</span></label>
+            
+              {/* 수정 모드일 때 기존 필터 정보 표시 */}
+              {mode === 'edit' && initialData && (
+                <div className={styles.existingInfo}>
+                  <span className={styles.existingLabel}>기존 설정:</span>
+                  {initialData.locationNames && (
+                    <span className={styles.existingTag}>
+                      지역: {initialData.locationNames}
+                    </span>
+                  )}
+                  {initialData.targetNames && (
+                    <span className={styles.existingTag}>
+                      대상: {initialData.targetNames}
+                    </span>
+                  )}
+                  {initialData.themeNames && (
+                    <span className={styles.existingTag}>
+                      테마: {initialData.themeNames}
+                    </span>
+                  )}
+                  {initialData.styleNames && (
+                    <span className={styles.existingTag}>
+                      스타일: {initialData.styleNames}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className={styles.currentInfo}>
+                <span className={styles.currentLabel}>현재 선택 :</span>
             {displayFilters.locationNames && (
                 <span className={styles.currentTag}>
                 지역: {displayFilters.locationNames}
@@ -608,17 +683,36 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         {/* 여행 기간 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>여행 기간</h3>
+            <label className={styles.sectionTitle}>
+              여행 기간 <span className={styles.required}>*</span>
+            </label>
+            {/* 수정 모드일 때 기존 기간 정보 표시 */}
+            {mode === 'edit' && initialData && initialData.startAt && initialData.endAt && (
+              <div className={styles.existingInfo}>
+                <span className={styles.existingLabel}>기존 설정:</span>
+                <span className={styles.existingTag}>
+                  {initialData.startAt.split('T')[0]} ~ {initialData.endAt.split('T')[0]}
+                </span>
+              </div>
+            )}
             <div className={styles.currentInfo}>
+              <span className={styles.currentLabel}>현재 선택 :</span>
               {dateData.startDate && dateData.endDate && (
                 <span className={styles.currentTag}>
                   {dateData.startDate.dateString} ~ {dateData.endDate.dateString}
                 </span>
               )}
+              <button 
+                type="button"
+                className={styles.resetButton}
+                onClick={handleDateReset}
+              >
+                <img src="/icons/common/refresh.svg" alt="reset"/>
+              </button>
             </div>
           </div>
           <div className={styles.dateSelector}>
-            <DateSelector onSubmit={handleDateSubmit} />
+            <DateSelector onSubmit={handleDateSubmit} reset={dateReset} />
           </div>
           {validationErrors.dates && (
             <div className={styles.errorMessage}>{validationErrors.dates}</div>
@@ -627,19 +721,23 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
 
         {/* 모임 설명 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
-          <h3 className={styles.sectionTitle}>모임 설명</h3>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className={`${styles.textarea} ${
-              fieldValidation.description === 'valid' ? styles.validInput : 
-              fieldValidation.description === 'invalid' ? styles.invalidInput : ''
-            }`}
-            placeholder="모임에 대한 상세한 설명을 작성해주세요"
-            rows="8"
-            required
-          />
+          <div className={styles.textareaGroup}>
+            <label className={styles.sectionTitle}>
+              모임 설명 <span className={styles.required}>*</span>
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              className={`${styles.textarea} ${
+                fieldValidation.description === 'valid' ? styles.validInput : 
+                fieldValidation.description === 'invalid' ? styles.invalidInput : ''
+              }`}
+              placeholder="모임에 대한 상세한 설명을 작성해주세요"
+              rows="8"
+              required
+            />
+          </div>
           {validationErrors.description && (
             <div className={styles.errorMessage}>{validationErrors.description}</div>
           )}
@@ -647,34 +745,52 @@ const TravelmateForm = ({ mode = 'create', initialData = null, onSubmit, onClose
 
         {/* 모임 신청 안내 메시지 설명 - 전체 너비 */}
         <div className={styles.fullWidthSection}>
-          <h3 className={styles.sectionTitle}>모임 신청 안내 메시지 설명</h3>
-          <textarea
-            name="applicationDescription"
-            value={formData.applicationDescription}
-            onChange={handleInputChange}
-            className={`${styles.textarea} ${
-              fieldValidation.applicationDescription === 'valid' ? styles.validInput : 
-              fieldValidation.applicationDescription === 'invalid' ? styles.invalidInput : ''
-            }`}
-            placeholder="모임 신청자에게 전달할 안내 메시지를 작성해주세요"
-            rows="6"
-            required
-          />
-          {validationErrors.applicationDescription && (
-            <div className={styles.errorMessage}>{validationErrors.applicationDescription}</div>
-          )}
+          <div className={styles.textareaGroup}>
+            <label className={styles.sectionTitle}>
+              모임 신청 안내 메시지 <span className={styles.required}>*</span>
+            </label>
+            <textarea
+              name="applicationDescription"
+              value={formData.applicationDescription}
+              onChange={handleInputChange}
+              className={`${styles.textarea} ${
+                fieldValidation.applicationDescription === 'valid' ? styles.validInput : 
+                fieldValidation.applicationDescription === 'invalid' ? styles.invalidInput : ''
+              }`}
+              placeholder="모임 신청자에게 전달할 안내 메시지를 작성해주세요"
+              rows="6"
+              required
+            />
+            {validationErrors.applicationDescription && (
+              <div className={styles.errorMessage}>{validationErrors.applicationDescription}</div>
+            )}
+          </div>
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
-            취소
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button type="button" className={styles.cancelButton} onClick={onClose}>
+              취소
+            </button>
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? (
+              <Circles height="20" width="20" color="#fff" />
+            ) : (
+              mode === 'create' ? '모임 생성' : '모임 수정'
+            )}
           </button>
-          <button type="submit" className={styles.saveButton} disabled={loading}>
-            {loading ? '저장 중...' : (mode === 'create' ? '모임 생성' : '모임 수정')}
-          </button>
+          </div>
         </div>
       </form>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={hideConfirm}
+        onConfirm={confirmAction ? handleConfirmAction : null}
+        message={confirmMessage}
+        type={confirmType}
+      />
     </div>
   );
 };
