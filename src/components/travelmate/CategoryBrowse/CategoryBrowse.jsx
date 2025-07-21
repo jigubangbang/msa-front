@@ -111,7 +111,15 @@ const CategoryBrowse = ({ onCategorySelect }) => {
           >
             <div className={styles.categoryIcon}>
               {item.icon && item.icon}
-              {item.image && <img src={item.image} alt={item.name} className={styles.categoryImage} />}
+              {item.image && (
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className={`${styles.categoryImage} ${
+                    item.id === 4 || item.id === 5 ? styles.smallerImage : ''
+                  }`} 
+                />
+              )}
             </div>
             <div className={styles.categoryName}>
               {item.name}
