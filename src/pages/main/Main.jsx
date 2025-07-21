@@ -279,6 +279,16 @@ export default function Main() {
             <DotNav sections={SECTIONS} activeSection={activeSection} onDotClick={handleDotClick} />
 
             <div id="main-poster" className={styles.mainPoster}>
+                <video 
+                    className={styles.backgroundVideo}
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline
+                >
+                    <source src="/jigu.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
                 <div className={styles.posterTitle}>JIGU BANGBANG</div>
                 <div className={styles.posterSubtitle}>여행, 그 이상의 여정을 기록하다</div>
                 <button className={styles.startButton} onClick={() => handleDotClick('feed-section')}>
