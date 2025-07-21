@@ -36,7 +36,7 @@ const ConfirmModal = ({
                 취소
               </button>
               <button
-                className={`${styles.btn} ${styles.confirmButton}`}
+                className={`${styles.btn} ${styles.darkButton}`}
                 onClick={handleConfirm}
               >
                 확인
