@@ -228,12 +228,12 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
             onKeyDown={handleKeyDown}
             onCompositionStart={handleCompositionStart}
             onCompositionEnd={handleCompositionEnd}
-            placeholder={isKicked ? "강제 퇴장되어 메시지를 보낼 수 없습니다." : "메세지를 입력하세요..."}
+            placeholder={isKicked ? "강제 퇴장되어 메시지를 보낼 수 없습니다." : "메시지를 입력하세요"}
             className="chat-input"
             disabled={isKicked}
           />
           <button type="submit" className="chat-send-button" disabled={isKicked}>
-            Send
+            전송
           </button>
         </form>
       </div>

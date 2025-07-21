@@ -191,14 +191,14 @@ body.dark-mode {
 
 .my-message {
   align-self: flex-end;
-  background-color: #F1DC81;
+  background-color: #C4D79B;
   color: var(--color-text-primary);
   margin-left: auto; /* message-row가 flex-end로 정렬하지만, 버블 자체를 오른쪽 끝으로 밀어냄 */
 }
 
 .chat-panel-container.dark-mode .my-message {
-  background-color: #706435;
-  color: #f9f9f9;
+  background-color: #C4D79B;
+  color: #000;
 }
 
 .other-message {

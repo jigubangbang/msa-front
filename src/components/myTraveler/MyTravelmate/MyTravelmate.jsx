@@ -355,7 +355,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                           toggleApplications(travel.id);
                         }}
                       >
-                        동행 신청 ({travel.applications.length}명)
+                        모임 참가 신청 ({travel.applications.length}명)
                         <span>
                           <img src={expandedApplications[travel.id] ? drop : drop_down} className={expandedApplications[travel.id] ? styles.expanded : ''}/>
                         </span>
