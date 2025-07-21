@@ -114,6 +114,11 @@
   margin-bottom: 5px;
 }
 
+.smallerImage {
+  width: 55px !important;  /* 30대, 40대만 작게 */
+  height: 55px !important;
+}
+
 .categoryName {
   font-size: 14px;
   font-weight: 600;
