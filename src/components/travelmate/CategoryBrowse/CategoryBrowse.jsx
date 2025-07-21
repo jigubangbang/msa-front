@@ -8,6 +8,8 @@ import man from '../../../assets/community/user/40_man.png';
 import oldMan from '../../../assets/community/user/50_man.png';
 import friends from '../../../assets/community/user/friends.png';
 import family from '../../../assets/community/user/family.png';
+import female from '../../../assets/community/user/female.svg'; 
+import male from '../../../assets/community/user/male.svg';
 
 const CategoryBrowse = ({ onCategorySelect }) => {
   const [activeTab, setActiveTab] = useState('지역');
@@ -22,8 +24,8 @@ const CategoryBrowse = ({ onCategorySelect }) => {
       { id: 'OCEANIA', name: '오세아니아', icon: '🏝️' }
     ],
     대상: [
-      { id: 1, name: '남성 전용 모임', icon: '🚹'},
-      { id: 2, name: '여성 전용 모임', icon: '🚺'},
+      { id: 1, name: '남성 전용 모임', image: male },
+      { id: 2, name: '여성 전용 모임', image: female },
       { id: 3, name: '20대 모임', image: woman },
       { id: 4, name: '30대 모임', image: maam },
       { id: 5, name: '40대 모임', image: man },
@@ -111,7 +113,15 @@ const CategoryBrowse = ({ onCategorySelect }) => {
           >
             <div className={styles.categoryIcon}>
               {item.icon && item.icon}
-              {item.image && <img src={item.image} alt={item.name} className={styles.categoryImage} />}
+              {item.image && (
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className={`${styles.categoryImage} ${
+                    item.id === 4 || item.id === 5 ? styles.smallerImage : ''
+                  }`} 
+                />
+              )}
             </div>
             <div className={styles.categoryName}>
               {item.name}
