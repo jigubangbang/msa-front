@@ -4,6 +4,8 @@ import API_ENDPOINTS from '../../../utils/constants';
 import styles from './BoardForm.module.css';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import LoginConfirmModal from '../../common/LoginConfirmModal/LoginConfirmModal';
+import certiphoto from '../../../assets/quest/certiphoto.svg';
+import { Circles } from "react-loader-spinner";
 
 const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null, onSubmit, onClose }) => {
   const MAX_IMAGE_COUNT = 10;
@@ -102,17 +104,17 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '제목은 필수입니다' };
+          return { isValid: false, error: '게시글 제목은 필수입니다' };
         } else if (value.length > 100) {
-          return { isValid: false, error: '제목은 100자를 초과할 수 없습니다' };
+          return { isValid: false, error: '게시글 제목은 100자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
       case 'content':
         if (!value.trim()) {
-          return { isValid: false, error: '내용은 필수입니다' };
+          return { isValid: false, error: '게시글 내용은 필수입니다' };
         } else if (value.length > 5000) {
-          return { isValid: false, error: '내용은 5000자를 초과할 수 없습니다' };
+          return { isValid: false, error: '게시글 내용은 5000자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
@@ -335,7 +337,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
   if (loading && mode === 'edit' && !initialData) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <div className={styles.loading}>
+          <CirclesSpinner/>
+        </div>
       </div>
     );
   }
@@ -353,7 +357,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         <div className={styles.titleSection}>
           <div className={styles.categoryColumn}>
             <div className={styles.formGroup}>
-            <label className={styles.label}>카테고리</label>
+            <label className={styles.label}>
+              카테고리 <span className={styles.required}>*</span>
+            </label>
             <div className={styles.categoryDropdown} ref={categoryDropdownRef}>
               <button 
                 type="button"
@@ -361,7 +367,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                 onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
               >
                 {CATEGORY_OPTIONS.find(option => option.value === formData.boardId)?.label || '카테고리 선택'}
-                <span className={`${styles.arrow} ${categoryDropdownOpen ? styles.arrowOpen : ''}`}>▾</span>
+                <span className={`${styles.arrow} ${categoryDropdownOpen ? styles.arrowOpen : ''}`}>▼</span>
               </button>
               
               {categoryDropdownOpen && (
@@ -388,7 +394,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
 
           <div className={styles.titleColumn}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>제목</label>
+              <label className={styles.label}>
+                게시글 제목 <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
                 name="title"
@@ -398,7 +406,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="제목을 입력하세요"
+                placeholder="게시글 제목을 입력하세요"
                 required
               />
               {validationErrors.title && (
@@ -446,7 +454,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
                           className={styles.emptySlot}
                           onClick={(e) => openFileDialog(index, e)}
                         >
-                          <span className={styles.uploadIcon}>📷</span>
+                          <span className={styles.uploadIcon}>
+                            <img src={certiphoto} alt="camera" />
+                          </span>
                           <p className={styles.uploadText}>이미지 업로드</p>
                         </div>
                       )
@@ -464,7 +474,9 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
 
         {/* 내용 입력 */}
         <div className={styles.formGroup}>
-          <label className={styles.label}>내용</label>
+          <label className={styles.label}>
+            게시글 내용 <span className={styles.required}>*</span>
+          </label>
           <textarea
             name="content"
             value={formData.content}
@@ -473,7 +485,7 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
               fieldValidation.content === 'valid' ? styles.validInput : 
               fieldValidation.content === 'invalid' ? styles.invalidInput : ''
             }`}
-            placeholder="내용을 입력하세요"
+            placeholder="게시글 내용을 입력하세요"
             rows="15"
             required
           />
@@ -483,22 +495,28 @@ const BoardForm = ({ mode = 'create', currentUserId, isLogin, initialData = null
         </div>
 
         {/* 제출 버튼 */}
-        <div className={styles.actions}>
-          <button 
-            type="button" 
-            className={styles.cancelButton} 
-            onClick={handleCancel}
-            disabled={loading}
-          >
-            취소
-          </button>
-          <button 
-            type="submit" 
-            className={styles.submitButton} 
-            disabled={loading}
-          >
-            {loading ? '저장 중...' : (mode === 'create' ? '작성하기' : '수정하기')}
-          </button>
+        <div className={styles.buttonRow}>
+          <div className={styles.centerButtons}>
+            <button 
+              type="button" 
+              className={styles.cancelButton} 
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              취소
+            </button>
+            <button 
+              type="submit" 
+              className={styles.submitButton} 
+              disabled={loading}
+            >
+              {loading ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                mode === 'create' ? '작성하기' : '수정하기'
+              )}
+            </button>
+          </div>
         </div>
       </form>
 

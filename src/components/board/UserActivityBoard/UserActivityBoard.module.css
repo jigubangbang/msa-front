@@ -46,7 +46,7 @@
 .moreButton {
   background: none;
   border: none;
-  color: #007bff;
+  color: #333;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -57,7 +57,7 @@
 
 .moreButton:hover {
   background-color: #e3f2fd;
-  color: #0056b3;
+  color: #808080;
 }
 
 .postList {

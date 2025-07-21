@@ -103,7 +103,8 @@ useEffect(() => {
       const response = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travelmate/${postId}`);
       setDetail(response.data.travelmate);
 
-      if (currentUserId == response.data.travelmate.creatorId){
+      // 타입 안전한 비교로 수정 (== 대신 ===, 문자열로 변환)
+      if (String(currentUserId) === String(response.data.travelmate.creatorId)){
         setMemberStatus('CREATOR')    
       }
     } catch (error) {
@@ -112,6 +113,7 @@ useEffect(() => {
       setLoading(false);
     }
   };
+
 
   const fetchLikeStatus = async () => {
     try {
@@ -188,10 +190,10 @@ useEffect(() => {
         }
       });
       setMemberStatus('PENDING');
-      showAlert('참여 신청이 완료되었습니다.');
+      showAlert('참가 신청이 완료되었습니다!');
     } catch (error) {
       console.error('Failed to request join:', error);
-      const errorMessage = error.response?.data?.error || '참여 신청에 실패했습니다.';
+      const errorMessage = error.response?.data?.error || '참가 신청에 실패했습니다';
       showAlert(errorMessage);
       throw error; 
     }
@@ -211,13 +213,13 @@ useEffect(() => {
   const getJoinButtonText = () => {
     switch (memberStatus) {
       case 'PENDING':
-        return '모임 참여 신청 중';
+        return '모임 참가 신청 중';
       case 'MEMBER':
-        return '참여 중인 모임: 채팅하기';
+        return '참가 중인 모임: 채팅하기';
       case 'CREATOR' :
         return '내 모임: 채팅하기';
       default:
-        return '모임 참여 신청하기';
+        return '모임 참가 신청하기';
     }
   };
 
@@ -226,7 +228,7 @@ useEffect(() => {
   };
 
   const handleDelete = async () => {
-    setDeleteConfirmMessage('정말로 삭제하시겠습니까?');
+    setDeleteConfirmMessage('정말 삭제하시겠습니까?');
     setShowDeleteConfirm(true);
   };
 
@@ -290,9 +292,18 @@ useEffect(() => {
     if (response.data.success && response.data.chatRoomId) {
         openChat(response.data.chatRoomId, currentUserId, {
           onLeave: () => {
-            fetchTravelmateDetail();
-            if (isLogin) {
-              fetchMemberStatus();
+            const isCreator = detail && String(currentUserId) === String(detail.creatorId);
+          
+            if (isCreator) {
+              // 방장인 경우: memberStatus 유지하고 fetchMemberStatus 호출 안함
+              setMemberStatus('CREATOR');
+              fetchTravelmateDetail();
+            } else {
+              // 일반 멤버인 경우: 기존 로직 그대로
+              fetchTravelmateDetail();
+              if (isLogin) {
+                fetchMemberStatus();
+              }
             }
           }
         });
@@ -400,21 +411,21 @@ useEffect(() => {
       {/* 여행 정보 */}
       <div className={styles.travelInfo}>
         <div className={styles.infoItem}>
-          <span className={styles.label}>모임 지역:</span>
+          <span className={styles.label}>여헹 장소 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.locationNames || '미정')}</span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>여행 기간:</span>
+          <span className={styles.label}>여행 기간 :</span>
           <span className={styles.value}>
             {isBlind ? '-' : formatDateRange(detail.startAt, detail.endAt)}
           </span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>대상:</span>
+          <span className={styles.label}>모집 대상 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.targetNames || '-')}</span>
         </div>
         <div className={styles.infoItem}>
-          <span className={styles.label}>테마:</span>
+          <span className={styles.label}>여행 테마 :</span>
           <span className={styles.value}>{isBlind ? '-' : (detail.themeNames || '-')}</span>
         </div>
       </div>
@@ -423,7 +434,7 @@ useEffect(() => {
       <div className={styles.descriptionSection}>
         <h3 className={styles.sectionTitle}>모임 설명</h3>
         <div className={styles.description}>
-          {isBlind ? '블라인드 처리된 게시글입니다.' : (detail.description || '상세 설명이 없습니다.')}
+          {isBlind ? '블라인드 처리된 게시글입니다' : (detail.description || '상세 설명이 없습니다')}
         </div>
       </div>
 

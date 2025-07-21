@@ -3,6 +3,7 @@ import styles from './QuestCertificationViewModal.module.css';
 import API_ENDPOINTS from '../../../utils/constants';
 import AlertModal from '../QuestActionModal/AlertModal';
 import api from '../../../apis/api';
+import { Circles } from "react-loader-spinner";
 
 const QuestCertificationViewModal = ({ 
   isOpen, 
@@ -113,7 +114,7 @@ const QuestCertificationViewModal = ({
           <div className={styles.modalContent}>
             {loading ? (
               <div className={styles.loading}>
-                <div className={styles.loadingSpinner}></div>
+                <Circles height="50" width="50" color="#fff" />
               </div>
             ) : certificationData ? (
               <div className={styles.certificationContent}>

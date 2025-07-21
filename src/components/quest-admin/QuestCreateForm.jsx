@@ -49,8 +49,8 @@ const QuestCreateForm = ({ onClose, onSave }) => {
     { value: "5", label: "자연 체험" },
     { value: "6", label: "여행 생활" },
     { value: "7", label: "소통/공유" },
-    { value: "8", label: "고난이도 도전" },
-    { value: "9", label: "특수 조건" },
+    { value: "8", label: "특수 조건" },
+    { value: "9", label: "고난이도 도전" },
     { value: "10", label: "기간 제한" },
   ];
 

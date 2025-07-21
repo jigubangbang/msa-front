@@ -2,7 +2,9 @@
 
 .container {
   padding: 20px;
-  width: 1100px;
+  width: 100%;
+  max-width: 1100px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -14,8 +16,7 @@
 }
 
 .chatButtonContainer {
-  margin-top: 12px;
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid #f0f0f0;
 }
 
@@ -89,16 +90,16 @@
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  padding: 30px 30px;
+  padding-bottom: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   cursor: pointer;
   position: relative;
 }
 
 .travelCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
 .travelHeader {
@@ -129,6 +130,7 @@
   color: #666;
   font-weight: 500;
   width: 245px;
+  margin-top: 8px;
 }
 
 .locations img {
@@ -171,19 +173,24 @@
 .travelSchedule, .travelMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 15px;
   font-size: 14px;
   color: #666;
   line-height: 1.4;
+  font-weight: 500;
 }
 
 .travelSchedule span, travelMeta span {
   font-weight: 500;
 }
 
+.travelSchedule {
+  margin-bottom: 5px;
+}
+
 .themes {
   padding-top: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 90px;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -341,31 +348,62 @@
 }
 
 .actionButton {
+  font-family: 'Pretendard';
   padding: 8px 16px;
+  background-color: #000;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .actionButton.accept {
-  background-color: #4caf50;
-  color: white;
+  font-family: 'Pretendard';
+  padding: 8px 16px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .actionButton.accept:hover {
-  background-color: #2e7d32;
+  background-color: #333;
+  transform: translateY(-1px);
 }
 
 .actionButton.reject {
-  background-color: #f44336;
-  color: white;
+  font-family: 'Pretendard';
+  padding: 6px 12px;
+  background-color: transparent; 
+  color: #666;                   
+  border: 1px solid #ccc;        
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+  box-sizing: border-box;
 }
 
 .actionButton.reject:hover {
-  background-color: #da190b;
+  border-color: #000;           
+  color: #000;                  
+  background-color: #fafafa;    
+  transform: translateY(-1px);
 }
 
 .statusBadge {

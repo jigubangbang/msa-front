@@ -312,6 +312,10 @@
   transition: all 0.3s ease;
   outline: none !important;
   box-sizing: border-box;
+  min-width: 80px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submitButton:hover:not(:disabled) {

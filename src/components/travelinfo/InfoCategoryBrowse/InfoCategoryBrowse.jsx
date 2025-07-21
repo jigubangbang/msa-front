@@ -12,9 +12,9 @@ const InfoCategoryBrowse = ({ onCategorySelect }) => {
     { id: 7, label: '아시아', icon: '🌏' },
     { id: 8, label: '유럽', icon: '🏰' },
     { id: 9, label: '미주', icon: '🗽' },
-    { id: 10, label: '중동/아프리카', icon: '🦁' },
-    { id: 11, label: '오세아니아', icon: '🏄‍♀️' },
-    { id: 12, label: '국내', icon: '🏯' }
+    { id: 10, label: '중동/아프리카', icon: '🏜️' },
+    { id: 11, label: '오세아니아', icon: '🏝️' },
+    { id: 12, label: '국내', icon: '🇰🇷' }
   ];
 
   const handleCategoryClick = (category) => {

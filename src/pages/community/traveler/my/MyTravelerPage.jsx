@@ -8,6 +8,7 @@ import MyTravelmate from "../../../../components/myTraveler/MyTravelmate/MyTrave
 import MyTravelinfo from "../../../../components/myTraveler/MyTravelinfo/MyTravelinfo";
 import api from "../../../../apis/api";
 import API_ENDPOINTS from "../../../../utils/constants";
+import CirclesSpinner from "../../../../components/common/Spinner/CirclesSpinner";
 
 
 export default function MyTravelerPage({page}) {
@@ -121,8 +122,13 @@ const fetchTravelerData = async () => {
     return (
       <div className={styles.container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
-        <div className={styles.content}>
-          <div className={styles.loading}>로딩 중...</div>
+        <div className={styles.content} style={{ 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          marginLeft: '200px',
+          transform: 'translateX(-100px)'
+        }}>
+          <CirclesSpinner height={50} width={50} color="#000" />
         </div>
       </div>
     );
@@ -160,7 +166,7 @@ const fetchTravelerData = async () => {
                 className={`${styles.tabButton} ${activeTab === 'travelinfo' ? styles.active : ''}`}
                 onClick={() => handleTabChange('travelinfo')}
               >
-                내 여행자 정보 공유방
+                내 정보 공유방
               </button>
             </div>
           </div>

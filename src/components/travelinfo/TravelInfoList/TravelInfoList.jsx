@@ -324,7 +324,7 @@ const TravelInfoList = ({
 
   const handleDelete = async (travelinfoId) => {
     customDeleteConfirm(
-      '정말로 이 정보방을 삭제하시겠습니까?',
+      '정말 이 정보 공유방을 삭제하시겠습니까?',
       async () => {
         try {
           await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
@@ -333,7 +333,7 @@ const TravelInfoList = ({
               'User-Id': currentUserId,
             },
           });
-          showAlert('정보방이 삭제되었습니다.');
+          showAlert('정보 공유방이 삭제되었습니다');
           // 목록 새로고침
           fetchTravelinfos();
         } catch (error) {
@@ -483,7 +483,7 @@ const getSortDisplayText = () => {
       <p className={styles.totalCount}>
         {searchTerm 
           ? `"${searchTerm}"의 검색 결과... ${totalCount}개의 정보 공유방을 찾았습니다.`
-          : `현재 ${totalCount}개의 정보 공유방이 있습니다.`
+          : `현재 ${totalCount}개의 정보 공유방이 있습니다`
         }
       </p>
       
@@ -505,7 +505,7 @@ const getSortDisplayText = () => {
       <div className={styles.tableHeader}>
         <div className={styles.headerCell}>썸네일</div>
         <div className={styles.headerCell}>제목</div>
-        <div className={styles.headerCell}>작성자</div>
+        <div className={styles.headerCell}>생성자</div>
         <div className={styles.headerCell}>멤버</div>
         <div className={styles.headerCell}>최근 메시지</div>
         <div className={styles.headerCell}>좋아요</div>

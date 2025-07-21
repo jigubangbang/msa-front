@@ -4,6 +4,21 @@ import LocationSelector from '../LocationSelector/LocationSelector';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 
+const getDisplayName = (originalName) => {
+  const nameMapping = {
+    '맛집 탐방 여행 모임': '맛집 탐방 모임',
+    '등산/트레킹 여행 모임': '등산/트레킹 모임',
+    '사진 찍기 여행 모임': '사진 촬영 모임',
+    '역사/문화 유적지 탐방 모임': '유적지 탐방 모임',
+    '축제/이벤트 참가 여행 모임': '축제/이벤트 참가 모임',
+    '자연 속 힐링 여행 모임': '자연 속 힐링 모임',
+    '액티비티/레포츠 여행 모임': '액티비티/레포츠 모임',
+    '캠핑/차박 여행 모임': '캠핑/차박 모임'
+  };
+  
+  return nameMapping[originalName] || originalName;
+};
+
 export default function TravelmateFilter({ onSubmit }) {
   const [activeToggle, setActiveToggle] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -19,6 +34,7 @@ export default function TravelmateFilter({ onSubmit }) {
   const [travelStyles, setTravelStyles] = useState([]);
 
   const [locationOpen, setLocationOpen] = useState(false);
+  const [locationReset, setLocationReset] = useState(false);
 
   const filterRefs = {
     location: useRef(null),
@@ -37,7 +53,14 @@ export default function TravelmateFilter({ onSubmit }) {
 
         // 테마 데이터 로딩
         const themeResponse = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/themes`);
-        setThemes(themeResponse.data);
+
+        // 이름 매핑 처리
+        const mappedThemes = themeResponse.data.map(theme => ({
+          ...theme,
+          label: getDisplayName(theme.label)
+        }));
+
+        setThemes(mappedThemes);
 
         // 여행 스타일 데이터 로딩
         const styleResponse = await api.get(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/travel-styles`);
@@ -106,17 +129,24 @@ export default function TravelmateFilter({ onSubmit }) {
       ...prev,
       [filterType]: []
     }));
+
+    if (filterType === 'locations') {
+      setLocationReset(true);
+      setTimeout(() => setLocationReset(false), 100);
+    }
   };
 
   const resetAllFilters = () => {
-    setSelectedFilters({
+    const newFilters = { 
       locations: [],
       targets: [],
       themes: [],
       styles: []
-    });
+    };
+    setSelectedFilters(newFilters);
     setActiveToggle(null);
     setLocationOpen(false);
+    onSubmit(newFilters);
   };
 
   const getToggleText = (filterType) => {
@@ -216,6 +246,9 @@ export default function TravelmateFilter({ onSubmit }) {
         </div>
 
         <div className={styles.buttonDiv}>
+        <button type="button" className={styles.resetAllButton} onClick={resetAllFilters}>
+          <img src="/icons/common/refresh.svg" alt="reset all"/>
+        </button>
         <button type="button" className={`${styles.button} ${styles.darkButton}`} onClick={handleApplyClick}>적용</button>
         </div>
       </div>
@@ -245,15 +278,6 @@ export default function TravelmateFilter({ onSubmit }) {
               ))
             )}
           </div>
-          
-          {(selectedFilters.locations.length > 0 || 
-            selectedFilters.targets.length > 0 || 
-            selectedFilters.themes.length > 0 || 
-            selectedFilters.styles.length > 0) && (
-            <button type="button" className={styles.resetAllButton} onClick={resetAllFilters}>
-              <img src="/icons/common/refresh.svg" alt="reset all"/>
-            </button>
-          )}
         </div>
       )}
 
@@ -271,7 +295,7 @@ export default function TravelmateFilter({ onSubmit }) {
             </button>
           </div>
           <div className={locationOpen ? styles.selectorLocation : styles.selector}>
-            <LocationSelector onSubmit={handleLocationSubmit} locationOpen={handleLocationOpen} locationClose={handleLocationClose}/>
+            <LocationSelector key="location-selector" onSubmit={handleLocationSubmit} locationOpen={handleLocationOpen} locationClose={handleLocationClose} reset={locationReset}/>
           </div>
         </div>
       )}

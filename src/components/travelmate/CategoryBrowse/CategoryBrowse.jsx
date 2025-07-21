@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import styles from './CategoryBrowse.module.css';
+import girl from '../../../assets/community/user/10_girl.png';
+import woman from '../../../assets/community/user/20_woman.png';
+import man from '../../../assets/community/user/30_man.png';
+import oldMan from '../../../assets/community/user/50_man.png';
+import friends from '../../../assets/community/user/friends.png';
+import family from '../../../assets/community/user/family.png';
 
 const CategoryBrowse = ({ onCategorySelect }) => {
   const [activeTab, setActiveTab] = useState('지역');
@@ -9,29 +15,29 @@ const CategoryBrowse = ({ onCategorySelect }) => {
       { id: 'ASIA', name: '아시아', icon: '🌏' },
       { id: 'EUROPE', name: '유럽', icon: '🏰' },
       { id: 'NORTH_AMERICA', name: '북아메리카', icon: '🗽' },
-      { id: 'AFRICA', name: '아프리카', icon: '🦁' },
-      { id: 'OCEANIA', name: '오세아니아', icon: '🏄‍♀️' },
-      { id: 'SOUTH_AMERICA', name: '남아메리카', icon: '🦙' }
+      { id: 'SOUTH_AMERICA', name: '남아메리카', icon: '⛰️' },
+      { id: 'AFRICA', name: '아프리카', icon: '🐘' },
+      { id: 'OCEANIA', name: '오세아니아', icon: '🏝️' }
     ],
     대상: [
-      { id: 1, name: '남성 전용 모임', icon: '👨' },
-      { id: 2, name: '여성 전용 모임', icon: '👩' },
-      { id: 3, name: '20대 모임', icon: '🎉' },
-      { id: 4, name: '30대 모임', icon: '💼' },
-      { id: 5, name: '40대 모임', icon: '👔' },
-      { id: 6, name: '50대 이상 모임', icon: '🎯' },
-      { id: 7, name: '가족/아이 동반 모임', icon: '👨‍👩‍👧‍👦' },
-      { id: 8, name: '친구 동반 모임', icon: '👫' }
+      { id: 1, name: '남성 전용 모임', icon: '♀️' },
+      { id: 2, name: '여성 전용 모임', icon: '♂️' },
+      { id: 3, name: '20대 모임', image: woman },
+      { id: 4, name: '30대 모임', image: man },
+      { id: 5, name: '40대 모임', image: girl },
+      { id: 6, name: '50대 이상 모임', image: oldMan },
+      { id: 7, name: '가족/아이 동반 모임', image: family },
+      { id: 8, name: '친구 동반 모임', image: friends }
     ],
     테마: [
-      { id: 9, name: '맛집 탐방 여행 모임', icon: '🍜' },
-      { id: 10, name: '등산/트레킹 여행 모임', icon: '⛰️' },
-      { id: 11, name: '사진 찍기 여행 모임', icon: '📸' },
-      { id: 12, name: '역사/문화 유적지 탐방 모임', icon: '🏛️' },
-      { id: 13, name: '축제/이벤트 참가 여행 모임', icon: '🎪' },
-      { id: 14, name: '자연 속 힐링 여행 모임', icon: '🌿' },
-      { id: 15, name: '액티비티/레포츠 여행 모임', icon: '🏄‍♂️' },
-      { id: 16, name: '캠핑/차박 여행 모임', icon: '⛺' }
+      { id: 9, name: '맛집 탐방 모임', icon: '🍜' },
+      { id: 10, name: '등산/트레킹 모임', icon: '🏞️' },
+      { id: 11, name: '사진 촬영 모임' , icon: '📸' },
+      { id: 12, name: '유적지 탐방 모임', icon: '🏛️' },
+      { id: 13, name: '축제/이벤트 참가 모임', icon: '🎭' },
+      { id: 14, name: '자연 속 힐링 모임', icon: '🌿' },
+      { id: 15, name: '액티비티/레포츠 모임', icon: '🏄' },
+      { id: 16, name: '캠핑/차박 모임', icon: '⛺' }
     ],
     '여행 스타일': [
       { id: 'A', name: '열정트래블러', image: '/type/type_a.png' },

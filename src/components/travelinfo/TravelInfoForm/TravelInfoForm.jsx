@@ -3,6 +3,7 @@ import styles from './TravelInfoForm.module.css';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
+import { Circles } from "react-loader-spinner";
 
 const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose }) => {
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -386,7 +387,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
     <div className={styles.travelInfoForm}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          {mode === 'create' ? '공유방 생성' : '공유방 수정'}
+          {mode === 'create' ? '정보 공유방 생성' : '정보 공유방 수정'}
         </h2>
         <button className={styles.closeButton} onClick={onClose}>✕</button>
       </div>
@@ -525,15 +526,14 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className={styles.addedSection}>
               {selectedThemes.length > 0 && (
                 <button type="button" className={styles.resetButton} onClick={resetThemes}>
                   <img src="/icons/common/refresh.svg" alt="refresh"/>
                 </button>
               )}
+            </div>
 
+            <div className={styles.addedSection}>
               <div className={styles.addedThemes}>
                 {selectedThemes.map(theme => (
                   <div key={theme.id} className={styles.themeTag}>
@@ -559,7 +559,7 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
         {/* 참여 안내 메시지 */}
         <div className={styles.fullWidthSection}>
           <label className={styles.label}>
-            참여 안내 메시지 <span className={styles.required}>*</span>
+            공유방 참여 안내 메시지 <span className={styles.required}>*</span>
           </label>
           <textarea
             name="enterDescription"
@@ -585,7 +585,11 @@ const TravelInfoForm = ({ mode = 'create', initialData = null, onSubmit, onClose
               취소
             </button>
             <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading ? '저장 중...' : mode === 'create' ? '공유방 생성' : '공유방 수정'}
+              {loading ? (
+                <Circles height="20" width="20" color="#fff" />
+              ) : (
+                mode === 'create' ? '공유방 생성' : '공유방 수정'
+              )}
             </button>
           </div>
         </div>

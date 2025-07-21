@@ -9,6 +9,8 @@ import api from "../../apis/api";
 import { useNavigate } from "react-router-dom";
 import LoginConfirmModal from "../../components/common/LoginConfirmModal/LoginConfirmModal";
 import trendingIcon from "../../assets/feed/trending_grey.svg";
+import upIcon from "../../assets/feed/up_white.svg";
+import downIcon from "../../assets/feed/down_white.svg";
 
 export default function Feed() {
     const [filter, setFilter] = useState();
@@ -76,23 +78,67 @@ export default function Feed() {
                     <div className={styles.boxWrapper}>
                         <div className={`${styles.boxItem} ${styles.centeredBox}`}>
                             <p className={styles.boxText}>당신만의 여행 스타일을 찾아보세요.</p>
-                            <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleTestClick}>
+                            <img src={upIcon} className={styles.directionIcon}/>
+                            <div className={styles.scrollContainer}>
+                                <div className={styles.scrollContent}>
+                                    <div>열정트래블러</div>
+                                    <div>느긋한여행가</div>
+                                    <div>디테일플래너</div>
+                                    <div>슬로우로컬러</div>
+                                    <div>감성기록가</div>
+                                    <div>혼행마스터</div>
+                                    <div>맛집헌터</div>
+                                    <div>문화수집가</div>
+                                    <div>자연힐링러</div>
+                                    <div>실속낭만러</div>
+
+
+                                    <div>열정트래블러</div>
+                                    <div>느긋한여행가</div>
+                                    <div>디테일플래너</div>
+                                    <div>슬로우로컬러</div>
+                                    <div>감성기록가</div>
+                                    <div>혼행마스터</div>
+                                    <div>맛집헌터</div>
+                                    <div>문화수집가</div>
+                                    <div>자연힐링러</div>
+                                    <div>실속낭만러</div>
+                                </div>
+                            </div>
+                            <img src={downIcon} className={styles.directionIcon}/>
+                            <button className={`${styles.btn} ${styles.btnSecondary} ${styles.styleBtn}`} onClick={handleTestClick}>
                                 나의 여행 스타일 찾기 →
                             </button>
                         </div>
                         <div className={styles.boxItem}>
                             <div className={styles.titleRow}>
                                 <p className={styles.boxText}>인기 여행지</p>
-                                <img src={trendingIcon} className={styles.icon}/>
+                                <img src={trendingIcon} className={`${styles.icon} ${styles.trendingIcon}`}/>
                             </div>
                             {topCountries?.length > 0 && (
-                                <div className={styles.countryList}>
-                                    {topCountries.map((country) => (
-                                        <div key={country.id} className={styles.countryItem}>
-                                            <img className={styles.flagIcon} src={findFlagUrlByIso3Code(country.id)} alt={country.name}/>
-                                            {country.name}
+                                <div className={styles.countryGrid}>
+                                    <div className={styles.featuredCountry}>
+                                        <img
+                                            className={styles.featuredFlag}
+                                            src={findFlagUrlByIso3Code(topCountries[0].id)}
+                                            alt={topCountries[0].name}
+                                        />
+                                        <div className={styles.countryText}>
+                                            <span className={styles.countryIndex}>1</span>
+                                            <span className={styles.featuredCountryName}>{topCountries[0].name}</span>
                                         </div>
-                                    ))}
+                                    </div>
+                                    <div className={styles.countryList}>
+                                        {topCountries.slice(1).map((country, idx) => (
+                                            <div key={country.id} className={styles.countryItem}>
+                                                <div className={styles.countryText}>
+                                                    <span className={styles.countryIndex}>{idx + 2}</span>
+                                                    <span className={styles.countryName}>{country.name}</span>
+                                                </div>
+                                                <img className={styles.flagIcon} src={findFlagUrlByIso3Code(country.id)} alt={country.name}/>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>

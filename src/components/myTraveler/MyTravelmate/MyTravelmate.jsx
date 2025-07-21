@@ -95,7 +95,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       }
     } catch (error) {
       console.error('Failed to process application:', error);
-      showAlertModal('처리 중 오류가 발생했습니다.');
+      showAlertModal('처리 중 오류가 발생했습니다');
     }
   }
 
@@ -106,13 +106,13 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           'User-Id': currentUserId,
         },
       });
-      showAlertModal(`신청을 ${action === 'accept' ? '수락' : '거절'}했습니다.`);
+      showAlertModal(`신청을 ${action === 'accept' ? '수락' : '거절'}했습니다`);
       if (fetchTravelerData) {
         fetchTravelerData();
       }
     } catch (error) {
       console.error('Failed to process application:', error);
-      showAlertModal('처리 중 오류가 발생했습니다.');
+      showAlertModal('처리 중 오류가 발생했습니다');
     }
   };
 
@@ -122,7 +122,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
 
   const handleDelete = async (travelId) => {
     customConfirm(
-      '정말로 이 여행 모임을 삭제하시겠습니까?',
+      '정말 이 여행자 모임을 삭제하시겠습니까?',
       async () => {
         try {
           await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelmate/${travelId}`, {
@@ -130,14 +130,14 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
               'User-Id': currentUserId,
             },
           });
-          showAlertModal('여행 모임이 삭제되었습니다.');
+          showAlertModal('여행자 모임이 삭제되었습니다');
           
           if (fetchTravelerData) {
             fetchTravelerData();
           }
         } catch (error) {
           console.error('Failed to delete travelmate:', error);
-          showAlertModal('삭제에 실패했습니다.');
+          showAlertModal('삭제에 실패했습니다');
         }
       }
     );
@@ -173,17 +173,18 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       
       setShowReportModal(false);
       setReportInfo(null);
-      showAlertModal('신고가 접수되었습니다.');
+      showAlertModal('신고가 접수되었습니다');
       
     } catch (error) {
       console.error('Failed to submit report:', error);
-      const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다.';
+      const errorMessage = error.response?.data?.error || '신고 접수에 실패했습니다';
       showAlertModal(errorMessage);
     }
   };
 
     //채팅하기 버튼
     const handleChatClick = async (groupId) => {
+    console.log('handleChatClick 함수 실행됨!', groupId);
     try {
       const response = await api.post(`${API_ENDPOINTS.COMMUNITY.PUBLIC}/chat`, {
         groupType: "TRAVELMATE",
@@ -202,12 +203,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
           }
         });
       } else {
-        showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
+        showAlertModal('채팅방 정보를 가져오는데 실패했습니다');
       }
       
     } catch (error) {
       console.error('Failed to get chat room:', error);
-      showAlertModal('채팅방을 불러오는데 실패했습니다.');
+      showAlertModal('채팅방을 불러오는데 실패했습니다');
     }
   };
 
@@ -236,11 +237,11 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
               }
             });
           } else {
-            showAlertModal('채팅방 정보를 찾을 수 없습니다.');
+            showAlertModal('채팅방 정보를 찾을 수 없습니다');
           }
         } catch (error) {
           console.error('Failed to get chat room info:', error);
-          showAlertModal('채팅방 정보를 가져오는데 실패했습니다.');
+          showAlertModal('채팅방 정보를 가져오는데 실패했습니다');
         }
       }
     );
@@ -249,11 +250,9 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ko-KR', {
       year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+      month: '2-digit',  
+      day: '2-digit'     
+    }).replace(/\.$/, ''); 
   };
 
   const handleTravelmateRowClick = (travelmate) => {
@@ -274,7 +273,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>{title}</h3>
         {travels.length === 0 ? (
-          <div className={styles.emptyState}>등록된 여행이 없습니다.</div>
+          <div className={styles.emptyState}>등록된 모임이 없습니다</div>
         ) : (
           <div className={styles.travelList}>
             {travels.map((travel) => (
@@ -300,12 +299,12 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                     <h4 className={styles.travelTitle}>{travel.title}</h4>
                     <p className={styles.travelDescription}>{travel.simpleDescription}</p>
                     <div className={styles.travelSchedule}>
-                      <span>일정: {formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
+                      <span>일정 | {formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
                     </div>
                     <div className={styles.travelMeta}>
-                      <span>좋아요: {travel.likeCount}</span>
-                      <span>멤버: {travel.memberCount}명</span>
-                      <span>조회수: {travel.viewCount}</span>
+                      <span>좋아요 {travel.likeCount}</span>
+                      |<span>멤버 {travel.memberCount}명</span>
+                      |<span>조회수 {travel.viewCount}</span>
                     </div>
                     {travel.themeNames && (
                       <div className={styles.themes}>
@@ -317,9 +316,14 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                       </div>
                     )}
                     <div className={styles.chatButtonContainer}>
-                      <button className={styles.chatButton}>
+                      <button className={styles.chatButton} onClick={(e) => {
+                        console.log('버튼 클릭됨!', travel.id);
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleChatClick(travel.id);
+                      }}>
                         채팅 바로가기
-                        <img src={arrow}/>
+                        <img src={arrow} alt="arrow" onClick={(e) => e.stopPropagation()}/>
                       </button>
                     </div>
                   </div>
@@ -352,8 +356,8 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                         }}
                       >
                         동행 신청 ({travel.applications.length}명)
-                        <span className={expandedApplications[travel.id] ? styles.expanded : ''}>
-                          <img src={expandedApplications[travel.id] ? drop : drop_down}/>
+                        <span>
+                          <img src={expandedApplications[travel.id] ? drop : drop_down} className={expandedApplications[travel.id] ? styles.expanded : ''}/>
                         </span>
                       </button>
                     </div>
@@ -377,7 +381,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                                 )}
                               </div>
                               <div className={styles.applicationComment}>
-                                {application.applicationComment || '신청 메시지가 없습니다.'}
+                                {application.applicationComment || '신청 메시지가 없습니다'}
                               </div>
                               <div className={styles.applicationDate}>
                                 신청일: {formatDate(application.appliedAt)}
@@ -434,7 +438,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                     </span>
                     {travel.appliedAt && (
                       <span className={styles.appliedDate}>
-                        신청일: {formatDate(travel.appliedAt)}
+                        신청일 | {formatDate(travel.appliedAt)}
                       </span>
                     )}
                   </div>
@@ -451,7 +455,7 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
     <div className={cards.section}>
       <h3 className={cards.sectionTitle}>{title}</h3>
       {travels.length === 0 ? (
-        <div className={cards.emptyState}>좋아요한 여행이 없습니다.</div>
+        <div className={cards.emptyState}>등록된 모임이 없습니다</div>
       ) : (
         <div className={cards.cardContainer}>
           {travels.map((travel) => {
@@ -489,24 +493,24 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
                   
                   {!isBlind && (
                     <div className={cards.likedTravelMeta}>
-                      <span>일정: {formatDate(travel.startAt)}{'\n      '}~ {formatDate(travel.endAt)}</span>
+                      <span>{formatDate(travel.startAt)} ~ {formatDate(travel.endAt)}</span>
                     </div>
                   )}
 
                   {!isBlind && (
                     <div className={cards.travelMeta}>
-                      <span>좋아요: {travel.likeCount}</span>
-                      <span>멤버: {travel.memberCount}명</span>
-                      <span>조회수: {travel.viewCount}</span>
+                      <span>좋아요 {travel.likeCount}</span>
+                      |<span>멤버 {travel.memberCount}명</span>
+                      |<span>조회수 {travel.viewCount}</span>
                     </div>
                   )}
 
                   {/* 블라인드된 게시글의 경우 */}
                   {isBlind && (
                     <div className={cards.travelMeta}>
-                      <span>좋아요: -</span>
-                      <span>멤버: -명</span>
-                      <span>조회수: -</span>
+                      <span>좋아요 : -</span>
+                      <span>멤버 : -명</span>
+                      <span>조회수 : -</span>
                     </div>
                   )}
                   
@@ -523,19 +527,19 @@ export default function MyTravelmate({ data, fetchTravelerData, currentUserId  }
   return (
     <div className={styles.container}>
       {/* 호스팅 중인 여행 */}
-      {data.hostedTravelmates && renderTravelList(data.hostedTravelmates, '내가 호스팅하는 여행', 'hosted')}
+      {data.hostedTravelmates && renderTravelList(data.hostedTravelmates, '내가 호스팅하는 모임', 'hosted')}
 
       {/* 참가한 여행 */}
-      {data.joinedTravelmates && renderTravelList(data.joinedTravelmates, '참가한 여행', 'joined')}
+      {data.joinedTravelmates && renderTravelList(data.joinedTravelmates, '참가 중인 모임', 'joined')}
 
-      {/* 신청한 여행 */}
-      {data.appliedTravelmates && renderTravelList(data.appliedTravelmates, '신청한 여행', 'applied')}
+      {/* 신청한 여행 */} 
+      {data.appliedTravelmates && renderTravelList(data.appliedTravelmates, '신청한 모임', 'applied')}
 
       {/* 좋아요한 여행 */}
-      {data.likedTravelmates && renderTravelList(data.likedTravelmates, '좋아요한 여행', 'liked')}
+      {data.likedTravelmates && renderTravelList(data.likedTravelmates, '좋아요한 모임', 'liked')}
 
       {/* 완료된 여행 */}
-      {data.completedTravelmates && renderTravelList(data.completedTravelmates, '완료된 여행', 'completed')}
+      {data.completedTravelmates && renderTravelList(data.completedTravelmates, '완료된 모임', 'completed')}
       
       <ReportModal
         show={showReportModal}

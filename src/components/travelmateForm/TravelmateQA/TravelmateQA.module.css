@@ -363,6 +363,7 @@
   transition: all 0.3s ease;
   outline: none !important;
   box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .submitButton:hover:not(:disabled) {

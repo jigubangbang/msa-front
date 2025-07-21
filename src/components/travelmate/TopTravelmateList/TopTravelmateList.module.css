@@ -2,10 +2,9 @@
 
 .topTravelmateList {
   width: 100%;
-  max-width: 1100px;
   margin: 0 auto;
   font-family: Pretendard, sans-serif;
-  padding: 40px 20px;
+  padding: 40px 0;
 }
 
 .header {
@@ -17,7 +16,6 @@
 
 .title {
   font-size: 24px;
-  font-weight: 700;
   color: #000;
   margin: 0;
 }
@@ -40,7 +38,7 @@
 .cardContainer {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  gap: 15px;
 }
 
 .card {
@@ -181,7 +179,7 @@
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
   .topTravelmateList {
-    padding: 30px 15px;
+    padding: 40px 10px;
   }
   
   .cardContainer {
