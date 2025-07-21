@@ -1,7 +1,7 @@
 // src/components/chat/ChatModal.jsx
 import React, {useEffect, useState, useRef} from 'react';
 import ReactDOM from 'react-dom';
-import { MutatingDots } from 'react-loader-spinner';
+import { Circles } from 'react-loader-spinner';
 import ChatPanel from './ChatPanel.jsx';
 import { useChatContext } from '../../utils/ChatContext.jsx';
 import { joinSock } from '../../hooks/chat/joinSock.js';
@@ -183,9 +183,8 @@ export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLe
      {(isLoading || isJoining) ? (
         <div className="chat-loading-overlay" style={{zIndex: 3000}}>
           <div className="loadingContainer">
-            <MutatingDots />
+            <Circles color = "#000"/>
           </div>
-          <div className="chat-loading-text">입장 중입니다...</div>
         </div>
       ) : isMinimized ? (
       <>
