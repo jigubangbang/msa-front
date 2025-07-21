@@ -16,6 +16,7 @@ export default function AdminContent() {
         currentPath === item.path || currentPath.startsWith(item.path + "/"),
     }));
   };
+  
   const finalMenuItems = getActiveMenuItems();
 
   return (
