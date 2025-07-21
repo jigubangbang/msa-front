@@ -2,7 +2,9 @@
 
 .container {
   padding: 20px;
-  width: 1100px;
+  width: 100%;
+  max-width: 1100px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -89,6 +91,7 @@
   color: #666;
   font-weight: 500;
   width: 245px;
+  margin-top: 8px;
 }
 
 .infoDetails span {
@@ -139,15 +142,21 @@
 .travelSchedule, .travelInfoMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 15px;
   font-size: 14px;     
   color: #666;
   margin-bottom: 8px;
   line-height: 1.4;     
+  font-weight: 500;
 }
 
 .travelSchedule span, .travelInfoMeta span {
   font-weight: 500;      
+}
+
+.travelSchedule {
+  margin-top: 0px;
+  margin-bottom: 5px;
 }
 
 .themes {
@@ -190,7 +199,7 @@
 }
 
 .chatButtonContainer {
-  margin-top: 12px;
+  margin-top: 90px;
   padding-top: 8px;
   border-top: 1px solid #f0f0f0;
 }
@@ -248,9 +257,9 @@
 }
 
 .likedBadge, .joinedBadge {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: #2e7d32;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background-color: #e6f3ff; 
+  color: #0066cc;            
+  border: 1px solid #b3d9ff; 
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 11px;
@@ -290,10 +299,10 @@
   color: #555;
   line-height: 1.4;
   margin-bottom: 8px;
-  background: white;
   padding: 8px;
   border-radius: 4px;
   border-left: 3px solid #2e7d32;
+  background-color: #f1f8e9;
 }
 
 /* 반응형 */

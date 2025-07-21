@@ -173,9 +173,9 @@ const showAlertModal = (message) => {
     switch (name) {
       case 'title':
         if (!value.trim()) {
-          return { isValid: false, error: '모임명은 필수입니다' };
+          return { isValid: false, error: '모임 제목은 필수입니다' };
         } else if (value.length > 100) {
-          return { isValid: false, error: '모임명은 100자를 초과할 수 없습니다' };
+          return { isValid: false, error: '모임 제목은 100자를 초과할 수 없습니다' };
         }
         return { isValid: true, error: null };
         
@@ -534,7 +534,7 @@ const showAlertModal = (message) => {
           <div className={styles.leftColumn}>
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                모임 제목 <span className={styles.required}>*</span>
+                모임 제목<span className={styles.required}>*</span>
               </label>
               <input
                 type="text"
@@ -545,7 +545,7 @@ const showAlertModal = (message) => {
                   fieldValidation.title === 'valid' ? styles.validInput : 
                   fieldValidation.title === 'invalid' ? styles.invalidInput : ''
                 }`}
-                placeholder="모임명을 작성해주세요"
+                placeholder="모임 제목을 작성해주세요"
                 required
               />
               {validationErrors.title && (

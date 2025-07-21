@@ -263,7 +263,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
 
   const handleDelete = async (travelinfoId) => {
     customConfirm(
-      '정말로 이 정보방을 삭제하시겠습니까?',
+      '정말 이 정보 공유방을 삭제하시겠습니까?',
       async () => {
         try {
           await api.delete(`${API_ENDPOINTS.COMMUNITY.USER}/travelinfo/${travelinfoId}`,
@@ -272,7 +272,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
               'User-Id': currentUserId,
             },
           });
-          showAlertModal('정보방이 삭제되었습니다.');
+          showAlertModal('정보 공유방이 삭제되었습니다');
           // 목록 새로고침
           fetchTravelinfos();
         } catch (error) {
@@ -285,13 +285,21 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
 
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const date = new Date(dateString);
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? '오후' : '오전';
+    
+    hours = hours % 12;
+    if (hours === 0) hours = 12;
+    const hoursStr = String(hours).padStart(2, '0');
+    
+    return `${year}.${month}.${day} ${ampm} ${hoursStr}:${minutes}`;
   };
 
   const renderTravelInfoList = (travelInfos, title, sectionType) => {
@@ -304,7 +312,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>{title}</h3>
         {travelInfos.length === 0 ? (
-          <div className={styles.emptyState}>등록된 정보가 없습니다.</div>
+          <div className={styles.emptyState}>등록된 정보 공유방이 없습니다</div>
         ) : (
           <div className={styles.travelInfoList}>
             {travelInfos.map((info) => (
@@ -316,9 +324,8 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                       alt={info.title}
                       className={styles.thumbnail}
                     />
-                    {/* 🔄 썸네일 아래에 작성자 정보 + 참가/좋아요 상태 표시 */}
                     <div className={styles.infoDetails}>
-                      <span>작성자: {info.creatorNickname}</span>
+                      <span>방장 | {info.creatorNickname}</span>
                     </div>
                   </div>
 
@@ -328,15 +335,14 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                     )}
                     <h4 className={styles.travelInfoTitle}>{info.title}</h4>
                     <p className={styles.travelInfoDescription}>{info.simpleDescription}</p>
+                    <div className={styles.travelSchedule}>
+                      <span>생성일 | {formatDate(info.createdAt)}</span>
+                    </div>
                     
                     <div className={styles.travelInfoMeta}>
-                      <span>좋아요: {info.likeCount}</span>
-                      <span>멤버: {info.memberCount}명</span>
-                      {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
-                    </div>
-
-                    <div className={styles.travelSchedule}>
-                      <span>작성일: {formatDate(info.createdAt)}</span>
+                      <span>좋아요 {info.likeCount}</span>
+                      | <span>멤버 {info.memberCount}명</span>
+                      | {info.chatCount !== undefined && <span>채팅 {info.chatCount}</span>}
                     </div>
 
                     {info.themeIds && info.themeIds.length > 0 && (
@@ -423,7 +429,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
     <div className={cards.section}>
       <h3 className={cards.sectionTitle}>{title}</h3>
       {travelInfos.length === 0 ? (
-        <div className={cards.emptyState}>좋아요한 정보공유방이 없습니다.</div>
+        <div className={cards.emptyState}>등록된 정보 공유방이 없습니다</div>
       ) : (
         <div className={cards.cardContainer}>
           {travelInfos.map((info) => {
@@ -461,24 +467,24 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
                   
                   {!isBlind && (
                     <div className={cards.likedTravelMeta}>
-                      <div>작성자: {info.creatorNickname}</div>
-                      <div>작성일: {formatDate(info.createdAt)}</div>
+                      <div>방장 | {info.creatorNickname}</div>
+                      <div>생성일 | {formatDate(info.createdAt)}</div>
                     </div>
                   )}
                   
                   {!isBlind && (
                     <div className={cards.travelMeta}>
-                      <span>좋아요: {info.likeCount}</span>
-                      <span>멤버: {info.memberCount}명</span>
-                      {info.chatCount !== undefined && <span>채팅: {info.chatCount}</span>}
+                      <span>좋아요 {info.likeCount}</span>
+                      |<span>멤버 {info.memberCount}명</span>
+                      |{info.chatCount !== undefined && <span>채팅 {info.chatCount}</span>}
                     </div>
                   )}
 
                   {isBlind && (
                     <div className={cards.travelMeta}>
-                      <span>좋아요: -</span>
-                      <span>멤버: -명</span>
-                      <span>채팅: -</span>
+                      <span>좋아요 -</span>
+                      |<span>멤버 -명</span>
+                      |<span>채팅 -</span>
                     </div>
                   )}
                 </div>
@@ -497,7 +503,7 @@ export default function MyTravelinfo({ data, fetchTravelinfos, currentUserId, is
       {data.hostedTravelInfos && renderTravelInfoList(data.hostedTravelInfos, '내가 만든 정보 공유방', 'hosted')}
 
       {/* 참가한 정보 공유방 */}
-      {data.joinedTravelInfos && renderTravelInfoList(data.joinedTravelInfos, '참가한 정보 공유방', 'joined')}
+      {data.joinedTravelInfos && renderTravelInfoList(data.joinedTravelInfos, '참여 중인 정보 공유방', 'joined')}
 
       {/* 좋아요한 정보 공유방 */}
       {data.likedTravelInfos && renderTravelInfoList(data.likedTravelInfos, '좋아요한 정보 공유방', 'liked')}

@@ -122,8 +122,13 @@ const fetchTravelerData = async () => {
     return (
       <div className={styles.container}>
         <Sidebar menuItems={finalMenuItems} isLogin={isLogin}/>
-        <div className={styles.content}>
-          <CirclesSpinner/>
+        <div className={styles.content} style={{ 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          marginLeft: '200px',
+          transform: 'translateX(-100px)'
+        }}>
+          <CirclesSpinner height={50} width={50} color="#000" />
         </div>
       </div>
     );
@@ -161,7 +166,7 @@ const fetchTravelerData = async () => {
                 className={`${styles.tabButton} ${activeTab === 'travelinfo' ? styles.active : ''}`}
                 onClick={() => handleTabChange('travelinfo')}
               >
-                내 여행자 정보 공유방
+                내 정보 공유방
               </button>
             </div>
           </div>

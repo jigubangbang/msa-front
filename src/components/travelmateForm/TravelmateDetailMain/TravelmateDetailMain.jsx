@@ -190,10 +190,10 @@ useEffect(() => {
         }
       });
       setMemberStatus('PENDING');
-      showAlert('참여 신청이 완료되었습니다!');
+      showAlert('참가 신청이 완료되었습니다!');
     } catch (error) {
       console.error('Failed to request join:', error);
-      const errorMessage = error.response?.data?.error || '참여 신청에 실패했습니다';
+      const errorMessage = error.response?.data?.error || '참가 신청에 실패했습니다';
       showAlert(errorMessage);
       throw error; 
     }
@@ -213,13 +213,13 @@ useEffect(() => {
   const getJoinButtonText = () => {
     switch (memberStatus) {
       case 'PENDING':
-        return '모임 참여 신청 중';
+        return '모임 참가 신청 중';
       case 'MEMBER':
-        return '참여 중인 모임: 채팅하기';
+        return '참가 중인 모임: 채팅하기';
       case 'CREATOR' :
         return '내 모임: 채팅하기';
       default:
-        return '모임 참여 신청하기';
+        return '모임 참가 신청하기';
     }
   };
 

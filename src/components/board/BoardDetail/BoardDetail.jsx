@@ -477,17 +477,17 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
           headers: { 'User-Id': currentUserId }
         });
         
-        showAlert('게시글이 삭제되었습니다.');
+        showAlert('게시글이 삭제되었습니다');
         setTimeout(() => {
           navigate(`/board/popular`);
         }, 1000);
       } catch (error) {
         console.error('Failed to delete post:', error);
-        showAlert('게시글 삭제에 실패했습니다.');
+        showAlert('게시글 삭제에 실패했습니다');
       }
     };
 
-    showConfirm('정말로 게시글을 삭제하시겠습니까?', deletePost);
+    showConfirm('정말 게시글을 삭제하시겠습니까?', deletePost);
   };
 
   const handleImageClick = (index) => {
@@ -859,7 +859,7 @@ const BoardDetail = ({ isLogin, currentUserId }) => {
             <div className={styles.inputContainer}>
               <textarea
                 className={styles.commentInput}
-                placeholder="댓글을 작성해주세요..."
+                placeholder="댓글을 작성해주세요"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 rows={3}

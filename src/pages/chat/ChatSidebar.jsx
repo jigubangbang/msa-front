@@ -342,7 +342,7 @@ export default function ChatSidebar({ chatId, senderId, isOpen, onClose, chatInf
         <div className="sidebar-section members-section">
           <h3>멤버들 ({!members || members.length === 0 ? 0 : members.length})</h3>
           {!members || members.length === 0 ? (
-            <div>참여 중인 멤버가 없습니다.</div>
+            <div>참여 중인 멤버가 없습니다</div>
           ) : (
           <ul className="member-list">
             {members.map(member => (
