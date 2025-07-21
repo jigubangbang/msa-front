@@ -1,6 +1,6 @@
 // src/components/chat/ChatReportTab.jsx
 import React from 'react';
-import '../../styles/chat/ChatReportTab.css';
+import '../../styles/Chat/ChatReportTab.css';
 
 export default function ChatReportTab({ userId, isManager, onPromote, onKick, onDemote }) {
   return (

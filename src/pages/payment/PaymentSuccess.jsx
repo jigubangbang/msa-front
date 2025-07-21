@@ -37,7 +37,7 @@ const PaymentSuccess = () => {
   }, [location]);
 
   const goToPremiumPage = () => {
-    navigate('/user/premium');
+    window.location.href = '/user/premium';
   };
 
   if (isLoading) {

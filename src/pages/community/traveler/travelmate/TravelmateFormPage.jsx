@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { TRAVELER_SIDEBAR } from "../../../../utils/sidebar";
-import styles from './TravelmateListPage.module.css';
+import styles from './TravelMateListPage.module.css';
 import Sidebar from "../../../../components/common/SideBar/SideBar";
 import api from '../../../../apis/api';
 import API_ENDPOINTS from '../../../../utils/constants';

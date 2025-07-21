@@ -1,4 +1,4 @@
-// src/hooks/chat/useChatLeave.js
+// src/hooks/Chat/useChatLeave.js
 import { useState } from 'react';
 import { useChatSubscriptionStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';

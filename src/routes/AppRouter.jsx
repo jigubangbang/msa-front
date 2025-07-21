@@ -45,7 +45,7 @@ import AdminInquiry from "../pages/admin/AdminInquiry";
 import InquiryManage from "../components/admin/InquiryManage";
 import InquiryReply from "../components/admin/InquiryReply";
 
-import ChatPanel from "../pages/Chat/ChatPanel";
+import ChatPanel from "../pages/chat/ChatPanel";
 
 import Payment from "../pages/payment/Payment";
 import PaymentFail from "../pages/payment/PaymentFail";

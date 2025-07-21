@@ -1,3 +1,5 @@
+import SearchBar from '../../components/common/SearchBar';
+import Header from '../../components/main/Header';
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from 'react-dom';
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -125,8 +127,7 @@ export default function Main() {
                     api.get(`${API_ENDPOINTS.FEED.PUBLIC}/posts/top`),
                 ]);
 
-                const feedData = await feedResponse.data.posts;
-                setFeeds(feedData);
+                setFeeds(feedResponse.data?.posts || []);
 
                 const allBadges = badgeResponse.data.badges || [];
                 
@@ -134,8 +135,8 @@ export default function Main() {
                 const randomBadges = shuffledBadges.slice(0, 8);
                 setBadges(randomBadges);
 
-                setPosts(postResponse.data.posts);
-                setRankings(rankingResponse.data.rankings);
+                setPosts(postResponse.data?.posts || []);
+                setRankings(rankingResponse.data?.rankings || []);
 
                 if (isLoggedIn && userId) {
                     const summaryResponse = await api.get(`/api/profile/${userId}`);
@@ -195,7 +196,7 @@ export default function Main() {
 
     const handlePostClick = (postId) => {
         //이거 이상 없는지 확인좀 
-        if (!isLogin){
+        if (!isLoggedIn){
             setShowLoginConfirmModal(true);
             return;
         }

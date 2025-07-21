@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './NotificationDropdown.module.css';
 import API_ENDPOINTS from '../../utils/constants';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
-import { getNotificationIcon } from '../../utils/NotificationIcons';
+import { getNotificationIcon } from '../../utils/notificationIcons';
 import bell from '../../assets/chat/notification_bell_26.svg';
 
 const NotificationDropdown = ({ userId }) => {

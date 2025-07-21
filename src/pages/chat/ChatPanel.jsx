@@ -1,15 +1,15 @@
 // /src/components/chat/ChatPanel.jsx
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { ThemeContext } from '../../utils/themeContext';
+import ChatSidebar from './ChatSidebar';
 import API_ENDPOINTS from '../../utils/constants';
 import api from "../../apis/api";
 import { getAccessToken } from '../../utils/tokenUtils';
-import ChatSidebar from './ChatSideBar';
 import menu_vert_white from '../../assets/common/more_vert_white.svg';
 import menu_horiz_white from '../../assets/common/more_horiz_white.svg';
 import minimize from '../../assets/chat/hide.svg';
 import defaultProfile from '../../assets/default_profile.png';
-import '../../styles/chat/ChatPanel.css'
+import '../../styles/Chat/ChatPanel.css'
 import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 
 export default function ChatPanel({ chatId, senderId, nickname, messages, setMessages, onSendMessage, 
@@ -199,7 +199,7 @@ export default function ChatPanel({ chatId, senderId, nickname, messages, setMes
                   className={`chat-message-bubble ${isMine ? 'my-message' : 'other-message'}`}
                 >
                   <p className="message-text">{msg.message}</p>
-                  <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</span>
+                    <span className="timestamp">{msg.createdAt ? new Date(msg.createdAt + 'Z').toLocaleTimeString() : ''}</span>
                 </div>
               </>
               )}

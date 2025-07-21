@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import styles from "./Sidebar.module.css";
+import styles from "./SideBar.module.css";
 import LoginConfirmModal from "../LoginConfirmModal/LoginConfirmModal";
 
 //menu에 어떤 요소들을 넣을 것인지 받아옴

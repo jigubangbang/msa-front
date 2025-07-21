@@ -1,4 +1,4 @@
-// src/hooks/chat/joinSock.js
+// src/hooks/Chat/joinSock.js
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useStomp, useStore } from './useStomp';
 import API_ENDPOINTS from '../../utils/constants';

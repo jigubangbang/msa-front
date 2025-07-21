@@ -1,9 +1,9 @@
 // src/components/chat/ChatSidebar.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStomp } from '../../hooks/chat/useStomp';
-import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
-import { useChatSubscriptionStore } from '../../hooks/chat/useStomp';
+import { useStomp } from '../../hooks/Chat/useStomp';
+import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
+import { useChatSubscriptionStore } from '../../hooks/Chat/useStomp';
 import ChatReportTab from '../../components/chat/ChatReportTab';
 import ChatDescriptionEditor from '../../components/chat/ChatDescriptionEditor';
 import ChatReportModal from '../../components/chat/ChatReportModal';

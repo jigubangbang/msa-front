@@ -6,7 +6,7 @@ import {useNavigate } from 'react-router-dom';
 import api from '../../../apis/api';
 import API_ENDPOINTS from '../../../utils/constants';
 import { useChatContext } from '../../../utils/ChatContext';
-import { useChatLeave } from '../../../hooks/chat/useChatLeave';
+import { useChatLeave } from '../../../hooks/Chat/useChatLeave';
 import ReportModal from '../../common/Modal/ReportModal';
 import ConfirmModal from '../../common/ErrorModal/ConfirmModal';
 import SimpleConfirmModal from '../../common/ErrorModal/SimpleConfirmModal';

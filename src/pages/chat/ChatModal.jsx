@@ -4,12 +4,12 @@ import ReactDOM from 'react-dom';
 import { MutatingDots } from 'react-loader-spinner';
 import ChatPanel from './ChatPanel.jsx';
 import { useChatContext } from '../../utils/ChatContext.jsx';
-import { joinSock } from '../../hooks/chat/joinSock.js';
-import useChatRoomInfo from '../../hooks/chat/useChatRoomInfo';
+import { joinSock } from '../../hooks/Chat/joinSock.js';
+import useChatRoomInfo from '../../hooks/Chat/useChatRoomInfo';
 import ChatAlertModal from '../../components/chat/ChatAlertModal.jsx'; // 수정된 모달 임포트
 import defaultProfile from '../../assets/default_profile.png';
 import exit from '../../assets/chat/logout.svg';
-import '../../styles/chat/ChatModal.css'
+import '../../styles/Chat/ChatModal.css'
 
 
 export default function ChatModal({ isOpen, onClose, chatId, currentUserId, onLeave}) {

@@ -1,6 +1,6 @@
 // src/utils/constants.js
-
-export const LOCAL = 'http://localhost:8080'
+export const LOCAL = 'http://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com'
+export const LOCAL_WS = 'ws://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com'
 
 // API 엔드포인트
 const API_ENDPOINTS = {
@@ -60,7 +60,7 @@ const API_ENDPOINTS = {
   // 채팅 서비스 (User 권한 필요)
   CHAT: `${LOCAL}/api/chat`,
 
-  WS: `ws://localhost:8080/api/ws/chat`,
+  WS: `${LOCAL_WS}/api/ws/chat`,
   // WS: `ws://192.168.100.28:8080/api/ws/chat`,
   // WS: `http://localhost:8080/api/ws/chat`,
 
