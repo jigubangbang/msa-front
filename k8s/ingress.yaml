@@ -2,17 +2,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: msa-front-ingress
+  namespace: bit-2501
   labels:
     app: msa-front
   annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/subnets: "subnet-04362a3b7f2f40d81,subnet-0009bbca818e1d3bd,subnet-000fdbd8e407a0a5f,subnet-022c5c15b583995b1"
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.priority: "10"
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    #alb.ingress.kubernetes.io/scheme: internet-facing
+    #alb.ingress.kubernetes.io/target-type: ip
+    #alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    #alb.ingress.kubernetes.io/subnets: "subnet-04362a3b7f2f40d81,subnet-0009bbca818e1d3bd,subnet-000fdbd8e407a0a5f,subnet-022c5c15b583995b1"
 spec:
   rules:
-    - http:
+    - host: bit_2501.filmal.co.kr 
+      http:
         paths:
           - path: /
             pathType: Prefix
