@@ -1,6 +1,6 @@
 // src/utils/constants.js
-export const LOCAL = 'http://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com'
-export const LOCAL_WS = 'ws://k8s-default-apigatew-351dbdb1dd-953490149.ap-northeast-2.elb.amazonaws.com'
+export const LOCAL = ''
+export const LOCAL_WS = ''
 
 // API 엔드포인트
 const API_ENDPOINTS = {
